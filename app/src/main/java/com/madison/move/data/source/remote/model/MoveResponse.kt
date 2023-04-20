@@ -1,12 +1,12 @@
 package com.madison.move.data.source.remote.model
 
-import com.aliasadi.androidmvp.data.movie.Movie
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import com.madison.move.data.model.Video
 
-/**
- * Created by Ali Asadi on 24/03/2018.
- */
-class MovieResponse {
+
+class MoveResponse {
     @Expose
     @SerializedName("movies")
-    var movies: List<Movie>? = null
+    var videos: List<Video>? = null
 }

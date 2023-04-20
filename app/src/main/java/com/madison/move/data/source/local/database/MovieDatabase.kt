@@ -1,24 +1,29 @@
 package com.madison.move.data.source.local.database
 
-import android.arch.persistence.room.Database
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.madison.move.App
+import com.madison.move.data.model.Video
+import com.madison.move.data.source.local.MoveDao
 
-/**
- * Created by Ali Asadi on 30/01/2019.
- */
-@Database(entities = [Movie::class], version = 1, exportSchema = false)
+
+@Database(entities = [Video::class], version = 1, exportSchema = false)
 abstract class MovieDatabase : RoomDatabase() {
-    abstract fun movieDao(): MovieDao?
+    abstract fun movieDao(): MoveDao?
 
     companion object {
         private var sInstance: MovieDatabase? = null
         val instance: MovieDatabase?
             get() {
                 if (sInstance == null) {
-                    sInstance = Room.databaseBuilder(
-                        App.getInstance(),
-                        MovieDatabase::class.java,
-                        "Movie.db"
-                    ).build()
+                    sInstance = App.instance?.let {
+                        Room.databaseBuilder(
+                            it,
+                            MovieDatabase::class.java,
+                            "Movie.db"
+                        ).build()
+                    }
                 }
                 return sInstance
             }

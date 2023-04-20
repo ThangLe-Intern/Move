@@ -8,22 +8,22 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MovieRemoteDataSource private constructor(movieApi: MoveApi) : MoveDataSource {
-    private val movieApi: MoveApi
+class MoveRemoteDataSource private constructor(movieApi: MoveApi) : MoveDataSource {
+    private val moveApi: MoveApi
 
     init {
-        this.movieApi = movieApi
+        this.moveApi = movieApi
     }
 
-    override fun getVideos(callback: MoveDataSource.LoadMoviesCallback?) {
-        movieApi.getMovies()?.enqueue(object : Callback<MoveResponse?> {
+    override fun getVideos(callback: MoveDataSource.LoadVideosCallback?) {
+        moveApi.getMovies()?.enqueue(object : Callback<MoveResponse?> {
             override fun onResponse(
                 call: Call<MoveResponse?>,
                 response: Response<MoveResponse?>
             ) {
                 val movies: List<Video?>? =
-                    if (response.body() != null) response.body()!!.getVideos() else null
-                if (movies != null && !movies.isEmpty()) {
+                    if (response.body() != null) response.body()!!.videos else null
+                if (movies != null && movies.isNotEmpty()) {
                     callback?.onVideosLoaded(movies)
                 } else {
                     callback?.onDataNotAvailable()
@@ -36,16 +36,16 @@ class MovieRemoteDataSource private constructor(movieApi: MoveApi) : MoveDataSou
         })
     }
 
-    override fun saveVideos(movies: List<Video?>?) {
+    override fun saveVideos(videos: List<Video?>?) {
 
     }
 
 
     companion object {
-        private var instance: MovieRemoteDataSource? = null
-        fun getInstance(movieApi: MoveApi): MovieRemoteDataSource? {
+        private var instance: MoveRemoteDataSource? = null
+        fun getInstance(movieApi: MoveApi): MoveRemoteDataSource? {
             if (instance == null) {
-                instance = MovieRemoteDataSource(movieApi)
+                instance = MoveRemoteDataSource(movieApi)
             }
             return instance
         }
