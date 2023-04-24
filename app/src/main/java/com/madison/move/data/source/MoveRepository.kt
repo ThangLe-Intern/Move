@@ -2,7 +2,7 @@
 import com.madison.move.data.source.MoveDataSource
 import com.madison.move.data.source.local.MoveCacheDataSource
 import com.madison.move.data.source.local.MoveLocalDataSource
-import com.madison.move.data.source.remote.MovieRemoteDataSource
+import com.madison.move.data.source.remote.MoveRemoteDataSource
 
 
 class MoveRepository private constructor(
@@ -87,7 +87,7 @@ class MoveRepository private constructor(
     companion object {
         private var instance: MoveRepository? = null
         fun getInstance(
-            movieRemote: MovieRemoteDataSource,
+            movieRemote: MoveRemoteDataSource,
             movieLocal: MoveLocalDataSource,
             movieCache: MoveCacheDataSource
         ): MoveRepository? {
