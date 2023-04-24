@@ -10,23 +10,18 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @Entity(tableName = "videos")
-class Video : Parcelable{
+class Video(
     @PrimaryKey
     @ColumnInfo(name = "id")
-    val id = 0
-
+    val id: Int?,
     @Expose
     @SerializedName("description")
     @ColumnInfo(name = "description")
-    private val description: String? = null
-
-    @Expose
-    @SerializedName("image")
+    val description: String?,
     @ColumnInfo(name = "image")
-    private val image: String? = null
-
+    val image: String?,
     @Expose
     @SerializedName("title")
     @ColumnInfo(name = "title")
-    private val title: String? = null
-}
+    val title: String?
+) : Parcelable

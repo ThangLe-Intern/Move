@@ -36,7 +36,7 @@ class MoveCacheDataSource : MoveDataSource {
         cachedMovies.clear()
         if (videos != null) {
             for (video in videos) {
-                video?.let { cachedMovies.put(it.id, video) }
+                video?.let { it.id?.let { it1 -> cachedMovies.put(it1, video) } }
             }
         }
     }
