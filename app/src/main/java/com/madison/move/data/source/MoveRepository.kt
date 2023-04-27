@@ -1,4 +1,5 @@
 
+import com.madison.move.data.model.Video
 import com.madison.move.data.source.MoveDataSource
 import com.madison.move.data.source.local.MoveCacheDataSource
 import com.madison.move.data.source.local.MoveLocalDataSource
@@ -18,7 +19,7 @@ class MoveRepository private constructor(
         if (callback == null) return
         movieCache.getVideos(object : MoveDataSource.LoadVideosCallback {
 
-            override fun onVideosLoaded(videos: List<com.madison.move.data.model.Video?>?) {
+            override fun onVideosLoaded(videos: List<Video?>?) {
                 callback.onVideosLoaded(videos)
             }
 
@@ -31,7 +32,7 @@ class MoveRepository private constructor(
         })
     }
 
-    override fun saveVideos(videos: List<com.madison.move.data.model.Video?>?) {
+    override fun saveVideos(videos: List<Video?>?) {
         movieLocal.saveVideos(videos)
     }
 
@@ -40,7 +41,7 @@ class MoveRepository private constructor(
     private fun getMoviesFromLocalDataSource(callback: MoveDataSource.LoadVideosCallback) {
         movieLocal.getVideos(object : MoveDataSource.LoadVideosCallback {
 
-            override fun onVideosLoaded(videos: List<com.madison.move.data.model.Video?>?) {
+            override fun onVideosLoaded(videos: List<Video?>?) {
                 callback.onVideosLoaded(videos)
                 refreshCache(videos)
             }
@@ -60,7 +61,7 @@ class MoveRepository private constructor(
     private fun getVideosFromRemoteDataSource(callback: MoveDataSource.LoadVideosCallback) {
         movieRemote.getVideos(object : MoveDataSource.LoadVideosCallback {
 
-            override fun onVideosLoaded(videos: List<com.madison.move.data.model.Video?>?) {
+            override fun onVideosLoaded(videos: List<Video?>?) {
                 callback.onVideosLoaded(videos)
                 saveVideos(videos)
                 refreshCache(videos)
@@ -76,7 +77,7 @@ class MoveRepository private constructor(
         })
     }
 
-    private fun refreshCache(movies: List<com.madison.move.data.model.Video?>?) {
+    private fun refreshCache(movies: List<Video?>?) {
         movieCache.saveVideos(movies)
     }
 
