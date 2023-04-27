@@ -3,15 +3,16 @@ package com.madison.move.data.source.remote.services
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MoveService {
-    private val URL = "https://demo7812962.mockable.io/"
+class MoveService(
+    private val URL:String = "https://demo7812962.mockable.io/",
 
-    private var mMovieApi: MoveApi? = null
+    private var mMovieApi: MoveApi? = null,
 
-    private var singleton: MoveService? =
-        null
+    private var singleton: MoveService? = null
+) {
 
-    private fun MovieService() {
+
+    init {
         val mRetrofit =
             Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(URL)
                 .build()
