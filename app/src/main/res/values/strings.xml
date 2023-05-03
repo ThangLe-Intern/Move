@@ -13,4 +13,17 @@
     <string name="text_category">Category</string>
     <string name="txt_videos_you_may_like">Videos you may like</string>
     <string name="featured">Featured</string>
+    <string name="timeOfCategory">&lt; 30 mins</string>
+    <string name="viewOfVideo">1.34k</string>
+    <string name="video_title">Leg days</string>
+    <string name="username">Vu Dung</string>
+    <string name="video_category">Just Move</string>
+    <string name="video_rateNumber">4.5</string>
+    <string name="typeOfUser">Beginner</string>
+    <string name="category_title">MMA</string>
+    <string name="category_view">10.2k views</string>
+    <string name="category_layout">Category</string>
+    <string name="layout_videomaylike">Videos you may like</string>
+    <string name="timeOfVideo">15:30</string>
+    <string name="timeVideoRelease">A day ago</string>
 </resources>
