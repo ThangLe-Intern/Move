@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -15,11 +14,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
-import com.madison.move.R
 import com.madison.move.data.model.Category
+import com.madison.move.data.model.MoveVideo
 import com.madison.move.databinding.ActivityHomeBinding
 import com.madison.move.ui.home.adapter.CarouselViewPagerAdapter
 import com.madison.move.ui.home.adapter.CategoryAdapter
+import com.madison.move.ui.home.adapter.VideoSuggestionAdapter
 import kotlin.math.abs
 
 class HomeActivity : AppCompatActivity(), HomeView {
@@ -27,10 +27,12 @@ class HomeActivity : AppCompatActivity(), HomeView {
     private lateinit var homePresenter: HomePresenter
     private lateinit var carouselViewPagerAdapter: CarouselViewPagerAdapter
     private lateinit var categoryAdapter: CategoryAdapter
+    private lateinit var videoSuggestionAdapter: VideoSuggestionAdapter
     private lateinit var handler: Handler
 
     var featuredList: ArrayList<FeaturedFragment> = arrayListOf()
     var categoryList: MutableList<Category> = mutableListOf()
+    var videoList:MutableList<MoveVideo> = mutableListOf()
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,17 +41,18 @@ class HomeActivity : AppCompatActivity(), HomeView {
 
 
 
-        homePresenter = HomePresenter(this,featuredList,categoryList)
+        homePresenter = HomePresenter(this,featuredList,categoryList,videoList)
         homePresenter.onHideSystemUIPresenter()
         homePresenter.onShowFeaturedCarouselPresenter()
         homePresenter.onShowCategoryPresenter()
+        homePresenter.onShowVideoSuggestionPresenter()
 
     }
 
     //Show Featured Carousel
-    override fun onShowFeaturedCarousel(fragmentFeaturedList: ArrayList<FeaturedFragment>) {
+    override fun onShowFeaturedCarousel(featuredFragmentList: ArrayList<FeaturedFragment>) {
         handler = Handler(Looper.myLooper()!!)
-        carouselViewPagerAdapter = CarouselViewPagerAdapter(fragmentFeaturedList, binding.viewPager)
+        carouselViewPagerAdapter = CarouselViewPagerAdapter(featuredFragmentList, binding.viewPager)
 
         binding.viewPager.apply {
             adapter = carouselViewPagerAdapter
@@ -103,6 +106,13 @@ class HomeActivity : AppCompatActivity(), HomeView {
         }
     }
 
+    override fun onShowListVideoSuggestion(listVideo: MutableList<MoveVideo>) {
+        videoSuggestionAdapter = VideoSuggestionAdapter(listVideo)
+        binding.listVideoSuggestion.apply {
+            layoutManager = LinearLayoutManager(this@HomeActivity)
+            adapter = videoSuggestionAdapter
+        }
+    }
 
 
     //Hide Bottom Navigation bar

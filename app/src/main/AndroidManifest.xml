@@ -11,33 +11,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Move"
         tools:targetApi="31">
+
         <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".FollowingActivity"
-            android:exported="false" />
-        <activity
-            android:name=".BrowseActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.setting.SettingActivity"
+            android:name=".ui.menu.MainMenuActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".ui.home.HomeActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity
-            android:name=".ui.guideline.GuidelineActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity
-            android:name=".ui.FAQ.FaqActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity
-            android:name=".ui.menu.MainMenuActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Move.NoActionBar">
