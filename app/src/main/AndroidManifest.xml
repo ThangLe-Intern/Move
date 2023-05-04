@@ -12,11 +12,7 @@
         android:theme="@style/Theme.Move"
         tools:targetApi="31">
         <activity
-<<<<<<< Updated upstream
-            android:name=".MainActivity"
-=======
             android:name=".ui.menu.MainMenuActivity"
->>>>>>> Stashed changes
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Move.NoActionBar">
