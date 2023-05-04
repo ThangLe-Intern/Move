@@ -11,9 +11,6 @@ class HomePresenter(
     var categoryList: MutableList<Category>,
     var videoList: MutableList<MoveVideo>
 ) {
-    fun onHideSystemUIPresenter() {
-        homeView.onHideSystemUI()
-    }
 
     fun onShowFeaturedCarouselPresenter() {
         getFeaturedVideoData(fragmentFeaturedList)

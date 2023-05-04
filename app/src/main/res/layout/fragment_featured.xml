@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/img_featured_videoThumbnail"
+        android:id="@+id/img_featured_video_thumbnail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
@@ -17,15 +17,15 @@
         app:srcCompat="@drawable/img_feature1" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView_ViewOfVideo"
+        android:id="@+id/cardView_view_of_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_7sdp"
         android:layout_marginBottom="@dimen/_10sdp"
         app:cardBackgroundColor="@color/black"
         app:cardCornerRadius="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/img_featured_videoThumbnail"
-        app:layout_constraintStart_toStartOf="@+id/img_featured_videoThumbnail">
+        app:layout_constraintBottom_toBottomOf="@+id/img_featured_video_thumbnail"
+        app:layout_constraintStart_toStartOf="@+id/img_featured_video_thumbnail">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_view_eye"
@@ -58,7 +58,7 @@
         android:layout_height="@dimen/_45sdp"
         android:layout_marginTop="@dimen/_12sdp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_featured_videoThumbnail"
+        app:layout_constraintTop_toBottomOf="@+id/img_featured_video_thumbnail"
         app:srcCompat="@drawable/avatar" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -75,7 +75,7 @@
         android:textSize="@dimen/_12sdp"
         app:layout_constraintEnd_toStartOf="@id/img_video_suggestion_rate"
         app:layout_constraintStart_toEndOf="@id/img_featured_user_avatar"
-        app:layout_constraintTop_toBottomOf="@+id/img_featured_videoThumbnail" />
+        app:layout_constraintTop_toBottomOf="@+id/img_featured_video_thumbnail" />
 
 
     <RelativeLayout
@@ -105,7 +105,7 @@
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/img_blueTick"
+            android:id="@+id/img_tick"
             android:layout_width="@dimen/_11sdp"
             android:layout_height="@dimen/_11sdp"
             android:layout_gravity="center_vertical"
