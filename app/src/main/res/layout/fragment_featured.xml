@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/feature_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -91,7 +90,7 @@
             android:id="@+id/layout_feature_message_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="@dimen/_20sdp">
+            android:paddingEnd="@dimen/_20sdp">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txt_feature_username"
@@ -115,60 +114,6 @@
             android:layout_toEndOf="@+id/layout_feature_message_username"
             app:srcCompat="@drawable/blue_tick" />
     </RelativeLayout>
-
-
-
-   <!-- <RelativeLayout
-        android:id="@+id/layout_feature_user_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/txt_feature_video_title"
-        app:layout_constraintTop_toBottomOf="@+id/txt_feature_video_title"
-        app:layout_constraintEnd_toEndOf="@id/img_videoRate">
-        <LinearLayout
-            android:id="@+id/txt_feature_username_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingRight="10dp">
-           &lt;!&ndash; <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/txt_feature_username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:fontFamily="@font/montserrat_regular"
-                android:gravity="start"
-                android:text="2222222222222222222"
-                android:textSize="@dimen/_11ssp" />&ndash;&gt;
-
-            <TextView
-                android:id="@+id/message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hel2222q2soighirueiehuiehgeiwgherughuhgrugrghurhguhrguhurhgrughrughruhgurgurhgrughurghlo?"
-                android:background="#00ff00" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/time"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/txt_feature_username_container"
-            android:layout_marginLeft="-100dp"
-            android:text="12:30 PM"
-            android:background="#ff0000" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/img_blueTick"
-            android:layout_width="@dimen/_11sdp"
-            android:layout_height="@dimen/_11sdp"
-            android:layout_gravity="center_vertical"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/txt_feature_username_container"
-            app:srcCompat="@drawable/blue_tick" />
-
-    </RelativeLayout>-->
-
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txt_feature_video_category"
