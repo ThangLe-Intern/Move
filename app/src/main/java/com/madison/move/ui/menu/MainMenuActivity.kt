@@ -29,8 +29,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     }
 
     override fun initView() {
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.layoutToolBar.toolbar)
 
         val navigationView = binding.navNew
         navigationView.setNavigationItemSelectedListener(this)
@@ -38,7 +37,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         val toggle = ActionBarDrawerToggle(
             this,
             binding.drawerLayout,
-            toolbar,
+            binding.layoutToolBar.toolbar,
             R.string.opem_name,
             R.string.close_name
         )

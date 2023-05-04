@@ -1,6 +1,6 @@
 package com.madison.move.ui.menu
 
-import com.madison.move.BaseView
+import com.madison.move.ui.base.BaseView
 import com.madison.move.ui.base.BasePresenter
 
 /**
