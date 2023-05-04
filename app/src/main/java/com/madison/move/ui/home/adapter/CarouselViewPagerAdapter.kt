@@ -1,4 +1,4 @@
-package com.madison.move.ui.home
+package com.madison.move.ui.home.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.madison.move.R
+import com.madison.move.ui.home.FeaturedFragment
 
 class CarouselViewPagerAdapter(var listFragment:ArrayList<FeaturedFragment>, private val viewPager2: ViewPager2):
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {

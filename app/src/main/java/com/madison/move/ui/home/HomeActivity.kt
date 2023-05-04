@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -15,6 +16,7 @@ import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.madison.move.R
 import com.madison.move.databinding.ActivityHomeBinding
+import com.madison.move.ui.home.adapter.CarouselViewPagerAdapter
 import kotlin.math.abs
 
 class HomeActivity : AppCompatActivity(), HomeView {
