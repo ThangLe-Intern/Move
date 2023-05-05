@@ -1,14 +1,39 @@
 <resources>
+
+    <string name="opem_name">Open TestUiMove</string>
+    <string name="close_name">Close TestUiMove</string>
     <string name="app_name">Move</string>
     <string name="opem_name">Open TestUiMove</string>
     <string name="close_name">Close TestUiMove</string>
     <string name="action_settings">Settings</string>
+    <string name="action_following">Following</string>
+    <string name="action_browse">Browse</string>
+    <string name="action_more">More</string>
+    <string name="action_faq">FAQ</string>
+    <string name="action_guideline">Community guideline</string>
+    <string name="action_login">Logout</string>
+
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_category">Category</string>
+    <string name="txt_videos_you_may_like">Videos you may like</string>
+    <string name="featured">Featured</string>
+    <string name="timeOfCategory">&lt; 30 mins</string>
+    <string name="viewOfVideo">1.34k</string>
+    <string name="video_title">Leg days</string>
+    <string name="username">Vu Dung</string>
+    <string name="video_category">Just Move</string>
+    <string name="video_rateNumber">4.5</string>
+    <string name="typeOfUser">Beginner</string>
+    <string name="category_title">MMA</string>
+    <string name="category_view">10.2k views</string>
+    <string name="category_layout">Category</string>
+    <string name="layout_videomaylike">Videos you may like</string>
+    <string name="timeOfVideo">15:30</string>
+    <string name="timeVideoRelease">A day ago</string>
 </resources>
