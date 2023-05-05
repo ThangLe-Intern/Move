@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_videoYouMayLike"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/_15sdp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="374:110"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_video_suggestion_thumbnail"
+            android:layout_width="@dimen/_145sdp"
+            android:layout_height="@dimen/_72sdp"
+            android:layout_marginStart="4dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0"
+            app:srcCompat="@drawable/img_feature1" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_view_of_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:layout_marginBottom="@dimen/_3sdp"
+            app:cardBackgroundColor="@color/black"
+            app:cardCornerRadius="5dp"
+            app:layout_constraintBottom_toBottomOf="@id/img_video_suggestion_thumbnail"
+            app:layout_constraintStart_toStartOf="@id/img_video_suggestion_thumbnail">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/view_eye"
+                android:layout_width="@dimen/_15sdp"
+                android:layout_height="@dimen/_15sdp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_2sdp"
+                android:padding="3dp"
+                app:srcCompat="@drawable/icon_eye" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txt_video_suggestion_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:fontFamily="@font/montserrat_semi_bold"
+                android:gravity="center"
+                android:text="@string/viewOfVideo"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_9ssp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_video_suggestion_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_3sdp"
+            android:layout_marginBottom="@dimen/_3sdp"
+            app:cardBackgroundColor="@color/black"
+            app:cardCornerRadius="5dp"
+            app:layout_constraintBottom_toBottomOf="@id/img_video_suggestion_thumbnail"
+            app:layout_constraintEnd_toEndOf="@id/img_video_suggestion_thumbnail">
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txt_video_suggestion_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:fontFamily="@font/montserrat_semi_bold"
+                android:gravity="center"
+                android:text="@string/timeOfVideo"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_9ssp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_video_suggestion_user_avatar"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_marginStart="@dimen/_9sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            app:layout_constraintStart_toEndOf="@id/img_video_suggestion_thumbnail"
+            app:layout_constraintTop_toTopOf="@id/img_video_suggestion_thumbnail"
+            app:srcCompat="@drawable/avatar" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_video_suggestion_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_7sdp"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="@string/username"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintBottom_toBottomOf="@+id/img_video_suggestion_user_avatar"
+            app:layout_constraintStart_toEndOf="@id/img_video_suggestion_user_avatar"
+            app:layout_constraintTop_toTopOf="@+id/img_video_suggestion_user_avatar" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_video_suggestion_blueTick"
+            android:layout_width="@dimen/_12sdp"
+            android:layout_height="@dimen/_12sdp"
+            android:layout_marginStart="@dimen/_3sdp"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_video_suggestion_username"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/txt_video_suggestion_username"
+            app:layout_constraintTop_toTopOf="@id/txt_video_suggestion_username"
+            app:srcCompat="@drawable/blue_tick" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_video_suggestion_rate"
+            android:layout_width="@dimen/_12sdp"
+            android:layout_height="@dimen/_12sdp"
+            android:layout_marginEnd="5dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@id/txt_title_of_video_suggestion"
+            app:layout_constraintEnd_toStartOf="@id/txt_video_suggestion_rate_number"
+            app:layout_constraintTop_toTopOf="@+id/txt_title_of_video_suggestion"
+            app:srcCompat="@drawable/rate" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_video_suggestion_rate_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:text="@string/video_rateNumber"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintBottom_toBottomOf="@id/img_video_suggestion_rate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/img_video_suggestion_rate" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_title_of_video_suggestion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/montserrat_regular"
+            android:maxLines="1"
+            android:text="@string/video_title"
+            android:textSize="@dimen/_10ssp"
+            app:layout_constraintEnd_toStartOf="@id/img_video_suggestion_rate"
+            app:layout_constraintStart_toStartOf="@+id/img_video_suggestion_user_avatar"
+            app:layout_constraintTop_toBottomOf="@+id/img_video_suggestion_user_avatar" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_video_suggestion_category"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="@string/category_title"
+            android:textSize="@dimen/_10ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/img_video_suggestion_user_avatar"
+            app:layout_constraintTop_toBottomOf="@+id/txt_title_of_video_suggestion" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_video_suggestion_user_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:cardBackgroundColor="@color/gray"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/img_video_suggestion_user_avatar"
+            app:layout_constraintTop_toBottomOf="@+id/txt_video_suggestion_category">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txt_video_suggestion_user_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_semi_bold"
+                android:padding="7dp"
+                android:text="@string/typeOfUser"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_9ssp" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_video_suggestion_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_6sdp"
+            app:cardBackgroundColor="@color/gray"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/cardView_video_suggestion_user_level"
+            app:layout_constraintStart_toEndOf="@id/cardView_video_suggestion_user_level"
+            app:layout_constraintTop_toTopOf="@+id/cardView_video_suggestion_user_level">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txt_video_suggestion_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_semi_bold"
+                android:padding="7dp"
+                android:text="@string/timeOfCategory"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_9ssp" />
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
