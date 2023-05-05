@@ -4,7 +4,6 @@ package com.madison.move.ui.home
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,14 +15,14 @@ import androidx.viewpager2.widget.ViewPager2
 import com.madison.move.data.model.Category
 import com.madison.move.data.model.MoveVideo
 import com.madison.move.databinding.FragmentHomeBinding
+import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.home.adapter.CarouselViewPagerAdapter
 import com.madison.move.ui.home.adapter.CategoryAdapter
 import com.madison.move.ui.home.adapter.VideoSuggestionAdapter
 import kotlin.math.abs
 
-class HomeFragment : Fragment(), HomeView {
+class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var homePresenter: HomePresenter
     private lateinit var carouselViewPagerAdapter: CarouselViewPagerAdapter
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var videoSuggestionAdapter: VideoSuggestionAdapter
@@ -33,6 +32,7 @@ class HomeFragment : Fragment(), HomeView {
     var categoryList: MutableList<Category> = mutableListOf()
     var videoList: MutableList<MoveVideo> = mutableListOf()
 
+    override fun createPresenter(): HomePresenter = HomePresenter(this,featuredList,categoryList,videoList)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,8 +40,7 @@ class HomeFragment : Fragment(), HomeView {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        homePresenter = HomePresenter(this, featuredList, categoryList, videoList)
-        homePresenter.apply {
+        presenter?.apply {
             onShowFeaturedCarouselPresenter()
             onShowCategoryPresenter()
             onShowVideoSuggestionPresenter()
@@ -116,7 +115,6 @@ class HomeFragment : Fragment(), HomeView {
             adapter = videoSuggestionAdapter
         }
     }
-
 
     override fun onPause() {
         super.onPause()

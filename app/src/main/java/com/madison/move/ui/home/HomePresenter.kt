@@ -6,16 +6,16 @@ import com.madison.move.data.model.MoveVideo
 import com.madison.move.data.model.User
 
 class HomePresenter(
-    var homeView: HomeView,
+    override var view: HomeContract.HomeView?,
     var fragmentFeaturedList: ArrayList<FeaturedFragment>,
     var categoryList: MutableList<Category>,
     var videoList: MutableList<MoveVideo>
-) {
+): HomeContract.Presenter {
 
-    fun onShowFeaturedCarouselPresenter() {
+    override fun onShowFeaturedCarouselPresenter() {
         getFeaturedVideoData(fragmentFeaturedList)
-        homeView.onShowFeaturedCarousel(fragmentFeaturedList)
-        homeView.onCarouselTransformer()
+        view?.onShowFeaturedCarousel(fragmentFeaturedList)
+        view?.onCarouselTransformer()
     }
 
     private fun getFeaturedVideoData(fragmentFeaturedList: ArrayList<FeaturedFragment>) {
@@ -25,9 +25,9 @@ class HomePresenter(
     }
 
 
-    fun onShowCategoryPresenter() {
+    override fun onShowCategoryPresenter() {
         getCategoryData(categoryList)
-        homeView.onShowListCategory(categoryList)
+        view?.onShowListCategory(categoryList)
     }
 
     private fun getCategoryData(categoryList: MutableList<Category>) {
@@ -40,9 +40,9 @@ class HomePresenter(
     }
 
 
-    fun onShowVideoSuggestionPresenter() {
+    override fun onShowVideoSuggestionPresenter() {
         getVideoSuggestionData(videoList)
-        homeView.onShowListVideoSuggestion(videoList)
+        view?.onShowListVideoSuggestion(videoList)
     }
 
     private fun getVideoSuggestionData(videoList: MutableList<MoveVideo>) {
