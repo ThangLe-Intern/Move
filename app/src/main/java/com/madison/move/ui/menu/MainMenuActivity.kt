@@ -1,31 +1,35 @@
 package com.madison.move.ui.menu
 
-
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.madison.move.R
 import com.madison.move.databinding.ActivityMainMenuBinding
-import androidx.appcompat.widget.Toolbar
+import com.madison.move.ui.base.BaseActivity
+import com.madison.move.ui.faq.FAQFragment
+import com.madison.move.ui.home.HomeFragment
 
-
-
-class MainMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
+class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
+    NavigationView.OnNavigationItemSelectedListener {
     private lateinit var binding: ActivityMainMenuBinding
+
+    override fun createPresenter(): MenuPresenter = MenuPresenter(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
         super.onCreate(savedInstanceState)
 
+    }
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+    override fun initView() {
+        setSupportActionBar(binding.layoutToolBar.toolbar)
 
         val navigationView = binding.navNew
         navigationView.setNavigationItemSelectedListener(this)
@@ -33,7 +37,7 @@ class MainMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val toggle = ActionBarDrawerToggle(
             this,
             binding.drawerLayout,
-            toolbar,
+            binding.layoutToolBar.toolbar,
             R.string.opem_name,
             R.string.close_name
         )
@@ -41,35 +45,49 @@ class MainMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         toggle.syncState()
 
         binding.groupItemChild.visibility = View.GONE
-        binding.menuTvMore.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View?) {
-                var isImageChanged = false
-                val originalImage: Drawable = resources.getDrawable(R.drawable.ic_arrow_down, null)
-                val newImage: Drawable = resources.getDrawable(R.drawable.ic_arrow_up, null)
+        binding.menuTvMore.setOnClickListener {
+            var isImageChanged = false
+            val originalImage: Drawable = resources.getDrawable(R.drawable.ic_arrow_down, null)
+            val newImage: Drawable = resources.getDrawable(R.drawable.ic_arrow_up, null)
 
-                if (!isImageChanged && binding.groupItemChild.visibility == View.VISIBLE) {
-                    binding.groupItemChild.visibility = View.GONE
-                    binding.imgdown.setImageDrawable(newImage)
-                    isImageChanged = true
-                } else {
-                    binding.imgdown.setImageDrawable(originalImage)
-                    isImageChanged = false
-                    binding.groupItemChild.visibility = View.VISIBLE
-                }
+            if (!isImageChanged && binding.groupItemChild.visibility == View.VISIBLE) {
+                binding.groupItemChild.visibility = View.GONE
+                binding.imgdown.setImageDrawable(newImage)
+                isImageChanged = true
+            } else {
+                binding.imgdown.setImageDrawable(originalImage)
+                isImageChanged = false
+                binding.groupItemChild.visibility = View.VISIBLE
             }
-        })
+        }
         binding.menuTvFollowing.setOnClickListener {
             recreate()
         }
 
-        val imgviewclose : ImageView =findViewById(R.id.imgclose)
+        val imgviewclose : ImageView = findViewById(R.id.imgclose)
         imgviewclose.setOnClickListener {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
         }
 
+        // add home
+        supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, HomeFragment()).commit()
     }
 
+    override fun listener() {
+        binding.apply {
+            menuTvFaq.setOnClickListener {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
 
+                supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, FAQFragment()).commit()
+            }
+
+            layoutToolBar.imvLogo.setOnClickListener {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+
+                supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, HomeFragment()).commit()
+            }
+        }
+    }
 
     override fun onBackPressed() {
         if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {

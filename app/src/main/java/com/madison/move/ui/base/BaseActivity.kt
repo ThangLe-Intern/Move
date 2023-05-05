@@ -4,17 +4,27 @@ import android.os.Bundle
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 
-abstract class BaseActivity<Presenter : BasePresenter<BaseView>> : AppCompatActivity() {
-    protected var presenter: Presenter? = null
+abstract class BaseActivity<Presenter : Any> : AppCompatActivity() {
+    var presenter: Presenter? = null
+
+    open fun initView() {}
+
+    open fun listener() {}
+
     @NonNull
     protected abstract fun createPresenter(): Presenter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter = createPresenter()
+
+        initView()
+        listener()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter?.onDetach()
+        if (presenter is BasePresenter<*>) {
+            (presenter as BasePresenter<*>).onDetach()
+        }
     }
 }
