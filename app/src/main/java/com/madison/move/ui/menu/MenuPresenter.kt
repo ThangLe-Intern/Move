@@ -1,4 +1,5 @@
 package com.madison.move.ui.menu
 
-class MenuPresenter {
+class MenuPresenter(override var view: MainContract.View?) : MainContract.Presenter {
+
 }
