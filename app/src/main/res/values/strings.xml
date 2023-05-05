@@ -33,4 +33,8 @@
     <string name="layout_videomaylike">Videos you may like</string>
     <string name="timeOfVideo">15:30</string>
     <string name="timeVideoRelease">A day ago</string>
+    <string name="text_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="log_in">Log In</string>
 </resources>

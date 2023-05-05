@@ -1,12 +1,13 @@
 package com.madison.move.ui.menu
 
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.madison.move.R
@@ -14,6 +15,7 @@ import com.madison.move.databinding.ActivityMainMenuBinding
 import com.madison.move.ui.base.BaseActivity
 import com.madison.move.ui.faq.FAQFragment
 import com.madison.move.ui.home.HomeFragment
+import com.madison.move.ui.login.LoginDialogFragment
 
 class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     NavigationView.OnNavigationItemSelectedListener {
@@ -21,6 +23,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
     override fun createPresenter(): MenuPresenter = MenuPresenter(this)
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -60,6 +63,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 binding.groupItemChild.visibility = View.VISIBLE
             }
         }
+
         binding.menuTvFollowing.setOnClickListener {
             recreate()
         }
@@ -68,6 +72,9 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         imgviewclose.setOnClickListener {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
         }
+
+
+
 
         // add home
         supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, HomeFragment()).commit()
@@ -81,10 +88,20 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, FAQFragment()).commit()
             }
 
+            //return homepage
             layoutToolBar.imvLogo.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
 
                 supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, HomeFragment()).commit()
+            }
+            //open login dialog
+            menulogout.setOnClickListener {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+
+                val loginDialog = LoginDialogFragment()
+                loginDialog.show(supportFragmentManager,"login Dialog")
+
+
             }
         }
     }
