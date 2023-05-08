@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="15dp"
+    app:cardCornerRadius="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/linearlayoutTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <TextView
+                android:layout_margin="8dp"
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="9"
+                android:text="@string/itemFAq"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/imgPlus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_plus" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearlayoutMinus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvMinus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="10dp"
+                android:lineSpacingExtra="3dp"
+                android:text="@string/itemMinus"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

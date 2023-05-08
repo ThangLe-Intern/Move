@@ -2,6 +2,7 @@ package com.madison.move.ui.menu
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -13,6 +14,7 @@ import com.madison.move.R
 import com.madison.move.databinding.ActivityMainMenuBinding
 import com.madison.move.ui.base.BaseActivity
 import com.madison.move.ui.faq.FAQFragment
+import com.madison.move.ui.guidelines.GuidelinesFragment
 import com.madison.move.ui.home.HomeFragment
 
 class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
@@ -26,8 +28,16 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         setContentView(binding.root)
         super.onCreate(savedInstanceState)
 
-    }
 
+//        val toolbar: Toolbar = findViewById(R.id.toolbar)
+//        setSupportActionBar(toolbar)
+
+
+    }
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        menuInflater.inflate(R.menu.menu_main, menu)
+//        return true
+//    }
     override fun initView() {
         setSupportActionBar(binding.layoutToolBar.toolbar)
 
@@ -43,6 +53,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         )
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
+
 
         binding.groupItemChild.visibility = View.GONE
         binding.menuTvMore.setOnClickListener {
@@ -79,6 +90,11 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
 
                 supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, FAQFragment()).commit()
+            }
+            menuTvGuideline.setOnClickListener{
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+
+                supportFragmentManager.beginTransaction().replace(binding.contentFrame.id,GuidelinesFragment()).commit()
             }
 
             layoutToolBar.imvLogo.setOnClickListener {
