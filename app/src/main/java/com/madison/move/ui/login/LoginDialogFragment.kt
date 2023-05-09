@@ -19,11 +19,20 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.AppCompatImageView
 
 import androidx.fragment.app.DialogFragment
+import com.madison.move.R
 import com.madison.move.databinding.FragmentLoginDialogBinding
 
 class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
     private lateinit var binding: FragmentLoginDialogBinding
     private lateinit var presenter: LoginPresenter
+
+    companion object{
+        const val  EMAIL_INVALID = "EMAIL_INVALID"
+        const val  EMAIL_CONTAIN_SPACE = "EMAIL_CONTAIN_SPACE"
+        const val  PASSWORD_CONTAIN_SPACE = "PASSWORD_CONTAIN_SPACE"
+        const val  INCORRECT_ACCOUNT = "INCORRECT_ACCOUNT"
+
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -128,17 +137,17 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
 
     override fun onShowError(errorType: String) {
         when(errorType){
-            "NotAccount" -> {
+            INCORRECT_ACCOUNT -> {
                 binding.txtErrorMessage.visibility = View.VISIBLE
             }
-            "Invalid Email" ->{
-                binding.editLoginEmail.error = "Invalid Email"
+            EMAIL_INVALID ->{
+                binding.editLoginEmail.error =  getString(R.string.invalid_email)
             }
-            "Email contains White Space" ->{
-                binding.editLoginEmail.error = "Email contains White Space"
+            EMAIL_CONTAIN_SPACE ->{
+                binding.editLoginEmail.error = getString(R.string.email_white_space)
             }
-            "Password contains White Space" ->{
-                binding.editLoginPassword.error = "Password contains White Space"
+            PASSWORD_CONTAIN_SPACE ->{
+                binding.editLoginPassword.error = getString(R.string.password_white_space)
             }
         }
     }
