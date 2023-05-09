@@ -97,7 +97,7 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
 
 
     override fun onEnableButtonLogin() {
-        var textWatcher:TextWatcher = object : TextWatcher{
+        val textWatcher:TextWatcher = object : TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
