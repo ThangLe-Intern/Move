@@ -5,8 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
-import android.text.InputFilter
-import android.text.Spanned
+
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -14,10 +13,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
+
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.content.ContextCompat.getSystemService
+
 import androidx.fragment.app.DialogFragment
 import com.madison.move.databinding.FragmentLoginDialogBinding
 
@@ -42,14 +42,12 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         binding = FragmentLoginDialogBinding.inflate(inflater, container, false)
+
         binding.imgCloseLoginDialog.setOnClickListener {
             dialog?.dismiss()
         }
-
-        //Show and Hide Password
-        onShowAndHidePassword()
-
 
         presenter = LoginPresenter(this)
         presenter.apply {
@@ -58,11 +56,18 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
 
         binding.loginBtn.setOnClickListener {
             val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+            inputMethodManager.hideSoftInputFromWindow( binding.loginBtn.windowToken, 0)
+
             binding.txtErrorMessage.visibility = View.GONE
 
             presenter.onLoginClickPresenter(binding.editLoginEmail.text.toString().trim(),binding.editLoginPassword.text.toString().trim())
         }
+
+
+
+
+        //Show and Hide Password
+        onShowAndHidePassword()
 
         return binding.root
     }
@@ -111,9 +116,6 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
             }
 
             override fun afterTextChanged(s: Editable?) {
-/*                binding.editLoginEmail.clearFocus()
-                binding.editLoginPassword.clearFocus()*/
-                binding.loginBtn.focusable
             }
 
         }
