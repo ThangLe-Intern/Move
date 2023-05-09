@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.profile.ProfileFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_profile_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_profile_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:text="@string/settings"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_16ssp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_profile_line"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10ssp"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="@id/txt_profile_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/txt_profile_title"
+            app:layout_constraintTop_toTopOf="@+id/txt_profile_title"
+            app:srcCompat="@drawable/title" />
+        
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_picture"
+            android:textSize="@dimen/_13ssp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_profile_title"
+            android:fontFamily="@font/montserrat_regular"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:id="@+id/txt_profile_picture"
+            />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:id="@+id/img_profile_user"
+            app:srcCompat="@drawable/avatar"
+            app:layout_constraintStart_toStartOf="@id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_profile_picture"
+            android:layout_marginTop="@dimen/_5sdp"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/update_profile_picture"
+            android:textSize="@dimen/_11ssp"
+            android:textColor="@color/move_green"
+            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/img_profile_user"
+            android:fontFamily="@font/montserrat_regular"
+            android:id="@+id/txt_profile_update_picture"
+            android:layout_marginTop="@dimen/_5sdp"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/username_title"
+            android:textSize="@dimen/_13ssp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_profile_update_picture"
+            android:fontFamily="@font/montserrat_regular"
+            android:layout_marginTop="@dimen/_13sdp"
+            android:id="@+id/txt_profile_username"
+            />
+        
+        <androidx.appcompat.widget.AppCompatEditText
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_30sdp"
+            android:id="@+id/edit_username"
+            app:layout_constraintStart_toStartOf="@id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_profile_username"
+            app:layout_constraintEnd_toEndOf="@id/img_profile_line"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

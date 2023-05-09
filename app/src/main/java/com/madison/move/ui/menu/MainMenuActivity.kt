@@ -1,10 +1,12 @@
 package com.madison.move.ui.menu
 
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -14,6 +16,7 @@ import com.madison.move.databinding.ActivityMainMenuBinding
 import com.madison.move.ui.base.BaseActivity
 import com.madison.move.ui.faq.FAQFragment
 import com.madison.move.ui.home.HomeFragment
+import com.madison.move.ui.profile.ProfileFragment
 
 class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     NavigationView.OnNavigationItemSelectedListener {
@@ -21,6 +24,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
     override fun createPresenter(): MenuPresenter = MenuPresenter(this)
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -85,6 +89,12 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
 
                 supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, HomeFragment()).commit()
+            }
+
+            menuTvSettting.setOnClickListener {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+                supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, ProfileFragment()).commit()
+
             }
         }
     }
