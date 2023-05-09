@@ -45,13 +45,22 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
 
         binding = FragmentLoginDialogBinding.inflate(inflater, container, false)
 
-        binding.imgCloseLoginDialog.setOnClickListener {
-            dialog?.dismiss()
-        }
-
         presenter = LoginPresenter(this)
         presenter.apply {
             onEnableButtonLoginPresenter()
+        }
+
+        //Show and Hide Password
+        onShowAndHidePassword()
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.imgCloseLoginDialog.setOnClickListener {
+            dialog?.dismiss()
         }
 
         binding.loginBtn.setOnClickListener {
@@ -63,13 +72,6 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
             presenter.onLoginClickPresenter(binding.editLoginEmail.text.toString().trim(),binding.editLoginPassword.text.toString().trim())
         }
 
-
-
-
-        //Show and Hide Password
-        onShowAndHidePassword()
-
-        return binding.root
     }
 
     private fun onShowAndHidePassword(){
