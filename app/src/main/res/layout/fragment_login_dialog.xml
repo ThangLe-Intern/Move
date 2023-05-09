@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/_10sdp"
-    >
+    android:padding="@dimen/_10sdp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_login_dialog"
-        >
+        android:background="@drawable/background_login_dialog">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_login_logo"
@@ -58,12 +55,15 @@
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_login_email"
-            android:paddingStart="@dimen/_10sdp"
-            android:singleLine="true"
-            android:paddingEnd="@dimen/_10sdp"
             android:layout_width="0dp"
             android:layout_height="@dimen/_40sdp"
             android:background="@drawable/custom_edittext_login"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
+            android:fontFamily="@font/montserrat_regular"
+            android:inputType="textFilter"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_10sdp"
+            android:singleLine="true"
             app:layout_constraintEnd_toEndOf="@id/login_line"
             app:layout_constraintStart_toStartOf="@id/login_line"
             app:layout_constraintTop_toBottomOf="@id/txt_login_email" />
@@ -84,11 +84,12 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_login_password"
             android:layout_width="0dp"
-            android:paddingStart="@dimen/_10sdp"
-            android:paddingEnd="@dimen/_36sdp"
             android:layout_height="@dimen/_40sdp"
             android:background="@drawable/custom_edittext_login"
+            android:fontFamily="@font/montserrat_regular"
             android:inputType="textPassword"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_36sdp"
             app:layout_constraintEnd_toEndOf="@id/login_line"
             app:layout_constraintStart_toStartOf="@id/login_line"
             app:layout_constraintTop_toBottomOf="@id/txt_login_password" />
@@ -105,6 +106,17 @@
 
             />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_hide_password"
+            android:layout_width="@dimen/_17sdp"
+            android:layout_height="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/edit_login_password"
+            app:layout_constraintEnd_toEndOf="@+id/edit_login_password"
+            app:layout_constraintTop_toTopOf="@id/edit_login_password"
+            app:srcCompat="@drawable/ic_show_password" />
+
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_login_forgot_password"
@@ -120,9 +132,10 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/login_btn"
-            android:layout_marginBottom="@dimen/_14sdp"
             android:layout_width="0dp"
             android:layout_height="@dimen/_40sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_14sdp"
             android:alpha="1"
             android:background="@drawable/custom_login_button"
             android:enabled="false"
@@ -134,8 +147,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/login_line"
             app:layout_constraintStart_toStartOf="@id/login_line"
-            app:layout_constraintTop_toBottomOf="@+id/txt_login_forgot_password"
-            android:layout_marginTop="@dimen/_10sdp" />
+            app:layout_constraintTop_toBottomOf="@+id/txt_login_forgot_password" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

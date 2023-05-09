@@ -7,12 +7,8 @@ class LoginPresenter(
 
     }
 
-    override fun onDisableButtonLoginPresenter() {
-
-    }
-
     override fun onEnableButtonLoginPresenter() {
-
+            view?.onEnableButtonLogin()
     }
 
     override fun onLoginClick() {

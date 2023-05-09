@@ -3,10 +3,17 @@ package com.madison.move.ui.login
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputFilter
+import android.text.Spanned
+import android.text.TextWatcher
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.DialogFragment
 import com.madison.move.databinding.FragmentLoginDialogBinding
 
@@ -32,27 +39,75 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLoginDialogBinding.inflate(inflater, container, false)
-
         binding.imgCloseLoginDialog.setOnClickListener {
             dialog?.dismiss()
         }
+
+        //Show and Hide Password
+        onShowAndHidePassword()
+
+
         presenter = LoginPresenter(this)
-
-
+        presenter.apply {
+            onEnableButtonLoginPresenter()
+        }
         return binding.root
     }
+
+    private fun onShowAndHidePassword(){
+        val imgShowPassword:AppCompatImageView = binding.imgShowPassword
+        val imgHidePassword:AppCompatImageView = binding.imgHidePassword
+
+        imgShowPassword.setOnClickListener {
+            binding.editLoginPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+            //Move Cursor to end of edit text
+            binding.editLoginPassword.setSelection(binding.editLoginPassword.text.toString().trim().length)
+            imgShowPassword.visibility = View.GONE
+            imgHidePassword.visibility = View.VISIBLE
+        }
+
+        imgHidePassword.setOnClickListener {
+            binding.editLoginPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+            binding.editLoginPassword.setSelection(binding.editLoginPassword.text.toString().trim().length)
+            imgHidePassword.visibility = View.GONE
+            imgShowPassword.visibility = View.VISIBLE
+        }
+
+    }
+
 
     override fun onShowLoading() {
 
     }
 
-    override fun onDisableButtonLogin() {
-
-    }
 
     override fun onEnableButtonLogin() {
+        var textWatcher:TextWatcher = object : TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val txtEmail = binding.editLoginEmail.text.toString().trim()
+                val txtPassword = binding.editLoginPassword.text.toString().trim()
+
+                if (txtEmail.isNotEmpty() && txtPassword.isNotEmpty()){
+                    binding.loginBtn.isEnabled = true
+                }
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+
+        }
+
+        binding.editLoginEmail.addTextChangedListener(textWatcher)
+        binding.editLoginPassword.addTextChangedListener(textWatcher)
     }
+
+
 
     override fun onBottomNavigateSystemUI() {
 
