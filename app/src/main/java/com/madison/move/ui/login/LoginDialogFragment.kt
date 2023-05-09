@@ -1,5 +1,6 @@
 package com.madison.move.ui.login
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -13,7 +14,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.DialogFragment
 import com.madison.move.databinding.FragmentLoginDialogBinding
 
@@ -51,6 +55,15 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
         presenter.apply {
             onEnableButtonLoginPresenter()
         }
+
+        binding.loginBtn.setOnClickListener {
+            val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+            binding.txtErrorMessage.visibility = View.GONE
+
+            presenter.onLoginClickPresenter(binding.editLoginEmail.text.toString().trim(),binding.editLoginPassword.text.toString().trim())
+        }
+
         return binding.root
     }
 
@@ -60,6 +73,7 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
 
         imgShowPassword.setOnClickListener {
             binding.editLoginPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+
             //Move Cursor to end of edit text
             binding.editLoginPassword.setSelection(binding.editLoginPassword.text.toString().trim().length)
             imgShowPassword.visibility = View.GONE
@@ -74,6 +88,7 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
         }
 
     }
+
 
 
     override fun onShowLoading() {
@@ -91,14 +106,14 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
                 val txtEmail = binding.editLoginEmail.text.toString().trim()
                 val txtPassword = binding.editLoginPassword.text.toString().trim()
 
-                if (txtEmail.isNotEmpty() && txtPassword.isNotEmpty()){
-                    binding.loginBtn.isEnabled = true
-                }
+                binding.loginBtn.isEnabled = txtEmail.isNotEmpty() && txtPassword.isNotEmpty()
 
             }
 
             override fun afterTextChanged(s: Editable?) {
-
+/*                binding.editLoginEmail.clearFocus()
+                binding.editLoginPassword.clearFocus()*/
+                binding.loginBtn.focusable
             }
 
         }
@@ -107,6 +122,26 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
         binding.editLoginPassword.addTextChangedListener(textWatcher)
     }
 
+    override fun onShowError(errorType: String) {
+        when(errorType){
+            "NotAccount" -> {
+                binding.txtErrorMessage.visibility = View.VISIBLE
+            }
+            "Invalid Email" ->{
+                binding.editLoginEmail.error = "Invalid Email"
+            }
+            "Email contains White Space" ->{
+                binding.editLoginEmail.error = "Email contains White Space"
+            }
+            "Password contains White Space" ->{
+                binding.editLoginPassword.error = "Password contains White Space"
+            }
+        }
+    }
+
+    override fun onLoginClick() {
+        dialog?.dismiss()
+    }
 
 
     override fun onBottomNavigateSystemUI() {

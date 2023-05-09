@@ -7,11 +7,15 @@ interface LoginContract {
     interface LoginView : BaseView{
         fun onShowLoading()
         fun onEnableButtonLogin()
+        fun onShowError(errorType: String)
+        fun onLoginClick()
+
     }
 
     interface Presenter:BasePresenter<LoginView>{
         fun onShowLoadingPresenter()
         fun onEnableButtonLoginPresenter()
-        fun onLoginClick()
+        fun onShowErrorPresenter(errorType: String)
+        fun onLoginClickPresenter(email:String,password:String)
     }
 }
