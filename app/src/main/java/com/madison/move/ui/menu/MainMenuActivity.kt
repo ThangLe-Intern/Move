@@ -74,13 +74,14 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             recreate()
         }
 
-        val imgviewclose : ImageView = findViewById(R.id.imgclose)
+        val imgviewclose: ImageView = findViewById(R.id.imgclose)
         imgviewclose.setOnClickListener {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
         }
 
         // add home
-        supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, HomeFragment()).commit()
+        supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, HomeFragment())
+            .commit()
     }
 
     override fun listener() {
@@ -88,31 +89,34 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             menuTvFaq.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
 
-                supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, FAQFragment()).commit()
+                supportFragmentManager.beginTransaction()
+                    .replace(binding.contentFrame.id, FAQFragment()).commit()
             }
 
             layoutToolBar.imvLogo.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
 
-                supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, HomeFragment()).commit()
+                supportFragmentManager.beginTransaction()
+                    .replace(binding.contentFrame.id, HomeFragment()).commit()
             }
 
             menulogout.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
                 val loginDialog = LoginDialogFragment()
-                loginDialog.show(supportFragmentManager,"login Dialog")
+                loginDialog.show(supportFragmentManager, "login Dialog")
 
             }
 
             menuTvSettting.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
-                supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, ProfileFragment()).commit()
+                supportFragmentManager.beginTransaction()
+                    .replace(binding.contentFrame.id, ProfileFragment()).commit()
 
             }
         }
     }
 
-    
+
     //Close Keyboard & Clear edit text focus when click outside
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_DOWN) {

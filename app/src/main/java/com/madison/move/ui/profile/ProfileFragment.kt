@@ -7,21 +7,29 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.RadioButton
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
+import com.madison.move.R
 import com.madison.move.databinding.FragmentProfileBinding
 
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
+    private var listState:ArrayList<String> = arrayListOf("None","Ha Noi","Da Nang","Hue","Ho Chi Minh","Hai Phong")
+    private lateinit var arrayAdapter: ArrayAdapter<String>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+        handleDropDownState()
+        handleDropDownCountry()
+
         return binding.root
     }
 
@@ -33,7 +41,25 @@ class ProfileFragment : Fragment() {
         handleRadioButton()
     }
 
-    fun handleRadioButton(){
+    private fun handleDropDownState(){
+        for (i in 1..3){
+            listState.addAll(arrayListOf("Ha Noi","Da Nang","Hue","Ho Chi Minh","Hai Phong"))
+        }
+        arrayAdapter = context?.let { ArrayAdapter(it.applicationContext,R.layout.item_dropdown,listState) }!!
+        binding.dropdownStateText.setAdapter(arrayAdapter)
+        binding.dropdownStateText.inputType = EditorInfo.TYPE_NULL
+    }
+
+    private fun handleDropDownCountry(){
+        for (i in 1..3){
+            listState.addAll(arrayListOf("Ha Noi","Da Nang","Hue","Ho Chi Minh","Hai Phong"))
+        }
+        arrayAdapter = context?.let { ArrayAdapter(it.applicationContext,R.layout.item_dropdown,listState) }!!
+        binding.dropdownCountryText.setAdapter(arrayAdapter)
+        binding.dropdownCountryText.inputType = EditorInfo.TYPE_NULL
+    }
+
+    private fun handleRadioButton(){
         binding.radioMale.setOnClickListener {
             onRadioButtonClicked(binding.radioMale)
         }
@@ -47,7 +73,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    fun onRadioButtonClicked(view: View) {
+    private fun onRadioButtonClicked(view: View) {
         val idRadioMale = binding.radioMale.id
         val idRadioFemale = binding.radioFemale.id
         val idRadioRather = binding.radioRatherNotSay.id
