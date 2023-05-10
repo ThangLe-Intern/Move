@@ -51,6 +51,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     }
 
+
     private val runnable = Runnable {
         binding.viewPager.currentItem = binding.viewPager.currentItem + 1
     }
