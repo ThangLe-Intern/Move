@@ -45,6 +45,15 @@
     <string name="profile_picture">Profile picture</string>
     <string name="update_profile_pircture">Update profile pircture</string>
     <string name="username_title">Username</string>
+    <string name="email_address">nguyenvudung030121@gmail.com</string>
+    <string name="full_name">Full name</string>
+    <string name="male">Male</string>
+    <string name="gender">Gender</string>
+    <string name="female">Female</string>
+    <string name="rather_not_say">Rather not say</string>
+    <string name="date_of_birth">Date of birth</string>
+    <string name="save_settings">Save settings</string>
+    <string name="city">City</string>
 
 
 </resources>

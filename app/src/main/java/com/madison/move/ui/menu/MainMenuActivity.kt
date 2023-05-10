@@ -1,14 +1,18 @@
 package com.madison.move.ui.menu
 
+import android.content.Context
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.madison.move.R
@@ -18,6 +22,7 @@ import com.madison.move.ui.faq.FAQFragment
 import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.login.LoginDialogFragment
 import com.madison.move.ui.profile.ProfileFragment
+
 
 class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     NavigationView.OnNavigationItemSelectedListener {
@@ -94,6 +99,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
             menulogout.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
+                val loginDialog = LoginDialogFragment()
+                loginDialog.show(supportFragmentManager,"login Dialog")
 
             }
 
@@ -103,6 +110,25 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
             }
         }
+    }
+
+    
+    //Close Keyboard & Clear edit text focus when click outside
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            val v = currentFocus
+            if (v is EditText) {
+                val outRect = Rect()
+                v.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm: InputMethodManager =
+                        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
     }
 
     override fun onBackPressed() {

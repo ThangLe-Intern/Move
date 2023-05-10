@@ -77,14 +77,14 @@
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/username_title"
             android:textColor="@color/black"
-            android:textSize="@dimen/_14ssp"
+            android:textSize="@dimen/_13ssp"
             app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_update_picture" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_username"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_40sdp"
+            android:layout_height="@dimen/_35sdp"
             android:background="@drawable/custom_edittext"
             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
             android:fontFamily="@font/montserrat_regular"
@@ -96,6 +96,171 @@
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_username" />
 
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_profile_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_13sdp"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="@string/text_email"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_13ssp"
+            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/edit_username" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edit_profile_email"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_35sdp"
+            android:background="@drawable/custom_edittext"
+            android:enabled="false"
+            android:fontFamily="@font/montserrat_regular"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_10sdp"
+            android:singleLine="true"
+            android:text="@string/email_address"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="@dimen/_13sdp"
+            app:layout_constraintEnd_toEndOf="@id/img_profile_line"
+            app:layout_constraintStart_toStartOf="@id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_profile_email" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_profile_full_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_13sdp"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="@string/full_name"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_13ssp"
+            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/edit_profile_email" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_profile_full_name"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_35sdp"
+            android:background="@drawable/custom_edittext"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' '"
+            android:fontFamily="@font/montserrat_regular"
+            android:inputType="textFilter"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_10sdp"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="@id/img_profile_line"
+            app:layout_constraintStart_toStartOf="@id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_profile_full_name"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_profile_gender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_13sdp"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="@string/gender"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_13ssp"
+            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/edit_profile_full_name" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@+id/txt_profile_gender">
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radio_male"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="@string/male"
+                android:textSize="@dimen/_13ssp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radio_female"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="@string/female"
+                android:textSize="@dimen/_13ssp"
+                app:layout_constraintStart_toEndOf="@id/radio_rather_not_say"
+                app:layout_constraintTop_toTopOf="@id/radio_male" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radio_rather_not_say"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="@string/rather_not_say"
+                android:textSize="@dimen/_13ssp"
+                app:layout_constraintStart_toStartOf="@id/radio_male"
+                app:layout_constraintTop_toBottomOf="@+id/radio_male" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_profile_dob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_13sdp"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="@string/date_of_birth"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_13ssp"
+            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/radio_group" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_profile_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_13sdp"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="@string/city"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_13ssp"
+            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_profile_dob" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edit_profile_city"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_35sdp"
+            android:background="@drawable/custom_edittext"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' '"
+            android:fontFamily="@font/montserrat_regular"
+            android:inputType="textFilter"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_10sdp"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="@id/img_profile_line"
+            app:layout_constraintStart_toStartOf="@id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_profile_city"/>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/save_setting_btn"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:alpha="1"
+            android:background="@drawable/custom_login_button"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:text="@string/save_settings"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/img_profile_line"
+            app:layout_constraintStart_toStartOf="@id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@+id/edit_profile_city"
+            android:layout_marginBottom="@dimen/_25sdp"
+             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

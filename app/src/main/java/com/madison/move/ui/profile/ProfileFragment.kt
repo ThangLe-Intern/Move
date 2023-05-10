@@ -1,20 +1,77 @@
 package com.madison.move.ui.profile
 
+import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import com.madison.move.R
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.RadioButton
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.fragment.app.Fragment
+import com.madison.move.databinding.FragmentProfileBinding
+
 
 class ProfileFragment : Fragment() {
-
+    private lateinit var binding: FragmentProfileBinding
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        handleRadioButton()
+    }
+
+    fun handleRadioButton(){
+        binding.radioMale.setOnClickListener {
+            onRadioButtonClicked(binding.radioMale)
+        }
+
+        binding.radioFemale.setOnClickListener {
+            onRadioButtonClicked(binding.radioFemale)
+        }
+
+        binding.radioRatherNotSay.setOnClickListener {
+            onRadioButtonClicked(binding.radioRatherNotSay)
+        }
+    }
+
+    fun onRadioButtonClicked(view: View) {
+        val idRadioMale = binding.radioMale.id
+        val idRadioFemale = binding.radioFemale.id
+        val idRadioRather = binding.radioRatherNotSay.id
+
+        if (view is RadioButton) {
+            // Is the button now checked?
+            val checked = view.isChecked
+
+            // Check which radio button was clicked
+            when (view.id) {
+                idRadioMale -> if (checked) {
+                    binding.radioFemale.isChecked = false
+                    binding.radioRatherNotSay.isChecked = false
+                }
+                idRadioFemale-> if (checked) {
+                    binding.radioMale.isChecked = false
+                    binding.radioRatherNotSay.isChecked = false
+                }
+                idRadioRather -> if (checked){
+                    binding.radioMale.isChecked = false
+                    binding.radioFemale.isChecked = false
+                }
+            }
+        }
     }
 
 

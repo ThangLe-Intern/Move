@@ -16,4 +16,12 @@
         </shape>
     </item>
 
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/_6sdp"/>
+            <solid android:color="@color/light_gray"/>
+            <stroke android:color="@android:color/darker_gray" android:width="@dimen/_1sdp"/>
+        </shape>
+    </item>
+
 </selector>
