@@ -17,6 +17,7 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.view.isVisible
 
 import androidx.fragment.app.DialogFragment
 import com.madison.move.R
@@ -76,7 +77,8 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
             val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow( binding.loginBtn.windowToken, 0)
 
-            binding.txtErrorMessage.visibility = View.GONE
+            binding.layoutErrorMessage.visibility = View.GONE
+            binding.txtErrorEmail.visibility = View.GONE
 
             presenter.onLoginClickPresenter(binding.editLoginEmail.text.toString().trim(),binding.editLoginPassword.text.toString().trim())
         }
@@ -138,10 +140,11 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
     override fun onShowError(errorType: String) {
         when(errorType){
             INCORRECT_ACCOUNT -> {
-                binding.txtErrorMessage.visibility = View.VISIBLE
+                binding.layoutErrorMessage.visibility = View.VISIBLE
             }
             EMAIL_INVALID ->{
-                binding.editLoginEmail.error =  getString(R.string.invalid_email)
+                binding.txtErrorEmail.isVisible = true
+                binding.txtErrorEmail.text =  getString(R.string.invalid_email)
             }
             EMAIL_CONTAIN_SPACE ->{
                 binding.editLoginEmail.error = getString(R.string.email_white_space)

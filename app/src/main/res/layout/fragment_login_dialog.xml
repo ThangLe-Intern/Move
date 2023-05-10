@@ -57,7 +57,7 @@
             android:id="@+id/edit_login_email"
             android:layout_width="0dp"
             android:layout_height="@dimen/_40sdp"
-            android:background="@drawable/custom_edittext_login"
+            android:background="@drawable/custom_edittext"
             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ.abcdefghijklmnopqrstuvwxyz1234567890~#^|$%@*!"
             android:fontFamily="@font/montserrat_regular"
             android:inputType="textFilter"
@@ -69,23 +69,38 @@
             app:layout_constraintTop_toBottomOf="@id/txt_login_email" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_error_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:text="@string/invalid_email"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="@dimen/_13ssp"
+            android:fontFamily="@font/montserrat_italic"
+            app:fontFamily="@font/montserrat_italic"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/txt_login_password"
+            app:layout_constraintStart_toStartOf="@+id/login_line"
+            app:layout_constraintTop_toBottomOf="@+id/edit_login_email" />
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_login_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_5sdp"
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/login_password"
             android:textColor="@color/black"
             android:textSize="@dimen/_14ssp"
             app:layout_constraintBottom_toTopOf="@+id/edit_login_password"
             app:layout_constraintStart_toStartOf="@id/edit_login_email"
-            app:layout_constraintTop_toBottomOf="@+id/edit_login_email" />
+            app:layout_constraintTop_toBottomOf="@+id/txt_error_email" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_login_password"
             android:layout_width="0dp"
             android:layout_height="@dimen/_40sdp"
-            android:background="@drawable/custom_edittext_login"
+            android:background="@drawable/custom_edittext"
             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ.abcdefghijklmnopqrstuvwxyz1234567890~#^|$%@*!"
             android:fontFamily="@font/montserrat_regular"
             android:inputType="textPassword"
@@ -131,19 +146,31 @@
             app:layout_constraintStart_toStartOf="@id/edit_login_email"
             app:layout_constraintTop_toBottomOf="@+id/edit_login_password" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txt_error_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <RelativeLayout
+            android:id="@+id/layout_error_message"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_40sdp"
             android:layout_marginTop="@dimen/_5sdp"
             android:layout_marginBottom="@dimen/_5sdp"
-            android:text="@string/incorrect_account"
-            android:textColor="@android:color/holo_red_light"
-            android:textSize="@dimen/_14ssp"
-            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/login_btn"
+            app:layout_constraintEnd_toEndOf="@id/login_line"
             app:layout_constraintStart_toStartOf="@+id/txt_login_forgot_password"
-            app:layout_constraintTop_toBottomOf="@+id/txt_login_forgot_password" />
+            app:layout_constraintTop_toBottomOf="@+id/txt_login_forgot_password"
+            android:visibility="gone"
+            android:background="@drawable/custom_error_message"
+            >
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txt_error_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/incorrect_account"
+                android:fontFamily="@font/montserrat_semi_bold"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_14ssp"
+                android:layout_centerInParent="true"
+                />
+
+        </RelativeLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/login_btn"
