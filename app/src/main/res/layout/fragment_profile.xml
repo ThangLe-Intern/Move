@@ -35,64 +35,67 @@
             app:layout_constraintStart_toEndOf="@id/txt_profile_title"
             app:layout_constraintTop_toTopOf="@+id/txt_profile_title"
             app:srcCompat="@drawable/title" />
-        
+
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_profile_picture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/profile_picture"
-            android:textSize="@dimen/_13ssp"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
-            app:layout_constraintTop_toBottomOf="@id/txt_profile_title"
-            android:fontFamily="@font/montserrat_regular"
             android:layout_marginTop="@dimen/_16sdp"
-            android:id="@+id/txt_profile_picture"
-            />
+            android:fontFamily="@font/montserrat_regular"
+            android:text="@string/profile_picture"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_13ssp"
+            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_profile_title" />
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_profile_user"
             android:layout_width="@dimen/_50sdp"
             android:layout_height="@dimen/_50sdp"
-            android:id="@+id/img_profile_user"
-            app:srcCompat="@drawable/avatar"
+            android:layout_marginTop="@dimen/_5sdp"
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_picture"
-            android:layout_marginTop="@dimen/_5sdp"
-            />
+            app:srcCompat="@drawable/avatar" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/update_profile_picture"
-            android:textSize="@dimen/_11ssp"
-            android:textColor="@color/move_green"
-            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
-            app:layout_constraintTop_toBottomOf="@id/img_profile_user"
-            android:fontFamily="@font/montserrat_regular"
             android:id="@+id/txt_profile_update_picture"
-            android:layout_marginTop="@dimen/_5sdp"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/username_title"
-            android:textSize="@dimen/_13ssp"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
-            app:layout_constraintTop_toBottomOf="@id/txt_profile_update_picture"
+            android:layout_marginTop="@dimen/_5sdp"
             android:fontFamily="@font/montserrat_regular"
-            android:layout_marginTop="@dimen/_13sdp"
+            android:text="@string/update_profile_pircture"
+            android:textColor="@color/move_green"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/img_profile_user" />
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_profile_username"
-            />
-        
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_13sdp"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="@string/username_title"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_profile_update_picture" />
+
         <androidx.appcompat.widget.AppCompatEditText
-            android:layout_width="0dp"
-            android:layout_height="@dimen/_30sdp"
             android:id="@+id/edit_username"
-            app:layout_constraintStart_toStartOf="@id/txt_profile_title"
-            app:layout_constraintTop_toBottomOf="@id/txt_profile_username"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_40sdp"
+            android:background="@drawable/custom_edittext"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
+            android:fontFamily="@font/montserrat_regular"
+            android:inputType="textFilter"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_10sdp"
+            android:singleLine="true"
             app:layout_constraintEnd_toEndOf="@id/img_profile_line"
-            />
+            app:layout_constraintStart_toStartOf="@id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_profile_username" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

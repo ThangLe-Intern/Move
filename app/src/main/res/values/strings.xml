@@ -41,6 +41,10 @@
     <string name="invalid_email">* Invalid Email</string>
     <string name="email_white_space">Email contains spaces</string>
     <string name="password_white_space">Password contains spaces</string>
+    <string name="settings">Settings</string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="update_profile_pircture">Update profile pircture</string>
+    <string name="username_title">Username</string>
 
 
 </resources>

@@ -16,6 +16,7 @@ import com.madison.move.databinding.ActivityMainMenuBinding
 import com.madison.move.ui.base.BaseActivity
 import com.madison.move.ui.faq.FAQFragment
 import com.madison.move.ui.home.HomeFragment
+import com.madison.move.ui.login.LoginDialogFragment
 import com.madison.move.ui.profile.ProfileFragment
 
 class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
@@ -89,6 +90,11 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
 
                 supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, HomeFragment()).commit()
+            }
+
+            menulogout.setOnClickListener {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+
             }
 
             menuTvSettting.setOnClickListener {
