@@ -20,7 +20,7 @@
             android:fontFamily="@font/montserrat_semi_bold"
             android:text="@string/settings"
             android:textColor="@color/black"
-            android:textSize="@dimen/_16ssp"
+            android:textSize="@dimen/_18ssp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,7 +44,7 @@
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/profile_picture"
             android:textColor="@color/black"
-            android:textSize="@dimen/_13ssp"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_title" />
 
@@ -77,14 +77,14 @@
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/username_title"
             android:textColor="@color/black"
-            android:textSize="@dimen/_13ssp"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_update_picture" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_username"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_45sdp"
+            android:layout_height="@dimen/_40sdp"
             android:background="@drawable/custom_edittext"
             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
             android:fontFamily="@font/montserrat_regular"
@@ -92,6 +92,7 @@
             android:paddingStart="@dimen/_10sdp"
             android:paddingEnd="@dimen/_10sdp"
             android:singleLine="true"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintEnd_toEndOf="@id/img_profile_line"
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_username" />
@@ -105,14 +106,14 @@
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/text_email"
             android:textColor="@color/black"
-            android:textSize="@dimen/_13ssp"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/edit_username" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_profile_email"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_45sdp"
+            android:layout_height="@dimen/_40sdp"
             android:background="@drawable/custom_edittext"
             android:enabled="false"
             android:fontFamily="@font/montserrat_regular"
@@ -121,8 +122,9 @@
             android:singleLine="true"
             android:text="@string/email_address"
             android:textColor="@android:color/darker_gray"
-            android:textSize="@dimen/_13sdp"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintEnd_toEndOf="@id/img_profile_line"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_email" />
 
@@ -134,21 +136,22 @@
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/full_name"
             android:textColor="@color/black"
-            android:textSize="@dimen/_13ssp"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/edit_profile_email" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_profile_full_name"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_45sdp"
+            android:layout_height="@dimen/_40sdp"
             android:background="@drawable/custom_edittext"
             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' '"
             android:fontFamily="@font/montserrat_regular"
-            android:inputType="textFilter"
+            android:inputType="textCapSentences"
             android:paddingStart="@dimen/_10sdp"
             android:paddingEnd="@dimen/_10sdp"
             android:singleLine="true"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintEnd_toEndOf="@id/img_profile_line"
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_full_name" />
@@ -161,47 +164,49 @@
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/gender"
             android:textColor="@color/black"
-            android:textSize="@dimen/_13ssp"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/edit_profile_full_name" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/radio_group"
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/radio_male"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:fontFamily="@font/montserrat_regular"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            android:text="@string/male"
+            android:textSize="@dimen/_10ssp"
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
-            app:layout_constraintTop_toBottomOf="@+id/txt_profile_gender">
+            app:layout_constraintTop_toBottomOf="@+id/txt_profile_gender" />
 
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/radio_male"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_regular"
-                android:text="@string/male"
-                android:textSize="@dimen/_13ssp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/radio_female"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_regular"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            android:text="@string/female"
+            android:textSize="@dimen/_10ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.3"
+            app:layout_constraintStart_toEndOf="@id/radio_rather_not_say"
+            app:layout_constraintTop_toTopOf="@id/radio_male" />
 
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/radio_female"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_regular"
-                android:text="@string/female"
-                android:textSize="@dimen/_13ssp"
-                app:layout_constraintStart_toEndOf="@id/radio_rather_not_say"
-                app:layout_constraintTop_toTopOf="@id/radio_male" />
-
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/radio_rather_not_say"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_regular"
-                android:text="@string/rather_not_say"
-                android:textSize="@dimen/_13ssp"
-                app:layout_constraintStart_toStartOf="@id/radio_male"
-                app:layout_constraintTop_toBottomOf="@+id/radio_male" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/radio_rather_not_say"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:fontFamily="@font/montserrat_regular"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            android:text="@string/rather_not_say"
+            android:textSize="@dimen/_10ssp"
+            app:layout_constraintStart_toStartOf="@id/radio_male"
+            app:layout_constraintTop_toBottomOf="@+id/radio_male" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_profile_dob"
@@ -211,9 +216,91 @@
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/date_of_birth"
             android:textColor="@color/black"
-            android:textSize="@dimen/_13ssp"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
-            app:layout_constraintTop_toBottomOf="@id/radio_group" />
+            app:layout_constraintTop_toBottomOf="@id/radio_rather_not_say" />
+
+        <LinearLayout
+            android:id="@+id/drop_down_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            app:layout_constraintEnd_toEndOf="@id/img_profile_line"
+            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_profile_dob">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/drop_down_profile_day"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:boxStrokeWidth="0dp"
+                android:layout_weight="1"
+                app:boxStrokeWidthFocused="0dp"
+                app:endIconDrawable="@drawable/custom_dropdown_arrow"
+                app:endIconTint="@color/move_green">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/dropdown_day_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_edittext"
+                    android:drawableEnd="@drawable/drop_down_arrow"
+                    android:dropDownHeight="@dimen/_160sdp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:hint="@string/dd"
+                    android:textSize="@dimen/_13ssp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/drop_down_profile_month"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/_8sdp"
+                app:endIconDrawable="@drawable/custom_dropdown_arrow"
+                app:endIconTint="@color/move_green">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/dropdown_month_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:ellipsize="none"
+                    android:background="@drawable/custom_edittext"
+                    android:drawableEnd="@drawable/drop_down_arrow"
+                    android:dropDownHeight="@dimen/_160sdp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:hint="@string/mm"
+                    android:textSize="@dimen/_13ssp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/drop_down_profile_year"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:layout_marginStart="@dimen/_8sdp"
+                app:endIconDrawable="@drawable/custom_dropdown_arrow"
+                app:endIconTint="@color/move_green">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/dropdown_year_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_edittext"
+                    android:drawableEnd="@drawable/drop_down_arrow"
+                    android:dropDownHeight="@dimen/_160sdp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:hint="@string/yyyy"
+                    android:textSize="@dimen/_13ssp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_profile_country"
@@ -223,33 +310,38 @@
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/country"
             android:textColor="@color/black"
-            android:textSize="@dimen/_13ssp"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
-            app:layout_constraintTop_toBottomOf="@id/txt_profile_dob" />
+            app:layout_constraintTop_toBottomOf="@id/drop_down_layout" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/drop_down_profile_country"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:gravity="center_vertical"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
+            app:endIconDrawable="@drawable/custom_dropdown_arrow"
+            app:endIconTint="@color/move_green"
             app:layout_constraintEnd_toEndOf="@id/img_profile_line"
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_country">
 
             <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                 android:id="@+id/dropdown_country_text"
-                android:drawableEnd="@drawable/drop_down_arrow"
-                android:fontFamily="@font/montserrat_regular"
-                android:textSize="@dimen/_13ssp"
-                android:dropDownHeight="@dimen/_160sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/custom_edittext"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                />
-            <!--            android:dropDownAnchor="@+id/layout_tool_bar"-->
-
+                android:background="@drawable/custom_edittext"
+                android:drawableEnd="@drawable/drop_down_arrow"
+                android:dropDownHeight="@dimen/_160sdp"
+                android:fontFamily="@font/montserrat_regular"
+                android:hint="@string/please_select_country"
+                android:textSize="@dimen/_15ssp" />
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_profile_state"
@@ -259,31 +351,35 @@
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/state"
             android:textColor="@color/black"
-            android:textSize="@dimen/_13ssp"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/drop_down_profile_country" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/drop_down_profile_state"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
+            app:endIconDrawable="@drawable/custom_dropdown_arrow"
+            app:endIconTint="@color/move_green"
             app:layout_constraintEnd_toEndOf="@id/img_profile_line"
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_state">
 
             <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                 android:id="@+id/dropdown_state_text"
-                android:drawableEnd="@drawable/drop_down_arrow"
-                android:fontFamily="@font/montserrat_regular"
-                android:textSize="@dimen/_13ssp"
-                android:dropDownHeight="@dimen/_160sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/custom_edittext"
                 android:layout_weight="1"
-                />
-<!--            android:dropDownAnchor="@+id/layout_tool_bar"-->
+                android:background="@drawable/custom_edittext"
+                android:drawableEnd="@drawable/drop_down_arrow"
+                android:dropDownHeight="@dimen/_160sdp"
+                android:fontFamily="@font/montserrat_regular"
+                android:hint="@string/please_select_state"
+                android:textSize="@dimen/_15ssp" />
+            <!--            android:dropDownAnchor="@+id/layout_tool_bar"-->
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -295,14 +391,14 @@
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/city"
             android:textColor="@color/black"
-            android:textSize="@dimen/_13ssp"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/drop_down_profile_state" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_profile_city"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_45sdp"
+            android:layout_height="@dimen/_40sdp"
             android:background="@drawable/custom_edittext"
             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' '"
             android:fontFamily="@font/montserrat_regular"
@@ -310,10 +406,10 @@
             android:paddingStart="@dimen/_10sdp"
             android:paddingEnd="@dimen/_10sdp"
             android:singleLine="true"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintEnd_toEndOf="@id/img_profile_line"
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_city" />
-
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/save_setting_btn"

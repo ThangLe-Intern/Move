@@ -29,6 +29,7 @@ class ProfileFragment : Fragment() {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         handleDropDownState()
         handleDropDownCountry()
+        hideHintTextInputLayout()
 
         return binding.root
     }
@@ -39,6 +40,12 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         handleRadioButton()
+    }
+
+
+    private fun hideHintTextInputLayout(){
+        binding.dropDownProfileCountry.isHintEnabled = false
+        binding.dropDownProfileState.isHintEnabled = false
     }
 
     private fun handleDropDownState(){
