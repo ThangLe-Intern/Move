@@ -30,6 +30,7 @@ class ProfileFragment : Fragment() {
         handleDropDownState()
         handleDropDownCountry()
         hideHintTextInputLayout()
+        handleDropDownDob()
 
         return binding.root
     }
@@ -46,6 +47,15 @@ class ProfileFragment : Fragment() {
     private fun hideHintTextInputLayout(){
         binding.dropDownProfileCountry.isHintEnabled = false
         binding.dropDownProfileState.isHintEnabled = false
+    }
+
+    private fun handleDropDownDob(){
+        binding.dropdownDayText.inputType = EditorInfo.TYPE_NULL
+        binding.dropdownMonthText.inputType = EditorInfo.TYPE_NULL
+        binding.dropdownYearText.inputType = EditorInfo.TYPE_NULL
+        binding.dropDownProfileDay.isHintEnabled = false
+        binding.dropDownProfileMonth.isHintEnabled = false
+        binding.dropDownProfileYear.isHintEnabled = false
     }
 
     private fun handleDropDownState(){
