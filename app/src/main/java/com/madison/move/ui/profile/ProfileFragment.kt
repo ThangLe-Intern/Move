@@ -1,18 +1,13 @@
 package com.madison.move.ui.profile
 
-import android.content.Context
-import android.graphics.Rect
+
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
-import android.widget.EditText
 import android.widget.RadioButton
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import com.madison.move.R
 import com.madison.move.databinding.FragmentProfileBinding
@@ -22,6 +17,13 @@ class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     private var listState:ArrayList<String> = arrayListOf("None","Ha Noi","Da Nang","Hue","Ho Chi Minh","Hai Phong")
     private lateinit var arrayAdapter: ArrayAdapter<String>
+
+    private val days = (1..31).map { it.toString() }.toTypedArray()
+    private val months = arrayOf("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
+    private val years = (1970..2030).map { it.toString() }.toTypedArray()
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -56,6 +58,16 @@ class ProfileFragment : Fragment() {
         binding.dropDownProfileDay.isHintEnabled = false
         binding.dropDownProfileMonth.isHintEnabled = false
         binding.dropDownProfileYear.isHintEnabled = false
+
+        val dayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, days)
+        val monthAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, months)
+        val yearAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, years)
+
+        binding.dropdownDayText.setAdapter(dayAdapter)
+        binding.dropdownMonthText.setAdapter(monthAdapter)
+        binding.dropdownYearText.setAdapter(yearAdapter)
+
+
     }
 
     private fun handleDropDownState(){

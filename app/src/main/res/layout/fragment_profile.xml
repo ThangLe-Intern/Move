@@ -272,6 +272,7 @@
                     android:background="@drawable/custom_edittext"
                     android:drawableEnd="@drawable/drop_down_arrow"
                     android:dropDownHeight="@dimen/_160sdp"
+                    android:dropDownWidth="@dimen/_100sdp"
                     android:fontFamily="@font/montserrat_regular"
                     android:hint="@string/mm"
                     android:textSize="@dimen/_13ssp" />
