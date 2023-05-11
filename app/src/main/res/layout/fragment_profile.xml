@@ -172,12 +172,11 @@
             android:id="@+id/radio_male"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_6sdp"
             android:fontFamily="@font/montserrat_regular"
-            android:scaleX="1.5"
-            android:scaleY="1.5"
             android:text="@string/male"
-            android:textSize="@dimen/_10ssp"
+            android:layout_marginStart="@dimen/_minus3sdp"
+            android:textSize="@dimen/_13ssp"
+            android:button="@drawable/custom_radio_button"
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@+id/txt_profile_gender" />
 
@@ -186,25 +185,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat_regular"
-            android:scaleX="1.5"
-            android:scaleY="1.5"
             android:text="@string/female"
-            android:textSize="@dimen/_10ssp"
+            android:textSize="@dimen/_13ssp"
+            android:button="@drawable/custom_radio_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.3"
             app:layout_constraintStart_toEndOf="@id/radio_rather_not_say"
             app:layout_constraintTop_toTopOf="@id/radio_male" />
 
         <com.google.android.material.radiobutton.MaterialRadioButton
+            android:layout_marginTop="@dimen/_5sdp"
             android:id="@+id/radio_rather_not_say"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_12sdp"
             android:fontFamily="@font/montserrat_regular"
-            android:scaleX="1.5"
-            android:scaleY="1.5"
             android:text="@string/rather_not_say"
-            android:textSize="@dimen/_10ssp"
+            android:textSize="@dimen/_13ssp"
+            android:button="@drawable/custom_radio_button"
             app:layout_constraintStart_toStartOf="@id/radio_male"
             app:layout_constraintTop_toBottomOf="@+id/radio_male" />
 
@@ -228,7 +225,8 @@
             android:weightSum="5"
             app:layout_constraintEnd_toEndOf="@id/img_profile_line"
             app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
-            app:layout_constraintTop_toBottomOf="@id/txt_profile_dob">
+            app:layout_constraintTop_toBottomOf="@id/txt_profile_dob"
+            android:baselineAligned="false">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/drop_down_profile_day"
@@ -283,7 +281,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="1.5"
                 android:layout_marginStart="@dimen/_8sdp"
                 app:endIconDrawable="@drawable/custom_dropdown_arrow"
                 app:endIconTint="@color/move_green">

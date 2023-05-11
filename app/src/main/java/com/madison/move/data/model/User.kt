@@ -1,5 +1,9 @@
 package com.madison.move.data.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 class User(
     val id: Int,
     var username: String,
@@ -18,5 +22,5 @@ class User(
     var status_all_notification:Boolean = false,
     var status_comment_noti:Boolean = false,
     var status_followers:Boolean = false
-) {
+) : Parcelable {
 }

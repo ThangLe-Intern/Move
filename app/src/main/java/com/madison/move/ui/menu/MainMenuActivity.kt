@@ -1,5 +1,4 @@
 package com.madison.move.ui.menu
-
 import android.content.Context
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
@@ -16,6 +15,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.madison.move.R
+import com.madison.move.data.model.User
 import com.madison.move.databinding.ActivityMainMenuBinding
 import com.madison.move.ui.base.BaseActivity
 import com.madison.move.ui.faq.FAQFragment
@@ -28,6 +28,11 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     NavigationView.OnNavigationItemSelectedListener {
     private lateinit var binding: ActivityMainMenuBinding
 
+    var user_dung = User(
+        1, "vudung", "vudung@gmail.com", "Vu Dung",
+        "123", R.drawable.avatar, 1, "Male", "03/01/2001", 1,
+        "Ham Ninh - QN - QB"
+    )
     override fun createPresenter(): MenuPresenter = MenuPresenter(this)
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -80,7 +85,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         }
 
         // add home
-        supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, ProfileFragment())
+        supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, HomeFragment())
             .commit()
     }
 
@@ -109,8 +114,17 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
             menuTvSettting.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
+
+                val profileFragment = ProfileFragment()
+
+                val bundle = Bundle()
+                bundle.putParcelable("user", user_dung)
+                profileFragment.arguments = bundle
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrame.id, ProfileFragment()).commit()
+                    .replace(binding.contentFrame.id, profileFragment).commit()
+
+//                supportFragmentManager.beginTransaction()
+//                    .replace(binding.contentFrame.id, ProfileFragment()).commit()
 
             }
         }

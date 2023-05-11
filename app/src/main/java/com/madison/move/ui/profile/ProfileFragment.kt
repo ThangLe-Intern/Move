@@ -2,18 +2,16 @@ package com.madison.move.ui.profile
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.madison.move.R
+import com.madison.move.data.model.User
 import com.madison.move.databinding.FragmentProfileBinding
-import java.time.Year
 
 
 class ProfileFragment : Fragment() {
@@ -43,6 +41,7 @@ class ProfileFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -52,8 +51,35 @@ class ProfileFragment : Fragment() {
         handleDropDownState()
         handleDropDownCountry()
         hideHintTextInputLayout()
+
+        val bundle = arguments
+        val user:User = bundle?.getParcelable<User>("user")!!
+
+        setUserData(user)
         handleDropDownDob()
 
+    }
+
+    private fun setUserData(user:User){
+        binding.editUsername.setText(user.username)
+        binding.editProfileEmail.setText(user.email)
+        binding.editProfileFullName.setText(user.fullname)
+        binding.editProfileCity.setText(user.address)
+        binding.imgProfileUser.setImageResource(user.avatar)
+
+        if (user.gender == "Male"){
+            binding.radioMale.isChecked = true
+        }else{
+            binding.radioFemale.isChecked = true
+        }
+
+        binding.dropdownYearText.setText("2001")
+        binding.dropdownMonthText.setText("Jan")
+        binding.dropdownDayText.setText("1")
+
+        val monthSelected = binding.dropDownProfileMonth.editText?.text.toString()
+        val yearSelected =  binding.dropDownProfileYear.editText?.text.toString()
+        onHandleListOfDay(monthSelected,yearSelected)
 
     }
 
@@ -67,15 +93,14 @@ class ProfileFragment : Fragment() {
     }
 
     private fun handleDropDownDob() {
-        binding.dropdownDayText.inputType = EditorInfo.TYPE_NULL
         binding.dropdownMonthText.inputType = EditorInfo.TYPE_NULL
         binding.dropdownYearText.inputType = EditorInfo.TYPE_NULL
 
-        onMonthSeleted()
+        onMonthSelected()
         onYearSelected()
 
         val monthAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, months)
-        val yearAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, years)
+        val yearAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, years.sortedDescending())
 
         binding.dropdownMonthText.setAdapter(monthAdapter)
         binding.dropdownYearText.setAdapter(yearAdapter)
@@ -91,7 +116,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun onMonthSeleted() {
+    private fun onMonthSelected() {
         binding.dropdownMonthText.setOnItemClickListener { parent, view, position, id ->
             val yearSelected = binding.dropDownProfileYear.editText?.text.toString()
             val monthSelected: String = parent.getItemAtPosition(position).toString()
@@ -102,9 +127,11 @@ class ProfileFragment : Fragment() {
         }
     }
 
+
     private fun onHandleListOfDay(monthSelected:String,yearSelected:String){
+        binding.dropdownDayText.inputType = EditorInfo.TYPE_NULL
         val days: MutableList<String>
-        if (isThirtyMonth(monthSelected)) {
+        if (isThirtyDaysMonth(monthSelected)) {
             days = (1..30).map { it.toString() }.toMutableList()
         } else if (monthSelected == "Feb") {
             days =
@@ -120,11 +147,11 @@ class ProfileFragment : Fragment() {
         binding.dropdownDayText.setAdapter(dayAdapter)
     }
 
-    fun isLeapYear(year: Int): Boolean {
+    private fun isLeapYear(year: Int): Boolean {
         return (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0)
     }
 
-    fun isThirtyMonth(month: String): Boolean {
+    private fun isThirtyDaysMonth(month: String): Boolean {
         return (month in arrayOf(
             "Apr",
             "Jun",
