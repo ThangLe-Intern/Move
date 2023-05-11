@@ -80,7 +80,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         }
 
         // add home
-        supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, HomeFragment())
+        supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, ProfileFragment())
             .commit()
     }
 
