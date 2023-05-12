@@ -5,6 +5,9 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,15 +15,22 @@ import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.madison.move.R
 import com.madison.move.data.model.User
 import com.madison.move.databinding.FragmentProfileBinding
+import com.madison.move.ui.base.BaseFragment
 
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.ProfileView {
+
+    companion object {
+        const val FULL_NAME_AT_LEAST_4_CHARS = "FN_4_CH"
+        const val USER_NAME_CONTAINS_WHITE_SPACE = "USER_WS"
+    }
+
     private lateinit var binding: FragmentProfileBinding
+    private lateinit var user: User
     private var listState: ArrayList<String> =
         arrayListOf("None", "Ha Noi", "Da Nang", "Hue", "Ho Chi Minh", "Hai Phong")
     private lateinit var arrayAdapter: ArrayAdapter<String>
@@ -39,13 +49,27 @@ class ProfileFragment : Fragment() {
         "Dec"
     )
     private val years = (1900..2030).map { it.toString() }.toMutableList()
-
+    private var userNewProfile = User()
+    override fun createPresenter(): ProfilePresenter = ProfilePresenter(this, userNewProfile)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+
+        val bundle = arguments
+        user = bundle?.getParcelable<User>("user")!!
+
+        presenter.apply {
+
+        }
+
+        binding.saveSettingBtn.setOnClickListener {
+            presenter?.onSaveProfileClickPresenter(getNewProfile())
+        }
+
+
 
         return binding.root
     }
@@ -56,23 +80,123 @@ class ProfileFragment : Fragment() {
         handleDropDownState()
         handleDropDownCountry()
         hideHintTextInputLayout()
-
-
-        val bundle = arguments
-        val user: User = bundle?.getParcelable<User>("user")!!
+        handleInputUserFullName()
+        handleInputCity()
         setUserData(user)
-
         handleDropDownDob()
         handlePickerImage()
 
     }
 
+    private fun getNewProfile():User {
+        val newUserName = binding.editUsername.text.toString().trim()
+        val newFullName = binding.editProfileFullName.text.toString().trim()
+        val newCountry = binding.dropdownCountryText.text.toString().trim()
+        val newState = binding.dropdownStateText.text.toString().trim()
+        val newCity = binding.editProfileCity.text.toString().trim()
+
+        val newAddress = "$newCity-$newState-$newCountry"
+
+        val newGender: String = if (binding.radioMale.isChecked) {
+            binding.radioMale.text.toString()
+        } else if (binding.radioFemale.isChecked) {
+            binding.radioFemale.text.toString()
+        } else {
+            binding.radioRatherNotSay.text.toString()
+        }
+        val newDob =
+            "${binding.dropdownDayText.text}/${binding.dropdownMonthText.text}/${binding.dropdownYearText.text}".trim()
+
+        userNewProfile =
+            User(
+                1,
+                newUserName,
+                user.email,
+                newFullName,
+                user.password,
+                user.avatar,
+                1,
+                newGender,
+                newDob,
+                1,
+                newAddress
+            )
+
+        return userNewProfile
+
+    }
+
+    fun handleInputUserFullName(){
+        binding.editProfileFullName.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val nameText = binding.editProfileFullName.text.toString()
+                val countDotChar =  nameText.count { it == '.' }
+                if ( countDotChar >= 2 ){
+                    return binding.editProfileFullName.setText(nameText.dropLast(1))
+                }
+
+                if (nameText.contains("  ") || nameText.contains(". ") || nameText.contains(" .")){
+                    return binding.editProfileFullName.setText(nameText.dropLast(1))
+                }
+
+                if (nameText.startsWith(" ")){
+                    return binding.editProfileFullName.setText(nameText.dropLast(1))
+                }
+
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                binding.editProfileFullName.setSelection(binding.editProfileFullName.length())
+            }
+
+        })
+    }
+
+    private fun handleInputCity(){
+        binding.editProfileCity.addTextChangedListener(object : TextWatcher{
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val cityText = binding.editProfileCity.text.toString()
+                val matches = arrayOf("  ", "..",",,","--"," ,"," .","- -")
+
+                for (s in matches) {
+                    if (cityText.contains(s)) {
+                        return binding.editProfileCity.setText(cityText.dropLast(1))
+                    }
+                }
+
+                if (cityText.startsWith(" ")){
+                    return binding.editProfileCity.setText(cityText.dropLast(1))
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                binding.editProfileCity.setSelection(binding.editProfileCity.length())
+            }
+
+        })
+    }
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
+
             //Image Uri will not be null for RESULT_OK
             val uri: Uri? = data?.data
             binding.imgProfileUser.setImageURI(uri)
+
+            Log.d("AVATAR", uri.toString())
+
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
             Toast.makeText(
                 activity?.applicationContext,
@@ -100,12 +224,16 @@ class ProfileFragment : Fragment() {
         }
     }
 
+
     private fun setUserData(user: User) {
+
         binding.editUsername.setText(user.username)
         binding.editProfileEmail.setText(user.email)
         binding.editProfileFullName.setText(user.fullname)
         binding.editProfileCity.setText(user.address)
+
         binding.imgProfileUser.setImageResource(user.avatar)
+
 
         if (user.gender == "Male") {
             binding.radioMale.isChecked = true
@@ -120,6 +248,28 @@ class ProfileFragment : Fragment() {
         val monthSelected = binding.dropDownProfileMonth.editText?.text.toString()
         val yearSelected = binding.dropDownProfileYear.editText?.text.toString()
         onHandleListOfDay(monthSelected, yearSelected)
+
+    }
+
+    override fun onShowLoading() {
+
+    }
+
+    override fun onSaveProfileClick() {
+        binding.txtErrorFullName.visibility = View.GONE
+        binding.txtErrorFullName.focusable = View.FOCUSABLE
+        Toast.makeText(activity?.applicationContext,"Update Profile Successful",Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onShowError(errorType: String) {
+        when (errorType) {
+            FULL_NAME_AT_LEAST_4_CHARS -> {
+                binding.txtErrorFullName.apply {
+                    visibility = View.VISIBLE
+                    text = FULL_NAME_AT_LEAST_4_CHARS
+                }
+            }
+        }
 
     }
 
@@ -150,7 +300,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun onYearSelected() {
-        binding.dropdownYearText.setOnItemClickListener { parent, view, position, id ->
+        binding.dropdownYearText.setOnItemClickListener { parent, _, position, _ ->
             val monthSelected = binding.dropDownProfileMonth.editText?.text.toString()
             val yearSelected: String = parent.getItemAtPosition(position).toString()
             onHandleListOfDay(monthSelected, yearSelected)
@@ -158,7 +308,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun onMonthSelected() {
-        binding.dropdownMonthText.setOnItemClickListener { parent, view, position, id ->
+        binding.dropdownMonthText.setOnItemClickListener { parent, _, position, _ ->
             val yearSelected = binding.dropDownProfileYear.editText?.text.toString()
             val monthSelected: String = parent.getItemAtPosition(position).toString()
             if (yearSelected != "") {
