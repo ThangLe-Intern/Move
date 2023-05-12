@@ -59,7 +59,7 @@ class ProfileFragment : Fragment() {
 
 
         val bundle = arguments
-        val user:User = bundle?.getParcelable<User>("user")!!
+        val user: User = bundle?.getParcelable<User>("user")!!
         setUserData(user)
 
         handleDropDownDob()
@@ -74,34 +74,42 @@ class ProfileFragment : Fragment() {
             val uri: Uri? = data?.data
             binding.imgProfileUser.setImageURI(uri)
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
-            Toast.makeText(activity?.applicationContext, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                activity?.applicationContext,
+                ImagePicker.getError(data),
+                Toast.LENGTH_SHORT
+            ).show()
         } else {
-            Toast.makeText(activity?.applicationContext, "Task Cancelled", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity?.applicationContext, "Task Cancelled", Toast.LENGTH_SHORT)
+                .show()
         }
 
     }
 
-    private fun handlePickerImage(){
+    private fun handlePickerImage() {
         binding.txtProfileUpdatePicture.setOnClickListener {
             ImagePicker.Companion.with(this)
-                .crop()	    			//Crop image(Optional), Check Customization for more option
+                .crop()                    //Crop image(Optional), Check Customization for more option
                 .crop(16f, 16f)
-                .compress(1024)			//Final image size will be less than 1 MB(Optional)
-                .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
+                .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                .maxResultSize(
+                    1080,
+                    1080
+                )    //Final image resolution will be less than 1080 x 1080(Optional)
                 .start()
         }
     }
 
-    private fun setUserData(user:User){
+    private fun setUserData(user: User) {
         binding.editUsername.setText(user.username)
         binding.editProfileEmail.setText(user.email)
         binding.editProfileFullName.setText(user.fullname)
         binding.editProfileCity.setText(user.address)
         binding.imgProfileUser.setImageResource(user.avatar)
 
-        if (user.gender == "Male"){
+        if (user.gender == "Male") {
             binding.radioMale.isChecked = true
-        }else{
+        } else {
             binding.radioFemale.isChecked = true
         }
 
@@ -110,8 +118,8 @@ class ProfileFragment : Fragment() {
         binding.dropdownDayText.setText("1")
 
         val monthSelected = binding.dropDownProfileMonth.editText?.text.toString()
-        val yearSelected =  binding.dropDownProfileYear.editText?.text.toString()
-        onHandleListOfDay(monthSelected,yearSelected)
+        val yearSelected = binding.dropDownProfileYear.editText?.text.toString()
+        onHandleListOfDay(monthSelected, yearSelected)
 
     }
 
@@ -132,7 +140,8 @@ class ProfileFragment : Fragment() {
         onYearSelected()
 
         val monthAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, months)
-        val yearAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, years.sortedDescending())
+        val yearAdapter =
+            ArrayAdapter(requireContext(), R.layout.item_dropdown, years.sortedDescending())
 
         binding.dropdownMonthText.setAdapter(monthAdapter)
         binding.dropdownYearText.setAdapter(yearAdapter)
@@ -140,11 +149,11 @@ class ProfileFragment : Fragment() {
 
     }
 
-    private fun onYearSelected(){
+    private fun onYearSelected() {
         binding.dropdownYearText.setOnItemClickListener { parent, view, position, id ->
             val monthSelected = binding.dropDownProfileMonth.editText?.text.toString()
             val yearSelected: String = parent.getItemAtPosition(position).toString()
-            onHandleListOfDay(monthSelected,yearSelected)
+            onHandleListOfDay(monthSelected, yearSelected)
         }
     }
 
@@ -153,14 +162,14 @@ class ProfileFragment : Fragment() {
             val yearSelected = binding.dropDownProfileYear.editText?.text.toString()
             val monthSelected: String = parent.getItemAtPosition(position).toString()
             if (yearSelected != "") {
-                onHandleListOfDay(monthSelected,yearSelected)
+                onHandleListOfDay(monthSelected, yearSelected)
             }
 
         }
     }
 
 
-    private fun onHandleListOfDay(monthSelected:String,yearSelected:String){
+    private fun onHandleListOfDay(monthSelected: String, yearSelected: String) {
         binding.dropdownDayText.inputType = EditorInfo.TYPE_NULL
         val days: MutableList<String>
         if (isThirtyDaysMonth(monthSelected)) {
@@ -205,7 +214,7 @@ class ProfileFragment : Fragment() {
             )
         }!!
         binding.dropdownStateText.setAdapter(arrayAdapter)
-        binding.dropdownStateText.inputType = EditorInfo.TYPE_NULL
+//        binding.dropdownStateText.inputType = EditorInfo.TYPE_NULL
     }
 
     private fun handleDropDownCountry() {
@@ -220,7 +229,7 @@ class ProfileFragment : Fragment() {
             )
         }!!
         binding.dropdownCountryText.setAdapter(arrayAdapter)
-        binding.dropdownCountryText.inputType = EditorInfo.TYPE_NULL
+//        binding.dropdownCountryText.inputType = EditorInfo.TYPE_NULL
     }
 
     private fun handleRadioButton() {

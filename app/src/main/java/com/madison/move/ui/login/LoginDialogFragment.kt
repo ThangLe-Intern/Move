@@ -61,7 +61,7 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
         }
 
         //Show and Hide Password
-        onShowAndHidePassword()
+//        onShowAndHidePassword()
 
         return binding.root
     }
@@ -85,7 +85,7 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
 
     }
 
-    private fun onShowAndHidePassword(){
+/*    private fun onShowAndHidePassword(){
         val imgShowPassword:AppCompatImageView = binding.imgShowPassword
         val imgHidePassword:AppCompatImageView = binding.imgHidePassword
 
@@ -105,7 +105,7 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
             imgShowPassword.visibility = View.VISIBLE
         }
 
-    }
+    }*/
 
 
 
