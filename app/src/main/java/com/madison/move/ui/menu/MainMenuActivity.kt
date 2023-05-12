@@ -122,10 +122,6 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 profileFragment.arguments = bundle
                 supportFragmentManager.beginTransaction()
                     .replace(binding.contentFrame.id, profileFragment).commit()
-
-//                supportFragmentManager.beginTransaction()
-//                    .replace(binding.contentFrame.id, ProfileFragment()).commit()
-
             }
         }
     }

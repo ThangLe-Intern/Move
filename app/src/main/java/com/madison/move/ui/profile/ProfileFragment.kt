@@ -1,6 +1,9 @@
 package com.madison.move.ui.profile
 
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +11,9 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.madison.move.R
 import com.madison.move.data.model.User
 import com.madison.move.databinding.FragmentProfileBinding
@@ -52,12 +57,39 @@ class ProfileFragment : Fragment() {
         handleDropDownCountry()
         hideHintTextInputLayout()
 
+
         val bundle = arguments
         val user:User = bundle?.getParcelable<User>("user")!!
-
         setUserData(user)
-        handleDropDownDob()
 
+        handleDropDownDob()
+        handlePickerImage()
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            //Image Uri will not be null for RESULT_OK
+            val uri: Uri? = data?.data
+            binding.imgProfileUser.setImageURI(uri)
+        } else if (resultCode == ImagePicker.RESULT_ERROR) {
+            Toast.makeText(activity?.applicationContext, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(activity?.applicationContext, "Task Cancelled", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+    private fun handlePickerImage(){
+        binding.txtProfileUpdatePicture.setOnClickListener {
+            ImagePicker.Companion.with(this)
+                .crop()	    			//Crop image(Optional), Check Customization for more option
+                .crop(16f, 16f)
+                .compress(1024)			//Final image size will be less than 1 MB(Optional)
+                .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
+                .start()
+        }
     }
 
     private fun setUserData(user:User){
