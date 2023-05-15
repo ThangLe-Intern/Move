@@ -15,8 +15,11 @@ import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.addTextChangedListener
-import com.github.dhaval2404.imagepicker.ImagePicker
+import com.github.drjacky.imagepicker.ImagePicker
+import com.github.drjacky.imagepicker.constant.ImageProvider
 import com.madison.move.R
 import com.madison.move.data.model.User
 import com.madison.move.databinding.FragmentProfileBinding
@@ -82,6 +85,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         handleDropDownCountry()
         hideHintTextInputLayout()
         handleInputUserFullName()
+        handleInputUserName()
         handleInputCity()
         setUserData(user)
         handleDropDownDob()
@@ -89,7 +93,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     }
 
-    private fun getNewProfile():User {
+    private fun getNewProfile(): User {
         val newUserName = binding.editUsername.text.toString().trim()
         val newFullName = binding.editProfileFullName.text.toString().trim()
         val newCountry = binding.dropdownCountryText.text.toString().trim()
@@ -127,24 +131,40 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     }
 
-    fun handleInputUserFullName(){
-        binding.editProfileFullName.addTextChangedListener(object : TextWatcher{
+    private fun handleInputUserName() {
+        binding.editUsername.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                binding.editUsername.setBackgroundResource(R.drawable.custom_edittext)
+            }
 
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        })
+    }
+
+    private fun handleInputUserFullName() {
+        binding.editProfileFullName.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                binding.editProfileFullName.setBackgroundResource(R.drawable.custom_edittext)
+                binding.txtErrorFullName.visibility = View.GONE
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val nameText = binding.editProfileFullName.text.toString()
-                val countDotChar =  nameText.count { it == '.' }
-                if ( countDotChar >= 2 ){
+                val countDotChar = nameText.count { it == '.' }
+                if (countDotChar >= 2) {
                     return binding.editProfileFullName.setText(nameText.dropLast(1))
                 }
 
-                if (nameText.contains("  ") || nameText.contains(". ") || nameText.contains(" .")){
+                if (nameText.contains("  ") || nameText.contains(". ") || nameText.contains(" .")) {
                     return binding.editProfileFullName.setText(nameText.dropLast(1))
                 }
 
-                if (nameText.startsWith(" ")){
+                if (nameText.startsWith(" ")) {
                     return binding.editProfileFullName.setText(nameText.dropLast(1))
                 }
 
@@ -158,8 +178,8 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         })
     }
 
-    private fun handleInputCity(){
-        binding.editProfileCity.addTextChangedListener(object : TextWatcher{
+    private fun handleInputCity() {
+        binding.editProfileCity.addTextChangedListener(object : TextWatcher {
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -167,7 +187,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val cityText = binding.editProfileCity.text.toString()
-                val matches = arrayOf("  ", "..",",,","--"," ,"," .","- -")
+                val matches = arrayOf("  ", "..", ",,", "--", " ,", " .", "- -")
 
                 for (s in matches) {
                     if (cityText.contains(s)) {
@@ -175,7 +195,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                     }
                 }
 
-                if (cityText.startsWith(" ")){
+                if (cityText.startsWith(" ")) {
                     return binding.editProfileCity.setText(cityText.dropLast(1))
                 }
             }
@@ -188,40 +208,67 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
+    /*    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            super.onActivityResult(requestCode, resultCode, data)
+            if (resultCode == Activity.RESULT_OK) {
 
-            //Image Uri will not be null for RESULT_OK
-            val uri: Uri? = data?.data
-            binding.imgProfileUser.setImageURI(uri)
+                //Image Uri will not be null for RESULT_OK
+                val uri: Uri? = data?.data
+                binding.imgProfileUser.setImageURI(uri)
 
-            Log.d("AVATAR", uri.toString())
+                Log.d("AVATAR", uri.toString())
 
-        } else if (resultCode == ImagePicker.RESULT_ERROR) {
-            Toast.makeText(
-                activity?.applicationContext,
-                ImagePicker.getError(data),
-                Toast.LENGTH_SHORT
-            ).show()
-        } else {
-            Toast.makeText(activity?.applicationContext, "Task Cancelled", Toast.LENGTH_SHORT)
-                .show()
+            } else if (resultCode == ImagePicker.RESULT_ERROR) {
+                Toast.makeText(
+                    activity?.applicationContext,
+                    ImagePicker.getError(data),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(activity?.applicationContext, "Task Cancelled", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+        }*/
+
+    private var mCameraUri: Uri? = null
+    private var mGalleryUri: Uri? = null
+    private var mProfileUri: Uri? = null
+
+
+    private val launcher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                val uri = it.data?.data!!
+                mProfileUri = uri
+                binding.imgProfileUser.setLocalImage(uri, false)
+            } else {
+                parseError(it)
+            }
         }
 
+    private fun parseError(activityResult: ActivityResult) {
+        if (activityResult.resultCode == ImagePicker.RESULT_ERROR) {
+            Toast.makeText(activity, ImagePicker.getError(activityResult.data), Toast.LENGTH_SHORT)
+                .show()
+        } else {
+            Toast.makeText(activity, "Task Cancelled", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun handlePickerImage() {
         binding.txtProfileUpdatePicture.setOnClickListener {
-            ImagePicker.Companion.with(this)
-                .crop()                    //Crop image(Optional), Check Customization for more option
-                .crop(16f, 16f)
-                .compress(1024)            //Final image size will be less than 1 MB(Optional)
-                .maxResultSize(
-                    1080,
-                    1080
-                )    //Final image resolution will be less than 1080 x 1080(Optional)
-                .start()
+            activity?.let { it1 ->
+                ImagePicker.with(it1)
+                    .crop()
+                    .cropOval()
+                    .maxResultSize(1000, 1000, false)
+                    .provider(ImageProvider.BOTH) // Or bothCameraGallery()
+                    .setDismissListener {
+                        Log.d("ImagePicker", "onDismiss")
+                    }
+                    .createIntentFromDialog { launcher.launch(it) }
+            }
         }
     }
 
@@ -259,7 +306,11 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     override fun onSaveProfileClick() {
         binding.txtErrorFullName.visibility = View.GONE
         binding.txtErrorFullName.focusable = View.FOCUSABLE
-        Toast.makeText(activity?.applicationContext,"Update Profile Successful",Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            activity?.applicationContext,
+            "Update Profile Successful",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     override fun onShowError(errorType: String) {
@@ -269,6 +320,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                     visibility = View.VISIBLE
                     text = context.getString(R.string.error_fullname_chars)
                 }
+                binding.editProfileFullName.setBackgroundResource(R.drawable.custom_edittext_error)
             }
         }
 
@@ -368,9 +420,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 //        binding.dropdownStateText.inputType = EditorInfo.TYPE_NULL
 
         binding.dropdownStateText.setOnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus){
+            if (!hasFocus) {
                 val inputStateText = binding.dropdownStateText.text.toString().trim()
-                if (inputStateText !in listState){
+                if (inputStateText !in listState) {
                     binding.dropdownStateText.text.clear()
                 }
             }
@@ -393,9 +445,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
 
         binding.dropdownCountryText.setOnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus){
+            if (!hasFocus) {
                 val inputStateText = binding.dropdownCountryText.text.toString().trim()
-                if (inputStateText !in listState){
+                if (inputStateText !in listState) {
                     binding.dropdownCountryText.text.clear()
                 }
             }
