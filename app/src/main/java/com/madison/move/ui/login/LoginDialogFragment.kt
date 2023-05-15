@@ -5,27 +5,24 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
-
 import android.text.TextWatcher
-import android.text.method.HideReturnsTransformationMethod
-import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-
 import android.view.inputmethod.InputMethodManager
-
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
-
 import androidx.fragment.app.DialogFragment
 import com.madison.move.R
+import com.madison.move.data.model.User
 import com.madison.move.databinding.FragmentLoginDialogBinding
 
-class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
+
+class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : DialogFragment(), LoginContract.LoginView {
     private lateinit var binding: FragmentLoginDialogBinding
     private lateinit var presenter: LoginPresenter
+    private lateinit var user: User
+
 
     companion object{
         const val  EMAIL_INVALID = "EMAIL_INVALID"
@@ -55,6 +52,9 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
 
         binding = FragmentLoginDialogBinding.inflate(inflater, container, false)
 
+        val bundle = arguments
+        user = bundle?.getParcelable<User>("user")!!
+
         presenter = LoginPresenter(this)
         presenter.apply {
             onEnableButtonLoginPresenter()
@@ -80,10 +80,11 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
             binding.layoutErrorMessage.visibility = View.GONE
             binding.txtErrorEmail.visibility = View.GONE
 
-            presenter.onLoginClickPresenter(binding.editLoginEmail.text.toString().trim(),binding.editLoginPassword.text.toString().trim())
+            presenter.onLoginClickPresenter(binding.editLoginEmail.text.toString().trim(),binding.editLoginPassword.text.toString().trim(),user)
         }
 
     }
+
 
 /*    private fun onShowAndHidePassword(){
         val imgShowPassword:AppCompatImageView = binding.imgShowPassword
@@ -117,7 +118,8 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
     override fun onEnableButtonLogin() {
         val textWatcher:TextWatcher = object : TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
+                binding.editLoginEmail.setBackgroundResource(R.drawable.custom_edittext)
+                binding.txtErrorEmail.visibility = View.GONE
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -145,6 +147,7 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
             EMAIL_INVALID ->{
                 binding.txtErrorEmail.isVisible = true
                 binding.txtErrorEmail.text =  getString(R.string.invalid_email)
+                binding.editLoginEmail.setBackgroundResource(R.drawable.custom_edittext_error)
             }
             EMAIL_CONTAIN_SPACE ->{
                 binding.editLoginEmail.error = getString(R.string.email_white_space)
@@ -155,8 +158,15 @@ class LoginDialogFragment : DialogFragment(), LoginContract.LoginView {
         }
     }
 
-    override fun onLoginClick() {
+    override fun onLoginClick(user:User) {
         dialog?.dismiss()
+        mOnInputListener?.sendInput(user)
+    }
+
+
+    //Send user data from Fragment To Activity
+    interface OnInputListener {
+        fun sendInput(user: User)
     }
 
 

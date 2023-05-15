@@ -89,7 +89,7 @@
             android:layout_height="@dimen/_40sdp"
             android:imeOptions="actionDone"
             android:background="@drawable/custom_edittext"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890_-."
             android:fontFamily="@font/montserrat_regular"
             android:inputType="textFilter"
             android:paddingStart="@dimen/_10sdp"

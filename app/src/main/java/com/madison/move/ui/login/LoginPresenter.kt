@@ -1,5 +1,7 @@
 package com.madison.move.ui.login
 
+import com.madison.move.data.model.User
+
 class LoginPresenter(
     override var view: LoginContract.LoginView?
 ) : LoginContract.Presenter {
@@ -22,7 +24,7 @@ class LoginPresenter(
         view?.onShowError(errorType)
     }
 
-    override fun onLoginClickPresenter(email:String,password:String) {
+    override fun onLoginClickPresenter(email:String,password:String,user: User) {
 
         if (!isEmailValid(email)){
             onShowErrorPresenter(EMAIL_INVALID)
@@ -30,10 +32,11 @@ class LoginPresenter(
             onShowErrorPresenter( EMAIL_CONTAIN_SPACE)
         }else if (password.contains(" ")){
             onShowErrorPresenter(PASSWORD_CONTAIN_SPACE)
-        }else if (email != "nguyenvudung030121@gmail.com" || password != "1"){
+        }else if (email != "vudung@gmail.com" || password != "123"){
             onShowErrorPresenter(INCORRECT_ACCOUNT)
         }else{
-            view?.onLoginClick()
+            user.role = true
+            view?.onLoginClick(user)
         }
 
 

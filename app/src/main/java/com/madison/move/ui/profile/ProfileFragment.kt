@@ -2,7 +2,6 @@ package com.madison.move.ui.profile
 
 
 import android.app.Activity
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -17,7 +16,6 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.widget.addTextChangedListener
 import com.github.drjacky.imagepicker.ImagePicker
 import com.github.drjacky.imagepicker.constant.ImageProvider
 import com.madison.move.R
@@ -31,12 +29,28 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     companion object {
         const val FULL_NAME_AT_LEAST_4_CHARS = "FN_4_CH"
         const val USER_NAME_CONTAINS_WHITE_SPACE = "USER_WS"
+        const val STATE_NOT_IN_LIST = "STATE_NOT_IN_LIST"
+        const val COUNTRY_NOT_IN_LIST = "COUNTRY_NOT_IN_LIST"
     }
 
     private lateinit var binding: FragmentProfileBinding
-    private lateinit var user: User
-    private var listState: ArrayList<String> =
+    private  var user: User = User()
+
+    private var listState: java.util.ArrayList<String> = arrayListOf()
+
+    private var listStateVietNam: ArrayList<String> =
         arrayListOf("None", "Ha Noi", "Da Nang", "Hue", "Ho Chi Minh", "Hai Phong")
+    private var listStateSingapore: ArrayList<String> =
+        arrayListOf("None", "Sing 1", "Sing 2", "Sing 3", "Sing 4", "Sing 5")
+    private var listStateKorea: ArrayList<String> =
+        arrayListOf("None", "Korea 1", "Korea 2", "Korea 3", "Korea 4", "Korea 5")
+    private var listStateJapan: ArrayList<String> =
+        arrayListOf("None", "Japan 1", "Japan 2", "Japan 3", "Japan 4", "Japan 5")
+
+    private var listCountry: ArrayList<String> =
+        arrayListOf("None", "VietNam", "Singapore", "Korea", "Japan")
+
+
     private lateinit var arrayAdapter: ArrayAdapter<String>
     private val months = arrayOf(
         "Jan",
@@ -56,14 +70,18 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     private var userNewProfile = User()
     override fun createPresenter(): ProfilePresenter = ProfilePresenter(this, userNewProfile)
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
-
         val bundle = arguments
-        user = bundle?.getParcelable<User>("user")!!
+        if (bundle != null){
+            user = bundle.getParcelable<User>("user")!!
+        }
+        setUserData(user)
+
 
         presenter.apply {
 
@@ -73,24 +91,26 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             presenter?.onSaveProfileClickPresenter(getNewProfile())
         }
 
-
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
+
+    }
+
+    override fun initView() {
         handleRadioButton()
-        handleDropDownState()
+        handleDropDownState(binding.dropdownCountryText.text.toString().trim())
         handleDropDownCountry()
         hideHintTextInputLayout()
         handleInputUserFullName()
         handleInputUserName()
         handleInputCity()
-        setUserData(user)
+
         handleDropDownDob()
         handlePickerImage()
-
     }
 
     private fun getNewProfile(): User {
@@ -230,12 +250,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             }
 
         }*/
-
-    private var mCameraUri: Uri? = null
-    private var mGalleryUri: Uri? = null
     private var mProfileUri: Uri? = null
-
-
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
@@ -289,8 +304,8 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             binding.radioFemale.isChecked = true
         }
 
-        binding.dropdownYearText.setText("2001")
-        binding.dropdownMonthText.setText("Jan")
+        binding.dropdownYearText.setText(getString(R.string.dob_years))
+        binding.dropdownMonthText.setText(getString(R.string.dob_month))
         binding.dropdownDayText.setText("1")
 
         val monthSelected = binding.dropDownProfileMonth.editText?.text.toString()
@@ -321,6 +336,18 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                     text = context.getString(R.string.error_fullname_chars)
                 }
                 binding.editProfileFullName.setBackgroundResource(R.drawable.custom_edittext_error)
+            }
+
+            STATE_NOT_IN_LIST -> {
+
+            }
+
+            COUNTRY_NOT_IN_LIST -> {
+
+            }
+
+            USER_NAME_CONTAINS_WHITE_SPACE -> {
+
             }
         }
 
@@ -404,19 +431,39 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         ))
     }
 
-
-    private fun handleDropDownState() {
-        for (i in 1..3) {
-            listState.addAll(arrayListOf("Ha Noi", "Da Nang", "Hue", "Ho Chi Minh", "Hai Phong"))
-        }
-        arrayAdapter = context?.let {
+    private fun dropDownAdapter(listAdapter: ArrayList<String>): ArrayAdapter<String> {
+        return context?.let {
             ArrayAdapter(
                 it.applicationContext,
                 R.layout.item_dropdown,
-                listState
+                listAdapter
             )
         }!!
-        binding.dropdownStateText.setAdapter(arrayAdapter)
+    }
+
+
+    private fun handleDropDownState(countrySelected: String) {
+        if (countrySelected.isNotEmpty() && countrySelected != "None") {
+            when (countrySelected) {
+                "VietNam" -> {
+                    binding.dropdownStateText.setAdapter(dropDownAdapter(listStateVietNam))
+                    listState = listStateVietNam
+                }
+                "Korea" -> {
+                    binding.dropdownStateText.setAdapter(dropDownAdapter(listStateKorea))
+                    listState = listStateKorea
+                }
+                "Singapore" -> {
+                    binding.dropdownStateText.setAdapter(dropDownAdapter(listStateSingapore))
+                    listState = listStateSingapore
+                }
+                "Japan" -> {
+                    binding.dropdownStateText.setAdapter(dropDownAdapter(listStateJapan))
+                    listState = listStateJapan
+                }
+            }
+        }
+
 //        binding.dropdownStateText.inputType = EditorInfo.TYPE_NULL
 
         binding.dropdownStateText.setOnFocusChangeListener { v, hasFocus ->
@@ -431,13 +478,13 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     private fun handleDropDownCountry() {
         for (i in 1..3) {
-            listState.addAll(arrayListOf("Ha Noi", "Da Nang", "Hue", "Ho Chi Minh", "Hai Phong"))
+            listCountry.addAll(arrayListOf("None", "Viet Nam", "Singapore", "Korea", "Japan"))
         }
         arrayAdapter = context?.let {
             ArrayAdapter(
                 it.applicationContext,
                 R.layout.item_dropdown,
-                listState
+                listCountry
             )
         }!!
         binding.dropdownCountryText.setAdapter(arrayAdapter)
@@ -447,10 +494,16 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         binding.dropdownCountryText.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
                 val inputStateText = binding.dropdownCountryText.text.toString().trim()
-                if (inputStateText !in listState) {
+                if (inputStateText !in listCountry) {
                     binding.dropdownCountryText.text.clear()
                 }
             }
+        }
+
+        binding.dropdownCountryText.setOnItemClickListener { parent, view, position, id ->
+            binding.dropdownStateText.text.clear()
+            val countrySelected = binding.dropDownProfileCountry.editText?.text.toString()
+            handleDropDownState(countrySelected)
         }
     }
 

@@ -62,6 +62,8 @@
     <string name="mm">MM</string>
     <string name="yyyy">YYYY</string>
     <string name="error_fullname_chars">FULL_NAME_CONTAIN_AT_LEAST_4_CHARS</string>
+    <string name="dob_years">2002</string>
+    <string name="dob_month">Jan</string>
 
 
 </resources>

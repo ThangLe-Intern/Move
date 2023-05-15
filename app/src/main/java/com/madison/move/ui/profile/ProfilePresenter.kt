@@ -22,6 +22,8 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?, var user
           return onShowErrorPresenter(FULL_NAME_AT_LEAST_4_CHARS)
         }
 
+
+
         view?.onSaveProfileClick()
 
     }

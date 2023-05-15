@@ -1,4 +1,5 @@
 package com.madison.move.ui.menu
+
 import android.content.Context
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
@@ -25,14 +26,15 @@ import com.madison.move.ui.profile.ProfileFragment
 
 
 class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
-    NavigationView.OnNavigationItemSelectedListener {
+    NavigationView.OnNavigationItemSelectedListener, LoginDialogFragment.OnInputListener {
     private lateinit var binding: ActivityMainMenuBinding
 
     private var userDung = User(
         1, "vudung", "vudung@gmail.com", "Vu Dung",
         "123", R.drawable.avatar, 1, "Male", "03/01/2001", 1,
-        "Ham Ninh - QN - QB"
+        "Ham Ninh - QN - QB", false
     )
+
     override fun createPresenter(): MenuPresenter = MenuPresenter(this)
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -41,6 +43,17 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         setContentView(binding.root)
         super.onCreate(savedInstanceState)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!userDung.role) {
+            binding.menulogout.text = "LogIn"
+//            binding.menuTvSettting.visibility = View.GONE
+        } else {
+            binding.menulogout.text = "LogOut"
+            binding.menuTvSettting.visibility = View.VISIBLE
+        }
     }
 
     override fun initView() {
@@ -79,8 +92,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             recreate()
         }
 
-        val imgviewclose: ImageView = findViewById(R.id.imgclose)
-        imgviewclose.setOnClickListener {
+        val imgViewClose: ImageView = findViewById(R.id.imgclose)
+        imgViewClose.setOnClickListener {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
         }
 
@@ -106,9 +119,22 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             }
 
             menulogout.setOnClickListener {
-                binding.drawerLayout.closeDrawer(GravityCompat.START)
-                val loginDialog = LoginDialogFragment()
-                loginDialog.show(supportFragmentManager, "login Dialog")
+
+                if (!userDung.role){
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    val loginDialog = LoginDialogFragment(this@MainMenuActivity)
+                    val bundle = Bundle()
+                    bundle.putParcelable("user", userDung)
+                    loginDialog.arguments = bundle
+                    loginDialog.show(supportFragmentManager, "login Dialog")
+                }else{
+                    userDung.role = false
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    val intent = intent
+                    finish()
+                    startActivity(intent)
+                }
+
 
             }
 
@@ -117,9 +143,12 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
                 val profileFragment = ProfileFragment()
 
-                val bundle = Bundle()
-                bundle.putParcelable("user", userDung)
-                profileFragment.arguments = bundle
+                if(userDung.role){
+                    val bundle = Bundle()
+                    bundle.putParcelable("user", userDung)
+                    profileFragment.arguments = bundle
+                }
+
                 supportFragmentManager.beginTransaction()
                     .replace(binding.contentFrame.id, profileFragment).commit()
             }
@@ -156,5 +185,19 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         TODO("Not yet implemented")
     }
+
+
+    //Get Data User from dialog Fragment
+    override fun sendInput(user: User) {
+        userDung = user
+        if (!userDung.role) {
+            binding.menulogout.text = "LogIn"
+            binding.menuTvSettting.visibility = View.GONE
+        } else {
+            binding.menulogout.text = "LogOut"
+            binding.menuTvSettting.visibility = View.VISIBLE
+        }
+    }
+
 
 }
