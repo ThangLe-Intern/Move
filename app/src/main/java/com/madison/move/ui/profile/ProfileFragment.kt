@@ -34,7 +34,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     }
 
     private lateinit var binding: FragmentProfileBinding
-    private  var user: User = User()
+    private var user: User = User()
 
     private var listState: java.util.ArrayList<String> = arrayListOf()
 
@@ -77,7 +77,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         val bundle = arguments
-        if (bundle != null){
+        if (bundle != null) {
             user = bundle.getParcelable<User>("user")!!
         }
         setUserData(user)
@@ -298,10 +298,16 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         binding.imgProfileUser.setImageResource(user.avatar)
 
 
-        if (user.gender == "Male") {
-            binding.radioMale.isChecked = true
-        } else {
-            binding.radioFemale.isChecked = true
+        when (user.gender) {
+            "Male" -> {
+                binding.radioMale.isChecked = true
+            }
+            "Female" -> {
+                binding.radioFemale.isChecked = true
+            }
+            "Rather" -> {
+                binding.radioRatherNotSay.isChecked = true
+            }
         }
 
         binding.dropdownYearText.setText(getString(R.string.dob_years))
