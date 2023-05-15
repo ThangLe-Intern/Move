@@ -28,7 +28,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     NavigationView.OnNavigationItemSelectedListener {
     private lateinit var binding: ActivityMainMenuBinding
 
-    var user_dung = User(
+    private var userDung = User(
         1, "vudung", "vudung@gmail.com", "Vu Dung",
         "123", R.drawable.avatar, 1, "Male", "03/01/2001", 1,
         "Ham Ninh - QN - QB"
@@ -118,7 +118,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 val profileFragment = ProfileFragment()
 
                 val bundle = Bundle()
-                bundle.putParcelable("user", user_dung)
+                bundle.putParcelable("user", userDung)
                 profileFragment.arguments = bundle
                 supportFragmentManager.beginTransaction()
                     .replace(binding.contentFrame.id, profileFragment).commit()

@@ -15,6 +15,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.madison.move.R
 import com.madison.move.data.model.User
@@ -266,7 +267,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             FULL_NAME_AT_LEAST_4_CHARS -> {
                 binding.txtErrorFullName.apply {
                     visibility = View.VISIBLE
-                    text = FULL_NAME_AT_LEAST_4_CHARS
+                    text = context.getString(R.string.error_fullname_chars)
                 }
             }
         }
@@ -365,6 +366,15 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         }!!
         binding.dropdownStateText.setAdapter(arrayAdapter)
 //        binding.dropdownStateText.inputType = EditorInfo.TYPE_NULL
+
+        binding.dropdownStateText.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus){
+                val inputStateText = binding.dropdownStateText.text.toString().trim()
+                if (inputStateText !in listState){
+                    binding.dropdownStateText.text.clear()
+                }
+            }
+        }
     }
 
     private fun handleDropDownCountry() {
@@ -380,6 +390,16 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         }!!
         binding.dropdownCountryText.setAdapter(arrayAdapter)
 //        binding.dropdownCountryText.inputType = EditorInfo.TYPE_NULL
+
+
+        binding.dropdownCountryText.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus){
+                val inputStateText = binding.dropdownCountryText.text.toString().trim()
+                if (inputStateText !in listState){
+                    binding.dropdownCountryText.text.clear()
+                }
+            }
+        }
     }
 
     private fun handleRadioButton() {

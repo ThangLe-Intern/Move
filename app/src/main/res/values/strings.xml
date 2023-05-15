@@ -61,6 +61,7 @@
     <string name="dd">DD</string>
     <string name="mm">MM</string>
     <string name="yyyy">YYYY</string>
+    <string name="error_fullname_chars">FULL_NAME_CONTAIN_AT_LEAST_4_CHARS</string>
 
 
 </resources>
