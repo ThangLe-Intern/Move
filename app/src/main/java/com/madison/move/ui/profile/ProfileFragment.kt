@@ -29,6 +29,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     companion object {
         const val FULL_NAME_AT_LEAST_4_CHARS = "FN_4_CH"
         const val USER_NAME_CONTAINS_WHITE_SPACE = "USER_WS"
+        const val USER_NAME_NULL = "USER_NAME_NULL"
         const val STATE_NOT_IN_LIST = "STATE_NOT_IN_LIST"
         const val COUNTRY_NOT_IN_LIST = "COUNTRY_NOT_IN_LIST"
     }
@@ -155,9 +156,11 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         binding.editUsername.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 binding.editUsername.setBackgroundResource(R.drawable.custom_edittext)
+                binding.txtErrorUsername.visibility = View.GONE
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -291,7 +294,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             }
         }
 
-        if (user.dob != ""){
+        if (user.dob != "") {
             binding.dropdownYearText.setText(getString(R.string.dob_years))
             binding.dropdownMonthText.setText(getString(R.string.dob_month))
             binding.dropdownDayText.setText("1")
@@ -324,8 +327,24 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 binding.txtErrorFullName.apply {
                     visibility = View.VISIBLE
                     text = context.getString(R.string.error_fullname_chars)
+
                 }
-                binding.editProfileFullName.setBackgroundResource(R.drawable.custom_edittext_error)
+                binding.editProfileFullName.apply {
+                    requestFocus()
+                    setBackgroundResource(R.drawable.custom_edittext_error)
+                }
+            }
+
+            USER_NAME_NULL -> {
+                binding.txtErrorUsername.apply {
+                    visibility = View.VISIBLE
+                    text = USER_NAME_NULL
+                }
+                binding.editUsername.apply {
+                    setBackgroundResource(R.drawable.custom_edittext_error)
+                    requestFocus()
+                }
+
             }
 
             STATE_NOT_IN_LIST -> {

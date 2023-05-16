@@ -102,6 +102,24 @@
 
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_error_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:fontFamily="@font/montserrat_italic"
+            android:text="@string/invalid_email"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="@dimen/_13ssp"
+            android:visibility="gone"
+            app:fontFamily="@font/montserrat_italic"
+            app:layout_constraintBottom_toTopOf="@id/txt_profile_email"
+            app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
+            app:layout_constraintTop_toBottomOf="@+id/edit_username"
+
+            />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_profile_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -111,7 +129,7 @@
             android:textColor="@color/black"
             android:textSize="@dimen/_15ssp"
             app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
-            app:layout_constraintTop_toBottomOf="@id/edit_username" />
+            app:layout_constraintTop_toBottomOf="@id/txt_error_username" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_profile_email"
