@@ -27,6 +27,8 @@ import com.madison.move.ui.login.LoginDialogFragment
 import com.madison.move.ui.profile.ProfileFragment
 
 
+import com.madison.move.ui.offlinechannel.CommentFragment
+
 class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     NavigationView.OnNavigationItemSelectedListener, LoginDialogFragment.OnInputListener {
     private lateinit var binding: ActivityMainMenuBinding
@@ -44,8 +46,9 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         binding = ActivityMainMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
         super.onCreate(savedInstanceState)
-
     }
+
+
 
     override fun onResume() {
         super.onResume()
@@ -71,6 +74,15 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             R.string.opem_name,
             R.string.close_name
         )
+
+        toggle.isDrawerIndicatorEnabled = false
+        toggle.setHomeAsUpIndicator(R.drawable.ic_menu)
+
+        binding.groupItemChild.visibility = View.GONE
+        toggle.setToolbarNavigationClickListener { view ->
+            binding.drawerLayout.openDrawer(GravityCompat.START)
+        }
+
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -116,7 +128,17 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             menuTvGuideline.setOnClickListener{
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
 
-                supportFragmentManager.beginTransaction().replace(binding.contentFrame.id,GuidelinesFragment()).commit()
+                supportFragmentManager.beginTransaction()
+                    .replace(binding.contentFrame.id, GuidelinesFragment()).commit()
+
+            }
+
+            binding.menuTvSettting.setOnClickListener {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+
+                supportFragmentManager.beginTransaction()
+                    .replace(binding.contentFrame.id, CommentFragment()).commit()
+
             }
 
             layoutToolBar.imvLogo.setOnClickListener {
