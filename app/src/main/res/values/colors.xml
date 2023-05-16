@@ -11,6 +11,8 @@
     <color name="move_green">#13D0B4</color>
     <color name="error_red">#FF647A</color>
     <color name="error_fill">#FFEFF1</color>
+    <color name="light_gray">#F4F4F4</color>
+
 
 
 </resources>

@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.madison.move.R
 import com.madison.move.data.model.Category
 import com.madison.move.data.model.MoveVideo
+import com.madison.move.data.model.User
 import com.madison.move.databinding.FragmentHomeBinding
 import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.home.adapter.CarouselViewPagerAdapter
@@ -32,7 +34,10 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     var categoryList: MutableList<Category> = mutableListOf()
     var videoList: MutableList<MoveVideo> = mutableListOf()
 
-    override fun createPresenter(): HomePresenter = HomePresenter(this,featuredList,categoryList,videoList)
+
+    override fun createPresenter(): HomePresenter =
+        HomePresenter(this, featuredList, categoryList, videoList)
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
