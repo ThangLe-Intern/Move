@@ -63,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
-        android:fontFamily="@font/montserrat_semi_bold"
+        android:fontFamily="@font/montserrat_regular"
         android:text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores."
         android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@+id/item_user_avatar"
@@ -204,6 +204,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="10dp"
             android:fontFamily="monospace"
+            android:background="@color/move_green"
             android:text="Send" />
     </RelativeLayout>
 
