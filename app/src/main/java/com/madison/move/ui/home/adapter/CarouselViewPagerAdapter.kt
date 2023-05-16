@@ -1,12 +1,18 @@
 package com.madison.move.ui.home.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.madison.move.R
 import com.madison.move.ui.home.FeaturedFragment
+import com.madison.move.ui.offlinechannel.CommentFragment
 
 class CarouselViewPagerAdapter(var listFragment:ArrayList<FeaturedFragment>, private val viewPager2: ViewPager2):
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {

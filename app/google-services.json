@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1005804253241",
+    "project_id": "move-8d439",
+    "storage_bucket": "move-8d439.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1005804253241:android:290351fe55a9baeaabdde8",
+        "android_client_info": {
+          "package_name": "com.madison.move"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1005804253241-p6bkhls3pehb9l8o388kqsq4s38p7l1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCO9ooGzgfXC2rIGn29wVD5L1c1Pv4eTto"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1005804253241-p6bkhls3pehb9l8o388kqsq4s38p7l1v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

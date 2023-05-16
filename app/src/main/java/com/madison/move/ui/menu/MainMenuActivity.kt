@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -20,10 +21,13 @@ import com.madison.move.data.model.User
 import com.madison.move.databinding.ActivityMainMenuBinding
 import com.madison.move.ui.base.BaseActivity
 import com.madison.move.ui.faq.FAQFragment
+import com.madison.move.ui.guidelines.GuidelinesFragment
 import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.login.LoginDialogFragment
 import com.madison.move.ui.profile.ProfileFragment
 
+
+import com.madison.move.ui.offlinechannel.CommentFragment
 
 class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     NavigationView.OnNavigationItemSelectedListener, LoginDialogFragment.OnInputListener {
@@ -42,8 +46,9 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         binding = ActivityMainMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
         super.onCreate(savedInstanceState)
-
     }
+
+
 
     override fun onResume() {
         super.onResume()
@@ -69,8 +74,18 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             R.string.opem_name,
             R.string.close_name
         )
+
+        toggle.isDrawerIndicatorEnabled = false
+        toggle.setHomeAsUpIndicator(R.drawable.ic_menu)
+
+        binding.groupItemChild.visibility = View.GONE
+        toggle.setToolbarNavigationClickListener { view ->
+            binding.drawerLayout.openDrawer(GravityCompat.START)
+        }
+
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
+
 
         binding.groupItemChild.visibility = View.GONE
         binding.menuTvMore.setOnClickListener {
@@ -98,7 +113,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         }
 
         // add home
-        supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, HomeFragment())
+        supportFragmentManager.beginTransaction().replace(binding.contentFrameMain.id, HomeFragment())
             .commit()
     }
 
@@ -108,14 +123,28 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
 
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrame.id, FAQFragment()).commit()
+                    .replace(binding.contentFrameMain.id, FAQFragment()).commit()
+            }
+            menuTvGuideline.setOnClickListener{
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+
+                supportFragmentManager.beginTransaction()
+                    .replace(binding.contentFrameMain.id, GuidelinesFragment()).commit()
+
+            }
+
+            binding.menuTvFollowing.setOnClickListener {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+                supportFragmentManager.beginTransaction()
+                    .replace(binding.contentFrameMain.id, CommentFragment()).commit()
+
             }
 
             layoutToolBar.imvLogo.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
 
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrame.id, HomeFragment()).commit()
+                    .replace(binding.contentFrameMain.id, HomeFragment()).commit()
             }
 
             menulogout.setOnClickListener {
@@ -150,7 +179,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 }
 
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrame.id, profileFragment).commit()
+                    .replace(binding.contentFrameMain.id, profileFragment).commit()
+
             }
         }
     }

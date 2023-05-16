@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:argType="http://schemas.android.com/tools"
+    android:id="@+id/content_frame_comment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/contrainVideo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/playView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#000000"
+            app:controller_layout_id="@layout/custum_controler"
+            app:hide_on_touch="true"
+            app:player_layout_id="@layout/exo_player_view"
+            app:resize_mode="fit"
+            app:show_timeout="4000"
+            app:surface_type="surface_view"
+            app:use_controller="true"
+            argType:ignore="MissingClass">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+        </com.google.android.exoplayer2.ui.PlayerView>
+
+    </RelativeLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contrainVideo">
+
+        <ScrollView
+            android:id="@+id/scrollViewComment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/contrainVideo">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/contraintProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    app:layout_constraintBottom_toTopOf="@+id/line1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/avartProfile"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="23dp"
+                        android:src="@drawable/avatar1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/nameUserProflie"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/nameProfile"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        app:layout_constraintStart_toEndOf="@+id/avartProfile"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvJust"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/video_category"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toEndOf="@+id/avartProfile"
+                        app:layout_constraintTop_toBottomOf="@+id/nameUserProflie" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardviewBeginner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        app:cardBackgroundColor="@color/gray"
+                        app:cardCornerRadius="15dp"
+                        app:cardElevation="0dp"
+                        app:layout_constraintStart_toEndOf="@+id/avartProfile"
+                        app:layout_constraintTop_toBottomOf="@+id/tvJust">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_semi_bold"
+                            android:padding="7dp"
+                            android:text="@string/typeOfUser"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_9ssp" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgTick"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="7dp"
+                        android:src="@drawable/ic_tick"
+                        app:layout_constraintStart_toEndOf="@id/nameUserProflie"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgDots"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="7dp"
+                        android:layout_marginTop="23dp"
+                        android:src="@drawable/ic_dots"
+                        app:layout_constraintStart_toEndOf="@+id/tvJust"
+                        app:layout_constraintTop_toBottomOf="@+id/imgTick" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgStar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="16dp"
+                        android:src="@drawable/rate"
+                        app:layout_constraintStart_toEndOf="@+id/imgDots"
+                        app:layout_constraintTop_toBottomOf="@+id/imgTick" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvrateNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/video_rateNumber"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toEndOf="@+id/imgStar"
+                        app:layout_constraintTop_toBottomOf="@+id/imgTick" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardviewTimeLine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="15dp"
+                        app:cardBackgroundColor="@color/gray"
+                        app:cardCornerRadius="15dp"
+                        app:cardElevation="0dp"
+                        app:layout_constraintStart_toEndOf="@+id/cardviewBeginner"
+                        app:layout_constraintTop_toBottomOf="@+id/imgStar">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_semi_bold"
+                            android:padding="7dp"
+                            android:text="@string/timeOfCategory"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_9ssp" />
+                    </androidx.cardview.widget.CardView>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <RelativeLayout
+                    android:id="@+id/line1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/silverSand"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/contraintProfile" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/bodyLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/line1">
+
+                    <RelativeLayout
+                        android:id="@+id/layout_userComment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardView_User"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:cardCornerRadius="40dp"
+                            app:layout_constraintStart_toStartOf="parent"
+
+                            >
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/userAvatar"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                app:srcCompat="@drawable/avatar" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/edt_userComment"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_toEndOf="@+id/cardView_User"
+                            android:backgroundTint="@color/silverSand"
+                            android:hint="Write a comment" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/cancel_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/edt_userComment"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_toLeftOf="@id/send_button"
+                            android:fontFamily="monospace"
+                            android:text="Cancel" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/send_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/edt_userComment"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="monospace"
+                            android:text="Send" />
+                    </RelativeLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/listComment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/layout_userComment" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

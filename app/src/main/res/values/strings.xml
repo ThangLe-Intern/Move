@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Move</string>
+    <string name="app_name"></string>
     <string name="opem_name">Open TestUiMove</string>
     <string name="close_name">Close TestUiMove</string>
     <string name="action_settings">Settings</string>
@@ -8,9 +8,10 @@
     <string name="action_more">More</string>
     <string name="action_faq">FAQ</string>
     <string name="action_guideline">Community guideline</string>
-    <string name="action_login">Logout</string>
-
+    <string name="action_login">Login</string>
     <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
@@ -66,6 +67,70 @@
     <string name="dob_month">Jan</string>
     <string name="txt_log_in">LogIn</string>
     <string name="txt_log_out">LogOut</string>
+
+
+    <string name="nameProfile">dianeTV</string>
+
+    //FAQ
+    <string name="tvFAQ">FAQ</string>
+    <string name="tvBotFAQ">Can’t find an answer? Contact us here and we will address your problem as soon as possible.</string>
+    <string name="itemFAq">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam</string>
+    <string name="itemMinus">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic.</string>
+
+    //Menu
+    <string name="nameAvatar">philip2020</string>
+    <string name="TermsofService">Terms of Service</string>
+    <string name="Privacypolicy">Privacy policy</string>
+
+    //Guidelines
+    <string name="tvGuideline">Community Guidelines</string>
+    <string name="titlegosehere">Title gose here</string>
+    <string name="tv1">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
+    <string name="tv2">
+           <![CDATA[
+        <ul>
+            <li>
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+            </li>
+             <li>
+               It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+          </li>
+             <li>
+                 It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using ‘Content here, content here’, making it look like readable English.
+           </li>
+             <li>
+               Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for ‘lorem ipsum’ will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+            </li>
+        </ul>
+              ]]>
+    </string>
+    <string name="tv3">
+        <ul>
+             <li>
+                It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+            </li>
+        </ul>
+    </string>
+    <string name="tv4">
+         <ul>
+             <li>
+                It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using ‘Content here, content here’, making it look like readable English.
+            </li>
+        </ul>
+    </string>
+    <string name="tv5">
+        <ul>
+             <li>
+                Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for ‘lorem ipsum’ will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+            </li>
+     </ul>
+    </string>
+
+    <string name="player_activity_name">Media player</string>
+    <string name="media_url_mp3">http://storage.googleapis.com/exoplayer-test-media-0/play.mp3</string>
+    <string name="media_url_mp4">http://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4</string>
+    <string name="media_url_dash"><![CDATA[http://www.youtube.com/api/manifest/dash/id/bf5bb2419360daf1/source/youtube?as=fmp4_audio_clear,fmp4_sd_hd_clear&sparams=ip,ipbits,expire,source,id,as&ip=0.0.0.0&ipbits=0&expire=19000000000&signature=51AF5F39AB0CEC3E5497CD9C900EBFEAECCCB5C7.8506521BFC350652163895D4C26DEE124209AA9E&key=ik0]]></string>
+    <string name="logo">Google logo</string>
 
 
 </resources>
