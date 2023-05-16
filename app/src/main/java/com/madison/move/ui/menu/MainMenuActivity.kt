@@ -113,7 +113,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         }
 
         // add home
-        supportFragmentManager.beginTransaction().replace(binding.contentFrame.id, HomeFragment())
+        supportFragmentManager.beginTransaction().replace(binding.contentFrameMain.id, HomeFragment())
             .commit()
     }
 
@@ -123,21 +123,20 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
 
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrame.id, FAQFragment()).commit()
+                    .replace(binding.contentFrameMain.id, FAQFragment()).commit()
             }
             menuTvGuideline.setOnClickListener{
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
 
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrame.id, GuidelinesFragment()).commit()
+                    .replace(binding.contentFrameMain.id, GuidelinesFragment()).commit()
 
             }
 
-            binding.menuTvSettting.setOnClickListener {
+            binding.menuTvFollowing.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
-
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrame.id, CommentFragment()).commit()
+                    .replace(binding.contentFrameMain.id, CommentFragment()).commit()
 
             }
 
@@ -145,7 +144,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
 
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrame.id, HomeFragment()).commit()
+                    .replace(binding.contentFrameMain.id, HomeFragment()).commit()
             }
 
             menulogout.setOnClickListener {
@@ -180,7 +179,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 }
 
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrame.id, profileFragment).commit()
+                    .replace(binding.contentFrameMain.id, profileFragment).commit()
+
             }
         }
     }
