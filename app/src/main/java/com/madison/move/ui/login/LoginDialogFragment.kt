@@ -53,7 +53,9 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
         binding = FragmentLoginDialogBinding.inflate(inflater, container, false)
 
         val bundle = arguments
-        user = bundle?.getParcelable<User>("user")!!
+        bundle?.getParcelable<User>("user")?.also {
+            user = it
+        }
 
         presenter = LoginPresenter(this)
         presenter.apply {
@@ -80,34 +82,12 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
             binding.layoutErrorMessage.visibility = View.GONE
             binding.txtErrorEmail.visibility = View.GONE
 
-            presenter.onLoginClickPresenter(binding.editLoginEmail.text.toString().trim(),binding.editLoginPassword.text.toString().trim(),user)
+            val emailUserInput = binding.editLoginEmail.text.toString().trim()
+            val passwordUserInput = binding.editLoginPassword.text.toString().trim()
+            presenter.onLoginClickPresenter(emailUserInput,passwordUserInput,user)
         }
 
     }
-
-
-/*    private fun onShowAndHidePassword(){
-        val imgShowPassword:AppCompatImageView = binding.imgShowPassword
-        val imgHidePassword:AppCompatImageView = binding.imgHidePassword
-
-        imgShowPassword.setOnClickListener {
-            binding.editLoginPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
-
-            //Move Cursor to end of edit text
-            binding.editLoginPassword.setSelection(binding.editLoginPassword.text.toString().trim().length)
-            imgShowPassword.visibility = View.GONE
-            imgHidePassword.visibility = View.VISIBLE
-        }
-
-        imgHidePassword.setOnClickListener {
-            binding.editLoginPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-            binding.editLoginPassword.setSelection(binding.editLoginPassword.text.toString().trim().length)
-            imgHidePassword.visibility = View.GONE
-            imgShowPassword.visibility = View.VISIBLE
-        }
-
-    }*/
-
 
 
     override fun onShowLoading() {

@@ -18,7 +18,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?, var user
     }
 
     override fun onSaveProfileClickPresenter(userNewProfile:User) {
-        if (userNewProfile.fullname.length < 4 && user.fullname.length != userNewProfile.fullname.length ){
+        if (userNewProfile.fullname?.length!! < 4 && user.fullname?.length != userNewProfile.fullname?.length ){
           return onShowErrorPresenter(FULL_NAME_AT_LEAST_4_CHARS)
         }
 

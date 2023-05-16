@@ -77,8 +77,8 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         val bundle = arguments
-        if (bundle != null) {
-            user = bundle.getParcelable<User>("user")!!
+        bundle?.getParcelable<User>("user")?.also {
+            user = it
         }
         setUserData(user)
 
@@ -227,29 +227,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         })
     }
 
-
-    /*    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-            super.onActivityResult(requestCode, resultCode, data)
-            if (resultCode == Activity.RESULT_OK) {
-
-                //Image Uri will not be null for RESULT_OK
-                val uri: Uri? = data?.data
-                binding.imgProfileUser.setImageURI(uri)
-
-                Log.d("AVATAR", uri.toString())
-
-            } else if (resultCode == ImagePicker.RESULT_ERROR) {
-                Toast.makeText(
-                    activity?.applicationContext,
-                    ImagePicker.getError(data),
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                Toast.makeText(activity?.applicationContext, "Task Cancelled", Toast.LENGTH_SHORT)
-                    .show()
-            }
-
-        }*/
     private var mProfileUri: Uri? = null
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -295,7 +272,11 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         binding.editProfileFullName.setText(user.fullname)
         binding.editProfileCity.setText(user.address)
 
-        binding.imgProfileUser.setImageResource(user.avatar)
+        user.avatar.also {
+            if (it != null) {
+                binding.imgProfileUser.setImageResource(it)
+            }
+        }
 
 
         when (user.gender) {
