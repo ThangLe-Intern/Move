@@ -105,4 +105,6 @@ dependencies {
     //Circle imageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    //flex box for view auto break line
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
 }
