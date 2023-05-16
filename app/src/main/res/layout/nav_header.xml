@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/black"
@@ -90,7 +89,7 @@
 
         <TextView
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:id="@+id/textView"
+            android:id="@+id/txt_username_navbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -109,7 +108,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="28dp"
             android:src="@drawable/ic_tick"
-            app:layout_constraintStart_toEndOf="@+id/textView"
+            app:layout_constraintStart_toEndOf="@+id/txt_username_navbar"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,9 +1,9 @@
 package com.madison.move.ui.base
 
-import android.R
+
 import android.os.Build
 import android.os.Bundle
-import androidx.annotation.NonNull
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 
@@ -22,6 +22,11 @@ abstract class BaseFragment<Presenter : Any> : Fragment(), BaseView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter = createPresenter()
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initView()
         listener()
     }
