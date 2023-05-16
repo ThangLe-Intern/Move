@@ -48,10 +48,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     override fun onResume() {
         super.onResume()
         if (!userDung.role) {
-            binding.menulogout.text = "LogIn"
+            binding.menulogout.text = getString(R.string.txt_log_in)
 //            binding.menuTvSettting.visibility = View.GONE
         } else {
-            binding.menulogout.text = "LogOut"
+            binding.menulogout.text = getString(R.string.txt_log_out)
             binding.menuTvSettting.visibility = View.VISIBLE
         }
     }
@@ -120,14 +120,14 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
             menulogout.setOnClickListener {
 
-                if (!userDung.role){
+                if (!userDung.role) {
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     val loginDialog = LoginDialogFragment(this@MainMenuActivity)
                     val bundle = Bundle()
                     bundle.putParcelable("user", userDung)
                     loginDialog.arguments = bundle
                     loginDialog.show(supportFragmentManager, "login Dialog")
-                }else{
+                } else {
                     userDung.role = false
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     val intent = intent
@@ -143,7 +143,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
                 val profileFragment = ProfileFragment()
 
-                if(userDung.role){
+                if (userDung.role) {
                     val bundle = Bundle()
                     bundle.putParcelable("user", userDung)
                     profileFragment.arguments = bundle
@@ -191,10 +191,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     override fun sendInput(user: User) {
         userDung = user
         if (!userDung.role) {
-            binding.menulogout.text = "LogIn"
+            binding.menulogout.text = getString(R.string.txt_log_in)
             binding.menuTvSettting.visibility = View.GONE
         } else {
-            binding.menulogout.text = "LogOut"
+            binding.menulogout.text = getString(R.string.txt_log_out)
             binding.menuTvSettting.visibility = View.VISIBLE
         }
     }
