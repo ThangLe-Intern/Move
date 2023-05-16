@@ -291,9 +291,12 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             }
         }
 
-        binding.dropdownYearText.setText(getString(R.string.dob_years))
-        binding.dropdownMonthText.setText(getString(R.string.dob_month))
-        binding.dropdownDayText.setText("1")
+        if (user.dob != ""){
+            binding.dropdownYearText.setText(getString(R.string.dob_years))
+            binding.dropdownMonthText.setText(getString(R.string.dob_month))
+            binding.dropdownDayText.setText("1")
+        }
+
 
         val monthSelected = binding.dropDownProfileMonth.editText?.text.toString()
         val yearSelected = binding.dropDownProfileYear.editText?.text.toString()
@@ -357,6 +360,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         onYearSelected()
 
         val monthAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, months)
+
         val yearAdapter =
             ArrayAdapter(requireContext(), R.layout.item_dropdown, years.sortedDescending())
 
@@ -401,6 +405,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         } else {
             days = (1..31).map { it.toString() }.toMutableList()
         }
+
         val dayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, days)
         binding.dropdownDayText.setAdapter(dayAdapter)
     }
