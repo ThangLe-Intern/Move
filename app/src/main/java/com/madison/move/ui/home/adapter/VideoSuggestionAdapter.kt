@@ -15,13 +15,21 @@ class VideoSuggestionAdapter(var listVideo:MutableList<MoveVideo>):
 
     inner class ViewHolder(viewItem: View): RecyclerView.ViewHolder(viewItem){
         fun onBind(video: MoveVideo){
-            itemView.findViewById<ImageView>(R.id.img_video_suggestion_thumbnail).setImageResource(video.thumbnail)
+            video.thumbnail?.let {
+                itemView.findViewById<ImageView>(R.id.img_video_suggestion_thumbnail).setImageResource(
+                    it
+                )
+            }
             itemView.findViewById<TextView>(R.id.txt_video_suggestion_view).text = "${video.view}k"
             itemView.findViewById<TextView>(R.id.txt_video_suggestion_time).text = "${video.time}:00"
-            itemView.findViewById<ImageView>(R.id.img_video_suggestion_user_avatar).setImageResource(video.user.avatar)
-            itemView.findViewById<TextView>(R.id.txt_video_suggestion_username).text = video.user.fullname
+            video.user?.avatar?.let {
+                itemView.findViewById<ImageView>(R.id.img_video_suggestion_user_avatar).setImageResource(
+                    it
+                )
+            }
+            itemView.findViewById<TextView>(R.id.txt_video_suggestion_username).text = video.user?.fullname
             itemView.findViewById<AppCompatTextView>(R.id.txt_title_of_video_suggestion).text = video.title
-            itemView.findViewById<TextView>(R.id.txt_video_suggestion_category).text = "${video.category.name} • A day ago"
+            itemView.findViewById<TextView>(R.id.txt_video_suggestion_category).text = "${video.category?.name} • A day ago"
 
 
         }

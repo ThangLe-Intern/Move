@@ -8,15 +8,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="374:110"
         app:layout_constraintTop_toTopOf="parent">
+        <!--        app:layout_constraintDimensionRatio="374:110"-->
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_video_suggestion_thumbnail"
-            android:layout_width="@dimen/_145sdp"
-            android:layout_height="@dimen/_72sdp"
+            android:layout_width="@dimen/_140sdp"
+            android:layout_height="@dimen/_82sdp"
             android:layout_marginStart="4dp"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -86,6 +86,7 @@
 
         </androidx.cardview.widget.CardView>
 
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_video_suggestion_user_avatar"
             android:layout_width="@dimen/_25sdp"
@@ -96,29 +97,48 @@
             app:layout_constraintTop_toTopOf="@id/img_video_suggestion_thumbnail"
             app:srcCompat="@drawable/avatar" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txt_video_suggestion_username"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/layout_suggestion_user_name"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_7sdp"
-            android:fontFamily="@font/montserrat_regular"
-            android:text="@string/username"
-            android:textSize="@dimen/_11ssp"
-            app:layout_constraintBottom_toBottomOf="@+id/img_video_suggestion_user_avatar"
-            app:layout_constraintStart_toEndOf="@id/img_video_suggestion_user_avatar"
-            app:layout_constraintTop_toTopOf="@+id/img_video_suggestion_user_avatar" />
+            app:layout_constraintBottom_toBottomOf="@id/img_video_suggestion_user_avatar"
+            app:layout_constraintEnd_toEndOf="@+id/txt_video_suggestion_rate_number"
+            app:layout_constraintStart_toEndOf="@+id/img_video_suggestion_user_avatar"
+            app:layout_constraintTop_toTopOf="@id/img_video_suggestion_user_avatar">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/img_video_suggestion_blueTick"
-            android:layout_width="@dimen/_12sdp"
-            android:layout_height="@dimen/_12sdp"
-            android:layout_marginStart="@dimen/_3sdp"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_video_suggestion_username"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@id/txt_video_suggestion_username"
-            app:layout_constraintTop_toTopOf="@id/txt_video_suggestion_username"
-            app:srcCompat="@drawable/blue_tick" />
+            <LinearLayout
+                android:id="@+id/layout_suggestion_message_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/_20sdp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_video_suggestion_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="start"
+                    android:maxLines="1"
+                    android:layout_marginStart="@dimen/_7sdp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="@string/username"
+                    android:textSize="@dimen/_11ssp"
+                 />
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/img_video_suggestion_blueTick"
+                android:layout_width="@dimen/_12sdp"
+                android:layout_height="@dimen/_12sdp"
+                android:layout_marginStart="-15dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/layout_suggestion_message_username"
+                app:srcCompat="@drawable/blue_tick" />
+
+
+        </RelativeLayout>
+
+
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_video_suggestion_rate"
@@ -148,6 +168,7 @@
             android:id="@+id/txt_title_of_video_suggestion"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_3sdp"
             android:ellipsize="end"
             android:fontFamily="@font/montserrat_regular"
             android:maxLines="1"
@@ -161,6 +182,7 @@
             android:id="@+id/txt_video_suggestion_category"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_3sdp"
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/category_title"
             android:textSize="@dimen/_10ssp"
@@ -168,52 +190,62 @@
             app:layout_constraintStart_toStartOf="@id/img_video_suggestion_user_avatar"
             app:layout_constraintTop_toBottomOf="@+id/txt_title_of_video_suggestion" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_video_suggestion_user_level"
-            android:layout_width="wrap_content"
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/layout_card_view_duration"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            app:cardBackgroundColor="@color/gray"
-            app:cardCornerRadius="15dp"
-            app:cardElevation="0dp"
+            android:layout_marginTop="@dimen/_3sdp"
+            app:flexWrap="wrap"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/img_video_suggestion_user_avatar"
             app:layout_constraintTop_toBottomOf="@+id/txt_video_suggestion_category">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/txt_video_suggestion_user_level"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_video_suggestion_user_level"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_semi_bold"
-                android:padding="7dp"
-                android:text="@string/typeOfUser"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_9ssp" />
-        </androidx.cardview.widget.CardView>
+                android:layout_marginTop="@dimen/_3sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                app:cardBackgroundColor="@color/gray"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="0dp">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_video_suggestion_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_6sdp"
-            app:cardBackgroundColor="@color/gray"
-            app:cardCornerRadius="15dp"
-            app:cardElevation="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/cardView_video_suggestion_user_level"
-            app:layout_constraintStart_toEndOf="@id/cardView_video_suggestion_user_level"
-            app:layout_constraintTop_toTopOf="@+id/cardView_video_suggestion_user_level">
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_video_suggestion_user_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_semi_bold"
+                    android:padding="7dp"
+                    android:text="@string/typeOfUser"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_9ssp" />
+            </androidx.cardview.widget.CardView>
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/txt_video_suggestion_duration"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_video_suggestion_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_semi_bold"
-                android:padding="7dp"
-                android:text="@string/timeOfCategory"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_9ssp" />
+                android:layout_marginTop="@dimen/_3sdp"
+                app:cardBackgroundColor="@color/gray"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="0dp">
 
-        </androidx.cardview.widget.CardView>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_video_suggestion_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_semi_bold"
+                    android:padding="7dp"
+                    android:text="@string/timeOfCategory"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_9ssp" />
+
+            </androidx.cardview.widget.CardView>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
