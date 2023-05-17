@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name"></string>
+    <string name="app_name">Move</string>
     <string name="opem_name">Open TestUiMove</string>
     <string name="close_name">Close TestUiMove</string>
     <string name="action_settings">Settings</string>

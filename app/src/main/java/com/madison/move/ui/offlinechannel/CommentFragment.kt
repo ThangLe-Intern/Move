@@ -18,6 +18,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
@@ -81,6 +82,13 @@ open class CommentFragment : Fragment(), CommentListener {
         handler = Handler(Looper.getMainLooper())
 
         currentFragment = this
+
+
+/*
+        val count = activity?.supportFragmentManager?.backStackEntryCount
+        Toast.makeText(activity,count.toString(), Toast.LENGTH_SHORT).show()
+*/
+
 
         return binding.root
     }
