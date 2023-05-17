@@ -368,7 +368,7 @@
             <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                 android:id="@+id/dropdown_country_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:singleLine="true"
@@ -411,7 +411,7 @@
             <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                 android:id="@+id/dropdown_state_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:layout_weight="1"
                 android:imeOptions="actionDone"
                 android:singleLine="true"
