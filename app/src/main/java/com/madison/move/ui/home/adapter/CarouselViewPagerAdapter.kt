@@ -28,7 +28,6 @@ class CarouselViewPagerAdapter(
 
                 activity.supportFragmentManager
                     .beginTransaction()
-//                    .addToBackStack(null)
                     .replace(R.id.content_frame_main, commentFragment)
                     .commit()
 

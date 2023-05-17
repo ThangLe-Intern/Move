@@ -111,7 +111,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         }
 
         // add home
-        supportFragmentManager.beginTransaction()
+        supportFragmentManager
+            .beginTransaction()
             .replace(binding.contentFrameMain.id, HomeFragment())
             .commit()
     }
@@ -121,18 +122,9 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
         binding.apply {
             menuTvFaq.setOnClickListener {
-/*                Toast.makeText(applicationContext,count.toString(),Toast.LENGTH_SHORT).show()
-                val count = supportFragmentManager.backStackEntryCount*/
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
-
-/*
-                val fragmentManager = supportFragmentManager
-                fragmentManager.popBackStack()
-*/
-
                 supportFragmentManager
                     .beginTransaction()
-//                    .addToBackStack(null)
                     .replace(binding.contentFrameMain.id, FAQFragment())
                     .commit()
             }
