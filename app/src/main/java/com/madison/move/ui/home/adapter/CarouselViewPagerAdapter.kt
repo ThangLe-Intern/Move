@@ -14,17 +14,32 @@ import com.madison.move.R
 import com.madison.move.ui.home.FeaturedFragment
 import com.madison.move.ui.offlinechannel.CommentFragment
 
-class CarouselViewPagerAdapter(var listFragment:ArrayList<FeaturedFragment>, private val viewPager2: ViewPager2):
+class CarouselViewPagerAdapter(
+    var listFragment: ArrayList<FeaturedFragment>,
+    private val viewPager2: ViewPager2
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        fun onBind(){
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun onBind(fragment: FeaturedFragment) {
+            itemView.findViewById<ConstraintLayout>(R.id.layout_feature_fragment).setOnClickListener {
+                val activity: AppCompatActivity = it.context as AppCompatActivity
+                val commentFragment = CommentFragment()
 
+                activity.supportFragmentManager
+                    .beginTransaction()
+//                    .addToBackStack(null)
+                    .replace(R.id.content_frame_main, commentFragment)
+                    .commit()
+
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.fragment_featured,parent,false))
+        return ViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.fragment_featured, parent, false)
+        )
     }
 
     override fun getItemCount(): Int {
@@ -32,9 +47,10 @@ class CarouselViewPagerAdapter(var listFragment:ArrayList<FeaturedFragment>, pri
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (position == listFragment.size-1){
+        if (position == listFragment.size - 1) {
             viewPager2.post(runnable)
         }
+        (holder as ViewHolder).onBind(listFragment[position])
     }
 
     private val runnable = Runnable {

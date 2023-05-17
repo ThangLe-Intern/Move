@@ -128,6 +128,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_12sdp"
+                android:nestedScrollingEnabled="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/img_line_first"
                 app:layout_constraintStart_toStartOf="@id/txt_featured_title"

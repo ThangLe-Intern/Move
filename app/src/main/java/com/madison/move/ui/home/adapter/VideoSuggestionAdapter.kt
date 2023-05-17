@@ -16,33 +16,50 @@ import com.madison.move.R
 import com.madison.move.data.model.MoveVideo
 import com.madison.move.ui.offlinechannel.CommentFragment
 
-class VideoSuggestionAdapter(var listVideo:MutableList<MoveVideo>):
-    RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class VideoSuggestionAdapter(var listVideo: MutableList<MoveVideo>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    inner class ViewHolder(viewItem: View): RecyclerView.ViewHolder(viewItem){
-        fun onBind(video: MoveVideo){
-                video.thumbnail?.let {
-                itemView.findViewById<ImageView>(R.id.img_video_suggestion_thumbnail).setImageResource(
-                    it
-                )
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun onBind(video: MoveVideo) {
+
+            itemView.findViewById<ConstraintLayout>(R.id.layout_video_suggestion).setOnClickListener {
+                val activity:AppCompatActivity = it.context as AppCompatActivity
+                val commentFragment = CommentFragment()
+
+                activity.supportFragmentManager.beginTransaction().replace(R.id.content_frame_main,commentFragment).commit()
+            }
+
+            video.thumbnail?.let {
+                itemView.findViewById<ImageView>(R.id.img_video_suggestion_thumbnail)
+                    .setImageResource(
+                        it
+                    )
             }
             itemView.findViewById<TextView>(R.id.txt_video_suggestion_view).text = "${video.view}k"
-            itemView.findViewById<TextView>(R.id.txt_video_suggestion_time).text = "${video.time}:00"
+            itemView.findViewById<TextView>(R.id.txt_video_suggestion_time).text =
+                "${video.time}:00"
             video.user?.avatar?.let {
-                itemView.findViewById<ImageView>(R.id.img_video_suggestion_user_avatar).setImageResource(
-                    it
-                )
+                itemView.findViewById<ImageView>(R.id.img_video_suggestion_user_avatar)
+                    .setImageResource(
+                        it
+                    )
             }
-            itemView.findViewById<TextView>(R.id.txt_video_suggestion_username).text = video.user?.fullname
-            itemView.findViewById<AppCompatTextView>(R.id.txt_title_of_video_suggestion).text = video.title
-            itemView.findViewById<TextView>(R.id.txt_video_suggestion_category).text = "${video.category?.name} • A day ago"
+            itemView.findViewById<TextView>(R.id.txt_video_suggestion_username).text =
+                video.user?.fullname
+            itemView.findViewById<AppCompatTextView>(R.id.txt_title_of_video_suggestion).text =
+                video.title
+            itemView.findViewById<TextView>(R.id.txt_video_suggestion_category).text =
+                "${video.category?.name} • A day ago"
 
 
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_video_suggestion,parent,false))
+        return ViewHolder(
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_video_suggestion, parent, false)
+        )
     }
 
     override fun getItemCount(): Int {

@@ -1,17 +1,18 @@
 package com.madison.move.ui.menu
 
+
 import android.content.Context
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
@@ -24,10 +25,8 @@ import com.madison.move.ui.faq.FAQFragment
 import com.madison.move.ui.guidelines.GuidelinesFragment
 import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.login.LoginDialogFragment
-import com.madison.move.ui.profile.ProfileFragment
-
-
 import com.madison.move.ui.offlinechannel.CommentFragment
+import com.madison.move.ui.profile.ProfileFragment
 
 class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     NavigationView.OnNavigationItemSelectedListener, LoginDialogFragment.OnInputListener {
@@ -47,7 +46,6 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         setContentView(binding.root)
         super.onCreate(savedInstanceState)
     }
-
 
 
     override fun onResume() {
@@ -113,21 +111,34 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         }
 
         // add home
-        supportFragmentManager.beginTransaction().replace(binding.contentFrameMain.id, HomeFragment())
+        supportFragmentManager.beginTransaction()
+            .replace(binding.contentFrameMain.id, HomeFragment())
             .commit()
     }
 
+
     override fun listener() {
+
         binding.apply {
             menuTvFaq.setOnClickListener {
+/*                Toast.makeText(applicationContext,count.toString(),Toast.LENGTH_SHORT).show()
+                val count = supportFragmentManager.backStackEntryCount*/
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
 
-                supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrameMain.id, FAQFragment()).commit()
+/*
+                val fragmentManager = supportFragmentManager
+                fragmentManager.popBackStack()
+*/
+
+                supportFragmentManager
+                    .beginTransaction()
+//                    .addToBackStack(null)
+                    .replace(binding.contentFrameMain.id, FAQFragment())
+                    .commit()
             }
-            menuTvGuideline.setOnClickListener{
-                binding.drawerLayout.closeDrawer(GravityCompat.START)
 
+            menuTvGuideline.setOnClickListener {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
                 supportFragmentManager.beginTransaction()
                     .replace(binding.contentFrameMain.id, GuidelinesFragment()).commit()
 
@@ -142,13 +153,11 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
             layoutToolBar.imvLogo.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
-
                 supportFragmentManager.beginTransaction()
                     .replace(binding.contentFrameMain.id, HomeFragment()).commit()
             }
 
             menulogout.setOnClickListener {
-
                 if (!userDung.role) {
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     val loginDialog = LoginDialogFragment(this@MainMenuActivity)
@@ -210,6 +219,18 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         } else {
             onBackPressedDispatcher.onBackPressed()
         }
+
+/*
+        val count = supportFragmentManager.backStackEntryCount
+        Toast.makeText(applicationContext,count.toString(), Toast.LENGTH_SHORT).show()
+*/
+
+/*        if (count == 0) {
+            super.onBackPressed()
+            //additional code
+        } else {
+            supportFragmentManager.popBackStack()
+        }*/
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
