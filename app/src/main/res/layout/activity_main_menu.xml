@@ -65,7 +65,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/action_following"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/_16ssp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -76,7 +76,7 @@
                         android:layout_marginTop="@dimen/_15sdp"
                         android:text="@string/action_browse"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/_16ssp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -88,7 +88,7 @@
                         android:layout_marginTop="@dimen/_15sdp"
                         android:text="@string/action_settings"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/_16ssp"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -112,7 +112,7 @@
                                 android:text="@string/action_more"
                                 android:textColor="@color/white"
                                 android:textDirection="rtl"
-                                android:textSize="20sp"
+                                android:textSize="@dimen/_16ssp"
                                 android:textStyle="bold" />
 
                             <ImageView
@@ -170,7 +170,7 @@
                         android:layout_marginTop="@dimen/_30sdp"
                         android:text="Logout"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/_16ssp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -183,24 +183,24 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_regular"
                     android:text="@string/TermsofService"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="bold" />
+                    android:textSize="@dimen/_11ssp"
+                     />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/montserrat_regular"
                     android:text="@string/Privacypolicy"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="bold" />
+                    android:textSize="@dimen/_11ssp"
+                     />
             </LinearLayout>
 
         </LinearLayout>
