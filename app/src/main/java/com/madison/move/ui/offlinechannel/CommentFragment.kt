@@ -193,11 +193,11 @@ open class CommentFragment : Fragment(), CommentListener {
                     binding.progressBar.visibility = View.GONE
                 }
 
-                if (!simpleExoPlayer.playWhenReady) {
-                    handler.removeCallbacks(updateProgressAction)
-                } else {
-                    onProgress()
-                }
+//                if (!simpleExoPlayer.playWhenReady) {
+//                    handler.removeCallbacks(updateProgressAction)
+//                } else {
+//                    onProgress()
+//                }
             }
         })
         val videoSource = Uri.parse("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4")
@@ -210,67 +210,67 @@ open class CommentFragment : Fragment(), CommentListener {
     }
 
 
-    private val ad = 4000
-    private var check = false
+//    private val ad = 4000
+//    private var check = false
+//
+//    private fun onProgress() {
+//        val player = simpleExoPlayer
+//        val position: Long = player.currentPosition
+//        handler.removeCallbacks(updateProgressAction)
+//        val playbackState = player.playbackState
+//        if (playbackState != Player.STATE_IDLE && playbackState != Player.STATE_ENDED) {
+//            var delayMs: Long
+//            if (player.playWhenReady && playbackState == Player.STATE_READY) {
+//                delayMs = 1000 - position % 1000
+//                if (delayMs < 200) {
+//                    delayMs += 1000
+//                }
+//            } else {
+//                delayMs = 1000
+//            }
+//            if ((ad - 3000 <= position && position <= ad) && !check) {
+//                check = true
+//                initAd()
+//            }
+//            handler.postDelayed(updateProgressAction, delayMs)
+//        }
+//    }
+//
+//    var rewardedInterstitialAd: RewardedInterstitialAd? = null
+//    private fun initAd() {
+//        if (rewardedInterstitialAd != null) return
+//        MobileAds.initialize(requireContext())
+//        RewardedInterstitialAd.load(requireContext(), "ca-app-pub-3940256099942544/5354046379",
+//            AdRequest.Builder().build(), object : RewardedInterstitialAdLoadCallback() {
+//                override fun onAdLoaded(p0: RewardedInterstitialAd) {
+//                    rewardedInterstitialAd = p0
+//                    rewardedInterstitialAd!!.fullScreenContentCallback =
+//                        object : FullScreenContentCallback() {
+//                            override fun onAdFailedToShowFullScreenContent(p0: AdError) {
+//                            }
+//
+//                            override fun onAdShowedFullScreenContent() {
+//                                handler.removeCallbacks(updateProgressAction)
+//                            }
+//
+//                            override fun onAdDismissedFullScreenContent() {
+//                                //resume play
+//                                simpleExoPlayer.playWhenReady = true
+//                                rewardedInterstitialAd = null
+//                                check = false
+//                            }
+//                        }
+//                }
+//
+//                override fun onAdFailedToLoad(p0: LoadAdError) {
+//                    rewardedInterstitialAd = null
+//                }
+//
+//
+//            })
+//    }
 
-    private fun onProgress() {
-        val player = simpleExoPlayer
-        val position: Long = player.currentPosition
-        handler.removeCallbacks(updateProgressAction)
-        val playbackState = player.playbackState
-        if (playbackState != Player.STATE_IDLE && playbackState != Player.STATE_ENDED) {
-            var delayMs: Long
-            if (player.playWhenReady && playbackState == Player.STATE_READY) {
-                delayMs = 1000 - position % 1000
-                if (delayMs < 200) {
-                    delayMs += 1000
-                }
-            } else {
-                delayMs = 1000
-            }
-            if ((ad - 3000 <= position && position <= ad) && !check) {
-                check = true
-                initAd()
-            }
-            handler.postDelayed(updateProgressAction, delayMs)
-        }
-    }
-
-    var rewardedInterstitialAd: RewardedInterstitialAd? = null
-    private fun initAd() {
-        if (rewardedInterstitialAd != null) return
-        MobileAds.initialize(requireContext())
-        RewardedInterstitialAd.load(requireContext(), "ca-app-pub-3940256099942544/5354046379",
-            AdRequest.Builder().build(), object : RewardedInterstitialAdLoadCallback() {
-                override fun onAdLoaded(p0: RewardedInterstitialAd) {
-                    rewardedInterstitialAd = p0
-                    rewardedInterstitialAd!!.fullScreenContentCallback =
-                        object : FullScreenContentCallback() {
-                            override fun onAdFailedToShowFullScreenContent(p0: AdError) {
-                            }
-
-                            override fun onAdShowedFullScreenContent() {
-                                handler.removeCallbacks(updateProgressAction)
-                            }
-
-                            override fun onAdDismissedFullScreenContent() {
-                                //resume play
-                                simpleExoPlayer.playWhenReady = true
-                                rewardedInterstitialAd = null
-                                check = false
-                            }
-                        }
-                }
-
-                override fun onAdFailedToLoad(p0: LoadAdError) {
-                    rewardedInterstitialAd = null
-                }
-
-
-            })
-    }
-
-    private val updateProgressAction = Runnable { onProgress() }
+//    private val updateProgressAction = Runnable { onProgress() }
     private fun lockScreen(lock: Boolean) {
         val sec_mid = view?.findViewById<LinearLayout>(R.id.sec_controlvid1)
         val sec_bottom = view?.findViewById<LinearLayout>(R.id.sec_controlvid2)

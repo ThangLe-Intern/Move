@@ -93,10 +93,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
             if (!isImageChanged && binding.groupItemChild.visibility == View.VISIBLE) {
                 binding.groupItemChild.visibility = View.GONE
-                binding.imgdown.setImageDrawable(newImage)
+                binding.imgdown.setImageDrawable(originalImage)
                 isImageChanged = true
             } else {
-                binding.imgdown.setImageDrawable(originalImage)
+                binding.imgdown.setImageDrawable(newImage)
                 isImageChanged = false
                 binding.groupItemChild.visibility = View.VISIBLE
             }
