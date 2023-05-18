@@ -233,11 +233,11 @@
                         <androidx.appcompat.widget.AppCompatEditText
                             android:id="@+id/edt_userComment"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/_35sdp"
+                            android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_toEndOf="@+id/cardView_User"
                             android:backgroundTint="@color/silverSand"
-                            android:hint="Write a comment" />
+                            android:hint="@string/write_a_comment" />
 
                         <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/cancel_button"

@@ -59,7 +59,13 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
 
     private val runnable = Runnable {
+
+        val currentFragment = activity?.supportFragmentManager?.findFragmentByTag("f${binding.viewPager.currentItem}")
+        println(currentFragment.toString())
+
         binding.viewPager.currentItem = binding.viewPager.currentItem + 1
+        featuredList[binding.viewPager.currentItem].setABC(true)
+        carouselViewPagerAdapter.notifyDataSetChanged()
     }
 
     //Show Video To Carousel
@@ -74,6 +80,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             clipChildren = false
             getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
+
 
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {

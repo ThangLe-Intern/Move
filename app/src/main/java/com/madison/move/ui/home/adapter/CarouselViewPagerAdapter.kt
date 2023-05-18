@@ -45,8 +45,14 @@ class CarouselViewPagerAdapter(
         return listFragment.size
     }
 
+
+
+    override fun getItemId(position: Int): Long {
+        return super.getItemId(position)
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (position == listFragment.size - 1) {
+        if (position == listFragment.lastIndex) {
             viewPager2.post(runnable)
         }
         (holder as ViewHolder).onBind(listFragment[position])
