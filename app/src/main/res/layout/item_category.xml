@@ -7,8 +7,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_category"
-        android:layout_width="@dimen/_140sdp"
-        android:layout_height="@dimen/_203sdp"
+        android:layout_width="@dimen/_120sdp"
+        android:layout_height="@dimen/_200sdp"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:ellipsize="end"
-        android:fontFamily="@font/montserrat_semi_bold"
+        android:fontFamily="@font/montserrat_bold"
         android:text="@string/category_title"
         android:textColor="@color/black"
         android:textSize="@dimen/_14ssp"

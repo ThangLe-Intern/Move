@@ -2,8 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_feature_fragment"
+    android:background="@android:color/transparent"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_featured_video_thumbnail"
@@ -54,34 +56,36 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_featured_user_avatar"
-        android:layout_width="@dimen/_35sdp"
-        android:layout_height="@dimen/_45sdp"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
         android:layout_marginTop="@dimen/_12sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_featured_video_thumbnail"
         app:srcCompat="@drawable/avatar" />
+
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txt_feature_video_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_9sdp"
-        android:layout_marginTop="@dimen/_13sdp"
+        android:layout_marginTop="@dimen/_2sdp"
         android:ellipsize="marquee"
         android:fontFamily="@font/montserrat_semi_bold"
         android:maxLines="1"
         android:text="@string/video_title"
         android:textColor="@color/black"
-        android:textSize="@dimen/_12sdp"
+        android:textSize="@dimen/_15ssp"
         app:layout_constraintEnd_toStartOf="@id/img_video_featured_rate"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/img_featured_user_avatar"
-        app:layout_constraintTop_toBottomOf="@+id/img_featured_video_thumbnail" />
-
+        app:layout_constraintTop_toTopOf="@+id/img_featured_user_avatar" />
 
     <RelativeLayout
         android:id="@+id/layout_feature_user_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_2sdp"
         app:layout_constraintEnd_toEndOf="@+id/img_video_featured_rate"
         app:layout_constraintStart_toStartOf="@+id/txt_feature_video_title"
         app:layout_constraintTop_toBottomOf="@id/txt_feature_video_title">
@@ -106,11 +110,11 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_tick"
-            android:layout_width="@dimen/_11sdp"
-            android:layout_height="@dimen/_11sdp"
+            android:layout_width="@dimen/_13sdp"
+            android:layout_height="@dimen/_13sdp"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="-15dp"
+            android:layout_marginStart="@dimen/_minus15sdp"
             android:layout_toEndOf="@+id/layout_feature_message_username"
             app:srcCompat="@drawable/blue_tick" />
     </RelativeLayout>
@@ -131,8 +135,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_video_featured_rate"
-        android:layout_width="@dimen/_13sdp"
-        android:layout_height="@dimen/_13sdp"
+        android:layout_width="@dimen/_14sdp"
+        android:layout_height="@dimen/_14sdp"
         android:layout_marginEnd="5dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="@id/txt_feature_video_title"
@@ -145,10 +149,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
-        android:fontFamily="@font/montserrat_semi_bold"
+        android:fontFamily="@font/montserrat_bold"
         android:text="@string/video_rateNumber"
         android:textColor="@color/black"
-        android:textSize="@dimen/_12ssp"
+        android:textSize="@dimen/_15ssp"
         app:layout_constraintBottom_toBottomOf="@id/img_video_featured_rate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/img_video_featured_rate" />
@@ -208,7 +212,16 @@
 
     </com.google.android.flexbox.FlexboxLayout>
 
-
+    <View
+android:visibility="gone"
+        android:id="@+id/view"
+        android:background="@color/error_red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
