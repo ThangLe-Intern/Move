@@ -80,6 +80,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/montserrat_regular"
                         android:text="@string/nameProfile"
                         android:textColor="@color/black"
                         android:textSize="20sp"
@@ -91,7 +92,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="11dp"
+                        android:fontFamily="@font/montserrat_regular"
                         android:text="@string/video_category"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@+id/avartProfile"
@@ -99,8 +101,8 @@
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardviewBeginner"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/_57sdp"
+                        android:layout_height="@dimen/_16sdp"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="@dimen/_10sdp"
                         app:cardBackgroundColor="@color/gray"
@@ -114,7 +116,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat_semi_bold"
-                            android:padding="7dp"
+                          android:layout_gravity="center"
                             android:text="@string/typeOfUser"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_9ssp" />
@@ -132,52 +134,58 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/imgDots"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="4dp"
+                        android:layout_height="4dp"
                         android:layout_marginStart="7dp"
-                        android:layout_marginTop="23dp"
                         android:src="@drawable/ic_dots"
                         app:layout_constraintStart_toEndOf="@+id/tvJust"
-                        app:layout_constraintTop_toBottomOf="@+id/imgTick" />
+                        app:layout_constraintTop_toTopOf="@+id/tvJust"
+                        app:layout_constraintEnd_toStartOf="@id/imgStar"
+                        app:layout_constraintBottom_toBottomOf="@+id/tvJust"
+                        />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/imgStar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginStart="8dp"
                         android:src="@drawable/rate"
-                        app:layout_constraintStart_toEndOf="@+id/imgDots"
-                        app:layout_constraintTop_toBottomOf="@+id/imgTick" />
+                       app:layout_constraintStart_toEndOf="@id/imgDots"
+                        app:layout_constraintTop_toTopOf="@id/imgDots"
+                        app:layout_constraintBottom_toBottomOf="@id/imgDots"
+                        app:layout_constraintEnd_toStartOf="@id/tvrateNumber"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:fontFamily="@font/montserrat_bold"
                         android:id="@+id/tvrateNumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:layout_marginTop="15dp"
                         android:text="@string/video_rateNumber"
                         android:textSize="16sp"
-                        app:layout_constraintStart_toEndOf="@+id/imgStar"
-                        app:layout_constraintTop_toBottomOf="@+id/imgTick" />
+                        app:layout_constraintStart_toEndOf="@id/imgStar"
+                        app:layout_constraintTop_toTopOf="@id/imgStar"
+                        app:layout_constraintBottom_toBottomOf="@id/imgStar"
+
+                         />
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardviewTimeLine"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                        android:layout_width="@dimen/_57sdp"
+                        android:layout_height="@dimen/_16sdp"
+                        android:layout_marginStart="13dp"
                         app:cardBackgroundColor="@color/gray"
                         app:cardCornerRadius="15dp"
                         app:cardElevation="0dp"
-                        app:layout_constraintStart_toEndOf="@+id/cardviewBeginner"
                         app:layout_constraintBottom_toBottomOf="@+id/cardviewBeginner"
+                        app:layout_constraintStart_toEndOf="@+id/cardviewBeginner"
                         app:layout_constraintTop_toTopOf="@+id/cardviewBeginner">
 
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat_semi_bold"
-                            android:padding="7dp"
                             android:text="@string/timeOfCategory"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_9ssp" />
@@ -231,6 +239,7 @@
                         </androidx.cardview.widget.CardView>
 
                         <androidx.appcompat.widget.AppCompatEditText
+                            android:fontFamily="@font/montserrat_regular"
                             android:id="@+id/edt_userComment"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -262,7 +271,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="10dp"
                             android:background="@drawable/rounded_button_blue"
-                            android:fontFamily="monospace"
+                            android:fontFamily="@font/montserrat_bold"
                             android:text="Send"
                             android:textAllCaps="false"
                             android:textColor="@color/white" />
