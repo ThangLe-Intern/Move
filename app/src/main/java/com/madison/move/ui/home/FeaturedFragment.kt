@@ -23,7 +23,7 @@ class FeaturedFragment : Fragment() {
     }
 
     fun setABC(isBlur : Boolean){
-        view?.findViewById<View>(R.id.view)?.apply {
+        view?.findViewById<View>(R.id.view_blur)?.apply {
             visibility = if (isBlur) View.VISIBLE else View.GONE
         }
         Log.d("123123123","$isBlur")
@@ -31,9 +31,6 @@ class FeaturedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<AppCompatTextView>(R.id.layout_feature_user_name).apply {
-            setSelected(true)
-        }
     }
 
 }

@@ -34,7 +34,7 @@
         <RelativeLayout
             android:id="@+id/login_line"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="1dp"
             android:layout_marginHorizontal="@dimen/_15sdp"
             android:layout_marginTop="@dimen/_24sdp"
             android:background="@android:color/darker_gray"
@@ -52,6 +52,18 @@
             app:layout_constraintBottom_toTopOf="@+id/edit_login_email"
             app:layout_constraintStart_toStartOf="@id/edit_login_email"
             app:layout_constraintTop_toBottomOf="@+id/login_line" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:text="@string/txt_required"
+            android:textColor="@color/error_red"
+            android:textSize="@dimen/_15ssp"
+            app:layout_constraintBottom_toBottomOf="@id/txt_login_email"
+            app:layout_constraintStart_toEndOf="@id/txt_login_email"
+            app:layout_constraintTop_toTopOf="@id/txt_login_email" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_login_email"
@@ -87,47 +99,60 @@
             android:id="@+id/txt_login_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/login_password"
             android:textColor="@color/black"
             android:textSize="@dimen/_14ssp"
-            app:layout_constraintBottom_toTopOf="@+id/layout_password_edt"
+            app:layout_constraintBottom_toTopOf="@+id/edit_login_password"
             app:layout_constraintStart_toStartOf="@id/edit_login_email"
             app:layout_constraintTop_toBottomOf="@+id/txt_error_email" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_password_edt"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:text="@string/txt_required"
+            android:textColor="@color/error_red"
+            android:textSize="@dimen/_15ssp"
+            app:layout_constraintBottom_toBottomOf="@id/txt_login_password"
+            app:layout_constraintStart_toEndOf="@id/txt_login_password"
+            app:layout_constraintTop_toTopOf="@id/txt_login_password" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edit_login_password"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_45sdp"
-            android:gravity="center_vertical"
-            app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="0dp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@drawable/custom_edittext"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ.abcdefghijklmnopqrstuvwxyz1234567890~#^|$%@*!+-,&amp;"
+            android:fontFamily="@font/montserrat_regular"
+            android:inputType="textPassword"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_36sdp"
+            android:singleLine="true"
             app:layout_constraintEnd_toEndOf="@id/login_line"
             app:layout_constraintStart_toStartOf="@id/login_line"
-            app:layout_constraintTop_toBottomOf="@id/txt_login_password"
-            app:endIconMinSize="@dimen/_35sdp"
-            app:passwordToggleEnabled="true">
+            app:layout_constraintTop_toBottomOf="@id/txt_login_password" />
 
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/edit_login_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:singleLine="true"
-                android:background="@drawable/custom_edittext"
-                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ.abcdefghijklmnopqrstuvwxyz1234567890~#^|$%@*!+-,&amp;"
-                android:fontFamily="@font/montserrat_regular"
-                android:inputType="textPassword"
-                android:paddingStart="@dimen/_10sdp"
-                android:paddingEnd="@dimen/_36sdp"
-                />
 
-
-        </com.google.android.material.textfield.TextInputLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_error_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:fontFamily="@font/montserrat_italic"
+            android:text="@string/txt_pls_enter_password"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="@dimen/_13ssp"
+            android:visibility="gone"
+            app:fontFamily="@font/montserrat_italic"
+            app:layout_constraintBottom_toTopOf="@id/txt_login_forgot_password"
+            app:layout_constraintStart_toStartOf="@+id/login_line"
+            app:layout_constraintTop_toBottomOf="@+id/edit_login_password" />
 
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -138,9 +163,9 @@
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/forgot_password"
             android:textColor="@color/move_green"
-            android:textSize="@dimen/_14ssp"
+            android:textSize="@dimen/_12ssp"
             app:layout_constraintStart_toStartOf="@id/edit_login_email"
-            app:layout_constraintTop_toBottomOf="@+id/layout_password_edt" />
+            app:layout_constraintTop_toBottomOf="@+id/txt_error_password" />
 
         <RelativeLayout
             android:id="@+id/layout_error_message"
@@ -175,7 +200,6 @@
             android:layout_marginBottom="@dimen/_14sdp"
             android:alpha="1"
             android:background="@drawable/custom_login_button"
-            android:enabled="false"
             android:fontFamily="@font/montserrat_semi_bold"
             android:text="@string/log_in"
             android:textAllCaps="false"

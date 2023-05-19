@@ -4,6 +4,7 @@ package com.madison.move.ui.home
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,13 +60,12 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
 
     private val runnable = Runnable {
-
-        val currentFragment = activity?.supportFragmentManager?.findFragmentByTag("f${binding.viewPager.currentItem}")
-        println(currentFragment.toString())
-
         binding.viewPager.currentItem = binding.viewPager.currentItem + 1
-        featuredList[binding.viewPager.currentItem].setABC(true)
-        carouselViewPagerAdapter.notifyDataSetChanged()
+//        Log.d("1221",binding.viewPager.currentItem.toString())
+
+//        featuredList[binding.viewPager.currentItem].setABC(true)
+
+//        carouselViewPagerAdapter.notifyDataSetChanged()
     }
 
     //Show Video To Carousel
@@ -90,6 +90,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             }
         })
 
+
     }
 
     //Add Transformation for Carousel
@@ -98,11 +99,11 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         transformer.addTransformer(MarginPageTransformer(40))
 
         val screenHeight = resources.displayMetrics.widthPixels
-        val nextItemTranslationX = 5f * screenHeight / 60
+        val nextItemTranslationX = 5.5f * screenHeight / 60
 
         transformer.addTransformer { page, position ->
             val r = 1 - abs(position)
-            page.scaleX = 0.85f + r * 0.1f
+            page.scaleX = 0.85f + r * 0.08f
             // translation X
             page.translationX = -position * nextItemTranslationX
         }
