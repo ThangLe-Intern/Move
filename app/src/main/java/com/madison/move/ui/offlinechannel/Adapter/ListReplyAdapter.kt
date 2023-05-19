@@ -3,6 +3,7 @@ package com.madison.move.ui.offlinechannel.Adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -20,7 +21,7 @@ class ListReplyAdapter(var listReply:MutableList<Comment>) : RecyclerView.Adapte
     inner class ViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
 
         fun onBind(comment: Comment) {
-
+            itemView.findViewById<RelativeLayout>(R.id.line2).visibility = View.GONE
             itemView.findViewById<ImageView>(R.id.avatar).setImageResource(comment.user.avt)
             itemView.findViewById<TextView>(R.id.username).text = comment.user.name
             itemView.findViewById<TextView>(R.id.commentTime).text = comment.timeOfComment
