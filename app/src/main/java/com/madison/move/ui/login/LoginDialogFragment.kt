@@ -100,14 +100,15 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
         val textWatcher: TextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 binding.editLoginEmail.setBackgroundResource(R.drawable.custom_edittext)
+                binding.editLoginPassword.setBackgroundResource(R.drawable.custom_edittext)
+
                 binding.txtErrorEmail.visibility = View.GONE
+                binding.txtErrorPassword.visibility = View.GONE
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val txtEmail = binding.editLoginEmail.text.toString().trim()
                 val txtPassword = binding.editLoginPassword.text.toString().trim()
-
-                binding.loginBtn.isEnabled = txtEmail.isNotEmpty() && txtPassword.isNotEmpty()
 
             }
 
