@@ -6,11 +6,14 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.madison.move.R
@@ -57,6 +60,8 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
 
         binding = FragmentLoginDialogBinding.inflate(inflater, container, false)
 
+
+
         val bundle = arguments
         bundle?.getParcelable<User>("user")?.also {
             user = it
@@ -77,6 +82,9 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
             dialog?.dismiss()
         }
 
+        binding.editLoginEmail.requestFocus()
+        onShowHidePassword()
+
         binding.loginBtn.setOnClickListener {
             val inputMethodManager =
                 requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -91,6 +99,30 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
             presenter.onLoginClickPresenter(emailUserInput, passwordUserInput, user)
         }
 
+    }
+
+    private fun onShowHidePassword() {
+        binding.imgHidePassword.setOnClickListener {
+            binding.imgHidePassword.visibility = View.GONE
+            binding.imgShowPassword.visibility = View.VISIBLE
+
+            binding.editLoginPassword.apply {
+                transformationMethod =
+                    HideReturnsTransformationMethod.getInstance()
+                setSelection(binding.editLoginPassword.length())
+            }
+        }
+
+        binding.imgShowPassword.setOnClickListener {
+            binding.imgShowPassword.visibility = View.GONE
+            binding.imgHidePassword.visibility = View.VISIBLE
+
+            binding.editLoginPassword.apply {
+                transformationMethod =
+                    PasswordTransformationMethod.getInstance()
+                setSelection(binding.editLoginPassword.length())
+            }
+        }
     }
 
 
@@ -137,18 +169,18 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
             PASSWORD_CONTAIN_SPACE -> {
                 binding.editLoginPassword.error = getString(R.string.password_white_space)
             }
-            EMAIL_NULL ->{
+            EMAIL_NULL -> {
                 binding.txtErrorEmail.isVisible = true
                 binding.txtErrorEmail.text = getString(R.string.txt_pls_enter_email)
                 binding.editLoginEmail.setBackgroundResource(R.drawable.custom_edittext_error)
             }
-            PASSWORD_NULL ->{
+            PASSWORD_NULL -> {
                 binding.txtErrorPassword.isVisible = true
                 binding.txtErrorPassword.text = getString(R.string.txt_pls_enter_password)
                 binding.editLoginPassword.setBackgroundResource(R.drawable.custom_edittext_error)
 
             }
-            PASSWORD_EMAIL_NULL ->{
+            PASSWORD_EMAIL_NULL -> {
                 binding.txtErrorPassword.isVisible = true
                 binding.txtErrorPassword.text = getString(R.string.txt_pls_enter_password)
                 binding.editLoginPassword.setBackgroundResource(R.drawable.custom_edittext_error)

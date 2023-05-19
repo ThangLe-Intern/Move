@@ -120,6 +120,7 @@
             app:layout_constraintStart_toEndOf="@id/txt_login_password"
             app:layout_constraintTop_toTopOf="@id/txt_login_password" />
 
+
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_login_password"
             android:layout_width="0dp"
@@ -134,10 +135,32 @@
             android:paddingEnd="@dimen/_36sdp"
             android:singleLine="true"
             app:layout_constraintEnd_toEndOf="@id/login_line"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@id/login_line"
             app:layout_constraintTop_toBottomOf="@id/txt_login_password" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_hide_password"
+            android:layout_width="@dimen/_17sdp"
+            android:layout_height="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
+            app:layout_constraintBottom_toBottomOf="@id/edit_login_password"
+            app:layout_constraintEnd_toEndOf="@id/edit_login_password"
+            app:layout_constraintTop_toTopOf="@id/edit_login_password"
+            app:srcCompat="@drawable/hide_password" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_show_password"
+            android:layout_width="@dimen/_17sdp"
+            android:layout_height="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:layout_marginEnd="@dimen/_13sdp"
+            app:layout_constraintBottom_toBottomOf="@id/edit_login_password"
+            app:layout_constraintEnd_toEndOf="@id/edit_login_password"
+            app:layout_constraintTop_toTopOf="@id/edit_login_password"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_show_password" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_error_password"
