@@ -30,6 +30,9 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
         const val EMAIL_CONTAIN_SPACE = "EMAIL_CONTAIN_SPACE"
         const val PASSWORD_CONTAIN_SPACE = "PASSWORD_CONTAIN_SPACE"
         const val INCORRECT_ACCOUNT = "INCORRECT_ACCOUNT"
+        const val PASSWORD_NULL = "PASSWORD_NULL"
+        const val EMAIL_NULL = "EMAIL_NULL"
+        const val PASSWORD_EMAIL_NULL = "PASSWORD_EMAIL_NULL"
 
     }
 
@@ -101,15 +104,12 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 binding.editLoginEmail.setBackgroundResource(R.drawable.custom_edittext)
                 binding.editLoginPassword.setBackgroundResource(R.drawable.custom_edittext)
-
                 binding.txtErrorEmail.visibility = View.GONE
                 binding.txtErrorPassword.visibility = View.GONE
+                binding.layoutErrorMessage.visibility = View.GONE
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val txtEmail = binding.editLoginEmail.text.toString().trim()
-                val txtPassword = binding.editLoginPassword.text.toString().trim()
-
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -136,6 +136,25 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
             }
             PASSWORD_CONTAIN_SPACE -> {
                 binding.editLoginPassword.error = getString(R.string.password_white_space)
+            }
+            EMAIL_NULL ->{
+                binding.txtErrorEmail.isVisible = true
+                binding.txtErrorEmail.text = getString(R.string.txt_pls_enter_email)
+                binding.editLoginEmail.setBackgroundResource(R.drawable.custom_edittext_error)
+            }
+            PASSWORD_NULL ->{
+                binding.txtErrorPassword.isVisible = true
+                binding.txtErrorPassword.text = getString(R.string.txt_pls_enter_password)
+                binding.editLoginPassword.setBackgroundResource(R.drawable.custom_edittext_error)
+
+            }
+            PASSWORD_EMAIL_NULL ->{
+                binding.txtErrorPassword.isVisible = true
+                binding.txtErrorPassword.text = getString(R.string.txt_pls_enter_password)
+                binding.editLoginPassword.setBackgroundResource(R.drawable.custom_edittext_error)
+                binding.txtErrorEmail.isVisible = true
+                binding.txtErrorEmail.text = getString(R.string.txt_pls_enter_email)
+                binding.editLoginEmail.setBackgroundResource(R.drawable.custom_edittext_error)
             }
         }
     }

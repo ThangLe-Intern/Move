@@ -120,7 +120,7 @@
     <string name="write_a_comment">Write a comment</string>
     <string name="txt_required">*</string>
     <string name="txt_pls_enter_password">Please enter password !</string>
-
+    <string name="txt_pls_enter_email">Please enter email !</string>
 
 
 </resources>
