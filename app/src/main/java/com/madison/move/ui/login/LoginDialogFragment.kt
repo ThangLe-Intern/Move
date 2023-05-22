@@ -6,11 +6,14 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.madison.move.R
@@ -30,6 +33,9 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
         const val EMAIL_CONTAIN_SPACE = "EMAIL_CONTAIN_SPACE"
         const val PASSWORD_CONTAIN_SPACE = "PASSWORD_CONTAIN_SPACE"
         const val INCORRECT_ACCOUNT = "INCORRECT_ACCOUNT"
+        const val PASSWORD_NULL = "PASSWORD_NULL"
+        const val EMAIL_NULL = "EMAIL_NULL"
+        const val PASSWORD_EMAIL_NULL = "PASSWORD_EMAIL_NULL"
 
     }
 
@@ -54,6 +60,8 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
 
         binding = FragmentLoginDialogBinding.inflate(inflater, container, false)
 
+
+
         val bundle = arguments
         bundle?.getParcelable<User>("user")?.also {
             user = it
@@ -74,6 +82,9 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
             dialog?.dismiss()
         }
 
+        binding.editLoginEmail.requestFocus()
+        onShowHidePassword()
+
         binding.loginBtn.setOnClickListener {
             val inputMethodManager =
                 requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -90,6 +101,30 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
 
     }
 
+    private fun onShowHidePassword() {
+        binding.imgHidePassword.setOnClickListener {
+            binding.imgHidePassword.visibility = View.GONE
+            binding.imgShowPassword.visibility = View.VISIBLE
+
+            binding.editLoginPassword.apply {
+                transformationMethod =
+                    HideReturnsTransformationMethod.getInstance()
+                setSelection(binding.editLoginPassword.length())
+            }
+        }
+
+        binding.imgShowPassword.setOnClickListener {
+            binding.imgShowPassword.visibility = View.GONE
+            binding.imgHidePassword.visibility = View.VISIBLE
+
+            binding.editLoginPassword.apply {
+                transformationMethod =
+                    PasswordTransformationMethod.getInstance()
+                setSelection(binding.editLoginPassword.length())
+            }
+        }
+    }
+
 
     override fun onShowLoading() {
 
@@ -101,15 +136,12 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 binding.editLoginEmail.setBackgroundResource(R.drawable.custom_edittext)
                 binding.editLoginPassword.setBackgroundResource(R.drawable.custom_edittext)
-
                 binding.txtErrorEmail.visibility = View.GONE
                 binding.txtErrorPassword.visibility = View.GONE
+                binding.layoutErrorMessage.visibility = View.GONE
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val txtEmail = binding.editLoginEmail.text.toString().trim()
-                val txtPassword = binding.editLoginPassword.text.toString().trim()
-
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -136,6 +168,25 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
             }
             PASSWORD_CONTAIN_SPACE -> {
                 binding.editLoginPassword.error = getString(R.string.password_white_space)
+            }
+            EMAIL_NULL -> {
+                binding.txtErrorEmail.isVisible = true
+                binding.txtErrorEmail.text = getString(R.string.txt_pls_enter_email)
+                binding.editLoginEmail.setBackgroundResource(R.drawable.custom_edittext_error)
+            }
+            PASSWORD_NULL -> {
+                binding.txtErrorPassword.isVisible = true
+                binding.txtErrorPassword.text = getString(R.string.txt_pls_enter_password)
+                binding.editLoginPassword.setBackgroundResource(R.drawable.custom_edittext_error)
+
+            }
+            PASSWORD_EMAIL_NULL -> {
+                binding.txtErrorPassword.isVisible = true
+                binding.txtErrorPassword.text = getString(R.string.txt_pls_enter_password)
+                binding.editLoginPassword.setBackgroundResource(R.drawable.custom_edittext_error)
+                binding.txtErrorEmail.isVisible = true
+                binding.txtErrorEmail.text = getString(R.string.txt_pls_enter_email)
+                binding.editLoginEmail.setBackgroundResource(R.drawable.custom_edittext_error)
             }
         }
     }

@@ -33,9 +33,9 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     private lateinit var binding: ActivityMainMenuBinding
 
     private var userDung = User(
-        1, "vudung", "vudung@gmail.com", "Vu Dung",
-        "123", R.drawable.avatar, 1, "Male", "03/01/2001", 1,
-        "Ham Ninh - QN - QB", false
+        1, "vudung", "vudung@gmail.com", "",
+        "123", R.drawable.avatar, 1, "", "", 1,
+        "", false
     )
 
     override fun createPresenter(): MenuPresenter = MenuPresenter(this)
