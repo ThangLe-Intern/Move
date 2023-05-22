@@ -62,7 +62,7 @@
     <string name="dd">DD</string>
     <string name="mm">MM</string>
     <string name="yyyy">YYYY</string>
-    <string name="error_fullname_chars">FULL_NAME_CONTAIN_AT_LEAST_4_CHARS</string>
+    <string name="error_fullname_chars">Full name contains at least 4 chars and maximum 100 chars</string>
     <string name="dob_years">2002</string>
     <string name="dob_month">Jan</string>
     <string name="txt_log_in">Login</string>
@@ -121,6 +121,7 @@
     <string name="txt_required">*</string>
     <string name="txt_pls_enter_password">Please enter password !</string>
     <string name="txt_pls_enter_email">Please enter email !</string>
+    <string name="error_user_name">Username contains at least 4 char and maximum 25 chars</string>
 
 
 </resources>
