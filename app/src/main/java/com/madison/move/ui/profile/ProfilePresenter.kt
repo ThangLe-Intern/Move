@@ -9,7 +9,6 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?, var user
         const val FULL_NAME_AT_LEAST_4_CHARS = "FN_4_CH"
         const val USER_NAME_NULL = "USER_NAME_NULL"
         const val USER_NAME_CONTAINS_WHITE_SPACE = "USER_WS"
-        const val DOB_INVALID = "DOB_INVALID"
     }
 
     override fun onShowLoadingPresenter() {

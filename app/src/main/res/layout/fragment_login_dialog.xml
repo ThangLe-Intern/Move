@@ -142,20 +142,20 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_hide_password"
             android:layout_width="@dimen/_17sdp"
-            android:layout_height="@dimen/_12sdp"
+            android:layout_height="@dimen/_17sdp"
             android:layout_marginTop="@dimen/_1sdp"
             android:layout_marginEnd="@dimen/_12sdp"
             app:layout_constraintBottom_toBottomOf="@id/edit_login_password"
             app:layout_constraintEnd_toEndOf="@id/edit_login_password"
             app:layout_constraintTop_toTopOf="@id/edit_login_password"
-            app:srcCompat="@drawable/hide_password" />
+            app:srcCompat="@drawable/ic_hide_password" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_show_password"
             android:layout_width="@dimen/_17sdp"
-            android:layout_height="@dimen/_12sdp"
+            android:layout_height="@dimen/_17sdp"
             android:layout_marginTop="@dimen/_1sdp"
-            android:layout_marginEnd="@dimen/_13sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
             app:layout_constraintBottom_toBottomOf="@id/edit_login_password"
             app:layout_constraintEnd_toEndOf="@id/edit_login_password"
             app:layout_constraintTop_toTopOf="@id/edit_login_password"

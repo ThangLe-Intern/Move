@@ -16,6 +16,9 @@
         <item name="drawerArrowStyle">@style/DrawerHamburgerStyle</item>
     </style>
 
+    <style name="ThemeOverlay.AppTheme.TextInputEditText.Outlined" parent="">
+        <item name="colorPrimary">@color/move_green</item>
+    </style>
 
     <style name="DrawerHamburgerStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
