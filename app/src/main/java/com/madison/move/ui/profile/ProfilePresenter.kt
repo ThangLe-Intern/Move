@@ -7,8 +7,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?, var user
 
     companion object{
         const val FULL_NAME_AT_LEAST_4_CHARS = "FN_4_CH"
-        const val USER_NAME_NULL = "USER_NAME_NULL"
-        const val USER_NAME_CONTAINS_WHITE_SPACE = "USER_WS"
+        const val USER_NAME_LENGTH = "US_LTH"
     }
 
     override fun onShowLoadingPresenter() {
@@ -19,11 +18,11 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?, var user
     }
 
     override fun onSaveProfileClickPresenter(userNewProfile:User) {
-        if (userNewProfile.fullname?.length!! < 4 && user.fullname?.length != userNewProfile.fullname?.length ){
+        if (userNewProfile.fullname?.length!! < 4 || userNewProfile.fullname?.length!! >100 ){
           return onShowErrorPresenter(FULL_NAME_AT_LEAST_4_CHARS)
         }
-        if (userNewProfile.username == ""){
-            return onShowErrorPresenter(USER_NAME_NULL)
+        if (userNewProfile.username?.length!! < 4 || userNewProfile.username?.length!! > 25){
+            return onShowErrorPresenter(USER_NAME_LENGTH)
         }
         view?.onSaveProfileClick()
 

@@ -29,27 +29,36 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     companion object {
         const val FULL_NAME_AT_LEAST_4_CHARS = "FN_4_CH"
         const val USER_NAME_CONTAINS_WHITE_SPACE = "USER_WS"
-        const val USER_NAME_NULL = "USER_NAME_NULL"
+        const val USER_NAME_LENGTH = "US_LTH"
         const val STATE_NOT_IN_LIST = "STATE_NOT_IN_LIST"
         const val COUNTRY_NOT_IN_LIST = "COUNTRY_NOT_IN_LIST"
     }
 
     private lateinit var binding: FragmentProfileBinding
     private var user: User = User()
+    private var newFullName = ""
+    private var newUserName = ""
+    private var isChangeRadioButton = false
+    private var isFillAllDoB = false
+    private var newDob = ""
+    private var newCountry = ""
+    private var newState = ""
+    private var newCity = ""
 
-    private var listState: java.util.ArrayList<String> = arrayListOf()
+
+    private var listState: ArrayList<String> = arrayListOf()
 
     private var listStateVietNam: ArrayList<String> =
-        arrayListOf("None", "Ha Noi", "Da Nang", "Hue", "Ho Chi Minh", "Hai Phong")
+        arrayListOf("Ha Noi", "Da Nang", "Hue", "Ho Chi Minh", "Hai Phong")
     private var listStateSingapore: ArrayList<String> =
-        arrayListOf("None", "Sing 1", "Sing 2", "Sing 3", "Sing 4", "Sing 5")
+        arrayListOf("Sing 1", "Sing 2", "Sing 3", "Sing 4", "Sing 5")
     private var listStateKorea: ArrayList<String> =
-        arrayListOf("None", "Korea 1", "Korea 2", "Korea 3", "Korea 4", "Korea 5")
+        arrayListOf("Korea 1", "Korea 2", "Korea 3", "Korea 4", "Korea 5")
     private var listStateJapan: ArrayList<String> =
-        arrayListOf("None", "Japan 1", "Japan 2", "Japan 3", "Japan 4", "Japan 5")
+        arrayListOf("Japan 1", "Japan 2", "Japan 3", "Japan 4", "Japan 5")
 
     private var listCountry: ArrayList<String> =
-        arrayListOf("None", "VietNam", "Singapore", "Korea", "Japan")
+        arrayListOf("VietNam", "Singapore", "Korea", "Japan")
 
 
     private lateinit var arrayAdapter: ArrayAdapter<String>
@@ -69,6 +78,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     )
     private val years = (1900..2030).map { it.toString() }.toMutableList()
     private var userNewProfile = User()
+
     override fun createPresenter(): ProfilePresenter = ProfilePresenter(this, userNewProfile)
 
 
@@ -106,10 +116,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         handleDropDownState(binding.dropdownCountryText.text.toString().trim())
         handleDropDownCountry()
         hideHintTextInputLayout()
-        handleInputUserFullName()
-        handleInputUserName()
-        handleInputCity()
-
+        handleUserInput()
         handleDropDownDob()
         handlePickerImage()
     }
@@ -125,6 +132,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
         val newGender: String = if (binding.radioMale.isChecked) {
             binding.radioMale.text.toString()
+
         } else if (binding.radioFemale.isChecked) {
             binding.radioFemale.text.toString()
         } else {
@@ -152,31 +160,46 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     }
 
-    private fun handleInputUserName() {
-        binding.editUsername.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                binding.editUsername.setBackgroundResource(R.drawable.custom_edittext)
-                binding.txtErrorUsername.visibility = View.GONE
-            }
+    private fun isAllFieldsNotNull(): Boolean {
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        val newDayOfDob = binding.dropdownDayText.text.toString().trim()
+        val newMonthOfDob = binding.dropdownMonthText.text.toString().trim()
+        val newYearOfDob = binding.dropdownYearText.text.toString().trim()
 
-            }
+        newFullName = binding.editProfileFullName.text.toString().trim()
+        newUserName = binding.editUsername.text.toString().trim()
+        newCountry = binding.dropdownCountryText.text.toString().trim()
+        newState = binding.dropdownStateText.text.toString().trim()
+        newCity = binding.editProfileCity.text.toString().trim()
 
-            override fun afterTextChanged(s: Editable?) {
-            }
+        if (newDayOfDob.isNotEmpty() && newMonthOfDob.isNotEmpty() && newYearOfDob.isNotEmpty()) {
+            isFillAllDoB = true
+        }
 
-        })
+        return newFullName.isNotEmpty() &&
+                newUserName.isNotEmpty() &&
+                newCountry.isNotEmpty() &&
+                newState.isNotEmpty() &&
+                newCity.isNotEmpty() &&
+                isChangeRadioButton &&
+                isFillAllDoB
+
+
     }
 
-    private fun handleInputUserFullName() {
-        binding.editProfileFullName.addTextChangedListener(object : TextWatcher {
+    private fun handleUserInput() {
+        val textWatcher: TextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                binding.editUsername.setBackgroundResource(R.drawable.custom_edittext)
                 binding.editProfileFullName.setBackgroundResource(R.drawable.custom_edittext)
+                binding.txtErrorUsername.visibility = View.GONE
                 binding.txtErrorFullName.visibility = View.GONE
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+
+                //Handle  Input Full Name From User
                 val nameText = binding.editProfileFullName.text.toString()
                 val countDotChar = nameText.count { it == '.' }
                 if (countDotChar >= 2) {
@@ -190,27 +213,11 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 if (nameText.startsWith(" ")) {
                     return binding.editProfileFullName.setText(nameText.dropLast(1))
                 }
+                //
 
-
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                binding.editProfileFullName.setSelection(binding.editProfileFullName.length())
-            }
-
-        })
-    }
-
-    private fun handleInputCity() {
-        binding.editProfileCity.addTextChangedListener(object : TextWatcher {
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                //Handle Input City From User
                 val cityText = binding.editProfileCity.text.toString()
-                val matches = arrayOf("  ", "..", ",,", "--", " ,", " .", "- -")
+                val matches = arrayOf("  ", "..", ",,", "--", " ,", " .", "- -", "//", " /", "/ ")
 
                 for (s in matches) {
                     if (cityText.contains(s)) {
@@ -221,13 +228,24 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 if (cityText.startsWith(" ")) {
                     return binding.editProfileCity.setText(cityText.dropLast(1))
                 }
+
+                //Handle Enable Save Setting Button
+                binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
+
             }
 
             override fun afterTextChanged(s: Editable?) {
+
+
+                binding.editProfileFullName.setSelection(binding.editProfileFullName.length())
                 binding.editProfileCity.setSelection(binding.editProfileCity.length())
             }
 
-        })
+        }
+
+        binding.editUsername.addTextChangedListener(textWatcher)
+        binding.editProfileFullName.addTextChangedListener(textWatcher)
+        binding.editProfileCity.addTextChangedListener(textWatcher)
     }
 
     private var mProfileUri: Uri? = null
@@ -327,7 +345,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 binding.txtErrorFullName.apply {
                     visibility = View.VISIBLE
                     text = context.getString(R.string.error_fullname_chars)
-
                 }
                 binding.editProfileFullName.apply {
                     requestFocus()
@@ -335,10 +352,10 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 }
             }
 
-            USER_NAME_NULL -> {
+            USER_NAME_LENGTH -> {
                 binding.txtErrorUsername.apply {
                     visibility = View.VISIBLE
-                    text = USER_NAME_NULL
+                    text = context.getString(R.string.error_user_name)
                 }
                 binding.editUsername.apply {
                     setBackgroundResource(R.drawable.custom_edittext_error)
@@ -394,6 +411,10 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             val monthSelected = binding.dropDownProfileMonth.editText?.text.toString()
             val yearSelected: String = parent.getItemAtPosition(position).toString()
             onHandleListOfDay(monthSelected, yearSelected)
+
+            binding.dropdownDayText.text.clear()
+            binding.saveSettingBtn.isEnabled = false
+
         }
     }
 
@@ -405,7 +426,12 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 onHandleListOfDay(monthSelected, yearSelected)
             }
 
+            binding.dropdownDayText.text.clear()
+            binding.saveSettingBtn.isEnabled = false
+
         }
+
+
     }
 
 
@@ -422,11 +448,23 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                     (1..28).map { it.toString() }.toMutableList()
                 }
         } else {
-            days = (1..31).map { it.toString() }.toMutableList()
+            if (binding.dropdownMonthText.text.toString()
+                    .isNotEmpty() || binding.dropdownYearText.text.toString().isNotEmpty()
+            ) {
+                days = (1..31).map { it.toString() }.toMutableList()
+            } else {
+                days = mutableListOf()
+            }
         }
 
         val dayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, days)
         binding.dropdownDayText.setAdapter(dayAdapter)
+
+
+        binding.dropdownDayText.setOnItemClickListener { parent, view, position, id ->
+            binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
+        }
+
     }
 
     private fun isLeapYear(year: Int): Boolean {
@@ -483,13 +521,14 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 if (inputStateText !in listState) {
                     binding.dropdownStateText.text.clear()
                 }
+                binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
             }
         }
     }
 
     private fun handleDropDownCountry() {
         for (i in 1..3) {
-            listCountry.addAll(arrayListOf("None", "Viet Nam", "Singapore", "Korea", "Japan"))
+            listCountry.addAll(arrayListOf("Viet Nam", "Singapore", "Korea", "Japan"))
         }
         arrayAdapter = context?.let {
             ArrayAdapter(
@@ -508,6 +547,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 if (inputStateText !in listCountry) {
                     binding.dropdownCountryText.text.clear()
                 }
+                binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
             }
         }
 
@@ -557,6 +597,10 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 }
             }
         }
+
+        isChangeRadioButton = true
+        binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
+
     }
 
 
