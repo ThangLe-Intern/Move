@@ -43,9 +43,9 @@ open class CommentFragment : Fragment(), CommentListener {
     private var listComment: MutableList<Comment> = mutableListOf()
 
     companion object {
-        var isFullScreen = false
-        var isLock = false
-        private var initialOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        var IS_FULL_SCREEN = false
+        var IS_LOCK = false
+        private const val INITIAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
     }
 
     private var currentFragment: Fragment? = null
@@ -120,7 +120,7 @@ open class CommentFragment : Fragment(), CommentListener {
         val imgback = view.findViewById<ImageView>(R.id.img_back)
 
         fullscreen.setOnClickListener {
-            if (!isFullScreen) {
+            if (!IS_FULL_SCREEN) {
                 fullscreen.setImageDrawable(
                     ContextCompat.getDrawable(
                         requireContext().applicationContext,
@@ -140,11 +140,11 @@ open class CommentFragment : Fragment(), CommentListener {
                 requireActivity().requestedOrientation = initialOrientation
                 showViews()
             }
-            isFullScreen = !isFullScreen
+            IS_FULL_SCREEN = !IS_FULL_SCREEN
         }
 
         imgback.setOnClickListener {
-            if (!isFullScreen) {
+            if (!IS_FULL_SCREEN) {
                 val intent = Intent(activity, MainMenuActivity::class.java)
                 startActivity(intent)
             } else {
@@ -160,7 +160,7 @@ open class CommentFragment : Fragment(), CommentListener {
         }
 
         lockscreen.setOnClickListener {
-            if (!isLock) {
+            if (!IS_LOCK) {
                 lockscreen.setImageDrawable(
                     ContextCompat.getDrawable(
                         requireContext(),
@@ -175,8 +175,8 @@ open class CommentFragment : Fragment(), CommentListener {
                     )
                 )
             }
-            isLock = !isLock
-            lockScreen(isLock)
+            IS_LOCK = !IS_LOCK
+            lockScreen(IS_LOCK)
         }
 
 
@@ -210,9 +210,9 @@ open class CommentFragment : Fragment(), CommentListener {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val currentOrientation = newConfig.orientation
-        if (currentOrientation == Configuration.ORIENTATION_PORTRAIT && isFullScreen) {
-            requireActivity().requestedOrientation = initialOrientation
-            isFullScreen = false
+        if (currentOrientation == Configuration.ORIENTATION_PORTRAIT && IS_FULL_SCREEN) {
+            requireActivity().requestedOrientation = INITIAL_ORIENTATION
+            IS_FULL_SCREEN = false
         }
     }
 
@@ -232,7 +232,7 @@ open class CommentFragment : Fragment(), CommentListener {
     override fun onBackPressed() {
         val orientation = requireActivity().resources.configuration.orientation
 
-        if (isLock) {
+        if (IS_LOCK) {
             return
         }
 
