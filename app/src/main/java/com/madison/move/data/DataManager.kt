@@ -1,14 +1,8 @@
 package com.madison.move.data
 
-import MoveRepository
-import android.content.SharedPreferences
-import com.madison.move.data.source.remote.MoveRemoteDataSource
-import com.madison.move.data.source.remote.services.MoveApi
-import com.madison.move.data.source.remote.services.MoveService
-
 class DataManager private constructor() {
 
-    /*val movieRepository: MoveRepository
+    /*val movieRepository: com.madison.move.data.source.MoveRepository
         get() {
             val movieApi: MoveApi = MoveService.getInstance().getMovieApi()
             val movieRemote: MoveRemoteDataSource = MoveRemoteDataSource.getInstance(movieApi)

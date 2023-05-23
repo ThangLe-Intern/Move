@@ -1,6 +1,5 @@
-
+package com.madison.move.data.source
 import com.madison.move.data.model.Video
-import com.madison.move.data.source.MoveDataSource
 import com.madison.move.data.source.local.MoveCacheDataSource
 import com.madison.move.data.source.local.MoveLocalDataSource
 import com.madison.move.data.source.remote.MoveRemoteDataSource

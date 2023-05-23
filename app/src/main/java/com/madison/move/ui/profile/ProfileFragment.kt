@@ -32,6 +32,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         const val USER_NAME_LENGTH = "US_LTH"
         const val STATE_NOT_IN_LIST = "STATE_NOT_IN_LIST"
         const val COUNTRY_NOT_IN_LIST = "COUNTRY_NOT_IN_LIST"
+        const val USER_NAME_INVALID = "US_INVALID"
+        const val USER_NAME_FORMAT = "US_FORMAT"
+
     }
 
     private lateinit var binding: FragmentProfileBinding
@@ -76,7 +79,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         "Nov",
         "Dec"
     )
-    private val years = (1900..2030).map { it.toString() }.toMutableList()
+    private val years = (1900..2023).map { it.toString() }.toMutableList()
     private var userNewProfile = User()
 
     override fun createPresenter(): ProfilePresenter = ProfilePresenter(this, userNewProfile)
@@ -93,10 +96,12 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         }
         setUserData(user)
 
+        binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
 
         presenter.apply {
 
         }
+
 
         binding.saveSettingBtn.setOnClickListener {
             presenter?.onSaveProfileClickPresenter(getNewProfile())
@@ -175,6 +180,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         if (newDayOfDob.isNotEmpty() && newMonthOfDob.isNotEmpty() && newYearOfDob.isNotEmpty()) {
             isFillAllDoB = true
         }
+        if (binding.radioMale.isChecked || binding.radioFemale.isChecked || binding.radioRatherNotSay.isChecked) {
+            isChangeRadioButton = true
+        }
 
         return newFullName.isNotEmpty() &&
                 newUserName.isNotEmpty() &&
@@ -197,9 +205,13 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val listSpecialCharacter = "!@#$%^&*()_-+={}][|<>,?/.®©€¥£¢"
+
+                //Handle Input User Name From User
 
 
                 //Handle  Input Full Name From User
+
                 val nameText = binding.editProfileFullName.text.toString()
                 val countDotChar = nameText.count { it == '.' }
                 if (countDotChar >= 2) {
@@ -210,9 +222,13 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                     return binding.editProfileFullName.setText(nameText.dropLast(1))
                 }
 
-                if (nameText.startsWith(" ")) {
-                    return binding.editProfileFullName.setText(nameText.dropLast(1))
+                for (s in listSpecialCharacter) {
+                    if (nameText.startsWith(s)) {
+                        return binding.editProfileFullName.setText(nameText.dropLast(1))
+                    }
                 }
+
+
                 //
 
                 //Handle Input City From User
@@ -225,8 +241,10 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                     }
                 }
 
-                if (cityText.startsWith(" ")) {
-                    return binding.editProfileCity.setText(cityText.dropLast(1))
+                for (s in listSpecialCharacter) {
+                    if (cityText.startsWith(s)) {
+                        return binding.editProfileCity.setText(cityText.dropLast(1))
+                    }
                 }
 
                 //Handle Enable Save Setting Button
@@ -362,6 +380,28 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                     requestFocus()
                 }
 
+            }
+            
+            USER_NAME_INVALID ->{
+                binding.txtErrorUsername.apply {
+                    visibility = View.VISIBLE
+                    text = context.getString(R.string.txt_error_spc_chars)
+                }
+                binding.editUsername.apply {
+                    setBackgroundResource(R.drawable.custom_edittext_error)
+                    requestFocus()
+                }
+            }
+
+            USER_NAME_FORMAT -> {
+                binding.txtErrorUsername.apply {
+                    visibility = View.VISIBLE
+                    text = context.getString(R.string.txt_error_contains_alpnum)
+                }
+                binding.editUsername.apply {
+                    setBackgroundResource(R.drawable.custom_edittext_error)
+                    requestFocus()
+                }
             }
 
             STATE_NOT_IN_LIST -> {
@@ -597,8 +637,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 }
             }
         }
-
-        isChangeRadioButton = true
         binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
 
     }
