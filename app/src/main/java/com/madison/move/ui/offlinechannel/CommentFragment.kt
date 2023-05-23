@@ -15,13 +15,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.Toast
+import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,12 +34,15 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback
 import com.madison.move.R
 import com.madison.move.databinding.FragmentCommentBinding
+import com.madison.move.ui.home.HomeFragment
+import com.madison.move.ui.menu.MainMenuActivity
 import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
 import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
 
@@ -48,19 +55,15 @@ open class CommentFragment : Fragment(), CommentListener {
     companion object {
         var isFullScreen = false
         var isLock = false
+        private var initialOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
     }
-    private var savedPlayerState: PlayerState? = null
 
     private var currentFragment: Fragment? = null
     private lateinit var handler: Handler
     private lateinit var simpleExoPlayer: SimpleExoPlayer
     private lateinit var fullscreen: ImageView
 
-    inner class PlayerState(
-        val playbackPosition: Long,
-        val currentWindow: Int,
-        val isPlaying: Boolean
-    )
+
 
 
     override fun onCreateView(
@@ -84,76 +87,71 @@ open class CommentFragment : Fragment(), CommentListener {
         currentFragment = this
 
 
-/*
-        val count = activity?.supportFragmentManager?.backStackEntryCount
-        Toast.makeText(activity,count.toString(), Toast.LENGTH_SHORT).show()
-*/
+
 
 
         return binding.root
     }
 
-//    private fun enterFullscreen() {
-//        // Lưu trạng thái của ExoPlayer
-//        savedPlayerState = PlayerState(
-//            simpleExoPlayer.currentPosition,
-//            simpleExoPlayer.currentWindowIndex,
-//            simpleExoPlayer.playWhenReady
-//        )
-//
-//        // Ẩn system UI
-//        hideSystemUi()
-//
-//        // Chuyển sang Fragment mới
-//        val fullscreenFragment = FullScreenFragment()
-//        val bundle = Bundle()
-//        val videoSource = Uri.parse("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4")
-//        val videoUrl = videoSource.toString()
-//        val mediaItem = MediaItem.fromUri(videoSource)
-//        bundle.putString("videoUrl", videoUrl) // Truyền URL video cho Fragment mới
-//        fullscreenFragment.arguments = bundle
-//        simpleExoPlayer.setMediaItem(mediaItem)
-//        simpleExoPlayer.prepare()
-//        simpleExoPlayer.play()
-//
-//        // Đặt Fragment mới vào Back Stack và chuyển đổi
-//        requireFragmentManager()
-//            .beginTransaction()
-//            .replace(R.id.contrainVideo, fullscreenFragment)
-//            .addToBackStack(null)
-//            .commit()
-//        // Cập nhật cờ và biến isFullScreen
-//        isFullScreen = true
-//    }
-//
-//    private fun hideSystemUi() {
-//        binding.playView.systemUiVisibility = (View.SYSTEM_UI_FLAG_FULLSCREEN
-//                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-//                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-//                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
-//    }
-//    private fun showSystemUi() {
-//        binding.playView.systemUiVisibility = (View.SYSTEM_UI_FLAG_VISIBLE)
-//    }
+    private fun hideViews() {
+
+        binding.layout2.visibility = View.GONE
+
+        val view: View? = activity?.findViewById(R.id.layout_tool_bar)
+        view?.visibility = View.GONE
+
+        val layoutParams = binding.playView.layoutParams as RelativeLayout.LayoutParams
+        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+        binding.playView.layoutParams = layoutParams
+    }
+    private fun showViews() {
+
+        binding.layout2.visibility = View.VISIBLE
+
+        val view: View? = activity?.findViewById(R.id.layout_tool_bar)
+        view?.visibility = View.VISIBLE
+
+        val heightInDp = 230
+        val scale = resources.displayMetrics.density
+        val heightInPx = (heightInDp * scale + 0.5f).toInt()
+        val layoutParams = binding.playView.layoutParams as RelativeLayout.LayoutParams
+        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        layoutParams.height = heightInPx
+        binding.playView.layoutParams = layoutParams
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val initialOrientation = requireActivity().requestedOrientation
         val fullscreen = view.findViewById<ImageView>(R.id.imgFullScreen)
         val lockscreen = view.findViewById<ImageView>(R.id.exoLock)
+        val imgback = view.findViewById<ImageView>(R.id.imgBack)
 
         fullscreen.setOnClickListener {
             if (!isFullScreen) {
                 fullscreen.setImageDrawable(ContextCompat.getDrawable(requireContext().applicationContext, R.drawable.ic_fullscreen_exit))
                 requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                hideViews()
             } else {
                 fullscreen.setImageDrawable(ContextCompat.getDrawable(requireContext().applicationContext, R.drawable.ic_fullscreen))
-                requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                requireActivity().requestedOrientation = initialOrientation
+                showViews()
             }
             isFullScreen = !isFullScreen
+        }
+
+        imgback.setOnClickListener {
+            if (!isFullScreen){
+                val intent = Intent (activity,MainMenuActivity::class.java)
+                startActivity(intent)
+            }else{
+                fullscreen.setImageDrawable(ContextCompat.getDrawable(requireContext().applicationContext, R.drawable.ic_fullscreen))
+                requireActivity().requestedOrientation = initialOrientation
+                showViews()
+            }
         }
 
         lockscreen.setOnClickListener {
@@ -193,11 +191,6 @@ open class CommentFragment : Fragment(), CommentListener {
                     binding.progressBar.visibility = View.GONE
                 }
 
-//                if (!simpleExoPlayer.playWhenReady) {
-//                    handler.removeCallbacks(updateProgressAction)
-//                } else {
-//                    onProgress()
-//                }
             }
         })
         val videoSource = Uri.parse("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4")
@@ -207,70 +200,21 @@ open class CommentFragment : Fragment(), CommentListener {
         simpleExoPlayer.play()
 
 
+
+
+    }
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val currentOrientation = newConfig.orientation
+        if (currentOrientation == Configuration.ORIENTATION_PORTRAIT && isFullScreen) {
+            requireActivity().requestedOrientation = initialOrientation
+            isFullScreen = false
+        }
     }
 
 
-//    private val ad = 4000
-//    private var check = false
-//
-//    private fun onProgress() {
-//        val player = simpleExoPlayer
-//        val position: Long = player.currentPosition
-//        handler.removeCallbacks(updateProgressAction)
-//        val playbackState = player.playbackState
-//        if (playbackState != Player.STATE_IDLE && playbackState != Player.STATE_ENDED) {
-//            var delayMs: Long
-//            if (player.playWhenReady && playbackState == Player.STATE_READY) {
-//                delayMs = 1000 - position % 1000
-//                if (delayMs < 200) {
-//                    delayMs += 1000
-//                }
-//            } else {
-//                delayMs = 1000
-//            }
-//            if ((ad - 3000 <= position && position <= ad) && !check) {
-//                check = true
-//                initAd()
-//            }
-//            handler.postDelayed(updateProgressAction, delayMs)
-//        }
-//    }
-//
-//    var rewardedInterstitialAd: RewardedInterstitialAd? = null
-//    private fun initAd() {
-//        if (rewardedInterstitialAd != null) return
-//        MobileAds.initialize(requireContext())
-//        RewardedInterstitialAd.load(requireContext(), "ca-app-pub-3940256099942544/5354046379",
-//            AdRequest.Builder().build(), object : RewardedInterstitialAdLoadCallback() {
-//                override fun onAdLoaded(p0: RewardedInterstitialAd) {
-//                    rewardedInterstitialAd = p0
-//                    rewardedInterstitialAd!!.fullScreenContentCallback =
-//                        object : FullScreenContentCallback() {
-//                            override fun onAdFailedToShowFullScreenContent(p0: AdError) {
-//                            }
-//
-//                            override fun onAdShowedFullScreenContent() {
-//                                handler.removeCallbacks(updateProgressAction)
-//                            }
-//
-//                            override fun onAdDismissedFullScreenContent() {
-//                                //resume play
-//                                simpleExoPlayer.playWhenReady = true
-//                                rewardedInterstitialAd = null
-//                                check = false
-//                            }
-//                        }
-//                }
-//
-//                override fun onAdFailedToLoad(p0: LoadAdError) {
-//                    rewardedInterstitialAd = null
-//                }
-//
-//
-//            })
-//    }
 
-//    private val updateProgressAction = Runnable { onProgress() }
+
     private fun lockScreen(lock: Boolean) {
         val sec_mid = view?.findViewById<LinearLayout>(R.id.sec_controlvid1)
         val sec_bottom = view?.findViewById<LinearLayout>(R.id.sec_controlvid2)
@@ -298,13 +242,6 @@ open class CommentFragment : Fragment(), CommentListener {
             requireActivity().onBackPressed()
         }
     }
-//override fun onBackPressed() {
-//    if (isLock) return
-//    if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//        val fullscreen = view?.findViewById<ImageView>(R.id.imgFullScreen)
-//        fullscreen?.performClick()
-//    } else   requireActivity().onBackPressed()
-//}
 
 
     override fun onStop() {

@@ -32,14 +32,6 @@
             android:textColor="@color/white"
             android:textSize="18sp" />
 
-        <ImageView
-            android:id="@+id/imgPlayList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:padding="10dp"
-            android:src="@drawable/ic_playlist"
-            android:theme="@style/ClickableView" />
 
         <ImageView
             android:id="@+id/imgMoreWight"
@@ -47,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:padding="10dp"
-            android:src="@drawable/ic_more_wight"
+            android:src="@drawable/ic_settinng"
             android:theme="@style/ClickableView" />
 
         <ImageView
@@ -98,8 +90,8 @@
 
             <ImageView
                 android:id="@+id/imgFullScreen"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
                 android:src="@drawable/exo_controls_fullscreen_enter"
                 android:theme="@style/ClickableView" />
         </LinearLayout>
