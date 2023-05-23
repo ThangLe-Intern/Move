@@ -34,7 +34,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
     private var userDung = User(
         1, "vudung", "vudung@gmail.com", "",
-        "123", R.drawable.avatar, 1, "", "", 1,
+        "123", R.drawable.avatar, 1, "Male", "", 1,
         "", false
     )
 
@@ -52,10 +52,13 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         super.onResume()
         if (!userDung.role) {
             binding.menulogout.text = getString(R.string.txt_log_in)
-//            binding.menuTvSettting.visibility = View.GONE
+            binding.menuTvSettting.visibility = View.GONE
+            binding.layoutUserInfo.constraintLayout.visibility = View.GONE
         } else {
             binding.menulogout.text = getString(R.string.txt_log_out)
             binding.menuTvSettting.visibility = View.VISIBLE
+            binding.layoutUserInfo.constraintLayout.visibility = View.VISIBLE
+            binding.layoutUserInfo.txtUsernameNavbar.text = userDung.username
         }
     }
 
@@ -72,6 +75,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             R.string.opem_name,
             R.string.close_name
         )
+
+
 
         toggle.isDrawerIndicatorEnabled = false
         toggle.setHomeAsUpIndicator(R.drawable.ic_menu)
@@ -120,6 +125,24 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
     override fun listener() {
 
+
+        binding.layoutUserInfo.constraintLayout.setOnClickListener {
+
+            val profileFragment = ProfileFragment()
+
+            if (userDung.role) {
+                val bundle = Bundle()
+                bundle.putParcelable("user", userDung)
+                profileFragment.arguments = bundle
+            }
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+
+            supportFragmentManager.beginTransaction()
+                .replace(binding.contentFrameMain.id, profileFragment).commit()
+
+        }
+
+
         binding.apply {
             menuTvFaq.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -164,9 +187,16 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                     finish()
                     startActivity(intent)
                 }
+            }
 
+            layoutUserInfo.logo.setOnClickListener {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+                supportFragmentManager.beginTransaction()
+                    .replace(binding.contentFrameMain.id, HomeFragment()).commit()
 
             }
+
+
 
             menuTvSettting.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -239,6 +269,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         } else {
             binding.menulogout.text = getString(R.string.txt_log_out)
             binding.menuTvSettting.visibility = View.VISIBLE
+            binding.layoutUserInfo.constraintLayout.visibility = View.VISIBLE
+            binding.layoutUserInfo.txtUsernameNavbar.text = userDung.username
         }
     }
 

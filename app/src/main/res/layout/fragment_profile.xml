@@ -88,10 +88,10 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_40sdp"
             android:background="@drawable/custom_edittext"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
             android:fontFamily="@font/montserrat_regular"
             android:imeOptions="actionDone"
-            android:inputType="textFilter"
+            android:inputType="textPersonName"
+            android:maxLength="25"
             android:paddingStart="@dimen/_10sdp"
             android:paddingEnd="@dimen/_10sdp"
             android:singleLine="true"
@@ -99,6 +99,8 @@
             app:layout_constraintEnd_toEndOf="@id/img_profile_line"
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_username" />
+
+<!--        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"-->
 
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -137,13 +139,13 @@
             android:layout_height="@dimen/_40sdp"
             android:background="@drawable/custom_edittext"
             android:enabled="false"
-            android:textColorHint="@color/black"
             android:fontFamily="@font/montserrat_regular"
             android:paddingStart="@dimen/_10sdp"
             android:paddingEnd="@dimen/_10sdp"
             android:singleLine="true"
             android:text="@string/email_address"
             android:textColor="@android:color/darker_gray"
+            android:textColorHint="@color/black"
             android:textSize="@dimen/_15ssp"
             app:layout_constraintEnd_toEndOf="@id/img_profile_line"
             app:layout_constraintHorizontal_bias="1.0"
@@ -167,10 +169,11 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_40sdp"
             android:background="@drawable/custom_edittext"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ.abcdefghijklmnopqrstuvwxyz&#032;"
+            android:digits="YÝỲỴỸỶyýỳỵỹỷÁáàạảãóòuùúũụủÀẠẢÃÓÒUÙÚŨỤỦÍÌíìÉÈéèẾỀếềêâăÂĂƠƯĐẮẰẶẲẴỐỒỘỔỖẤẦẬẨẪẺẼẸỆỂỄỈĨỊỎÕỌỘỔỖỞỠỢỚỜỞỠỢỪỨỮỬỰơưđắằặẳẵốồộổỗấầậẩẫẻẽẹệểễỉĩịỏõọôỗởỡợớờởỡợừứữửựABCDEFGHIJKLMNOPQRSTUVWXYZ.abcdefghijklmnopqrstuvwxyz&#032;"
             android:fontFamily="@font/montserrat_regular"
             android:imeOptions="actionDone"
-            android:inputType="textCapSentences"
+            android:inputType="text"
+            android:maxLength="100"
             android:paddingStart="@dimen/_10sdp"
             android:paddingEnd="@dimen/_10sdp"
             android:singleLine="true"
@@ -178,6 +181,9 @@
             app:layout_constraintEnd_toEndOf="@id/img_profile_line"
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_full_name" />
+
+        <!--        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ.abcdefghijklmnopqrstuvwxyz&#032;"-->
+
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_error_full_name"
@@ -232,8 +238,7 @@
             android:textSize="@dimen/_15ssp"
             app:layout_constraintBottom_toBottomOf="@id/radio_male"
             app:layout_constraintStart_toEndOf="@id/radio_male"
-            app:layout_constraintTop_toTopOf="@id/radio_male"
-            />
+            app:layout_constraintTop_toTopOf="@id/radio_male" />
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/radio_female"
@@ -291,8 +296,8 @@
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/date_of_birth"
             android:textColor="@color/black"
-            android:textSize="@dimen/_15ssp"
             android:textColorHint="@color/black"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintStart_toStartOf="@+id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/radio_rather_not_say" />
 
@@ -364,11 +369,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_8sdp"
-                app:hintTextColor="@color/black"
-                android:textColorHint="@color/black"
                 android:layout_weight="1.5"
+                android:textColorHint="@color/black"
                 app:endIconDrawable="@drawable/custom_dropdown_arrow"
-                app:endIconTint="@color/move_green">
+                app:endIconTint="@color/move_green"
+                app:hintTextColor="@color/black">
 
                 <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:id="@+id/dropdown_year_text"
@@ -378,9 +383,9 @@
                     android:background="@drawable/custom_edittext"
                     android:drawableEnd="@drawable/drop_down_arrow"
                     android:dropDownHeight="@dimen/_160sdp"
-                    android:textColorHint="@color/black"
                     android:fontFamily="@font/montserrat_regular"
                     android:hint="@string/yyyy"
+                    android:textColorHint="@color/black"
                     android:textSize="@dimen/_13ssp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -404,12 +409,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:textColorHint="@color/black"
+            android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
-            android:textColorHint="@color/black"
             app:endIconDrawable="@drawable/custom_dropdown_arrow"
             app:endIconTint="@color/move_green"
-            android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
             app:layout_constraintEnd_toEndOf="@id/img_profile_line"
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_country">
@@ -420,7 +425,6 @@
                 android:layout_height="@dimen/_40sdp"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:textColorHint="@color/black"
                 android:background="@drawable/custom_edittext"
                 android:drawableEnd="@drawable/drop_down_arrow"
                 android:dropDownAnchor="@id/edit_profile_full_name"
@@ -429,6 +433,7 @@
                 android:hint="@string/please_select_country"
                 android:imeOptions="actionDone"
                 android:singleLine="true"
+                android:textColorHint="@color/black"
                 android:textSize="@dimen/_15ssp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -450,12 +455,12 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColorHint="@color/black"
+            android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
-            android:textColorHint="@color/black"
             app:endIconDrawable="@drawable/custom_dropdown_arrow"
             app:endIconTint="@color/move_green"
-            android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
             app:layout_constraintEnd_toEndOf="@id/img_profile_line"
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_state">
@@ -469,11 +474,11 @@
                 android:drawableEnd="@drawable/drop_down_arrow"
                 android:dropDownAnchor="@id/edit_profile_full_name"
                 android:dropDownHeight="@dimen/_160sdp"
-                android:textColorHint="@color/black"
                 android:fontFamily="@font/montserrat_regular"
                 android:hint="@string/please_select_state"
                 android:imeOptions="actionDone"
                 android:singleLine="true"
+                android:textColorHint="@color/black"
                 android:textSize="@dimen/_15ssp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -494,7 +499,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_40sdp"
             android:background="@drawable/custom_edittext"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ/,-.abcdefghijklmnopqrstuvwxyz1234567890&#032;"
+            android:digits="YÝỲỴỸỶyýỳỵỹỷÁáàạảãóòuùúũụủÀẠẢÃÓÒUÙÚŨỤỦÍÌíìÉÈéèẾỀếềêâăÂĂƠƯĐẮẰẶẲẴỐỒỘỔỖẤẦẬẨẪẺẼẸỆỂỄỈĨỊỎÕỌỘỔỖỞỠỢỚỜỞỠỢỪỨỮỬỰơưđắằặẳẵốồộổỗấầậẩẫẻẽẹệểễỉĩịỏõọôỗởỡợớờởỡợừứữửựABCDEFGHIJKLMNOPQRSTUVWXYZ/,-.abcdefghijklmnopqrstuvwxyz1234567890&#032;"
             android:fontFamily="@font/montserrat_regular"
             android:imeOptions="actionDone"
             android:inputType="textFilter"
@@ -514,12 +519,12 @@
             android:layout_marginBottom="@dimen/_25sdp"
             android:alpha="1"
             android:background="@drawable/custom_login_button"
+            android:enabled="false"
             android:fontFamily="@font/montserrat_semi_bold"
             android:text="@string/save_settings"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="@dimen/_14ssp"
-            android:enabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/img_profile_line"
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
