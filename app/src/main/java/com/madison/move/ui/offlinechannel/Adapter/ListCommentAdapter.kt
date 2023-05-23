@@ -54,6 +54,12 @@ class ListCommentAdapter(
             itemView.findViewById<TextView>(R.id.commentTime).text = comment.timeOfComment
             itemView.findViewById<TextView>(R.id.commentContent).text = comment.content
 
+            val btnLike: ImageView =itemView.findViewById(R.id.btnLike)
+            val btnDiskLike: ImageView = itemView.findViewById(R.id.btnDisLike)
+
+
+
+
             if (!comment.user.isTicked) {
                 itemView.findViewById<ImageView>(R.id.bluetick)
                     .visibility = View.GONE

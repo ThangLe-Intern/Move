@@ -15,17 +15,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import android.widget.Toast
-import android.widget.Toolbar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,14 +29,9 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.gms.ads.*
-import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd
-import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback
 import com.madison.move.R
 import com.madison.move.databinding.FragmentCommentBinding
-import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.menu.MainMenuActivity
 import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
 import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
@@ -62,8 +52,6 @@ open class CommentFragment : Fragment(), CommentListener {
     private lateinit var handler: Handler
     private lateinit var simpleExoPlayer: SimpleExoPlayer
     private lateinit var fullscreen: ImageView
-
-
 
 
     override fun onCreateView(
@@ -95,7 +83,7 @@ open class CommentFragment : Fragment(), CommentListener {
 
     private fun hideViews() {
 
-        binding.layout2.visibility = View.GONE
+        binding.layoutInforAndComent.visibility = View.GONE
 
         val view: View? = activity?.findViewById(R.id.layout_tool_bar)
         view?.visibility = View.GONE
@@ -105,9 +93,10 @@ open class CommentFragment : Fragment(), CommentListener {
         layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
         binding.playView.layoutParams = layoutParams
     }
+
     private fun showViews() {
 
-        binding.layout2.visibility = View.VISIBLE
+        binding.layoutInforAndComent.visibility = View.VISIBLE
 
         val view: View? = activity?.findViewById(R.id.layout_tool_bar)
         view?.visibility = View.VISIBLE
@@ -126,17 +115,28 @@ open class CommentFragment : Fragment(), CommentListener {
         super.onViewCreated(view, savedInstanceState)
 
         val initialOrientation = requireActivity().requestedOrientation
-        val fullscreen = view.findViewById<ImageView>(R.id.imgFullScreen)
-        val lockscreen = view.findViewById<ImageView>(R.id.exoLock)
-        val imgback = view.findViewById<ImageView>(R.id.imgBack)
+        val fullscreen = view.findViewById<ImageView>(R.id.img_full_screeen)
+        val lockscreen = view.findViewById<ImageView>(R.id.img_lock)
+        val imgback = view.findViewById<ImageView>(R.id.img_back)
 
         fullscreen.setOnClickListener {
             if (!isFullScreen) {
-                fullscreen.setImageDrawable(ContextCompat.getDrawable(requireContext().applicationContext, R.drawable.ic_fullscreen_exit))
-                requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                fullscreen.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireContext().applicationContext,
+                        R.drawable.ic_fullscreen_exit
+                    )
+                )
+                requireActivity().requestedOrientation =
+                    ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
                 hideViews()
             } else {
-                fullscreen.setImageDrawable(ContextCompat.getDrawable(requireContext().applicationContext, R.drawable.ic_fullscreen))
+                fullscreen.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireContext().applicationContext,
+                        R.drawable.ic_fullscreen
+                    )
+                )
                 requireActivity().requestedOrientation = initialOrientation
                 showViews()
             }
@@ -144,11 +144,16 @@ open class CommentFragment : Fragment(), CommentListener {
         }
 
         imgback.setOnClickListener {
-            if (!isFullScreen){
-                val intent = Intent (activity,MainMenuActivity::class.java)
+            if (!isFullScreen) {
+                val intent = Intent(activity, MainMenuActivity::class.java)
                 startActivity(intent)
-            }else{
-                fullscreen.setImageDrawable(ContextCompat.getDrawable(requireContext().applicationContext, R.drawable.ic_fullscreen))
+            } else {
+                fullscreen.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireContext().applicationContext,
+                        R.drawable.ic_fullscreen
+                    )
+                )
                 requireActivity().requestedOrientation = initialOrientation
                 showViews()
             }
@@ -200,9 +205,8 @@ open class CommentFragment : Fragment(), CommentListener {
         simpleExoPlayer.play()
 
 
-
-
     }
+
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val currentOrientation = newConfig.orientation
@@ -211,8 +215,6 @@ open class CommentFragment : Fragment(), CommentListener {
             isFullScreen = false
         }
     }
-
-
 
 
     private fun lockScreen(lock: Boolean) {

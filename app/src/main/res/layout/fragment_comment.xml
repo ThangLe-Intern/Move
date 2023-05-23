@@ -7,14 +7,14 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/contrainVideo"
+        android:id="@+id/contrain_video"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.exoplayer2.ui.PlayerView
-            android:id="@+id/playView"
+            android:id="@+id/play_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_180sdp"
             android:background="#000000"
@@ -28,7 +28,7 @@
             argType:ignore="MissingClass">
 
             <ProgressBar
-                android:id="@+id/progressBar"
+                android:id="@+id/progress_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
@@ -43,31 +43,31 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/contrainVideo">
+        app:layout_constraintTop_toBottomOf="@+id/contrain_video">
 
         <ScrollView
-            android:id="@+id/scrollViewComment"
+            android:id="@+id/scroll_view_comment"
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout2"
+                android:id="@+id/layout_infor_and_coment"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/contrainVideo">
+                app:layout_constraintTop_toBottomOf="@+id/contrain_video">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/contraintProfile"
+                    android:id="@+id/contraint_profile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    app:layout_constraintBottom_toTopOf="@+id/line1"
+                    app:layout_constraintBottom_toTopOf="@+id/line"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/avartProfile"
+                        android:id="@+id/avart_profile"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginTop="23dp"
@@ -76,7 +76,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/nameUserProflie"
+                        android:id="@+id/name_user_proflie"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
@@ -84,11 +84,11 @@
                         android:text="@string/nameProfile"
                         android:textColor="@color/black"
                         android:textSize="20sp"
-                        app:layout_constraintStart_toEndOf="@+id/avartProfile"
+                        app:layout_constraintStart_toEndOf="@+id/avart_profile"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tvJust"
+                        android:id="@+id/tv_just"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
@@ -96,11 +96,11 @@
                         android:fontFamily="@font/montserrat_regular"
                         android:text="@string/video_category"
                         android:textSize="16sp"
-                        app:layout_constraintStart_toEndOf="@+id/avartProfile"
-                        app:layout_constraintTop_toBottomOf="@+id/nameUserProflie" />
+                        app:layout_constraintStart_toEndOf="@+id/avart_profile"
+                        app:layout_constraintTop_toBottomOf="@+id/name_user_proflie" />
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/cardviewBeginner"
+                        android:id="@+id/cardview_beginner"
                         android:layout_width="@dimen/_57sdp"
                         android:layout_height="@dimen/_16sdp"
                         android:layout_marginStart="10dp"
@@ -109,8 +109,8 @@
                         app:cardCornerRadius="15dp"
                         app:cardElevation="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/avartProfile"
-                        app:layout_constraintTop_toBottomOf="@+id/tvJust">
+                        app:layout_constraintStart_toEndOf="@+id/avart_profile"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_just">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="wrap_content"
@@ -123,36 +123,36 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/imgTick"
+                        android:id="@+id/img_tick"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="15dp"
                         android:layout_marginTop="7dp"
                         android:src="@drawable/ic_tick"
-                        app:layout_constraintStart_toEndOf="@id/nameUserProflie"
+                        app:layout_constraintStart_toEndOf="@id/name_user_proflie"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/imgDots"
+                        android:id="@+id/img_dots"
                         android:layout_width="4dp"
                         android:layout_height="4dp"
                         android:layout_marginStart="7dp"
                         android:src="@drawable/ic_dots"
-                        app:layout_constraintStart_toEndOf="@+id/tvJust"
-                        app:layout_constraintTop_toTopOf="@+id/tvJust"
-                        app:layout_constraintEnd_toStartOf="@id/imgStar"
-                        app:layout_constraintBottom_toBottomOf="@+id/tvJust"
+                        app:layout_constraintStart_toEndOf="@+id/tv_just"
+                        app:layout_constraintTop_toTopOf="@+id/tv_just"
+                        app:layout_constraintEnd_toStartOf="@id/img_star"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_just"
                         />
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/imgStar"
+                        android:id="@+id/img_star"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:src="@drawable/rate"
-                       app:layout_constraintStart_toEndOf="@id/imgDots"
-                        app:layout_constraintTop_toTopOf="@id/imgDots"
-                        app:layout_constraintBottom_toBottomOf="@id/imgDots"
+                       app:layout_constraintStart_toEndOf="@id/img_dots"
+                        app:layout_constraintTop_toTopOf="@id/img_dots"
+                        app:layout_constraintBottom_toBottomOf="@id/img_dots"
                         app:layout_constraintEnd_toStartOf="@id/tvrateNumber"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -163,23 +163,23 @@
                         android:layout_marginStart="10dp"
                         android:text="@string/video_rateNumber"
                         android:textSize="16sp"
-                        app:layout_constraintStart_toEndOf="@id/imgStar"
-                        app:layout_constraintTop_toTopOf="@id/imgStar"
-                        app:layout_constraintBottom_toBottomOf="@id/imgStar"
+                        app:layout_constraintStart_toEndOf="@id/img_star"
+                        app:layout_constraintTop_toTopOf="@id/img_star"
+                        app:layout_constraintBottom_toBottomOf="@id/img_star"
 
                          />
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/cardviewTimeLine"
+                        android:id="@+id/cardview_time_line"
                         android:layout_width="@dimen/_57sdp"
                         android:layout_height="@dimen/_16sdp"
                         android:layout_marginStart="13dp"
                         app:cardBackgroundColor="@color/gray"
                         app:cardCornerRadius="15dp"
                         app:cardElevation="0dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/cardviewBeginner"
-                        app:layout_constraintStart_toEndOf="@+id/cardviewBeginner"
-                        app:layout_constraintTop_toTopOf="@+id/cardviewBeginner">
+                        app:layout_constraintBottom_toBottomOf="@+id/cardview_beginner"
+                        app:layout_constraintStart_toEndOf="@+id/cardview_beginner"
+                        app:layout_constraintTop_toTopOf="@+id/cardview_beginner">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:layout_gravity="center"
@@ -194,13 +194,13 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <RelativeLayout
-                    android:id="@+id/line1"
+                    android:id="@+id/line"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="20dp"
                     android:background="@color/silverSand"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/contraintProfile" />
+                    app:layout_constraintTop_toBottomOf="@+id/contraint_profile" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/bodyLayout"
@@ -210,7 +210,7 @@
                     android:layout_marginTop="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/line1">
+                    app:layout_constraintTop_toBottomOf="@+id/line">
 
                     <RelativeLayout
                         android:id="@+id/layout_userComment"
