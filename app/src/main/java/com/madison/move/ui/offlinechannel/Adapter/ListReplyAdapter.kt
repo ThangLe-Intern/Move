@@ -60,6 +60,7 @@ class ListReplyAdapter(var listReply:MutableList<Comment>) : RecyclerView.Adapte
             btnLikeTick.visibility= View.GONE
             var isBtnLike = false
             var isBtnDiskLike = false
+
             btnLike.setOnClickListener {
                 if (btnLikeTick.isGone){
                     btnLikeTick.visibility = View.VISIBLE
