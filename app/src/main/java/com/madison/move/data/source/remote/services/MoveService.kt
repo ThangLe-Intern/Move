@@ -3,14 +3,20 @@ package com.madison.move.data.source.remote.services
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MoveService(
-    private val URL:String = "https://demo7812962.mockable.io/",
+class MoveService {
 
-    private var mMovieApi: MoveApi? = null,
+    var mMovieApi: MoveApi
 
-    private var singleton: MoveService? = null
-) {
-
+    companion object {
+        const val URL: String = "https://api.move-intern-stg.madlab.tech/api/"
+        private var singleton: MoveService? = null
+        fun getInstance(): MoveService {
+            if (singleton == null) {
+                singleton = MoveService()
+            }
+            return singleton!!
+        }
+    }
 
     init {
         val mRetrofit =
@@ -19,14 +25,7 @@ class MoveService(
         mMovieApi = mRetrofit.create(MoveApi::class.java)
     }
 
-    fun getInstance(): MoveService? {
-        if (singleton == null) {
-            singleton = MoveService()
-        }
-        return singleton
-    }
-
-    fun getMovieApi(): MoveApi? {
+    fun getMovieApi(): MoveApi {
         return mMovieApi
     }
 }

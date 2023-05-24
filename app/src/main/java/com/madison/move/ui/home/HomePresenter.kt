@@ -1,9 +1,19 @@
 package com.madison.move.ui.home
 
+import android.util.Log
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.madison.move.R
+import com.madison.move.data.DataManager
 import com.madison.move.data.model.Category
 import com.madison.move.data.model.MoveVideo
 import com.madison.move.data.model.User
+import com.madison.move.data.model.carousel.CarouselResponse
+import com.madison.move.data.model.carousel.DataVideoCarousel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class HomePresenter(
     override var view: HomeContract.HomeView?,
@@ -12,17 +22,32 @@ class HomePresenter(
     var videoList: MutableList<MoveVideo>
 ): HomeContract.Presenter {
 
-    override fun onShowFeaturedCarouselPresenter() {
-        getFeaturedVideoData(fragmentFeaturedList)
+    private val dataManager: DataManager = DataManager.instance
+    override fun onShowFeaturedCarouselPresenter(fragmentFeaturedList: ArrayList<FeaturedFragment>) {
         view?.onShowFeaturedCarousel(fragmentFeaturedList)
         view?.onCarouselTransformer()
     }
 
-    private fun getFeaturedVideoData(fragmentFeaturedList: ArrayList<FeaturedFragment>) {
-        for (i in 1..4) {
-            fragmentFeaturedList.add(FeaturedFragment())
-        }
+    override fun getFeaturedVideoData() {
+        dataManager.movieRepository.getCarousel()?.enqueue(
+                object : Callback<CarouselResponse> {
+                    override fun onResponse(
+                        call: Call<CarouselResponse>,
+                        carouselResponse: Response<CarouselResponse>
+                    ) {
+                        if (carouselResponse.body() != null) {
+                            view?.onSuccessMoveData(carouselResponse.body()!!)
+                        }
+                    }
+
+                    override fun onFailure(call: Call<CarouselResponse>, t: Throwable) {
+                        Log.e("ERROR", t.message.toString())
+                        view?.onErrorMoveData(t.message.toString())
+                    }
+                }
+            )
     }
+
 
 
     override fun onShowCategoryPresenter() {

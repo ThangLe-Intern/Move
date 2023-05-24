@@ -1,8 +1,11 @@
 package com.madison.move.data.source
+import androidx.lifecycle.MutableLiveData
 import com.madison.move.data.model.Video
+import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.source.local.MoveCacheDataSource
 import com.madison.move.data.source.local.MoveLocalDataSource
 import com.madison.move.data.source.remote.MoveRemoteDataSource
+import retrofit2.Call
 
 
 class MoveRepository private constructor(
@@ -10,10 +13,6 @@ class MoveRepository private constructor(
     private val movieLocal: MoveDataSource,
     private val movieCache: MoveDataSource,
 ) : MoveDataSource {
-
-
-
-
     override fun getVideos(callback: MoveDataSource.LoadVideosCallback?) {
         if (callback == null) return
         movieCache.getVideos(object : MoveDataSource.LoadVideosCallback {
@@ -35,6 +34,15 @@ class MoveRepository private constructor(
         movieLocal.saveVideos(videos)
     }
 
+    override fun testFun() = movieRemote.testFun()
+    override fun getCarousel(): Call<CarouselResponse>? {
+        return movieRemote.getCarousel()
+    }
+
+    override fun setCarousel(): MutableLiveData<CarouselResponse> {
+        getCarousel()
+        return movieRemote.setCarousel()
+    }
 
 
     private fun getMoviesFromLocalDataSource(callback: MoveDataSource.LoadVideosCallback) {
@@ -90,11 +98,11 @@ class MoveRepository private constructor(
             movieRemote: MoveRemoteDataSource,
             movieLocal: MoveLocalDataSource,
             movieCache: MoveCacheDataSource
-        ): MoveRepository? {
+        ): MoveRepository {
             if (instance == null) {
                 instance = MoveRepository(movieRemote, movieLocal, movieCache)
             }
-            return instance
+            return instance!!
         }
     }
 }

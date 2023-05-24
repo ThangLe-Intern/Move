@@ -1,6 +1,9 @@
 package com.madison.move.data.source
 
+import androidx.lifecycle.MutableLiveData
 import com.madison.move.data.model.Video
+import com.madison.move.data.model.carousel.CarouselResponse
+import retrofit2.Call
 
 
 interface MoveDataSource {
@@ -11,5 +14,12 @@ interface MoveDataSource {
     }
 
     fun getVideos(callback: LoadVideosCallback?)
+
     fun saveVideos(videos: List<Video?>?)
+
+    fun testFun(): Int
+
+    fun getCarousel(): Call<CarouselResponse>?
+    fun setCarousel(): MutableLiveData<CarouselResponse>
+
 }
