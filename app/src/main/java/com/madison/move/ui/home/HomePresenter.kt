@@ -17,14 +17,13 @@ import retrofit2.Response
 
 class HomePresenter(
     override var view: HomeContract.HomeView?,
-    var fragmentFeaturedList: ArrayList<FeaturedFragment>,
     var categoryList: MutableList<Category>,
     var videoList: MutableList<MoveVideo>
 ): HomeContract.Presenter {
 
     private val dataManager: DataManager = DataManager.instance
-    override fun onShowFeaturedCarouselPresenter(fragmentFeaturedList: ArrayList<FeaturedFragment>) {
-        view?.onShowFeaturedCarousel(fragmentFeaturedList)
+    override fun onShowFeaturedCarouselPresenter(fragmentFeaturedList: ArrayList<FeaturedFragment>,videoCarouselData:ArrayList<DataVideoCarousel>) {
+        view?.onShowFeaturedCarousel(fragmentFeaturedList,videoCarouselData)
         view?.onCarouselTransformer()
     }
 

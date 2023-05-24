@@ -22,6 +22,7 @@ import com.madison.move.data.DataManager
 import com.madison.move.data.model.Category
 import com.madison.move.data.model.MoveVideo
 import com.madison.move.data.model.carousel.CarouselResponse
+import com.madison.move.data.model.carousel.DataVideoCarousel
 import com.madison.move.data.source.remote.test.MoveViewModel
 import com.madison.move.databinding.FragmentHomeBinding
 import com.madison.move.ui.base.BaseFragment
@@ -31,21 +32,22 @@ import com.madison.move.ui.home.adapter.VideoSuggestionAdapter
 import kotlin.math.abs
 
 class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
+
     private lateinit var binding: FragmentHomeBinding
     private lateinit var carouselViewPagerAdapter: CarouselViewPagerAdapter
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var videoSuggestionAdapter: VideoSuggestionAdapter
     private lateinit var handler: Handler
 
+    var videoCarouselData:ArrayList<DataVideoCarousel> = arrayListOf()
     var featuredList: ArrayList<FeaturedFragment> = arrayListOf()
     var categoryList: MutableList<Category> = mutableListOf()
     var videoList: MutableList<MoveVideo> = mutableListOf()
 
-    private lateinit var moveViewModel: MoveViewModel
 
 
     override fun createPresenter(): HomePresenter =
-        HomePresenter(this, featuredList, categoryList, videoList)
+        HomePresenter(this, categoryList, videoList)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,17 +62,25 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             getFeaturedVideoData()
         }
         return binding.root
-
     }
 
-
     override fun onSuccessMoveData(response: CarouselResponse) {
-        Log.d("DataMove", response.videoCarousel.data[1].toString())
-        var listFragmentSize = response.videoCarousel.data.size
-        for (i in 1..listFragmentSize) {
+        Log.d("DataMove", response.videoCarousel.data.toString())
+
+        val listFragmentSize = response.videoCarousel.data.size
+        videoCarouselData = response.videoCarousel.data as ArrayList
+
+
+        for (i in 0 until listFragmentSize) {
             featuredList.add(FeaturedFragment())
         }
-        onShowFeaturedCarousel(featuredList)
+
+        println(featuredList.size)
+        println(videoCarouselData.size)
+
+
+
+        presenter?.onShowFeaturedCarouselPresenter(featuredList,videoCarouselData)
     }
 
     override fun onErrorMoveData(error: String) {
@@ -82,9 +92,9 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     }
 
     //Show Video To Carousel
-    override fun onShowFeaturedCarousel(featuredFragmentList: ArrayList<FeaturedFragment>) {
+    override fun onShowFeaturedCarousel(featuredFragmentList: ArrayList<FeaturedFragment>,videoCarouselData:ArrayList<DataVideoCarousel>) {
         handler = Handler(Looper.myLooper()!!)
-        carouselViewPagerAdapter = CarouselViewPagerAdapter(featuredFragmentList, binding.viewPager)
+        carouselViewPagerAdapter = CarouselViewPagerAdapter(featuredFragmentList,videoCarouselData, binding.viewPager)
 
         binding.viewPager.apply {
             adapter = carouselViewPagerAdapter
