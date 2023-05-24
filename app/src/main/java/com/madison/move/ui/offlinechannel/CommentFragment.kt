@@ -1,6 +1,7 @@
 package com.madison.move.ui.offlinechannel
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -25,16 +26,20 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.Format
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.gms.ads.*
 import com.madison.move.R
 import com.madison.move.databinding.FragmentCommentBinding
 import com.madison.move.ui.menu.MainMenuActivity
 import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
 import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
+
+
 
 
 open class CommentFragment : Fragment(), CommentListener {
@@ -118,6 +123,10 @@ open class CommentFragment : Fragment(), CommentListener {
         val fullscreen = view.findViewById<ImageView>(R.id.img_full_screeen)
         val lockscreen = view.findViewById<ImageView>(R.id.img_lock)
         val imgback = view.findViewById<ImageView>(R.id.img_back)
+        val btnSettings = view.findViewById<ImageView>(R.id.img_settings)
+        btnSettings.setOnClickListener {
+            showSettingsDialog()
+        }
 
         fullscreen.setOnClickListener {
             if (!IS_FULL_SCREEN) {
@@ -204,8 +213,68 @@ open class CommentFragment : Fragment(), CommentListener {
         simpleExoPlayer.prepare()
         simpleExoPlayer.play()
 
-
     }
+    private fun showSettingsDialog() {
+        val dialog = AlertDialog.Builder(context)
+            .setTitle("Cài đặt video")
+            .setItems(arrayOf("Chất lượng", "Phụ đề", "Âm lượng")) { _, which ->
+                // Xử lý sự kiện khi tùy chọn được chọn
+                when (which) {
+                    0 -> showQualityOptions()
+                    1 -> showSubtitleOptions()
+                    2 -> showVolumeOptions()
+                }
+            }
+            .setNegativeButton("Hủy") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+
+        dialog.show()
+    }
+    private fun showQualityOptions() {
+        // Hiển thị dialog cho người dùng chọn chất lượng video
+        // Xử lý sự kiện khi người dùng chọn chất lượng
+    }
+    private fun showSubtitleOptions() {
+        // Hiển thị dialog cho người dùng chọn chất lượng video
+        // Xử lý sự kiện khi người dùng chọn chất lượng
+    }
+    private fun showVolumeOptions() {
+        val volumeOptions = arrayOf("Âm lượng cao", "Âm lượng trung bình", "Âm lượng thấp")
+        val dialog = AlertDialog.Builder(context)
+            .setTitle("Chọn âm lượng")
+            .setItems(volumeOptions) { _, which ->
+                // Xử lý sự kiện khi người dùng chọn âm lượng
+                val selectedVolume = volumeOptions[which]
+                // Áp dụng âm lượng được chọn vào ExoPlayer
+                applyVolume(selectedVolume)
+            }
+            .setNegativeButton("Hủy") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+
+        dialog.show()
+    }
+    private fun applyVolume(selectedVolume: String) {
+        // Áp dụng mức âm lượng được chọn vào ExoPlayer
+        when (selectedVolume) {
+            "Âm lượng cao" -> {
+                // Đặt mức âm lượng cao cho ExoPlayer
+                simpleExoPlayer.volume = 1.0f
+            }
+            "Âm lượng trung bình" -> {
+                // Đặt mức âm lượng trung bình cho ExoPlayer
+                simpleExoPlayer.volume = 0.5f
+            }
+            "Âm lượng thấp" -> {
+                // Đặt mức âm lượng thấp cho ExoPlayer
+                simpleExoPlayer.volume = 0.2f
+            }
+        }
+    }
+
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
