@@ -48,7 +48,7 @@
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/text_email"
             android:textColor="@color/black"
-            android:textSize="@dimen/_14ssp"
+            android:textSize="@dimen/_13ssp"
             app:layout_constraintBottom_toTopOf="@+id/edit_login_email"
             app:layout_constraintStart_toStartOf="@id/edit_login_email"
             app:layout_constraintTop_toBottomOf="@+id/login_line" />
@@ -101,7 +101,7 @@
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/login_password"
             android:textColor="@color/black"
-            android:textSize="@dimen/_14ssp"
+            android:textSize="@dimen/_13ssp"
             app:layout_constraintBottom_toTopOf="@+id/edit_login_password"
             app:layout_constraintStart_toStartOf="@id/edit_login_email"
             app:layout_constraintTop_toBottomOf="@+id/txt_error_email" />
@@ -179,7 +179,7 @@
             android:id="@+id/txt_login_forgot_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_6sdp"
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/forgot_password"
             android:textColor="@color/move_green"

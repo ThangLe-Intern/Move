@@ -9,4 +9,5 @@ class MoveResponse {
     @Expose
     @SerializedName("movies")
     var videos: List<Video>? = null
+
 }

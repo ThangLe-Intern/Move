@@ -10,11 +10,11 @@ import com.madison.move.data.source.local.MoveDao
 
 @Database(entities = [Video::class], version = 1, exportSchema = false)
 abstract class MoveDatabase : RoomDatabase() {
-    abstract fun movieDao(): MoveDao?
+    abstract fun movieDao(): MoveDao
 
     companion object {
         private var sInstance: MoveDatabase? = null
-        val instance: MoveDatabase?
+        val instance: MoveDatabase
             get() {
                 if (sInstance == null) {
                     sInstance = App.instance?.let {
@@ -25,7 +25,7 @@ abstract class MoveDatabase : RoomDatabase() {
                         ).build()
                     }
                 }
-                return sInstance
+                return sInstance!!
             }
     }
 }

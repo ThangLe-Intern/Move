@@ -8,16 +8,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.alpha
+import android.widget.Toast
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
-import com.madison.move.R
+import com.madison.move.data.DataManager
 import com.madison.move.data.model.Category
 import com.madison.move.data.model.MoveVideo
-import com.madison.move.data.model.User
+import com.madison.move.data.model.carousel.CarouselResponse
+import com.madison.move.data.model.carousel.DataVideoCarousel
+import com.madison.move.data.source.remote.test.MoveViewModel
 import com.madison.move.databinding.FragmentHomeBinding
 import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.home.adapter.CarouselViewPagerAdapter
@@ -26,19 +32,22 @@ import com.madison.move.ui.home.adapter.VideoSuggestionAdapter
 import kotlin.math.abs
 
 class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
+
     private lateinit var binding: FragmentHomeBinding
     private lateinit var carouselViewPagerAdapter: CarouselViewPagerAdapter
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var videoSuggestionAdapter: VideoSuggestionAdapter
     private lateinit var handler: Handler
 
+    var videoCarouselData:ArrayList<DataVideoCarousel> = arrayListOf()
     var featuredList: ArrayList<FeaturedFragment> = arrayListOf()
     var categoryList: MutableList<Category> = mutableListOf()
     var videoList: MutableList<MoveVideo> = mutableListOf()
 
 
+
     override fun createPresenter(): HomePresenter =
-        HomePresenter(this, featuredList, categoryList, videoList)
+        HomePresenter(this, categoryList, videoList)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,25 +57,44 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         presenter?.apply {
-            onShowFeaturedCarouselPresenter()
             onShowCategoryPresenter()
             onShowVideoSuggestionPresenter()
+            getFeaturedVideoData()
         }
-
         return binding.root
-
-
     }
 
+    override fun onSuccessMoveData(response: CarouselResponse) {
+        Log.d("DataMove", response.videoCarousel.data.toString())
+
+        val listFragmentSize = response.videoCarousel.data.size
+        videoCarouselData = response.videoCarousel.data as ArrayList
+
+
+        for (i in 0 until listFragmentSize) {
+            featuredList.add(FeaturedFragment())
+        }
+
+        println(featuredList.size)
+        println(videoCarouselData.size)
+
+
+
+        presenter?.onShowFeaturedCarouselPresenter(featuredList,videoCarouselData)
+    }
+
+    override fun onErrorMoveData(error: String) {
+        Toast.makeText(activity, "Get Data API Failed", Toast.LENGTH_SHORT).show()
+    }
 
     private val runnable = Runnable {
         binding.viewPager.currentItem = binding.viewPager.currentItem + 1
     }
 
     //Show Video To Carousel
-    override fun onShowFeaturedCarousel(featuredFragmentList: ArrayList<FeaturedFragment>) {
+    override fun onShowFeaturedCarousel(featuredFragmentList: ArrayList<FeaturedFragment>,videoCarouselData:ArrayList<DataVideoCarousel>) {
         handler = Handler(Looper.myLooper()!!)
-        carouselViewPagerAdapter = CarouselViewPagerAdapter(featuredFragmentList, binding.viewPager)
+        carouselViewPagerAdapter = CarouselViewPagerAdapter(featuredFragmentList,videoCarouselData, binding.viewPager)
 
         binding.viewPager.apply {
             adapter = carouselViewPagerAdapter
@@ -133,6 +161,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     override fun onResume() {
         super.onResume()
+        handler = Handler(Looper.myLooper()!!)
         handler.postDelayed(runnable, 3000)
     }
 
