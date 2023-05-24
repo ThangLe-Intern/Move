@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.madison.move.R
 import com.madison.move.ui.offlinechannel.Comment
@@ -50,6 +51,31 @@ class ListReplyAdapter(var listReply:MutableList<Comment>) : RecyclerView.Adapte
             val replyLayout: RelativeLayout = itemView.findViewById(R.id.layout_userReply)
             replyLayout.visibility = View.GONE
 
+            val btnLike : ImageView = itemView.findViewById(R.id.btn_like)
+            val btnDiskLike: ImageView = itemView.findViewById(R.id.btnDisLike)
+            val btnLikeTick: ImageView = itemView.findViewById(R.id.btn_like_tick)
+            val btnDiskLikeTick : ImageView = itemView.findViewById(R.id.btnDisLiketike)
+
+            btnDiskLikeTick.visibility = View.GONE
+            btnLikeTick.visibility= View.GONE
+            var isBtnLike = false
+            var isBtnDiskLike = false
+            btnLike.setOnClickListener {
+                if (btnLikeTick.isGone){
+                    btnLikeTick.visibility = View.VISIBLE
+                    btnDiskLikeTick.visibility = View.GONE
+                }else if (btnLikeTick.isVisible && !isBtnLike){
+                    btnLikeTick.visibility = View.GONE
+                }
+            }
+            btnDiskLike.setOnClickListener {
+                if (btnDiskLikeTick.isGone){
+                    btnLikeTick.visibility= View.GONE
+                    btnDiskLikeTick.visibility = View.VISIBLE
+                }else if (btnDiskLikeTick.isVisible && !isBtnDiskLike){
+                    btnDiskLikeTick.visibility = View.GONE
+                }
+            }
 
         }
     }
