@@ -19,6 +19,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
@@ -54,9 +55,31 @@ class ListCommentAdapter(
             itemView.findViewById<TextView>(R.id.commentTime).text = comment.timeOfComment
             itemView.findViewById<TextView>(R.id.commentContent).text = comment.content
 
-            val btnLike: ImageView =itemView.findViewById(R.id.btnLike)
+            val btnLike : ImageView = itemView.findViewById(R.id.btn_like)
             val btnDiskLike: ImageView = itemView.findViewById(R.id.btnDisLike)
+            val btnLikeTick: ImageView = itemView.findViewById(R.id.btn_like_tick)
+            val btnDiskLikeTick : ImageView = itemView.findViewById(R.id.btnDisLiketike)
 
+            btnDiskLikeTick.visibility = View.GONE
+            btnLikeTick.visibility= View.GONE
+            var isBtnLike = false
+            var isBtnDiskLike = false
+            btnLike.setOnClickListener {
+                if (btnLikeTick.isGone){
+                    btnLikeTick.visibility = View.VISIBLE
+                    btnDiskLikeTick.visibility = View.GONE
+                }else if (btnLikeTick.isVisible && !isBtnLike){
+                    btnLikeTick.visibility = View.GONE
+                }
+            }
+            btnDiskLike.setOnClickListener {
+                if (btnDiskLikeTick.isGone){
+                    btnLikeTick.visibility= View.GONE
+                    btnDiskLikeTick.visibility = View.VISIBLE
+                }else if (btnDiskLikeTick.isVisible && !isBtnDiskLike){
+                    btnDiskLikeTick.visibility = View.GONE
+                }
+            }
 
 
 
