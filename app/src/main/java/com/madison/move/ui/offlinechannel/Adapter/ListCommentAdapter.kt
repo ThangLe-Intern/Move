@@ -60,10 +60,13 @@ class ListCommentAdapter(
             val btnLikeTick: ImageView = itemView.findViewById(R.id.btn_like_tick)
             val btnDiskLikeTick : ImageView = itemView.findViewById(R.id.btnDisLiketike)
 
+
+
             btnDiskLikeTick.visibility = View.GONE
             btnLikeTick.visibility= View.GONE
             var isBtnLike = false
             var isBtnDiskLike = false
+
             btnLike.setOnClickListener {
                 if (btnLikeTick.isGone){
                     btnLikeTick.visibility = View.VISIBLE
@@ -71,6 +74,7 @@ class ListCommentAdapter(
                 }else if (btnLikeTick.isVisible && !isBtnLike){
                     btnLikeTick.visibility = View.GONE
                 }
+
             }
             btnDiskLike.setOnClickListener {
                 if (btnDiskLikeTick.isGone){
