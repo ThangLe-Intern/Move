@@ -36,9 +36,7 @@ abstract class BaseActivity<Presenter : Any> : AppCompatActivity(), BaseView {
         ).let { controller ->
             controller.hide(WindowInsetsCompat.Type.systemBars())
 
-            // When the screen is swiped up at the bottom
-            // of the application, the navigationBar shall
-            // appear for some time
+
             controller.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
