@@ -1,23 +1,24 @@
 package com.madison.move.ui.home.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.madison.move.R
 import com.madison.move.data.model.carousel.DataVideoCarousel
 import com.madison.move.ui.home.FeaturedFragment
+import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.offlinechannel.CommentFragment
+import kotlin.math.roundToInt
 
 class CarouselViewPagerAdapter(
+    var activity: HomeFragment,
     var listFragment: ArrayList<FeaturedFragment>,
     var videoCarouselData:ArrayList<DataVideoCarousel>,
     private val viewPager2: ViewPager2
@@ -28,6 +29,22 @@ class CarouselViewPagerAdapter(
         fun onBind(fragment: FeaturedFragment,videoCarousel:DataVideoCarousel) {
 
             itemView.findViewById<AppCompatTextView>(R.id.txt_feature_username).text = videoCarousel.username
+            itemView.findViewById<AppCompatTextView>(R.id.txt_feature_video_category).text = videoCarousel.category_name
+            itemView.findViewById<AppCompatTextView>(R.id.txt_feature_video_title).text = videoCarousel.title
+            itemView.findViewById<AppCompatTextView>(R.id.txt_view_count).text = videoCarousel.count_view.toString()
+
+            val roundOff = (videoCarousel.rating * 100.0).roundToInt() / 100.0
+            itemView.findViewById<AppCompatTextView>(R.id.txt_featured_rate_number).text = roundOff.toString()
+
+
+            val imageView = itemView.findViewById<AppCompatImageView>(R.id.img_featured_video_thumbnail)
+            if (videoCarousel.img != "null"){
+                Glide.with(activity)
+                    .load(videoCarousel.thumbnail)
+                    .into(imageView);
+            }
+
+
 
             itemView.findViewById<ConstraintLayout>(R.id.layout_feature_fragment).setOnClickListener {
                 val activity: AppCompatActivity = it.context as AppCompatActivity

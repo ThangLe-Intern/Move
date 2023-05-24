@@ -5,9 +5,9 @@ data class DataVideoCarousel(
     val count_view: Int,
     val duration: Int,
     val id: Int,
-    val img: Any,
+    val img: String,
     val level: Int,
-    val rating: String,
+    val rating: Double,
     val thumbnail: String,
     val title: String,
     val username: String

@@ -75,11 +75,6 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             featuredList.add(FeaturedFragment())
         }
 
-        println(featuredList.size)
-        println(videoCarouselData.size)
-
-
-
         presenter?.onShowFeaturedCarouselPresenter(featuredList,videoCarouselData)
     }
 
@@ -94,7 +89,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     //Show Video To Carousel
     override fun onShowFeaturedCarousel(featuredFragmentList: ArrayList<FeaturedFragment>,videoCarouselData:ArrayList<DataVideoCarousel>) {
         handler = Handler(Looper.myLooper()!!)
-        carouselViewPagerAdapter = CarouselViewPagerAdapter(featuredFragmentList,videoCarouselData, binding.viewPager)
+        carouselViewPagerAdapter = CarouselViewPagerAdapter(this@HomeFragment,featuredFragmentList,videoCarouselData, binding.viewPager)
 
         binding.viewPager.apply {
             adapter = carouselViewPagerAdapter
