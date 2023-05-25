@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.madison.move.data.model.Video
 import com.madison.move.data.model.carousel.CarouselResponse
+import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.source.MoveDataSource
 import com.madison.move.data.source.remote.model.MoveResponse
 import com.madison.move.data.source.remote.services.MoveApi
@@ -40,6 +41,10 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
 
     override fun setCarousel(): MutableLiveData<CarouselResponse> {
         return null!!
+    }
+
+    override fun getCategory(): Call<CategoryResponse>? {
+        return moveApi.getCategory()
     }
 
     override fun saveVideos(videos: List<Video?>?) {

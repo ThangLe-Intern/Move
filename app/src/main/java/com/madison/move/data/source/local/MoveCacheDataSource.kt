@@ -4,6 +4,7 @@ import android.util.SparseArray
 import androidx.lifecycle.MutableLiveData
 import com.madison.move.data.model.Video
 import com.madison.move.data.model.carousel.CarouselResponse
+import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.source.MoveDataSource
 import retrofit2.Call
 
@@ -41,6 +42,10 @@ class MoveCacheDataSource : MoveDataSource {
 
     override fun setCarousel(): MutableLiveData<CarouselResponse> {
         return null!!
+    }
+
+    override fun getCategory(): Call<CategoryResponse>? {
+        return null
     }
 
     override fun saveVideos(videos: List<Video?>?) {

@@ -9,21 +9,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
-import com.madison.move.data.DataManager
-import com.madison.move.data.model.Category
 import com.madison.move.data.model.MoveVideo
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.carousel.DataVideoCarousel
-import com.madison.move.data.source.remote.test.MoveViewModel
+import com.madison.move.data.model.category.CategoryResponse
+import com.madison.move.data.model.category.DataCategory
 import com.madison.move.databinding.FragmentHomeBinding
 import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.home.adapter.CarouselViewPagerAdapter
@@ -41,13 +36,13 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     var videoCarouselData:ArrayList<DataVideoCarousel> = arrayListOf()
     var featuredList: ArrayList<FeaturedFragment> = arrayListOf()
-    var categoryList: MutableList<Category> = mutableListOf()
+    var categoryList: ArrayList<DataCategory> = arrayListOf()
     var videoList: MutableList<MoveVideo> = mutableListOf()
 
 
 
     override fun createPresenter(): HomePresenter =
-        HomePresenter(this, categoryList, videoList)
+        HomePresenter(this, videoList)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,15 +52,14 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         presenter?.apply {
-            onShowCategoryPresenter()
             onShowVideoSuggestionPresenter()
             getFeaturedVideoData()
+            getCategoryData()
         }
         return binding.root
     }
 
-    override fun onSuccessMoveData(response: CarouselResponse) {
-        Log.d("DataMove", response.videoCarousel.data.toString())
+    override fun onSuccessCarouselData(response: CarouselResponse) {
 
         val listFragmentSize = response.videoCarousel.data.size
         videoCarouselData = response.videoCarousel.data as ArrayList
@@ -76,6 +70,13 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         }
 
         presenter?.onShowFeaturedCarouselPresenter(featuredList,videoCarouselData)
+    }
+
+    override fun onSuccessCategoryData(categoryResponse: CategoryResponse) {
+        Log.d("DataMove", categoryResponse.categories.data.toString())
+        categoryList = categoryResponse.categories.data as ArrayList<DataCategory>
+
+        presenter?.onShowCategoryPresenter(categoryList)
     }
 
     override fun onErrorMoveData(error: String) {
@@ -130,9 +131,8 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
 
     //Show list of Category
-    override fun onShowListCategory(listCategory: MutableList<Category>) {
-        categoryAdapter = CategoryAdapter(listCategory)
-
+    override fun onShowListCategory(listCategory: ArrayList<DataCategory>) {
+        categoryAdapter = CategoryAdapter(this,listCategory)
         binding.listCategory.apply {
             layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)

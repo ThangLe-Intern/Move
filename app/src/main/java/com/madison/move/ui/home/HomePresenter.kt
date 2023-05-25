@@ -1,9 +1,6 @@
 package com.madison.move.ui.home
 
 import android.util.Log
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import com.madison.move.R
 import com.madison.move.data.DataManager
 import com.madison.move.data.model.Category
@@ -11,17 +8,20 @@ import com.madison.move.data.model.MoveVideo
 import com.madison.move.data.model.User
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.carousel.DataVideoCarousel
+import com.madison.move.data.model.category.CategoryResponse
+import com.madison.move.data.model.category.DataCategory
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class HomePresenter(
     override var view: HomeContract.HomeView?,
-    var categoryList: MutableList<Category>,
     var videoList: MutableList<MoveVideo>
 ): HomeContract.Presenter {
 
     private val dataManager: DataManager = DataManager.instance
+
+
     override fun onShowFeaturedCarouselPresenter(fragmentFeaturedList: ArrayList<FeaturedFragment>,videoCarouselData:ArrayList<DataVideoCarousel>) {
         view?.onShowFeaturedCarousel(fragmentFeaturedList,videoCarouselData)
         view?.onCarouselTransformer()
@@ -35,7 +35,7 @@ class HomePresenter(
                         carouselResponse: Response<CarouselResponse>
                     ) {
                         if (carouselResponse.body() != null) {
-                            view?.onSuccessMoveData(carouselResponse.body()!!)
+                            view?.onSuccessCarouselData(carouselResponse.body()!!)
                         }
                     }
 
@@ -47,21 +47,31 @@ class HomePresenter(
             )
     }
 
-
-
-    override fun onShowCategoryPresenter() {
-        getCategoryData(categoryList)
-        view?.onShowListCategory(categoryList)
+    override fun getCategoryData() {
+        dataManager.movieRepository.getCategory()?.enqueue(
+            object : Callback<CategoryResponse> {
+                override fun onResponse(
+                    call: Call<CategoryResponse>,
+                    categoryResponse: Response<CategoryResponse>
+                ) {
+                    if (categoryResponse.body() != null) {
+                        view?.onSuccessCategoryData(categoryResponse.body()!!)
+                    }
+                }
+                override fun onFailure(call: Call<CategoryResponse>, t: Throwable) {
+                    Log.e("ERROR", t.message.toString())
+                    view?.onErrorMoveData(t.message.toString())
+                }
+            }
+        )
     }
 
-    private fun getCategoryData(categoryList: MutableList<Category>) {
-        for (i in 1..2) {
-            categoryList.add(Category(1, "MMA", R.drawable.img_category1, "10.2k views"))
-            categoryList.add(Category(2, "HIIT", R.drawable.img_category2, "9.2k views"))
-            categoryList.add(Category(3, "Just Move", R.drawable.img_category3, "8.2k views"))
-        }
 
+    override fun onShowCategoryPresenter(listCategory: ArrayList<DataCategory>) {
+        view?.onShowListCategory(listCategory)
     }
+
+
 
 
     override fun onShowVideoSuggestionPresenter() {

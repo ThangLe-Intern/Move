@@ -3,6 +3,7 @@ package com.madison.move.data.source.local
 import androidx.lifecycle.MutableLiveData
 import com.madison.move.data.model.Video
 import com.madison.move.data.model.carousel.CarouselResponse
+import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.source.MoveDataSource
 import com.madison.move.utils.DiskExecutor
 import retrofit2.Call
@@ -44,6 +45,10 @@ class MoveLocalDataSource private constructor(
 
     override fun setCarousel(): MutableLiveData<CarouselResponse> {
         return null!!
+    }
+
+    override fun getCategory(): Call<CategoryResponse>? {
+        return null
     }
 
     override fun saveVideos(movies: List<Video?>?) {
