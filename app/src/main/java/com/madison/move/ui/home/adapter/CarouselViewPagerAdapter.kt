@@ -1,26 +1,18 @@
 package com.madison.move.ui.home.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.madison.move.R
 import com.madison.move.data.model.carousel.DataVideoCarousel
 import com.madison.move.databinding.FragmentFeaturedBinding
-import com.madison.move.databinding.FragmentProfileBinding
-import com.madison.move.databinding.ItemCategoryBinding
 import com.madison.move.ui.home.FeaturedFragment
 import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.offlinechannel.CommentFragment
-import de.hdodenhof.circleimageview.CircleImageView
 import kotlin.math.roundToInt
 
 class CarouselViewPagerAdapter(
@@ -37,11 +29,11 @@ class CarouselViewPagerAdapter(
             binding.apply {
                 txtFeatureUsername.text = videoCarousel.username
                 txtFeatureVideoTitle.text = videoCarousel.title
-                txtViewCount.text = videoCarousel.count_view.toString()
-                txtFeatureVideoCategory.text = videoCarousel.category_name
+                txtViewCount.text = videoCarousel.countView.toString()
+                txtFeatureVideoCategory.text = videoCarousel.categoryName
             }
 
-            if (videoCarousel.category_name != null && videoCarousel.category_name == "Just Move") {
+            if (videoCarousel.categoryName != null && videoCarousel.categoryName == "Just Move") {
                 binding.cardViewVideoFeaturedDuration.visibility = View.INVISIBLE
                 binding.cardViewLevelOfUser.visibility = View.INVISIBLE
             }else{

@@ -1,6 +1,5 @@
 package com.madison.move.data.source.remote
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.madison.move.data.model.Video
 import com.madison.move.data.model.carousel.CarouselResponse

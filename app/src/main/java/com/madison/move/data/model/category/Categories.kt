@@ -1,13 +1,35 @@
 package com.madison.move.data.model.category
 
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
 data class Categories(
-    val current_page: Int,
+    @Expose
+    @SerializedName("current_page")
+    val currentPage: Int,
+    @Expose
+    @SerializedName("data")
     val `data`: List<DataCategory>,
-    val first_page_url: String,
+    @Expose
+    @SerializedName("first_page_url")
+    val firstPageUrl: String,
+    @Expose
+    @SerializedName("from")
     val from: Int,
-    val next_page_url: String,
+    @Expose
+    @SerializedName("next_page_url")
+    val nextPageUrl: String,
+    @Expose
+    @SerializedName("path")
     val path: String,
-    val per_page: Int,
-    val prev_page_url: String,
+    @Expose
+    @SerializedName("per_page")
+    val perPage: Int,
+    @Expose
+    @SerializedName("prev_page_url")
+    val prevPageUrl: String,
+    @Expose
+    @SerializedName("to")
     val to: Int
+
 )
