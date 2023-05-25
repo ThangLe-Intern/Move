@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.madison.move.data.model.Video
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
+import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import retrofit2.Call
 
 
@@ -24,5 +25,6 @@ interface MoveDataSource {
     fun setCarousel(): MutableLiveData<CarouselResponse>
 
     fun getCategory(): Call<CategoryResponse>?
+    fun getVideoSuggestion(): Call<VideoSuggestionResponse>?
 
 }

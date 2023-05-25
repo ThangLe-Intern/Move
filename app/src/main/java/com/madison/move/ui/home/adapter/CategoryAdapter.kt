@@ -10,8 +10,7 @@ import com.madison.move.databinding.ItemCategoryBinding
 import com.madison.move.ui.home.HomeFragment
 
 class CategoryAdapter(
-    var activity: HomeFragment,
-    var listCategory: ArrayList<DataCategory>
+    var activity: HomeFragment, var listCategory: ArrayList<DataCategory>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class ViewHolder(val binding: ItemCategoryBinding) :
@@ -19,9 +18,7 @@ class CategoryAdapter(
         fun onBind(category: DataCategory) {
 
             if (category.img != null) {
-                Glide.with(activity)
-                    .load(category.img)
-                    .into(binding.imgCategory)
+                Glide.with(activity).load(category.img).into(binding.imgCategory)
             }
 
             binding.txtCategoryType.text = category.name
@@ -33,9 +30,7 @@ class CategoryAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ViewHolder(
             ItemCategoryBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
+                LayoutInflater.from(parent.context), parent, false
             )
         )
     }

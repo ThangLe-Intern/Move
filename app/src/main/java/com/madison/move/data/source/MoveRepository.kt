@@ -3,6 +3,7 @@ import androidx.lifecycle.MutableLiveData
 import com.madison.move.data.model.Video
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
+import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.data.source.local.MoveCacheDataSource
 import com.madison.move.data.source.local.MoveLocalDataSource
 import com.madison.move.data.source.remote.MoveRemoteDataSource
@@ -47,6 +48,10 @@ class MoveRepository private constructor(
 
     override fun getCategory(): Call<CategoryResponse>? {
         return movieRemote.getCategory()
+    }
+
+    override fun getVideoSuggestion(): Call<VideoSuggestionResponse>? {
+        return movieRemote.getVideoSuggestion()
     }
 
 
