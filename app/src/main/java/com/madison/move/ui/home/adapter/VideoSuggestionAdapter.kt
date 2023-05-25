@@ -1,64 +1,96 @@
 package com.madison.move.ui.home.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.madison.move.R
-import com.madison.move.data.model.MoveVideo
+import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
+import com.madison.move.databinding.ItemVideoSuggestionBinding
+import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.offlinechannel.CommentFragment
+import kotlin.math.roundToInt
 
-class VideoSuggestionAdapter(var listVideo: MutableList<MoveVideo>) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class VideoSuggestionAdapter(
+    var activity: HomeFragment, var listVideo: ArrayList<DataVideoSuggestion>
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun onBind(video: MoveVideo) {
+    inner class ViewHolder(val binding: ItemVideoSuggestionBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun onBind(video: DataVideoSuggestion) {
 
-            itemView.findViewById<ConstraintLayout>(R.id.layout_video_suggestion).setOnClickListener {
-                val activity:AppCompatActivity = it.context as AppCompatActivity
+
+            binding.apply {
+                txtVideoSuggestionUsername.text = video.username
+                txtVideoSuggestionCategory.text = activity.getString(
+                    R.string.video_post_time,
+                    video.categoryName.toString(),
+                    video.postedDayAgo.toString()
+                )
+                txtTitleOfVideoSuggestion.text = video.title
+                txtVideoSuggestionView.text = video.totalView.toString()
+            }
+
+
+            if (video.rating == null) {
+                binding.txtVideoSuggestionRateNumber.text = 0.toString()
+            } else {
+                val roundOff = (video.rating?.times(100.0))?.roundToInt()?.div(100.0)
+                binding.txtVideoSuggestionRateNumber.text = roundOff.toString()
+            }
+
+            if (video.thumbnail != null) {
+                Glide.with(activity).load(video.thumbnail)
+                    .into(binding.imgVideoSuggestionThumbnail);
+            }
+
+            if (video.img != null) {
+                Glide.with(activity).load(video.img).into(binding.imgVideoSuggestionUserAvatar)
+            } else {
+                binding.imgVideoSuggestionUserAvatar.setImageResource(R.drawable.avatar)
+            }
+
+
+            if (video.categoryName != null && video.categoryName == "Just Move") {
+                binding.cardViewVideoSuggestionDuration.visibility = View.INVISIBLE
+                binding.cardViewVideoSuggestionUserLevel.visibility = View.INVISIBLE
+            } else {
+                binding.cardViewVideoSuggestionDuration.visibility = View.VISIBLE
+                binding.cardViewVideoSuggestionUserLevel.visibility = View.VISIBLE
+
+                when (video.level) {
+                    1 -> binding.txtVideoSuggestionUserLevel.text =
+                        activity.getString(R.string.txt_level_beginner)
+                    2 -> binding.txtVideoSuggestionUserLevel.text =
+                        activity.getString(R.string.txt_level_inter)
+                    3 -> binding.txtVideoSuggestionUserLevel.text =
+                        activity.getString(R.string.txt_level_advanced)
+                }
+
+                when (video.duration) {
+                    1 -> binding.txtVideoSuggestionDuration.text =
+                        activity.getString(R.string.timeOfCategory)
+                    2 -> binding.txtVideoSuggestionDuration.text =
+                        activity.getString(R.string.duration_second)
+                    3 -> binding.txtVideoSuggestionDuration.text =
+                        activity.getString(R.string.duration_third)
+                }
+            }
+
+            binding.layoutVideoSuggestion.setOnClickListener {
+                val activity: AppCompatActivity = it.context as AppCompatActivity
                 val commentFragment = CommentFragment()
-
                 activity.supportFragmentManager.beginTransaction().replace(R.id.content_frame_main,commentFragment).commit()
             }
-
-            video.thumbnail?.let {
-                itemView.findViewById<ImageView>(R.id.img_video_suggestion_thumbnail)
-                    .setImageResource(
-                        it
-                    )
-            }
-            itemView.findViewById<TextView>(R.id.txt_video_suggestion_view).text = "${video.view}k"
-            itemView.findViewById<TextView>(R.id.txt_video_suggestion_time).text =
-                "${video.time}:00"
-            video.user?.avatar?.let {
-                itemView.findViewById<ImageView>(R.id.img_video_suggestion_user_avatar)
-                    .setImageResource(
-                        it
-                    )
-            }
-            itemView.findViewById<TextView>(R.id.txt_video_suggestion_username).text =
-                video.user?.fullname
-            itemView.findViewById<AppCompatTextView>(R.id.txt_title_of_video_suggestion).text =
-                video.title
-            itemView.findViewById<TextView>(R.id.txt_video_suggestion_category).text =
-                "${video.category?.name} • A day ago"
-
 
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_video_suggestion, parent, false)
+            ItemVideoSuggestionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 

@@ -14,11 +14,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
-import com.madison.move.data.model.MoveVideo
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.carousel.DataVideoCarousel
 import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.model.category.DataCategory
+import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
+import com.madison.move.data.model.videosuggestion.VideoSuggestion
+import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.databinding.FragmentHomeBinding
 import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.home.adapter.CarouselViewPagerAdapter
@@ -34,27 +36,24 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     private lateinit var videoSuggestionAdapter: VideoSuggestionAdapter
     private lateinit var handler: Handler
 
-    var videoCarouselData:ArrayList<DataVideoCarousel> = arrayListOf()
+    var videoCarouselData: ArrayList<DataVideoCarousel> = arrayListOf()
     var featuredList: ArrayList<FeaturedFragment> = arrayListOf()
     var categoryList: ArrayList<DataCategory> = arrayListOf()
-    var videoList: MutableList<MoveVideo> = mutableListOf()
+    var videoList: ArrayList<DataVideoSuggestion> = arrayListOf()
 
 
-
-    override fun createPresenter(): HomePresenter =
-        HomePresenter(this, videoList)
+    override fun createPresenter(): HomePresenter = HomePresenter(this)
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         presenter?.apply {
-            onShowVideoSuggestionPresenter()
             getFeaturedVideoData()
             getCategoryData()
+            getVideoSuggestionData()
         }
         return binding.root
     }
@@ -69,14 +68,22 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             featuredList.add(FeaturedFragment())
         }
 
-        presenter?.onShowFeaturedCarouselPresenter(featuredList,videoCarouselData)
+        presenter?.onShowFeaturedCarouselPresenter(featuredList, videoCarouselData)
     }
 
     override fun onSuccessCategoryData(categoryResponse: CategoryResponse) {
-        Log.d("DataMove", categoryResponse.categories.data.toString())
         categoryList = categoryResponse.categories.data as ArrayList<DataCategory>
-
         presenter?.onShowCategoryPresenter(categoryList)
+    }
+
+    override fun onSuccessVideoSuggestionData(videoSuggestionResponse: VideoSuggestionResponse) {
+
+        videoList = videoSuggestionResponse.videoSuggestion.data as ArrayList<DataVideoSuggestion>
+
+        Log.d("DataMove", videoList.size.toString())
+
+
+        presenter?.onShowVideoSuggestionPresenter(videoList)
     }
 
     override fun onErrorMoveData(error: String) {
@@ -88,9 +95,14 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     }
 
     //Show Video To Carousel
-    override fun onShowFeaturedCarousel(featuredFragmentList: ArrayList<FeaturedFragment>,videoCarouselData:ArrayList<DataVideoCarousel>) {
+    override fun onShowFeaturedCarousel(
+        featuredFragmentList: ArrayList<FeaturedFragment>,
+        videoCarouselData: ArrayList<DataVideoCarousel>
+    ) {
         handler = Handler(Looper.myLooper()!!)
-        carouselViewPagerAdapter = CarouselViewPagerAdapter(this@HomeFragment,featuredFragmentList,videoCarouselData, binding.viewPager)
+        carouselViewPagerAdapter = CarouselViewPagerAdapter(
+            this@HomeFragment, featuredFragmentList, videoCarouselData, binding.viewPager
+        )
 
         binding.viewPager.apply {
             adapter = carouselViewPagerAdapter
@@ -132,17 +144,17 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     //Show list of Category
     override fun onShowListCategory(listCategory: ArrayList<DataCategory>) {
-        categoryAdapter = CategoryAdapter(this,listCategory)
+        categoryAdapter = CategoryAdapter(this, listCategory)
         binding.listCategory.apply {
-            layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = categoryAdapter
         }
     }
 
     //Show list of Video Suggestion
-    override fun onShowListVideoSuggestion(listVideo: MutableList<MoveVideo>) {
-        videoSuggestionAdapter = VideoSuggestionAdapter(listVideo)
+    override fun onShowListVideoSuggestion(listVideoSuggestion: ArrayList<DataVideoSuggestion>) {
+
+        videoSuggestionAdapter = VideoSuggestionAdapter(this, listVideoSuggestion)
         binding.listVideoSuggestion.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = videoSuggestionAdapter

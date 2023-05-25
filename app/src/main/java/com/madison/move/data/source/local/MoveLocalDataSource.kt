@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.madison.move.data.model.Video
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
+import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.data.source.MoveDataSource
 import com.madison.move.utils.DiskExecutor
 import retrofit2.Call
@@ -48,6 +49,10 @@ class MoveLocalDataSource private constructor(
     }
 
     override fun getCategory(): Call<CategoryResponse>? {
+        return null
+    }
+
+    override fun getVideoSuggestion(): Call<VideoSuggestionResponse>? {
         return null
     }
 
