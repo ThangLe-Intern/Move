@@ -18,15 +18,15 @@ class CategoryAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(category: DataCategory) {
 
-            if (category.img != null){
+            if (category.img != null) {
                 Glide.with(activity)
                     .load(category.img)
                     .into(binding.imgCategory)
             }
 
             binding.txtCategoryType.text = category.name
-//            binding.txtCategoryView.text = "${category.viewCount} views"
-            binding.txtCategoryView.text = activity.getString(R.string.count_view, category.viewCount.toString() ?:"")
+            binding.txtCategoryView.text =
+                activity.getString(R.string.count_view, category.viewCount.toString() ?: "")
         }
     }
 
