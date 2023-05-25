@@ -10,7 +10,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_featured_video_thumbnail"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_160sdp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@id/img_featured_user_avatar"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +54,7 @@
     </androidx.cardview.widget.CardView>
 
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/img_featured_user_avatar"
         android:layout_width="@dimen/_40sdp"
         android:layout_height="@dimen/_40sdp"
@@ -190,7 +190,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_video_suggestion_duration"
+            android:id="@+id/cardView_video_featured_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_3sdp"
@@ -199,7 +199,7 @@
             app:cardElevation="0dp">
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/txt_video_suggestion_duration"
+                android:id="@+id/txt_video_featured_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_semi_bold"

@@ -1,15 +1,15 @@
-package com.madison.move.data.model.carousel
+package com.madison.move.data.model.videosuggestion
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class DataVideoCarousel(
+data class DataVideoSuggestion(
     @Expose
     @SerializedName("category_name")
     val categoryName: String?,
     @Expose
-    @SerializedName("count_view")
-    val countView: Int?,
+    @SerializedName("created_at")
+    val createdAt: String?,
     @Expose
     @SerializedName("duration")
     val duration: Int?,
@@ -23,6 +23,9 @@ data class DataVideoCarousel(
     @SerializedName("level")
     val level: Int?,
     @Expose
+    @SerializedName("posted_day_ago")
+    val postedDayAgo: Int?,
+    @Expose
     @SerializedName("rating")
     val rating: Double?,
     @Expose
@@ -31,6 +34,9 @@ data class DataVideoCarousel(
     @Expose
     @SerializedName("title")
     val title: String?,
+    @Expose
+    @SerializedName("total_view")
+    val totalView: Int?,
     @Expose
     @SerializedName("username")
     val username: String?

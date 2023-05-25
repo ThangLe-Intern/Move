@@ -90,7 +90,7 @@
             android:background="@drawable/custom_edittext"
             android:fontFamily="@font/montserrat_regular"
             android:imeOptions="actionDone"
-            android:inputType="textPersonName"
+            android:inputType="textFilter"
             android:maxLength="25"
             android:paddingStart="@dimen/_10sdp"
             android:paddingEnd="@dimen/_10sdp"
@@ -181,9 +181,6 @@
             app:layout_constraintEnd_toEndOf="@id/img_profile_line"
             app:layout_constraintStart_toStartOf="@id/txt_profile_title"
             app:layout_constraintTop_toBottomOf="@id/txt_profile_full_name" />
-
-        <!--        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ.abcdefghijklmnopqrstuvwxyz&#032;"-->
-
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_error_full_name"

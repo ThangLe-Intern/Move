@@ -45,6 +45,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         binding = ActivityMainMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
         super.onCreate(savedInstanceState)
+
     }
 
 
