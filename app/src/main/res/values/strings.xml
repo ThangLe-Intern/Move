@@ -22,6 +22,8 @@
     <string name="txt_videos_you_may_like">Videos you may like</string>
     <string name="featured">Featured</string>
     <string name="timeOfCategory">&lt; 30 mins</string>
+    <string name="duration_second">&lt; 1 hour</string>
+    <string name="duration_third">&gt; 1 hour</string>
     <string name="viewOfVideo">1.34k</string>
     <string name="video_title">Leg days</string>
     <string name="username">Vu Dung</string>
@@ -124,6 +126,11 @@
     <string name="error_user_name">Username contains at least 4 chars and maximum 25 chars</string>
     <string name="txt_error_spc_chars">Username cannot contain special character &#38; whitespace</string>
     <string name="txt_error_contains_alpnum">Username must contain alphanumeric characters</string>
+    <string name="txt_level_beginner">Beginner</string>
+    <string name="txt_level_inter">Intermediate</string>
+    <string name="txt_level_advanced">Advanced</string>
+    <string name="count_view">%s views</string>
+    <string name="video_post_time">%s • %s days ago</string>
 
 
 </resources>

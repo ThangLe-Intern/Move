@@ -1,15 +1,15 @@
-package com.madison.move.data.model.carousel
+package com.madison.move.data.model.videosuggestion
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class VideoCarousel(
+data class VideoSuggestion(
     @Expose
     @SerializedName("current_page")
     val currentPage: Int,
     @Expose
     @SerializedName("data")
-    val `data`: List<DataVideoCarousel>,
+    val `data`: List<DataVideoSuggestion>,
     @Expose
     @SerializedName("first_page_url")
     val firstPageUrl: String,
