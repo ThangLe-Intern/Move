@@ -61,7 +61,8 @@ class LoginPresenter(
                 ) {
                     if (loginResponse.body() != null) {
                         view?.onSuccessGetToken(loginResponse.body()!!)
-                    } else {
+                    }
+                    if(loginResponse.errorBody() != null){
                         onShowErrorPresenter(INCORRECT_ACCOUNT)
                     }
                 }

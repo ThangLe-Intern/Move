@@ -39,12 +39,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:layout_marginEnd="@dimen/_10ssp"
-                android:scaleType="fitXY"
                 app:layout_constraintBottom_toBottomOf="@id/txt_featured_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/txt_featured_title"
                 app:layout_constraintTop_toTopOf="@+id/txt_featured_title"
-                app:srcCompat="@drawable/title" />
+                app:srcCompat="@drawable/title_featured" />
 
             <FrameLayout
                 android:id="@+id/layout_feature"
