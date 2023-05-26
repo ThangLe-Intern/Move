@@ -1,8 +1,10 @@
 package com.madison.move.data.source
+
 import androidx.lifecycle.MutableLiveData
 import com.madison.move.data.model.Video
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
+import com.madison.move.data.model.login.LoginResponse
 import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.data.source.local.MoveCacheDataSource
 import com.madison.move.data.source.local.MoveLocalDataSource
@@ -52,6 +54,10 @@ class MoveRepository private constructor(
 
     override fun getVideoSuggestion(): Call<VideoSuggestionResponse>? {
         return movieRemote.getVideoSuggestion()
+    }
+
+    override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {
+        return movieRemote.getTokenLogin(email, password)
     }
 
 
