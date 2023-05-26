@@ -21,7 +21,6 @@ class VideoSuggestionAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(video: DataVideoSuggestion) {
 
-
             binding.apply {
                 txtVideoSuggestionUsername.text = video.username
                 txtVideoSuggestionCategory.text = activity.getString(

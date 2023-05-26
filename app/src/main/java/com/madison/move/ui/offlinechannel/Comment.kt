@@ -6,7 +6,10 @@ class Comment(
     val timeOfComment: String,
     var listChild: MutableList<Comment>,
     val user: DataModelComment,
-    var isChild: Boolean = false
+    var isChild: Boolean = false,
+    var isLiked: Boolean = false,
+    var isDiskLiked: Boolean = false,
+    var isRepliesVisible: Boolean = false
 
 ) {
 }

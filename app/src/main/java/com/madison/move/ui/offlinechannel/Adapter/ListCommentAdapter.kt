@@ -1,33 +1,21 @@
 package com.madison.move.ui.offlinechannel.Adapter
 
-import android.content.Context
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.cardview.widget.CardView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.madison.move.R
+import com.madison.move.databinding.ItemUserCommentBinding
 import com.madison.move.ui.offlinechannel.Comment
 import com.madison.move.ui.offlinechannel.DataModelComment
-import java.util.zip.Inflater
-
 class ListCommentAdapter(
     var listComment: MutableList<Comment>,
     val replyListener: ReplyListener,
@@ -35,14 +23,16 @@ class ListCommentAdapter(
     ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+
     lateinit var adapterReply: ListReplyAdapter
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(val binding: ItemUserCommentBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun onBind(comment: Comment) {
             ///////////
             val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
 
-            var listReply = comment.listChild
+            val listReply = comment.listChild
 
             adapterReply = ListReplyAdapter(listReply)
             itemView.findViewById<RecyclerView>(R.id.listReply).apply {
@@ -50,105 +40,104 @@ class ListCommentAdapter(
                 adapter = adapterReply
             }
 
-            itemView.findViewById<ImageView>(R.id.avatar).setImageResource(comment.user.avt)
-            itemView.findViewById<TextView>(R.id.username).text = comment.user.name
-            itemView.findViewById<TextView>(R.id.commentTime).text = comment.timeOfComment
-            itemView.findViewById<TextView>(R.id.commentContent).text = comment.content
+            binding.avatar.setImageResource(comment.user.avt)
+            binding.username.text = comment.user.name
+            binding.commentTime.text = comment.timeOfComment
+            binding.commentContent.text = comment.content
 
-            val btnLike : ImageView = itemView.findViewById(R.id.btn_like)
-            val btnDiskLike: ImageView = itemView.findViewById(R.id.btnDisLike)
-            val btnLikeTick: ImageView = itemView.findViewById(R.id.btn_like_tick)
-            val btnDiskLikeTick : ImageView = itemView.findViewById(R.id.btnDisLiketike)
-            val txtNumber: TextView = itemView.findViewById(R.id.number_like)
+            binding.listReply.visibility = View.VISIBLE
+            binding.layoutShow.setOnClickListener {
+               if (binding.listReply.isVisible){
+                   binding.listReply.visibility = View.GONE
+                   binding.imgArrowDownGreen.setImageResource(R.drawable.ic_arrow_down_green)
+                   binding.txtShow.setText("Show replies")
+
+               }else {
+                   binding.listReply.visibility = View.VISIBLE
+                   binding.imgArrowDownGreen.setImageResource(R.drawable.ic_ic_arrow_up_green)
+                   binding.txtShow.setText("Hide replies")
+                   notifyDataSetChanged()
+
+               }
+            }
+            if (comment.listChild.isNotEmpty()){
+                binding.layoutShow.visibility = View.VISIBLE
+            }else{
+                binding.layoutShow.visibility = View.GONE
+            }
 
 
+            val isBtnLike = false
+            val isBtnDiskLike = false
+            binding.btnLikeTick.visibility = View.GONE
+            binding.btnDisLiketike.visibility = View.GONE
+            val number = 0
 
-            btnDiskLikeTick.visibility = View.GONE
-            btnLikeTick.visibility= View.GONE
-            var isBtnLike = false
-            var isBtnDiskLike = false
-            var number = 0
-
-
-
-            btnLike.setOnClickListener {
-                if (btnLikeTick.isGone){
-                    btnLikeTick.visibility = View.VISIBLE
-                    btnDiskLikeTick.visibility = View.GONE
-                    number ++
-                    txtNumber.text =number.toString()
-                }else if (btnLikeTick.isVisible && !isBtnLike ){
-                    btnLikeTick.visibility = View.GONE
-                    number--
-                    txtNumber.text =number.toString()
-                }else{
-
+            binding.btnLike.setOnClickListener {
+                if ( binding.btnLikeTick.isGone) {
+                    binding.btnLikeTick.visibility = View.VISIBLE
+                    binding.btnDisLiketike.visibility = View.GONE
+                } else if (binding.btnLikeTick.isVisible && !isBtnLike) {
+                    binding.btnLikeTick.visibility = View.GONE
                 }
 
             }
-            btnDiskLike.setOnClickListener {
-                if (btnDiskLikeTick.isGone){
-                    btnLikeTick.visibility= View.GONE
-                    btnDiskLikeTick.visibility = View.VISIBLE
-                    number--
-                    txtNumber.text=number.toString()
-                }else if (btnDiskLikeTick.isVisible && !isBtnDiskLike){
-                    btnDiskLikeTick.visibility = View.GONE
+            binding.btnDisLike.setOnClickListener {
+                if (  binding.btnDisLiketike.isGone) {
+                    binding.btnLikeTick.visibility = View.GONE
+                    binding.btnDisLiketike.visibility =View.VISIBLE
+                } else if (  binding.btnDisLiketike.isVisible && !isBtnDiskLike) {
+                    binding.btnDisLiketike.visibility = View.GONE
                 }
 
 
             }
-
 
 
             if (!comment.user.isTicked) {
-                itemView.findViewById<ImageView>(R.id.bluetick)
-                    .visibility = View.GONE
+                binding.bluetick.visibility = View.GONE
             }
 
-            //////
-            val reportCardView: CardView = itemView.findViewById(R.id.cardView_Report)
-            val reportButton: AppCompatImageView = itemView.findViewById(R.id.btn_report)
 
-            reportCardView.visibility = View.GONE
+            binding.cardViewReport.visibility = View.GONE
+            binding.btnReport.setOnClickListener {
 
-            reportButton.setOnClickListener {
-
-                if (reportCardView.isGone) {
-                    reportCardView.visibility = View.VISIBLE
+                if (binding.cardViewReport.isGone) {
+                    binding.cardViewReport.visibility = View.VISIBLE
                 } else {
-                    reportCardView.visibility = View.GONE
+                    binding.cardViewReport.visibility = View.GONE
                 }
             }
 
-            reportCardView.setOnClickListener {
-                reportCardView.visibility = View.GONE
+            binding.cardViewReport.setOnClickListener {
+                binding.cardViewReport.visibility = View.GONE
+            }
+            binding.sendButtonReply.setOnClickListener {
+                notifyDataSetChanged()
             }
 
 
             /////////
-            val replyLayout: RelativeLayout = itemView.findViewById(R.id.layout_userReply)
-            replyLayout.visibility = View.GONE
 
-            val cancelReply: AppCompatButton = itemView.findViewById(R.id.cancelReply_button)
-            val sendReply: AppCompatButton = itemView.findViewById(R.id.send_buttonReply)
-            val edtUserReply: AppCompatEditText = itemView.findViewById(R.id.edt_userCommentReply)
+            binding.layoutUserReply.visibility = View.GONE
+
+
 
             ///////
             itemView.findViewById<AppCompatTextView>(R.id.btnReply).setOnClickListener {
-                if (replyLayout.isGone) {
-                    replyLayout.visibility = View.VISIBLE
+                if (binding.layoutUserReply.isGone) {
+                    binding.layoutUserReply.visibility = View.VISIBLE
 
                     replyListener.userComment(
-                        cancelReply,
-                        sendReply,
-                        edtUserReply,
+                        binding.cancelReplyButton,
+                        binding.sendButtonReply,
+                        binding.edtUserCommentReply,
                         listReply,
-                        itemView.findViewById(R.id.listReply),
+                        binding.listReply,
                         user4
                     )
                 } else {
-                    replyLayout.visibility = View.GONE
+                    binding.layoutUserReply.visibility = View.GONE
                 }
             }
 
@@ -160,8 +149,9 @@ class ListCommentAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_user_comment, parent, false)
+            ItemUserCommentBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            )
         )
 
     }
