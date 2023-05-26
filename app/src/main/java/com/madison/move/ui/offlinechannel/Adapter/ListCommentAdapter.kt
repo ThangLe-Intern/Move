@@ -29,7 +29,7 @@ class ListCommentAdapter(
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(comment: Comment) {
-            ///////////
+
             val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
 
             val listReply = comment.listChild
@@ -47,18 +47,18 @@ class ListCommentAdapter(
 
             binding.listReply.visibility = View.VISIBLE
             binding.layoutShow.setOnClickListener {
-               if (binding.listReply.isVisible){
-                   binding.listReply.visibility = View.GONE
-                   binding.imgArrowDownGreen.setImageResource(R.drawable.ic_arrow_down_green)
-                   binding.txtShow.setText("Show replies")
-
-               }else {
-                   binding.listReply.visibility = View.VISIBLE
-                   binding.imgArrowDownGreen.setImageResource(R.drawable.ic_ic_arrow_up_green)
-                   binding.txtShow.setText("Hide replies")
-                   notifyDataSetChanged()
-
-               }
+                binding.apply {
+                    binding.listReply.visibility =
+                        if (binding.listReply.isVisible) View.GONE else View.VISIBLE
+                    imgArrowDownGreen.setImageResource(
+                        if (binding.listReply.isVisible) R.drawable.ic_ic_arrow_up_green
+                        else R.drawable.ic_arrow_down_green
+                    )
+                    txtShow.setText(
+                        if (binding.listReply.isVisible) "Hide   replies"
+                        else "Show replies"
+                    )
+                }
             }
             if (comment.listChild.isNotEmpty()){
                 binding.layoutShow.visibility = View.VISIBLE

@@ -50,11 +50,11 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.listVideoSuggestion.isNestedScrollingEnabled = false
-        presenter?.apply {
-            getFeaturedVideoData()
-            getCategoryData()
-            getVideoSuggestionData()
-        }
+//        presenter?.apply {
+//            getFeaturedVideoData()
+//            getCategoryData()
+//            getVideoSuggestionData()
+//        }
         return binding.root
     }
 
