@@ -60,11 +60,10 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     override fun onSuccessCarouselData(response: CarouselResponse) {
 
-        val listFragmentSize = response.videoCarousel.data.size
-        videoCarouselData = response.videoCarousel.data as ArrayList
+        val listFragmentSize = response.data?.size
+        videoCarouselData = response.data as ArrayList
 
-
-        for (i in 0 until listFragmentSize) {
+        for (i in 0 until listFragmentSize!!) {
             featuredList.add(FeaturedFragment())
         }
 
@@ -72,22 +71,18 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     }
 
     override fun onSuccessCategoryData(categoryResponse: CategoryResponse) {
-        categoryList = categoryResponse.categories.data as ArrayList<DataCategory>
+        categoryList = categoryResponse.data as ArrayList<DataCategory>
         presenter?.onShowCategoryPresenter(categoryList)
     }
 
     override fun onSuccessVideoSuggestionData(videoSuggestionResponse: VideoSuggestionResponse) {
 
         videoList = videoSuggestionResponse.videoSuggestion.data as ArrayList<DataVideoSuggestion>
-
-        Log.d("DataMove", videoList.size.toString())
-
-
         presenter?.onShowVideoSuggestionPresenter(videoList)
     }
 
     override fun onErrorMoveData(error: String) {
-        Toast.makeText(activity, "Get Data API Failed", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
     }
 
     private val runnable = Runnable {
