@@ -2,10 +2,12 @@ package com.madison.move.ui.menu
 
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -31,35 +33,48 @@ import com.madison.move.ui.profile.ProfileFragment
 class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     NavigationView.OnNavigationItemSelectedListener, LoginDialogFragment.OnInputListener {
     private lateinit var binding: ActivityMainMenuBinding
-
+    private var tokenUser: String? = null
+    private var getSharedPreferences: SharedPreferences? = null
     private var userDung = User(
-        1, "vudung", "vudung@gmail.com", "",
-        "123", R.drawable.avatar, 1, "Male", "", 1,
-        "", false
+        1, "vudung", "vudung@gmail.com", "", "123", R.drawable.avatar, 1, "Male", "", 1, "", false
     )
 
     override fun createPresenter(): MenuPresenter = MenuPresenter(this)
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
+        //clear token when re-launch app
+        val settings = getSharedPreferences("tokenUser", Context.MODE_PRIVATE)
+        settings.edit().clear().apply()
+
         binding = ActivityMainMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
         super.onCreate(savedInstanceState)
 
     }
 
-
     override fun onResume() {
         super.onResume()
-        if (!userDung.role) {
-            binding.menulogout.text = getString(R.string.txt_log_in)
-            binding.menuTvSettting.visibility = View.GONE
-            binding.layoutUserInfo.constraintLayout.visibility = View.GONE
+
+        getSharedPreferences = getSharedPreferences("tokenUser", MODE_PRIVATE)
+        tokenUser = getSharedPreferences?.getString("token", null)
+
+        //If token null show menu of login -- if not null show menu logout
+        if (tokenUser == null) {
+            binding.apply {
+                menulogout.text = getString(R.string.txt_log_in)
+                menuTvSettting.visibility = View.GONE
+                layoutUserInfo.constraintLayout.visibility = View.GONE
+                menuTvFollowing.visibility = View.GONE
+            }
         } else {
-            binding.menulogout.text = getString(R.string.txt_log_out)
-            binding.menuTvSettting.visibility = View.VISIBLE
-            binding.layoutUserInfo.constraintLayout.visibility = View.VISIBLE
-            binding.layoutUserInfo.txtUsernameNavbar.text = userDung.username
+            binding.apply {
+                menulogout.text = getString(R.string.txt_log_out)
+                menuTvSettting.visibility = View.VISIBLE
+                layoutUserInfo.constraintLayout.visibility = View.VISIBLE
+                layoutUserInfo.txtUsernameNavbar.text = userDung.username
+                menuTvFollowing.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -117,10 +132,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         }
 
         // add home
-        supportFragmentManager
-            .beginTransaction()
-            .replace(binding.contentFrameMain.id, HomeFragment())
-            .commit()
+        supportFragmentManager.beginTransaction()
+            .replace(binding.contentFrameMain.id, HomeFragment()).commit()
     }
 
 
@@ -147,10 +160,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         binding.apply {
             menuTvFaq.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(binding.contentFrameMain.id, FAQFragment())
-                    .commit()
+                supportFragmentManager.beginTransaction()
+                    .replace(binding.contentFrameMain.id, FAQFragment()).commit()
             }
 
             menuTvGuideline.setOnClickListener {
@@ -174,19 +185,21 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             }
 
             menulogout.setOnClickListener {
-                if (!userDung.role) {
+                if (tokenUser == null) {
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     val loginDialog = LoginDialogFragment(this@MainMenuActivity)
-                    val bundle = Bundle()
-                    bundle.putParcelable("user", userDung)
-                    loginDialog.arguments = bundle
                     loginDialog.show(supportFragmentManager, "login Dialog")
                 } else {
-                    userDung.role = false
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
-                    val intent = intent
-                    finish()
-                    startActivity(intent)
+
+                    //clear token when logout
+                    val settings = getSharedPreferences("tokenUser", Context.MODE_PRIVATE)
+                    settings.edit().clear().apply()
+
+                    //reload homepage
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.content_frame_main, HomeFragment()).commit()
+
                 }
             }
 
@@ -204,12 +217,9 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
                 val profileFragment = ProfileFragment()
 
-                if (userDung.role) {
-                    val bundle = Bundle()
-                    bundle.putParcelable("user", userDung)
-                    profileFragment.arguments = bundle
-                }
-
+                val bundle = Bundle()
+                bundle.putParcelable("user", userDung)
+                profileFragment.arguments = bundle
                 supportFragmentManager.beginTransaction()
                     .replace(binding.contentFrameMain.id, profileFragment).commit()
 
@@ -242,18 +252,6 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         } else {
             onBackPressedDispatcher.onBackPressed()
         }
-
-/*
-        val count = supportFragmentManager.backStackEntryCount
-        Toast.makeText(applicationContext,count.toString(), Toast.LENGTH_SHORT).show()
-*/
-
-/*        if (count == 0) {
-            super.onBackPressed()
-            //additional code
-        } else {
-            supportFragmentManager.popBackStack()
-        }*/
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -261,18 +259,27 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     }
 
 
-    //Get Data User from dialog Fragment
-    override fun sendInput(user: User) {
-        userDung = user
-        if (!userDung.role) {
-            binding.menulogout.text = getString(R.string.txt_log_in)
-            binding.menuTvSettting.visibility = View.GONE
-        } else {
-            binding.menulogout.text = getString(R.string.txt_log_out)
-            binding.menuTvSettting.visibility = View.VISIBLE
-            binding.layoutUserInfo.constraintLayout.visibility = View.VISIBLE
-            binding.layoutUserInfo.txtUsernameNavbar.text = userDung.username
+    //Get Token From Preferences
+    override fun sendToken() {
+
+        getSharedPreferences = getSharedPreferences("tokenUser", MODE_PRIVATE)
+        tokenUser = getSharedPreferences?.getString("token", null)
+
+        if (tokenUser != null){
+            binding.apply {
+                menulogout.text = getString(R.string.txt_log_out)
+                menuTvSettting.visibility = View.VISIBLE
+                menuTvFollowing.visibility = View.VISIBLE
+                layoutUserInfo.constraintLayout.visibility = View.VISIBLE
+                layoutUserInfo.txtUsernameNavbar.text = userDung.username
+            }
         }
+
+
+    }
+
+    override fun onStop() {
+        super.onStop()
     }
 
 

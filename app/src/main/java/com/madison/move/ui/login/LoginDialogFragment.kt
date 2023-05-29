@@ -8,19 +8,21 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.madison.move.R
 import com.madison.move.data.model.User
 import com.madison.move.data.model.login.LoginResponse
 import com.madison.move.databinding.FragmentLoginDialogBinding
+import com.madison.move.ui.faq.FAQFragment
+import com.madison.move.ui.home.HomeFragment
 
 
 class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : DialogFragment(),
@@ -28,7 +30,7 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
     private lateinit var binding: FragmentLoginDialogBinding
     private lateinit var presenter: LoginPresenter
     private lateinit var user: User
-
+    private var tokenUser: String? = null
 
     companion object {
         const val EMAIL_INVALID = "EMAIL_INVALID"
@@ -39,14 +41,14 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
         const val EMAIL_NULL = "EMAIL_NULL"
         const val PASSWORD_EMAIL_NULL = "PASSWORD_EMAIL_NULL"
 
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         dialog?.window?.apply {
             setLayout(
-                WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT
+                WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT
             )
 
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
@@ -55,13 +57,10 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
 
         binding = FragmentLoginDialogBinding.inflate(inflater, container, false)
-
 
 
         val bundle = arguments
@@ -109,8 +108,7 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
             binding.imgShowPassword.visibility = View.VISIBLE
 
             binding.editLoginPassword.apply {
-                transformationMethod =
-                    HideReturnsTransformationMethod.getInstance()
+                transformationMethod = HideReturnsTransformationMethod.getInstance()
                 setSelection(binding.editLoginPassword.length())
             }
         }
@@ -120,8 +118,7 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
             binding.imgHidePassword.visibility = View.VISIBLE
 
             binding.editLoginPassword.apply {
-                transformationMethod =
-                    PasswordTransformationMethod.getInstance()
+                transformationMethod = PasswordTransformationMethod.getInstance()
                 setSelection(binding.editLoginPassword.length())
             }
         }
@@ -195,25 +192,35 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
 
     override fun onLoginClick(user: User) {
         dialog?.dismiss()
-        mOnInputListener?.sendInput(user)
+        mOnInputListener?.sendToken()
     }
 
     override fun onSuccessGetToken(tokenResponse: LoginResponse) {
-        Log.d("HEHE",tokenResponse.token.toString())
-        Toast.makeText(activity, tokenResponse.token.toString(), Toast.LENGTH_SHORT).show()
+
+        Toast.makeText(activity, "Login Successful!", Toast.LENGTH_SHORT).show()
+
+        tokenUser = tokenResponse.token.toString()
+        val sharedPreferences =
+            activity?.getSharedPreferences("tokenUser", AppCompatActivity.MODE_PRIVATE)
+        sharedPreferences?.edit()?.putString("token", tokenUser)?.apply()
+
+        mOnInputListener?.sendToken()
         dialog?.dismiss()
+
+        //Reload HomePage
+        activity?.supportFragmentManager?.beginTransaction()
+            ?.replace(R.id.content_frame_main, HomeFragment())?.commit()
+
     }
 
     override fun onResponseError(errorType: String) {
         Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
     }
 
-
     //Send user data from Fragment To Activity
     interface OnInputListener {
-        fun sendInput(user: User)
+        fun sendToken()
     }
-
 
     override fun onBottomNavigateSystemUI() {
 

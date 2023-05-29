@@ -14,7 +14,7 @@ import java.util.concurrent.Executor
 
 class MoveLocalDataSource private constructor(
     private val executor: Executor,
-    private val movieDao: MoveDao
+    private val moveDao: MoveDao
 ) :
     MoveDataSource {
 
@@ -31,7 +31,7 @@ class MoveLocalDataSource private constructor(
 
     override fun getVideos(callback: MoveDataSource.LoadVideosCallback?) {
         val runnable = Runnable {
-            val videos: List<Video?>? = movieDao.videos
+            val videos: List<Video?>? = moveDao.videos
             if (videos != null && videos.isNotEmpty()) {
                 callback?.onVideosLoaded(videos)
             } else {
@@ -57,13 +57,17 @@ class MoveLocalDataSource private constructor(
         return null
     }
 
+    override fun getVideoSuggestionForUser(token: String): Call<VideoSuggestionResponse>? {
+        return null
+    }
+
     override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {
         return null
     }
 
 
     override fun saveVideos(movies: List<Video?>?) {
-        val runnable = Runnable { movieDao.saveMovies(movies) }
+        val runnable = Runnable { moveDao.saveMovies(movies) }
         executor.execute(runnable)
     }
 

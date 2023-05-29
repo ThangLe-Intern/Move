@@ -38,22 +38,23 @@ class LoginPresenter(
 
     override fun onLoginClickPresenter(email: String, password: String) {
         if (password.isEmpty() || email.isEmpty()) {
-            if(password.isEmpty() && email.isEmpty()) return onShowErrorPresenter(PASSWORD_EMAIL_NULL)
+            if (password.isEmpty() && email.isEmpty()) return onShowErrorPresenter(
+                PASSWORD_EMAIL_NULL
+            )
             if (email.isEmpty()) return onShowErrorPresenter(EMAIL_NULL)
             return onShowErrorPresenter(PASSWORD_NULL)
-        } else
-            if (!isEmailValid(email)) {
-                onShowErrorPresenter(EMAIL_INVALID)
-            } else if (email.contains(" ")) {
-                onShowErrorPresenter(EMAIL_CONTAIN_SPACE)
-            } else if (password.contains(" ")) {
-                onShowErrorPresenter(PASSWORD_CONTAIN_SPACE)
-            } else {
-                getToken(email,password)
-            }
+        } else if (!isEmailValid(email)) {
+            onShowErrorPresenter(EMAIL_INVALID)
+        } else if (email.contains(" ")) {
+            onShowErrorPresenter(EMAIL_CONTAIN_SPACE)
+        } else if (password.contains(" ")) {
+            onShowErrorPresenter(PASSWORD_CONTAIN_SPACE)
+        } else {
+            getToken(email, password)
+        }
     }
 
-    private fun getToken(email: String,password: String){
+    private fun getToken(email: String, password: String) {
         dataManager.movieRepository.getTokenLogin(email, password)
             ?.enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(
@@ -62,10 +63,11 @@ class LoginPresenter(
                     if (loginResponse.body() != null) {
                         view?.onSuccessGetToken(loginResponse.body()!!)
                     }
-                    if(loginResponse.errorBody() != null){
+                    if (loginResponse.errorBody() != null) {
                         onShowErrorPresenter(INCORRECT_ACCOUNT)
                     }
                 }
+
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                     Log.e("ERROR", t.message.toString())
                     view?.onResponseError(t.message.toString())

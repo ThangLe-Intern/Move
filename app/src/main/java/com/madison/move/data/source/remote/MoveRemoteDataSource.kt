@@ -52,6 +52,10 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
         return moveApi.getVideoSuggestion()
     }
 
+    override fun getVideoSuggestionForUser(token:String): Call<VideoSuggestionResponse>? {
+        return moveApi.getVideoSuggestionForUser(token)
+    }
+
     override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {
         return moveApi.loginApi(email,password)
     }

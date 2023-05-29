@@ -11,7 +11,6 @@ interface LoginContract {
         fun onEnableButtonLogin()
         fun onShowError(errorType: String)
         fun onLoginClick(user: User)
-
         fun onSuccessGetToken(tokenResponse: LoginResponse)
         fun onResponseError(errorType: String)
 

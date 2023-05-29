@@ -54,6 +54,11 @@ class MoveCacheDataSource : MoveDataSource {
         return null
     }
 
+    override fun getVideoSuggestionForUser(token: String): Call<VideoSuggestionResponse>? {
+        return null
+    }
+
+
     override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {
         return null
     }

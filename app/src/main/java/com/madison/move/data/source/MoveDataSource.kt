@@ -17,17 +17,13 @@ interface MoveDataSource {
     }
 
     fun getVideos(callback: LoadVideosCallback?)
-
     fun saveVideos(videos: List<Video?>?)
-
     fun testFun(): Int
-
     fun getCarousel(): Call<CarouselResponse>?
     fun setCarousel(): MutableLiveData<CarouselResponse>
-
     fun getCategory(): Call<CategoryResponse>?
     fun getVideoSuggestion(): Call<VideoSuggestionResponse>?
-
+    fun getVideoSuggestionForUser(token:String): Call<VideoSuggestionResponse>?
     fun getTokenLogin(email:String, password:String): Call<LoginResponse>?
 
 }
