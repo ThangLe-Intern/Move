@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="20dp"
     android:clickable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:id="@+id/root_view">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/item_user_avatar"

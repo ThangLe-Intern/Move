@@ -26,18 +26,16 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.Format
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.gms.ads.*
 import com.madison.move.R
 import com.madison.move.databinding.FragmentCommentBinding
 import com.madison.move.ui.menu.MainMenuActivity
-import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
-import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
+import com.madison.move.ui.offlinechannel.adapter.ListCommentAdapter
+import com.madison.move.ui.offlinechannel.adapter.ListReplyAdapter
 
 
 
