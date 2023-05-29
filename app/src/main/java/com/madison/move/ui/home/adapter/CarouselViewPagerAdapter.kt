@@ -80,7 +80,6 @@ class CarouselViewPagerAdapter(
                         .beginTransaction()
                         .replace(R.id.content_frame_main, commentFragment)
                         .commit()
-
                 }
         }
     }

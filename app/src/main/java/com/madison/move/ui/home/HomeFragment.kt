@@ -118,7 +118,6 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     override fun onSuccessVideoSuggestionForUser(videoSuggestionResponse: VideoSuggestionResponse) {
         videoList = videoSuggestionResponse.videoSuggestion.data as ArrayList<DataVideoSuggestion>
         presenter?.onShowVideoSuggestionPresenter(videoList)
-
     }
 
     override fun onErrorMoveData(error: String) {
@@ -188,7 +187,6 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     //Show list of Video Suggestion
     override fun onShowListVideoSuggestion(listVideoSuggestion: ArrayList<DataVideoSuggestion>) {
-
         videoSuggestionAdapter = VideoSuggestionAdapter(this, listVideoSuggestion)
         binding.listVideoSuggestion.apply {
             layoutManager = LinearLayoutManager(context)
