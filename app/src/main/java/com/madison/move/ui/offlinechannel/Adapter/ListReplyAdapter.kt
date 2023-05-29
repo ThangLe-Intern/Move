@@ -1,4 +1,4 @@
-package com.madison.move.ui.offlinechannel.adapter
+package com.madison.move.ui.offlinechannel.Adapter
 
 import android.view.LayoutInflater
 import android.view.View

@@ -23,6 +23,7 @@ import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,10 +35,8 @@ import com.google.android.gms.ads.*
 import com.madison.move.R
 import com.madison.move.databinding.FragmentCommentBinding
 import com.madison.move.ui.menu.MainMenuActivity
-import com.madison.move.ui.offlinechannel.adapter.ListCommentAdapter
-import com.madison.move.ui.offlinechannel.adapter.ListReplyAdapter
-
-
+import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
+import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
 
 
 open class CommentFragment : Fragment(), CommentListener {
@@ -128,6 +127,7 @@ open class CommentFragment : Fragment(), CommentListener {
 
         fullscreen.setOnClickListener {
             if (!IS_FULL_SCREEN) {
+                imgback.visibility = View.VISIBLE
                 fullscreen.setImageDrawable(
                     ContextCompat.getDrawable(
                         requireContext().applicationContext,
@@ -138,6 +138,7 @@ open class CommentFragment : Fragment(), CommentListener {
                     ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
                 hideViews()
             } else {
+                imgback.visibility = View.GONE
                 fullscreen.setImageDrawable(
                     ContextCompat.getDrawable(
                         requireContext().applicationContext,
@@ -150,15 +151,16 @@ open class CommentFragment : Fragment(), CommentListener {
             IS_FULL_SCREEN = !IS_FULL_SCREEN
         }
 
+        imgback.visibility = View.GONE
         imgback.setOnClickListener {
             if (!IS_FULL_SCREEN) {
-                val intent = Intent(activity, MainMenuActivity::class.java)
-                startActivity(intent)
+                imgback.visibility = View.GONE
             } else {
+                imgback.visibility = View.GONE
                 fullscreen.setImageDrawable(
                     ContextCompat.getDrawable(
                         requireContext().applicationContext,
-                        R.drawable.ic_fullscreen
+                        R.drawable.ic_fullscreengit
                     )
                 )
                 requireActivity().requestedOrientation = initialOrientation
