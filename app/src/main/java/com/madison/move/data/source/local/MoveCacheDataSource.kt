@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.madison.move.data.model.Video
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
+import com.madison.move.data.model.login.LoginResponse
 import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.data.source.MoveDataSource
 import retrofit2.Call
@@ -52,6 +53,11 @@ class MoveCacheDataSource : MoveDataSource {
     override fun getVideoSuggestion(): Call<VideoSuggestionResponse>? {
         return null
     }
+
+    override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {
+        return null
+    }
+
 
     override fun saveVideos(videos: List<Video?>?) {
         cachedMovies.clear()

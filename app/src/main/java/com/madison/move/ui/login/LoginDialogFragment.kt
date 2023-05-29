@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.madison.move.R
 import com.madison.move.data.model.User
+import com.madison.move.data.model.login.LoginResponse
 import com.madison.move.databinding.FragmentLoginDialogBinding
 
 
@@ -96,7 +98,7 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
             val emailUserInput = binding.editLoginEmail.text.toString().trim()
             val passwordUserInput = binding.editLoginPassword.text.toString().trim()
 
-            presenter.onLoginClickPresenter(emailUserInput, passwordUserInput, user)
+            presenter.onLoginClickPresenter(emailUserInput, passwordUserInput)
         }
 
     }
@@ -194,6 +196,16 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
     override fun onLoginClick(user: User) {
         dialog?.dismiss()
         mOnInputListener?.sendInput(user)
+    }
+
+    override fun onSuccessGetToken(tokenResponse: LoginResponse) {
+        Log.d("HEHE",tokenResponse.token.toString())
+        Toast.makeText(activity, tokenResponse.token.toString(), Toast.LENGTH_SHORT).show()
+        dialog?.dismiss()
+    }
+
+    override fun onResponseError(errorType: String) {
+        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
     }
 
 
