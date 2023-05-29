@@ -1,12 +1,10 @@
 package com.madison.move.ui.home
 
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,14 +20,12 @@ import com.madison.move.data.model.carousel.DataVideoCarousel
 import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.model.category.DataCategory
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
-import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.databinding.FragmentHomeBinding
 import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.home.adapter.CarouselViewPagerAdapter
 import com.madison.move.ui.home.adapter.CategoryAdapter
 import com.madison.move.ui.home.adapter.VideoSuggestionAdapter
-import com.madison.move.ui.login.LoginDialogFragment
 import kotlin.math.abs
 
 class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
@@ -62,6 +58,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             getFeaturedVideoData()
             getCategoryData()
         }
+
         return binding.root
     }
 
@@ -72,24 +69,31 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     override fun onResume() {
         super.onResume()
+        onRefreshData()
+        //Slider for carousel
+        handler = Handler(Looper.myLooper()!!)
+        handler.postDelayed(runnable, 3000)
+    }
 
+     fun onRefreshData(){
         getSharedPreferences = requireContext().getSharedPreferences(
             "tokenUser", AppCompatActivity.MODE_PRIVATE
         )
+
         tokenUser = getSharedPreferences?.getString("token", null)
 
-
         //if token not null get video suggestion for each user -- else get for all user
+        videoList.clear()
+        if (this::videoSuggestionAdapter.isInitialized) {
+            videoSuggestionAdapter.notifyDataSetChanged()
+        }
+
         if (tokenUser != null) {
             presenter?.getVideoSuggestionForUserData(tokenUser.toString())
         }else{
             presenter?.getVideoSuggestionData()
         }
 
-
-        //Slider for carousel
-        handler = Handler(Looper.myLooper()!!)
-        handler.postDelayed(runnable, 3000)
     }
 
 
@@ -117,7 +121,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     override fun onSuccessVideoSuggestionForUser(videoSuggestionResponse: VideoSuggestionResponse) {
         videoList = videoSuggestionResponse.videoSuggestion.data as ArrayList<DataVideoSuggestion>
-        presenter?.onShowVideoSuggestionPresenter(videoList)
+//        presenter?.onShowVideoSuggestionPresenter(videoList)
     }
 
     override fun onErrorMoveData(error: String) {

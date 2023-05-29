@@ -13,7 +13,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -23,7 +22,6 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.madison.move.R
-import com.madison.move.data.DataManager
 import com.madison.move.data.model.User
 import com.madison.move.data.model.login.DataUserLogin
 import com.madison.move.data.model.login.LoginResponse
@@ -35,9 +33,6 @@ import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.login.LoginDialogFragment
 import com.madison.move.ui.offlinechannel.CommentFragment
 import com.madison.move.ui.profile.ProfileFragment
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     NavigationView.OnNavigationItemSelectedListener, LoginDialogFragment.OnInputListener {
@@ -219,9 +214,14 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                         menuTvFollowing.visibility = View.GONE
                     }
 
-                    //reload homepage
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.content_frame_main, HomeFragment()).commit()
+                    //Reload Current Screen
+                    val currentFragment: Fragment? =
+                        supportFragmentManager.findFragmentById(R.id.content_frame_main)
+                    if (currentFragment is HomeFragment) {
+                        currentFragment.onResume()
+                    } else if (currentFragment is FAQFragment) {
+                        //Refresh Data FAQ when Logout
+                    }
 
                 }
             }
@@ -317,9 +317,9 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         val currentFragment: Fragment? =
             supportFragmentManager.findFragmentById(R.id.content_frame_main)
         if (currentFragment is HomeFragment) {
-            Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show()
+            currentFragment.onResume()
         } else if (currentFragment is FAQFragment) {
-
+            //Refresh Data FAQ when login
         }
 
     }
