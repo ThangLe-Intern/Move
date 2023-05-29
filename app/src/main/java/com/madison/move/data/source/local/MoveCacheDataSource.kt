@@ -6,12 +6,14 @@ import com.madison.move.data.model.Video
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.model.login.LoginResponse
+import com.madison.move.data.model.user_profile.ProfileResponse
 import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.data.source.MoveDataSource
 import retrofit2.Call
 
 
 class MoveCacheDataSource : MoveDataSource {
+
 
     private val cachedMovies: SparseArray<Video> = SparseArray<Video>()
 
@@ -60,6 +62,10 @@ class MoveCacheDataSource : MoveDataSource {
 
 
     override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {
+        return null
+    }
+
+    override fun getUserProfile(token: String): Call<ProfileResponse>? {
         return null
     }
 

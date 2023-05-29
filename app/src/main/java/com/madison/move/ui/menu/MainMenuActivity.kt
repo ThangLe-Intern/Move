@@ -201,7 +201,12 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                     loginDialog.show(supportFragmentManager, "login Dialog")
                 } else {
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
+
                     //clear token when logout
+
+                    Toast.makeText(applicationContext, "Logout Successfully!", Toast.LENGTH_SHORT)
+                        .show()
+
                     val settings = getSharedPreferences("tokenUser", Context.MODE_PRIVATE)
                     settings.edit().clear().apply()
                     tokenUser = null
@@ -217,10 +222,16 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                     //Reload Current Screen
                     val currentFragment: Fragment? =
                         supportFragmentManager.findFragmentById(R.id.content_frame_main)
-                    if (currentFragment is HomeFragment) {
-                        currentFragment.onResume()
-                    } else if (currentFragment is FAQFragment) {
-                        //Refresh Data FAQ when Logout
+
+                    when (currentFragment) {
+                        is HomeFragment -> currentFragment.onResume()
+                        is FAQFragment -> {
+                            //Refresh Data FAQ when Logout
+                        }
+                        is ProfileFragment -> {
+                            supportFragmentManager.beginTransaction()
+                                .replace(binding.contentFrameMain.id, HomeFragment()).commit()
+                        }
                     }
 
                 }
@@ -305,9 +316,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             menuTvFollowing.visibility = View.VISIBLE
             layoutUserInfo.constraintLayout.visibility = View.VISIBLE
             layoutUserInfo.txtUsernameNavbar.text = dataUserLogin?.username.toString()
-            if (dataUserLogin?.img != null){
-                Glide.with(this@MainMenuActivity)
-                    .load(dataUserLogin?.img)
+            if (dataUserLogin?.img != null) {
+                Glide.with(this@MainMenuActivity).load(dataUserLogin?.img)
                     .into(binding.layoutUserInfo.imgMenuUserAvatar)
             }
         }
@@ -316,10 +326,16 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         //Reload Current Screen
         val currentFragment: Fragment? =
             supportFragmentManager.findFragmentById(R.id.content_frame_main)
-        if (currentFragment is HomeFragment) {
-            currentFragment.onResume()
-        } else if (currentFragment is FAQFragment) {
-            //Refresh Data FAQ when login
+
+        when (currentFragment) {
+            is HomeFragment -> currentFragment.onResume()
+            is FAQFragment -> {
+                //Refresh Data FAQ when Logout
+            }
+            is ProfileFragment -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(binding.contentFrameMain.id, HomeFragment()).commit()
+            }
         }
 
     }

@@ -2,6 +2,7 @@ package com.madison.move.ui.profile
 
 
 import android.app.Activity
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -16,10 +17,14 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.github.drjacky.imagepicker.ImagePicker
 import com.github.drjacky.imagepicker.constant.ImageProvider
 import com.madison.move.R
 import com.madison.move.data.model.User
+import com.madison.move.data.model.user_profile.DataUser
+import com.madison.move.data.model.user_profile.ProfileResponse
 import com.madison.move.databinding.FragmentProfileBinding
 import com.madison.move.ui.base.BaseFragment
 
@@ -36,6 +41,8 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         const val USER_NAME_FORMAT = "US_FORMAT"
 
     }
+    private var getSharedPreferences: SharedPreferences? = null
+    private var tokenUser: String? = null
 
     private lateinit var binding: FragmentProfileBinding
     private var user: User = User()
@@ -43,7 +50,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     private var newUserName = ""
     private var isChangeRadioButton = false
     private var isFillAllDoB = false
-    private var newDob = ""
     private var newCountry = ""
     private var newState = ""
     private var newCity = ""
@@ -90,19 +96,20 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
-        val bundle = arguments
-        bundle?.getParcelable<User>("user")?.also {
-            user = it
-        }
-        setUserData(user)
 
+        //Get Token From Preferences
+        getSharedPreferences = requireContext().getSharedPreferences(
+            "tokenUser", AppCompatActivity.MODE_PRIVATE
+        )
+        tokenUser = getSharedPreferences?.getString("token", null)
+
+        //Get Data From Server
+        presenter?.apply {
+            getProfileUserDataPresenter(tokenUser.toString())
+        }
+
+        //Enable Button Setting when All Field are Fill
         binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
-
-        presenter.apply {
-
-        }
-
-
         binding.saveSettingBtn.setOnClickListener {
             presenter?.onSaveProfileClickPresenter(getNewProfile())
         }
@@ -304,38 +311,45 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     }
 
 
-    private fun setUserData(user: User) {
+    private fun setUserData(user: DataUser) {
 
         binding.editUsername.setText(user.username)
         binding.editProfileEmail.setText(user.email)
-        binding.editProfileFullName.setText(user.fullname)
+        binding.editProfileFullName.setText(user.fullName)
         binding.editProfileCity.setText(user.address)
 
-        user.avatar.also {
-            if (it != null) {
-                binding.imgProfileUser.setImageResource(it)
-            }
+        if (user.img != null){
+            Glide.with(this).load(user.img)
+                .into(binding.imgProfileUser)
+        }else{
+            binding.imgProfileUser.setImageResource(R.drawable.avatar)
         }
 
 
         when (user.gender) {
-            "Male" -> {
+            0 -> {
                 binding.radioMale.isChecked = true
             }
-            "Female" -> {
+            1 -> {
                 binding.radioFemale.isChecked = true
             }
-            "Rather" -> {
+            2 -> {
                 binding.radioRatherNotSay.isChecked = true
             }
         }
 
-        if (user.dob != "") {
-            binding.dropdownYearText.setText(getString(R.string.dob_years))
-            binding.dropdownMonthText.setText(getString(R.string.dob_month))
-            binding.dropdownDayText.setText("1")
-        }
+        if (user.birthday != null ) {
 
+            val dateParts = user.birthday.split("/")
+            val year = dateParts[0]
+            val month = dateParts[1]
+            val day = dateParts[2]
+
+            binding.dropdownYearText.setText(year)
+            binding.dropdownMonthText.setText(month)
+            binding.dropdownDayText.setText(day)
+
+        }
 
         val monthSelected = binding.dropDownProfileMonth.editText?.text.toString()
         val yearSelected = binding.dropDownProfileYear.editText?.text.toString()
@@ -355,6 +369,14 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             "Update Profile Successful",
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    override fun onSuccessGetProfileData(profileResponse: ProfileResponse) {
+        profileResponse.dataUser?.let { setUserData(it) }
+    }
+
+    override fun onErrorGetProfile(errorType: String) {
+        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
     }
 
     override fun onShowError(errorType: String) {

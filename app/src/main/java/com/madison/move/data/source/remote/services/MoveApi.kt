@@ -3,6 +3,7 @@ package com.madison.move.data.source.remote.services
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.model.login.LoginResponse
+import com.madison.move.data.model.user_profile.ProfileResponse
 import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.data.source.remote.model.MoveResponse
 import retrofit2.Call
@@ -35,5 +36,10 @@ interface MoveApi {
         @Query("password")
         password: String
     ): Call<LoginResponse>
+
+    @GET("users/information")
+    fun getUserProfile(@Header("Authorization") authorization: String ): Call<ProfileResponse>
+
+
 
 }

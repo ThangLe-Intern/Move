@@ -53,6 +53,7 @@ class HomePresenter(
                     view?.onSuccessCategoryData(categoryResponse.body()!!)
                 }
             }
+
             override fun onFailure(call: Call<CategoryResponse>, t: Throwable) {
                 Log.e("ERROR", t.message.toString())
                 view?.onErrorMoveData(t.message.toString())
@@ -76,6 +77,7 @@ class HomePresenter(
                         view?.onSuccessVideoSuggestionData(videoSuggestionResponse.body()!!)
                     }
                 }
+
                 override fun onFailure(call: Call<VideoSuggestionResponse>, t: Throwable) {
                     Log.e("ERROR", t.message.toString())
                     view?.onErrorMoveData(t.message.toString())
@@ -83,7 +85,7 @@ class HomePresenter(
             })
     }
 
-    override fun getVideoSuggestionForUserData(token:String) {
+    override fun getVideoSuggestionForUserData(token: String) {
         dataManager.movieRepository.getVideoSuggestionForUser("Bearer $token")
             ?.enqueue(object : Callback<VideoSuggestionResponse> {
                 override fun onResponse(
@@ -94,6 +96,7 @@ class HomePresenter(
                         view?.onSuccessVideoSuggestionForUser(videoSuggestionResponse.body()!!)
                     }
                 }
+
                 override fun onFailure(call: Call<VideoSuggestionResponse>, t: Throwable) {
                     Log.e("ERROR", t.message.toString())
                     view?.onErrorMoveData(t.message.toString())

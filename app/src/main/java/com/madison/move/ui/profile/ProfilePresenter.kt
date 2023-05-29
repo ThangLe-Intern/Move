@@ -1,9 +1,17 @@
 package com.madison.move.ui.profile
 
+import android.util.Log
+import com.madison.move.data.DataManager
 import com.madison.move.data.model.User
+import com.madison.move.data.model.user_profile.ProfileResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ProfilePresenter(override var view: ProfileContract.ProfileView?, var user:User) :
     ProfileContract.Presenter {
+
+    private val dataManager: DataManager = DataManager.instance
 
     companion object{
         const val FULL_NAME_AT_LEAST_4_CHARS = "FN_4_CH"
@@ -41,6 +49,27 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?, var user
 
         view?.onSaveProfileClick()
 
+    }
+
+    override fun getProfileUserDataPresenter(token: String) {
+        dataManager.movieRepository.getUserProfile("Bearer $token")
+            ?.enqueue(object : Callback<ProfileResponse> {
+                override fun onResponse(
+                    call: Call<ProfileResponse>, profileResponse: Response<ProfileResponse>
+                ) {
+                    if (profileResponse.body() != null) {
+                        view?.onSuccessGetProfileData(profileResponse.body()!!)
+                    }
+
+                    if (profileResponse.errorBody() != null) {
+                        Log.d("KEKE","Get Profile Failed!")
+                    }
+                }
+
+                override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
+                    view?.onErrorGetProfile(t.message.toString())
+                }
+            })
     }
 
     private fun hasNumber(input: String): Boolean {

@@ -75,7 +75,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         handler.postDelayed(runnable, 3000)
     }
 
-     fun onRefreshData(){
+    private fun onRefreshData() {
         getSharedPreferences = requireContext().getSharedPreferences(
             "tokenUser", AppCompatActivity.MODE_PRIVATE
         )
@@ -90,7 +90,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
         if (tokenUser != null) {
             presenter?.getVideoSuggestionForUserData(tokenUser.toString())
-        }else{
+        } else {
             presenter?.getVideoSuggestionData()
         }
 
@@ -121,7 +121,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     override fun onSuccessVideoSuggestionForUser(videoSuggestionResponse: VideoSuggestionResponse) {
         videoList = videoSuggestionResponse.videoSuggestion.data as ArrayList<DataVideoSuggestion>
-//        presenter?.onShowVideoSuggestionPresenter(videoList)
+        presenter?.onShowVideoSuggestionPresenter(videoList)
     }
 
     override fun onErrorMoveData(error: String) {

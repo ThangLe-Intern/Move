@@ -5,6 +5,7 @@ import com.madison.move.data.model.Video
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.model.login.LoginResponse
+import com.madison.move.data.model.user_profile.ProfileResponse
 import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.data.source.MoveDataSource
 import com.madison.move.data.source.remote.model.MoveResponse
@@ -58,6 +59,10 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
 
     override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {
         return moveApi.loginApi(email,password)
+    }
+
+    override fun getUserProfile(token: String): Call<ProfileResponse>? {
+        return moveApi.getUserProfile(token)
     }
 
     override fun saveVideos(videos: List<Video?>?) {
