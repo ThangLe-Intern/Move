@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 data class DataCountry(
     @SerializedName("id")
     @Expose
-    val id: Int,
+    val id: Int?,
     @SerializedName("name")
     @Expose
-    val name: String
+    val name: String?
 )

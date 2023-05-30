@@ -7,7 +7,7 @@ import com.google.gson.annotations.Expose
 data class StateResponse(
     @SerializedName("data")
     @Expose
-    val data: List<DataState?>?,
+    val data: List<DataState>?,
     @SerializedName("status_code")
     @Expose
     val statusCode: Int?,

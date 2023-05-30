@@ -13,5 +13,5 @@ data class CountryResponse(
     val statusCode: Int?,
     @SerializedName("success")
     @Expose
-    val success: Boolean
+    val success: Boolean?
 )

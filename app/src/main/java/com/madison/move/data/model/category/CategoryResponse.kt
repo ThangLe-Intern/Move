@@ -12,5 +12,5 @@ data class CategoryResponse(
     val statusCode: Int?,
     @Expose
     @SerializedName("success")
-    val success: Boolean
+    val success: Boolean?
 )

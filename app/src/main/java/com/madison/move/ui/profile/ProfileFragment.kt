@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.service.autofill.UserData
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -55,7 +56,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     private var tokenUser: String? = null
 
     private lateinit var binding: FragmentProfileBinding
-    private var user: User = User()
     private var newFullName = ""
     private var newUserName = ""
     private var isChangeRadioButton = false
@@ -66,7 +66,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     private var listDataCountry: ArrayList<DataCountry>? = null
     private var listDataState: ArrayList<DataState>? = null
-
+    private var userData: DataUser? = null
 
     private lateinit var arrayAdapter: ArrayAdapter<String>
     private val months = arrayOf(
@@ -93,25 +93,27 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         )
         tokenUser = getSharedPreferences?.getString("token", null)
 
-        initView()
-
         return binding.root
     }
 
 
     override fun initView() {
-
-
         //Get Data From Server
         presenter?.apply {
             getCountryDataPresenter()
             getProfileUserDataPresenter(tokenUser.toString())
         }
 
+
         //Enable Button Setting when All Field are Fill
         binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
         binding.saveSettingBtn.setOnClickListener {
-            tokenUser?.let { it1 -> presenter?.onSaveProfileClickPresenter(it1, getNewProfile()) }
+            tokenUser?.let { token ->
+                presenter?.onSaveProfileClickPresenter(
+                    token,
+                    getNewProfile()
+                )
+            }
         }
 
 
@@ -359,17 +361,19 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
         }
 
-        println("HHEEE"+ listDataCountry?.get(1)?.name)
-
         listDataCountry?.forEach {
             if (it.id == user.countryId) {
                 binding.dropdownCountryText.setText(it.name)
-                presenter?.getStateDataPresenter(getIdCountry(it.name))
+                presenter?.apply {
+                    getCountryDataPresenter()
+                    it.name?.let { countryName -> getIdCountry(countryName) }
+                        ?.let { countryID -> getStateDataPresenter(countryID) }
+                }
             }
         }
 
         listDataState?.forEach {
-            if (it.id == user.stateId) {
+            if (it.id == user.stateId){
                 binding.dropdownStateText.setText(it.name)
             }
         }
@@ -388,17 +392,21 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     }
 
     override fun onSuccessGetProfileData(profileResponse: ProfileResponse) {
-        profileResponse.dataUser?.let { setUserData(it) }
+        userData = profileResponse.dataUser
+        userData?.let { setUserData(it) }
     }
 
     override fun onSuccessGetCountryData(countryResponse: CountryResponse) {
         handleDropDownCountry(countryResponse.dataCountry as ArrayList<DataCountry>)
         listDataCountry = countryResponse.dataCountry
+        userData?.let { setUserData(it) }
+
     }
 
     override fun onSuccessGetStateData(stateResponse: StateResponse) {
         handleDropDownState(stateResponse.data as ArrayList<DataState>)
         listDataState = stateResponse.data
+        userData?.let { setUserData(it) }
     }
 
     override fun onSuccessUpdateProfile(updateProfileResponse: UpdateProfileResponse) {
@@ -589,10 +597,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         }!!
 
         binding.dropdownStateText.setAdapter(arrayAdapter)
-
-
-//        binding.dropdownStateText.inputType = EditorInfo.TYPE_NULL
-
         binding.dropdownStateText.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
                 val inputStateText = binding.dropdownStateText.text.toString().trim()
@@ -608,7 +612,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
         val listCountry = ArrayList<String>()
         listDataCountry.forEach {
-            listCountry.add(it.name)
+            it.name?.let { it1 -> listCountry.add(it1) }
         }
 
         arrayAdapter = context?.let {
@@ -632,15 +636,16 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         }
 
         binding.dropdownCountryText.setOnItemClickListener { parent, view, position, id ->
+
             binding.dropdownStateText.text.clear()
             val countrySelected = binding.dropDownProfileCountry.editText?.text.toString()
 
             //Get Id Of Country
-            presenter?.getStateDataPresenter(getIdCountry(countrySelected))
+            getIdCountry(countrySelected)?.let { presenter?.getStateDataPresenter(it) }
         }
     }
 
-    private fun getIdCountry(countryName: String): Int {
+    private fun getIdCountry(countryName: String): Int? {
         listDataCountry?.forEach {
             if (countryName == it.name) {
                 return it.id
