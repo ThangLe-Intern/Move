@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -315,10 +316,16 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             menuTvSettting.visibility = View.VISIBLE
             menuTvFollowing.visibility = View.VISIBLE
             layoutUserInfo.constraintLayout.visibility = View.VISIBLE
+
+            //Set User Information To Menu
             layoutUserInfo.txtUsernameNavbar.text = dataUserLogin?.username.toString()
             if (dataUserLogin?.img != null) {
                 Glide.with(this@MainMenuActivity).load(dataUserLogin?.img)
                     .into(binding.layoutUserInfo.imgMenuUserAvatar)
+            }
+
+            if (dataUserLogin?.kol == 0){
+                binding.layoutUserInfo.imgBlueTickNavbar.isVisible = false
             }
         }
 

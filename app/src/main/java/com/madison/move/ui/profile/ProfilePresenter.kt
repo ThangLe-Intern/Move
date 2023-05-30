@@ -3,12 +3,16 @@ package com.madison.move.ui.profile
 import android.util.Log
 import com.madison.move.data.DataManager
 import com.madison.move.data.model.User
+import com.madison.move.data.model.country.CountryResponse
+import com.madison.move.data.model.state.StateResponse
+import com.madison.move.data.model.update_profile.ProfileRequest
+import com.madison.move.data.model.update_profile.UpdateProfileResponse
 import com.madison.move.data.model.user_profile.ProfileResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ProfilePresenter(override var view: ProfileContract.ProfileView?, var user:User) :
+class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
     ProfileContract.Presenter {
 
     private val dataManager: DataManager = DataManager.instance
@@ -27,27 +31,45 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?, var user
         view?.onShowError(errorType)
     }
 
-    override fun onSaveProfileClickPresenter(userNewProfile:User) {
+    override fun onSaveProfileClickPresenter(token: String,profileRequest: ProfileRequest) {
         val listAcceptChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
 
-        if (userNewProfile.fullname?.length!! < 4 || userNewProfile.fullname?.length!! >100 ){
+        if (profileRequest.fullname?.length!! < 4 || profileRequest.fullname?.length!! >100 ){
           return onShowErrorPresenter(FULL_NAME_AT_LEAST_4_CHARS)
         }
-        if (userNewProfile.username?.length!! < 4 || userNewProfile.username?.length!! > 25){
+        if (profileRequest.username?.length!! < 4 || profileRequest.username?.length!! > 25){
             return onShowErrorPresenter(USER_NAME_LENGTH)
         }
 
-        if (!hasNumber(userNewProfile.username.toString())){
+        if (!hasNumber(profileRequest.username.toString())){
             return onShowErrorPresenter(USER_NAME_FORMAT)
         }
 
-        for (s in userNewProfile.username.toString()) {
+        for (s in profileRequest.username.toString()) {
             if (s !in listAcceptChar) {
                 return onShowErrorPresenter(USER_NAME_INVALID)
             }
         }
 
-        view?.onSaveProfileClick()
+        dataManager.movieRepository.updateProfileUser("Bearer $token",profileRequest)
+            ?.enqueue(object : Callback<UpdateProfileResponse> {
+                override fun onResponse(
+                    call: Call<UpdateProfileResponse>, profileResponse: Response<UpdateProfileResponse>
+                ) {
+                    if (profileResponse.body() != null) {
+                        view?.onSuccessUpdateProfile(profileResponse.body()!!)
+                    }
+
+                    if (profileResponse.errorBody() != null) {
+                        Log.d("KEKE","Update Profile Failed!")
+                    }
+                }
+                override fun onFailure(call: Call<UpdateProfileResponse>, t: Throwable) {
+                    view?.onErrorGetProfile(t.message.toString())
+                }
+            })
+
+
 
     }
 
@@ -67,6 +89,48 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?, var user
                 }
 
                 override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
+                    view?.onErrorGetProfile(t.message.toString())
+                }
+            })
+    }
+
+    override fun getCountryDataPresenter() {
+        dataManager.movieRepository.getCountryData()
+            ?.enqueue(object : Callback<CountryResponse> {
+                override fun onResponse(
+                    call: Call<CountryResponse>, countryResponse: Response<CountryResponse>
+                ) {
+                    if (countryResponse.body() != null) {
+                        view?.onSuccessGetCountryData(countryResponse.body()!!)
+                    }
+
+                    if (countryResponse.errorBody() != null) {
+                        Log.d("KEKE","Get Country Failed!")
+                    }
+                }
+
+                override fun onFailure(call: Call<CountryResponse>, t: Throwable) {
+                    view?.onErrorGetProfile(t.message.toString())
+                }
+            })
+    }
+
+    override fun getStateDataPresenter(countryID: Int) {
+        dataManager.movieRepository.getStateData(countryID)
+            ?.enqueue(object : Callback<StateResponse> {
+                override fun onResponse(
+                    call: Call<StateResponse>, stateResponse: Response<StateResponse>
+                ) {
+                    if (stateResponse.body() != null) {
+                        view?.onSuccessGetStateData(stateResponse.body()!!)
+                    }
+
+                    if (stateResponse.errorBody() != null) {
+                        Log.d("KEKE","Get State Failed!")
+                    }
+                }
+
+                override fun onFailure(call: Call<StateResponse>, t: Throwable) {
                     view?.onErrorGetProfile(t.message.toString())
                 }
             })

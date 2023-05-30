@@ -4,7 +4,11 @@ import androidx.lifecycle.MutableLiveData
 import com.madison.move.data.model.Video
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
+import com.madison.move.data.model.country.CountryResponse
 import com.madison.move.data.model.login.LoginResponse
+import com.madison.move.data.model.state.StateResponse
+import com.madison.move.data.model.update_profile.ProfileRequest
+import com.madison.move.data.model.update_profile.UpdateProfileResponse
 import com.madison.move.data.model.user_profile.ProfileResponse
 import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.data.source.local.MoveCacheDataSource
@@ -69,7 +73,20 @@ class MoveRepository private constructor(
         return moveRemote.getUserProfile(token)
     }
 
+    override fun getCountryData(): Call<CountryResponse>? {
+        return moveRemote.getCountryData()
+    }
 
+    override fun getStateData(countryID: Int): Call<StateResponse>? {
+        return moveRemote.getStateData(countryID)
+    }
+
+    override fun updateProfileUser(
+        token: String,
+        profileRequest: ProfileRequest
+    ): Call<UpdateProfileResponse>? {
+        return moveRemote.updateProfileUser(token,profileRequest)
+    }
 
 
     private fun getMoviesFromLocalDataSource(callback: MoveDataSource.LoadVideosCallback) {
