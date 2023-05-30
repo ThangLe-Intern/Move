@@ -1,162 +1,152 @@
 package com.madison.move.ui.offlinechannel.Adapter
 
+
 import android.content.Context
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.madison.move.R
+import com.madison.move.databinding.ItemUserCommentBinding
 import com.madison.move.ui.offlinechannel.Comment
 import com.madison.move.ui.offlinechannel.DataModelComment
-import java.util.zip.Inflater
 
 class ListCommentAdapter(
+    private var context: Context,
     var listComment: MutableList<Comment>,
     val replyListener: ReplyListener,
 
     ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
     lateinit var adapterReply: ListReplyAdapter
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(val binding: ItemUserCommentBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun onBind(comment: Comment) {
-            ///////////
+
             val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
 
-            var listReply = comment.listChild
-
-            adapterReply = ListReplyAdapter(listReply)
+            adapterReply = ListReplyAdapter(comment.listChild)
             itemView.findViewById<RecyclerView>(R.id.listReply).apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterReply
             }
-
-            itemView.findViewById<ImageView>(R.id.avatar).setImageResource(comment.user.avt)
-            itemView.findViewById<TextView>(R.id.username).text = comment.user.name
-            itemView.findViewById<TextView>(R.id.commentTime).text = comment.timeOfComment
-            itemView.findViewById<TextView>(R.id.commentContent).text = comment.content
-
-            val btnLike : ImageView = itemView.findViewById(R.id.btn_like)
-            val btnDiskLike: ImageView = itemView.findViewById(R.id.btnDisLike)
-            val btnLikeTick: ImageView = itemView.findViewById(R.id.btn_like_tick)
-            val btnDiskLikeTick : ImageView = itemView.findViewById(R.id.btnDisLiketike)
-
-
-
-            btnDiskLikeTick.visibility = View.GONE
-            btnLikeTick.visibility= View.GONE
-            var isBtnLike = false
-            var isBtnDiskLike = false
-
-            btnLike.setOnClickListener {
-                if (btnLikeTick.isGone){
-                    btnLikeTick.visibility = View.VISIBLE
-                    btnDiskLikeTick.visibility = View.GONE
-                }else if (btnLikeTick.isVisible && !isBtnLike){
-                    btnLikeTick.visibility = View.GONE
-                }
-
+            binding.apply {
+                avatar.setImageResource(comment.user.avt)
+                username.text = comment.user.name
+                commentTime.text = comment.timeOfComment
+                commentContent.text = comment.content
+                listReply.visibility = View.VISIBLE
             }
-            btnDiskLike.setOnClickListener {
-                if (btnDiskLikeTick.isGone){
-                    btnLikeTick.visibility= View.GONE
-                    btnDiskLikeTick.visibility = View.VISIBLE
-                }else if (btnDiskLikeTick.isVisible && !isBtnDiskLike){
-                    btnDiskLikeTick.visibility = View.GONE
-                }
-            }
-
-
-
-            if (!comment.user.isTicked) {
-                itemView.findViewById<ImageView>(R.id.bluetick)
-                    .visibility = View.GONE
-            }
-
-            //////
-            val reportCardView: CardView = itemView.findViewById(R.id.cardView_Report)
-            val reportButton: AppCompatImageView = itemView.findViewById(R.id.btn_report)
-
-            reportCardView.visibility = View.GONE
-
-            reportButton.setOnClickListener {
-
-                if (reportCardView.isGone) {
-                    reportCardView.visibility = View.VISIBLE
-                } else {
-                    reportCardView.visibility = View.GONE
-                }
-            }
-
-            reportCardView.setOnClickListener {
-                reportCardView.visibility = View.GONE
-            }
-
-
-            /////////
-            val replyLayout: RelativeLayout = itemView.findViewById(R.id.layout_userReply)
-            replyLayout.visibility = View.GONE
-
-            val cancelReply: AppCompatButton = itemView.findViewById(R.id.cancelReply_button)
-            val sendReply: AppCompatButton = itemView.findViewById(R.id.send_buttonReply)
-            val edtUserReply: AppCompatEditText = itemView.findViewById(R.id.edt_userCommentReply)
-
-            ///////
-            itemView.findViewById<AppCompatTextView>(R.id.btnReply).setOnClickListener {
-                if (replyLayout.isGone) {
-                    replyLayout.visibility = View.VISIBLE
-
-                    replyListener.userComment(
-                        cancelReply,
-                        sendReply,
-                        edtUserReply,
-                        listReply,
-                        itemView.findViewById(R.id.listReply),
-                        user4
+            binding.layoutShow.setOnClickListener {
+                binding.apply {
+                    listReply.visibility =
+                        if (listReply.isVisible) View.GONE else View.VISIBLE
+                    imgArrowDownGreen.setImageResource(
+                        if (listReply.isVisible) R.drawable.ic_ic_arrow_up_green
+                        else R.drawable.ic_arrow_down_green
                     )
-                } else {
-                    replyLayout.visibility = View.GONE
+                    txtShow.text = context.getString(
+                        if (listReply.isVisible) R.string.Hide
+                        else R.string.Show
+                    )
+                }
+            }
+            if (comment.listChild.isNotEmpty()) {
+                binding.layoutShow.visibility = View.VISIBLE
+            } else {
+                binding.layoutShow.visibility = View.GONE
+            }
+
+            binding.apply {
+                btnLikeTick.visibility = View.GONE
+                btnLike.setOnClickListener {
+                    if (btnLikeTick.isGone) {
+                        btnLikeTick.visibility = View.VISIBLE
+                        btnDisLiketike.visibility = View.GONE
+                    } else if (binding.btnLikeTick.isVisible) {
+                        btnLikeTick.visibility = View.GONE
+                    }
+                }
+
+                btnDisLiketike.visibility = View.GONE
+                btnDisLike.setOnClickListener {
+                    if (btnDisLiketike.isGone) {
+                        btnLikeTick.visibility = View.GONE
+                        btnDisLiketike.visibility = View.VISIBLE
+                    } else if (btnDisLiketike.isVisible) {
+                        btnDisLiketike.visibility = View.GONE
+                    }
+                }
+
+                if (!comment.user.isTicked) {
+                    bluetick.visibility = View.GONE
+                }
+
+                var isReportVisible = false
+                cardViewReport.visibility = View.GONE
+                btnReport.setOnClickListener {
+
+                    isReportVisible = !isReportVisible
+                    cardViewReport.visibility = if (isReportVisible) View.VISIBLE else View.GONE
+                }
+
+
+
+              rootView.setOnClickListener {
+                    if (isReportVisible) {
+                        isReportVisible = false
+                        cardViewReport.visibility = View.GONE
+                    }
+                }
+
+                cardViewReport.setOnClickListener {
+                    cardViewReport.visibility = View.GONE
+                }
+                sendButtonReply.setOnClickListener {
+                    notifyDataSetChanged()
                 }
             }
 
+            binding.apply {
+                layoutUserReply.visibility = View.GONE
+               btnReply.setOnClickListener {
+                    if (layoutUserReply.isGone) {
+                        layoutUserReply.visibility = View.VISIBLE
+
+                        replyListener.userComment(
+                            cancelReplyButton,
+                            sendButtonReply,
+                            edtUserCommentReply,
+                            comment.listChild,
+                            listReply,
+                            user4
+                        )
+                    } else {
+                        layoutUserReply.visibility = View.GONE
+                    }
+                }
+            }
         }
-
-
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_user_comment, parent, false)
+            ItemUserCommentBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            )
         )
-
     }
-
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as ViewHolder).onBind(listComment[position])
-
-
     }
 
     override fun getItemCount(): Int {
