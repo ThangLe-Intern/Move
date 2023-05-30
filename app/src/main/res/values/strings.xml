@@ -69,6 +69,8 @@
     <string name="dob_month">Jan</string>
     <string name="txt_log_in">Login</string>
     <string name="txt_log_out">Logout</string>
+    <string name="Hide">Hide replies</string>
+    <string name="Show">Show replies</string>
 
 
     <string name="nameProfile">dianeTV</string>

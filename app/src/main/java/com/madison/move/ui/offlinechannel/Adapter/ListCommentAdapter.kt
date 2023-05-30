@@ -1,12 +1,14 @@
 package com.madison.move.ui.offlinechannel.Adapter
 
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,21 +19,21 @@ import com.madison.move.ui.offlinechannel.Comment
 import com.madison.move.ui.offlinechannel.DataModelComment
 
 class ListCommentAdapter(
+    private var context: Context,
     var listComment: MutableList<Comment>,
     val replyListener: ReplyListener,
 
     ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     lateinit var adapterReply: ListReplyAdapter
+
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(comment: Comment) {
 
             val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
 
-            val listReply = comment.listChild
-
-            adapterReply = ListReplyAdapter(listReply)
+            adapterReply = ListReplyAdapter(comment.listChild)
             itemView.findViewById<RecyclerView>(R.id.listReply).apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterReply
@@ -41,20 +43,19 @@ class ListCommentAdapter(
                 username.text = comment.user.name
                 commentTime.text = comment.timeOfComment
                 commentContent.text = comment.content
+                listReply.visibility = View.VISIBLE
             }
-
-            binding.listReply.visibility = View.VISIBLE
             binding.layoutShow.setOnClickListener {
                 binding.apply {
-                    binding.listReply.visibility =
-                        if (binding.listReply.isVisible) View.GONE else View.VISIBLE
+                    listReply.visibility =
+                        if (listReply.isVisible) View.GONE else View.VISIBLE
                     imgArrowDownGreen.setImageResource(
-                        if (binding.listReply.isVisible) R.drawable.ic_ic_arrow_up_green
+                        if (listReply.isVisible) R.drawable.ic_ic_arrow_up_green
                         else R.drawable.ic_arrow_down_green
                     )
-                    txtShow.setText(
-                        if (binding.listReply.isVisible) "Hide   replies"
-                        else "Show replies"
+                    txtShow.text = context.getString(
+                        if (listReply.isVisible) R.string.Hide
+                        else R.string.Show
                     )
                 }
             }
@@ -89,12 +90,19 @@ class ListCommentAdapter(
                     bluetick.visibility = View.GONE
                 }
 
+                var isReportVisible = false
                 cardViewReport.visibility = View.GONE
                 btnReport.setOnClickListener {
 
-                    if (cardViewReport.isGone) {
-                        cardViewReport.visibility = View.VISIBLE
-                    } else {
+                    isReportVisible = !isReportVisible
+                    cardViewReport.visibility = if (isReportVisible) View.VISIBLE else View.GONE
+                }
+
+
+
+              rootView.setOnClickListener {
+                    if (isReportVisible) {
+                        isReportVisible = false
                         cardViewReport.visibility = View.GONE
                     }
                 }
@@ -109,7 +117,7 @@ class ListCommentAdapter(
 
             binding.apply {
                 layoutUserReply.visibility = View.GONE
-                itemView.findViewById<AppCompatTextView>(R.id.btnReply).setOnClickListener {
+               btnReply.setOnClickListener {
                     if (layoutUserReply.isGone) {
                         layoutUserReply.visibility = View.VISIBLE
 
@@ -117,8 +125,8 @@ class ListCommentAdapter(
                             cancelReplyButton,
                             sendButtonReply,
                             edtUserCommentReply,
+                            comment.listChild,
                             listReply,
-                            binding.listReply,
                             user4
                         )
                     } else {

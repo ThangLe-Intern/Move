@@ -21,6 +21,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -118,6 +119,7 @@ open class CommentFragment : Fragment(), CommentListener {
         val lockscreen = view.findViewById<ImageView>(R.id.img_lock)
         val imgback = view.findViewById<ImageView>(R.id.img_back)
         val btnSettings = view.findViewById<ImageView>(R.id.img_settings)
+
         btnSettings.setOnClickListener {
             showSettingsDialog()
         }
@@ -185,7 +187,6 @@ open class CommentFragment : Fragment(), CommentListener {
             lockScreen(IS_LOCK)
         }
 
-
         simpleExoPlayer = SimpleExoPlayer.Builder(requireContext())
             .setSeekBackIncrementMs(5000)
             .setSeekForwardIncrementMs(5000)
@@ -211,6 +212,7 @@ open class CommentFragment : Fragment(), CommentListener {
         simpleExoPlayer.play()
 
     }
+
     private fun showSettingsDialog() {
         val dialog = AlertDialog.Builder(context)
             .setTitle("Cài đặt video")
@@ -229,14 +231,17 @@ open class CommentFragment : Fragment(), CommentListener {
 
         dialog.show()
     }
+
     private fun showQualityOptions() {
         // Hiển thị dialog cho người dùng chọn chất lượng video
         // Xử lý sự kiện khi người dùng chọn chất lượng
     }
+
     private fun showSubtitleOptions() {
         // Hiển thị dialog cho người dùng chọn chất lượng video
         // Xử lý sự kiện khi người dùng chọn chất lượng
     }
+
     private fun showVolumeOptions() {
         val volumeOptions = arrayOf("Âm lượng cao", "Âm lượng trung bình", "Âm lượng thấp")
         val dialog = AlertDialog.Builder(context)
@@ -254,6 +259,7 @@ open class CommentFragment : Fragment(), CommentListener {
 
         dialog.show()
     }
+
     private fun applyVolume(selectedVolume: String) {
         // Áp dụng mức âm lượng được chọn vào ExoPlayer
         when (selectedVolume) {
@@ -436,142 +442,148 @@ open class CommentFragment : Fragment(), CommentListener {
 
     override fun onLoadComment(listComment: MutableList<Comment>) {
         getData()
-        adapterComment = ListCommentAdapter(listComment, object : ListCommentAdapter.ReplyListener {
-            override fun userComment(
-                cancelButton: AppCompatButton,
-                sendButton: AppCompatButton,
-                editText: AppCompatEditText,
-                listCommentReply: MutableList<Comment>,
-                list: RecyclerView,
-                user: DataModelComment
-            ) {
+        adapterComment = ListCommentAdapter(
+            requireContext(),
+            listComment,
+            object : ListCommentAdapter.ReplyListener {
+                override fun userComment(
+                    cancelButton: AppCompatButton,
+                    sendButton: AppCompatButton,
+                    editText: AppCompatEditText,
+                    listCommentReply: MutableList<Comment>,
+                    list: RecyclerView,
+                    user: DataModelComment
+                ) {
 
-                cancelButton.visibility = View.GONE
-                sendButton.visibility = View.GONE
-                onWriteCommentListener(editText, cancelButton, sendButton)
-                onCancelUserComment(cancelButton, editText)
-                onSendUserReply(
-                    sendButton,
-                    list,
-                    listCommentReply,
-                    editText,
-                    cancelButton,
-                    user
-                )
-            }
+                    cancelButton.visibility = View.GONE
+                    sendButton.visibility = View.GONE
+                    onWriteCommentListener(editText, cancelButton, sendButton)
+                    onCancelUserComment(cancelButton, editText)
+                    onSendUserReply(
+                        sendButton,
+                        list,
+                        listCommentReply,
+                        editText,
+                        cancelButton,
+                        user
+                    )
+                }
 
-            override fun onWriteCommentListener(
-                editText: AppCompatEditText,
-                cancelButton: AppCompatButton,
-                sendButton: AppCompatButton
-            ) {
-                editText.apply {
-                    addTextChangedListener(object : TextWatcher {
-                        override fun beforeTextChanged(
-                            s: CharSequence?,
-                            start: Int,
-                            count: Int,
-                            after: Int
-                        ) {
-                        }
-
-                        override fun onTextChanged(
-                            s: CharSequence?,
-                            start: Int,
-                            before: Int,
-                            count: Int
-                        ) {
-                            if (!s.isNullOrEmpty()) {
-                                cancelButton.visibility = View.VISIBLE
-                                sendButton.visibility = View.VISIBLE
-                            } else {
-                                cancelButton.visibility = View.GONE
-                                sendButton.visibility = View.GONE
+                override fun onWriteCommentListener(
+                    editText: AppCompatEditText,
+                    cancelButton: AppCompatButton,
+                    sendButton: AppCompatButton
+                ) {
+                    editText.apply {
+                        addTextChangedListener(object : TextWatcher {
+                            override fun beforeTextChanged(
+                                s: CharSequence?,
+                                start: Int,
+                                count: Int,
+                                after: Int
+                            ) {
                             }
-                        }
 
-                        override fun afterTextChanged(s: Editable?) {
+                            override fun onTextChanged(
+                                s: CharSequence?,
+                                start: Int,
+                                before: Int,
+                                count: Int
+                            ) {
+                                if (!s.isNullOrEmpty()) {
+                                    cancelButton.visibility = View.VISIBLE
+                                    sendButton.visibility = View.VISIBLE
+                                } else {
+                                    cancelButton.visibility = View.GONE
+                                    sendButton.visibility = View.GONE
+                                }
+                            }
+
+                            override fun afterTextChanged(s: Editable?) {
 /*                if (!s.isNullOrEmpty()) {
                     binding.edtUserComment.clearFocus()
                 }*/
-                        }
-
-                    })
-
-
-                    onFocusChangeListener =
-                        View.OnFocusChangeListener { v, hasFocus ->
-                            if (!hasFocus) {
-                                v?.let { hideKeyboard(it) }
                             }
-                        }
+
+                        })
+
+
+                        onFocusChangeListener =
+                            View.OnFocusChangeListener { v, hasFocus ->
+                                if (!hasFocus) {
+                                    v?.let { hideKeyboard(it) }
+                                }
+                            }
+                    }
+
                 }
 
-            }
-
-            override fun onCancelUserComment(
-                cancelButton: AppCompatButton,
-                editText: AppCompatEditText
-            ) {
-                cancelButton.setOnClickListener {
-                    clearEdittext(editText, cancelButton)
+                override fun onCancelUserComment(
+                    cancelButton: AppCompatButton,
+                    editText: AppCompatEditText
+                ) {
+                    cancelButton.setOnClickListener {
+                        clearEdittext(editText, cancelButton)
+                    }
                 }
-            }
 
-            override fun onSendUserReply(
-                sendButton: AppCompatButton,
-                list: RecyclerView,
-                listCommentReply: MutableList<Comment>,
-                editText: AppCompatEditText,
-                cancelButton: AppCompatButton,
-                user: DataModelComment
-            ) {
-                sendButton.setOnClickListener {
-                    listCommentReply.add(
-                        0,
-                        Comment(
-                            5,
-                            editText.text.toString().trim(),
-                            "Just now",
-                            mutableListOf(),
-                            user,
-                            true
+                override fun onSendUserReply(
+                    sendButton: AppCompatButton,
+                    list: RecyclerView,
+                    listCommentReply: MutableList<Comment>,
+                    editText: AppCompatEditText,
+                    cancelButton: AppCompatButton,
+                    user: DataModelComment
+                ) {
+                    sendButton.setOnClickListener {
+                        listCommentReply.add(
+                            0,
+                            Comment(
+                                5,
+                                editText.text.toString().trim(),
+                                "Just now",
+                                mutableListOf(),
+                                user,
+                                true
+                            )
                         )
-                    )
 
-                    for (i in listCommentReply) {
-                        Log.d("DUNG", i.content)
-                    }
+                        for (i in listCommentReply) {
+                            Log.d("DUNG", i.content)
+                        }
 
-                    var adapterReply = ListReplyAdapter(listCommentReply)
-                    list.apply {
-                        layoutManager = LinearLayoutManager(context)
-                        adapter = adapterReply
+                        var adapterReply = ListReplyAdapter(listCommentReply)
+                        list.apply {
+                            layoutManager = LinearLayoutManager(context)
+                            adapter = adapterReply
+                        }
+                        clearEdittext(editText, cancelButton)
                     }
-                    clearEdittext(editText, cancelButton)
                 }
-            }
 
-            override fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton) {
-                editText.text = null
-                editText.clearFocus()
+                override fun clearEdittext(
+                    editText: AppCompatEditText,
+                    cancelButton: AppCompatButton
+                ) {
+                    editText.text = null
+                    editText.clearFocus()
 
-                val imm =
-                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(
-                    cancelButton.windowToken,
-                    InputMethodManager.RESULT_UNCHANGED_SHOWN
-                )
-            }
+                    val imm =
+                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(
+                        cancelButton.windowToken,
+                        InputMethodManager.RESULT_UNCHANGED_SHOWN
+                    )
+                }
 
-            override fun hideKeyboard(view: View) {
-                val inputMethodManager =
-                    requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-            }
+                override fun hideKeyboard(view: View) {
+                    val inputMethodManager =
+                        requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+                }
 
 
-        })
+            })
 
         binding.listComment.apply {
             layoutManager = LinearLayoutManager(requireContext())

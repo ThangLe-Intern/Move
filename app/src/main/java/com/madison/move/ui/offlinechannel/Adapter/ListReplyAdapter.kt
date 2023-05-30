@@ -30,11 +30,16 @@ class ListReplyAdapter(var listReply: MutableList<Comment>) :
                 }
                 btnReply.visibility = View.INVISIBLE
 
+                var isReportVisible = false
                 cardViewReport.visibility = View.GONE
                 btnReport.setOnClickListener {
-                    if (cardViewReport.isGone) {
-                        cardViewReport.visibility = View.VISIBLE
-                    } else {
+                    isReportVisible = !isReportVisible
+                    cardViewReport.visibility = if (isReportVisible) View.VISIBLE else View.GONE
+                }
+
+                rootView.setOnClickListener {
+                    if (isReportVisible){
+                        isReportVisible = false
                         cardViewReport.visibility = View.GONE
                     }
                 }
