@@ -3,7 +3,6 @@ package com.madison.move.ui.offlinechannel
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.net.Uri
@@ -23,7 +22,6 @@ import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
-import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,7 +32,6 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.gms.ads.*
 import com.madison.move.R
 import com.madison.move.databinding.FragmentCommentBinding
-import com.madison.move.ui.menu.MainMenuActivity
 import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
 import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
 
@@ -160,7 +157,7 @@ open class CommentFragment : Fragment(), CommentListener {
                 fullscreen.setImageDrawable(
                     ContextCompat.getDrawable(
                         requireContext().applicationContext,
-                        R.drawable.ic_fullscreengit
+                        R.drawable.ic_fullscreen
                     )
                 )
                 requireActivity().requestedOrientation = initialOrientation
@@ -274,7 +271,6 @@ open class CommentFragment : Fragment(), CommentListener {
             }
         }
     }
-
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
