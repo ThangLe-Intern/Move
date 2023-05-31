@@ -121,6 +121,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                 override fun onResponse(
                     call: Call<StateResponse>, stateResponse: Response<StateResponse>
                 ) {
+
                     if (stateResponse.body() != null) {
                         view?.onSuccessGetStateData(stateResponse.body()!!)
                     }

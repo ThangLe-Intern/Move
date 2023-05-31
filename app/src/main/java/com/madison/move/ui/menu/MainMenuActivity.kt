@@ -305,7 +305,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         tokenUser = tokenResponse?.token
         dataUserLogin = tokenResponse?.dataUserLogin
 
-        Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, loginResponse.message.toString(), Toast.LENGTH_SHORT).show()
 
         //Set Data to Preferences
         val sharedPreferences = getSharedPreferences("tokenUser", MODE_PRIVATE)

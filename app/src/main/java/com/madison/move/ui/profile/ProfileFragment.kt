@@ -34,6 +34,7 @@ import com.madison.move.data.model.user_profile.DataUser
 import com.madison.move.data.model.user_profile.ProfileResponse
 import com.madison.move.databinding.FragmentProfileBinding
 import com.madison.move.ui.base.BaseFragment
+import kotlinx.coroutines.awaitCancellation
 import java.text.SimpleDateFormat
 import java.time.Year
 import java.util.*
@@ -72,10 +73,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     private val months = arrayOf(
         "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     )
-
     private val currentYear = Year.now().value
-
-
     private val years = (1900..currentYear).map { it.toString() }.toMutableList()
 
     override fun createPresenter(): ProfilePresenter = ProfilePresenter(this)
@@ -93,11 +91,14 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         )
         tokenUser = getSharedPreferences?.getString("token", null)
 
+
+        onHandleLogic()
+
         return binding.root
     }
 
+    private fun onHandleLogic() {
 
-    override fun initView() {
         //Get Data From Server
         presenter?.apply {
             getCountryDataPresenter()
@@ -110,8 +111,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         binding.saveSettingBtn.setOnClickListener {
             tokenUser?.let { token ->
                 presenter?.onSaveProfileClickPresenter(
-                    token,
-                    getNewProfile()
+                    token, getNewProfile()
                 )
             }
         }
@@ -326,6 +326,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             }
             2 -> {
                 binding.radioFemale.isChecked = true
+
             }
             3 -> {
                 binding.radioRatherNotSay.isChecked = true
@@ -358,26 +359,17 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 "12" -> binding.dropdownMonthText.setText(months[11])
                 "13" -> binding.dropdownMonthText.setText(months[12])
             }
-
         }
-
-        listDataCountry?.forEach {
+        listDataCountry?.forEach { it ->
             if (it.id == user.countryId) {
                 binding.dropdownCountryText.setText(it.name)
-                presenter?.apply {
-                    getCountryDataPresenter()
-                    it.name?.let { countryName -> getIdCountry(countryName) }
-                        ?.let { countryID -> getStateDataPresenter(countryID) }
+
+                //Add data again
+                if (listDataCountry != null) {
+                    handleDropDownCountry(listDataCountry!!)
                 }
             }
         }
-
-        listDataState?.forEach {
-            if (it.id == user.stateId){
-                binding.dropdownStateText.setText(it.name)
-            }
-        }
-
 
         //Handle Dob Selected
         handleDropDownDob()
@@ -393,27 +385,49 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     override fun onSuccessGetProfileData(profileResponse: ProfileResponse) {
         userData = profileResponse.dataUser
-        userData?.let { setUserData(it) }
+        listDataCountry?.forEach {
+            if (it.id != null && it.id == userData?.countryId) presenter?.getStateDataPresenter(it.id)
+        }
+        if (userData != null && listDataCountry != null) {
+            userData?.let { setUserData(it) }
+        }
     }
 
     override fun onSuccessGetCountryData(countryResponse: CountryResponse) {
         handleDropDownCountry(countryResponse.dataCountry as ArrayList<DataCountry>)
         listDataCountry = countryResponse.dataCountry
-        userData?.let { setUserData(it) }
-
+        listDataCountry?.forEach {
+            if (it.id != null && it.id == userData?.countryId) presenter?.getStateDataPresenter(it.id)
+        }
+        if (userData != null && listDataCountry != null) {
+            userData?.let { setUserData(it) }
+        }
     }
 
     override fun onSuccessGetStateData(stateResponse: StateResponse) {
         handleDropDownState(stateResponse.data as ArrayList<DataState>)
         listDataState = stateResponse.data
-        userData?.let { setUserData(it) }
+        if (userData?.stateId != null) {
+            //Set State Infomation
+            listDataState?.forEach {
+                if (it.id == userData!!.stateId) {
+                    binding.dropdownStateText.setText(it.name)
+                    if (listDataState != null) {
+                        handleDropDownState(listDataState!!)
+                    }
+                }
+            }
+            binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
+        }
     }
 
     override fun onSuccessUpdateProfile(updateProfileResponse: UpdateProfileResponse) {
         binding.txtErrorFullName.visibility = View.GONE
         binding.txtErrorFullName.focusable = View.FOCUSABLE
         Toast.makeText(
-            activity?.applicationContext, "Update Profile Successful", Toast.LENGTH_SHORT
+            activity?.applicationContext,
+            updateProfileResponse.message.toString(),
+            Toast.LENGTH_SHORT
         ).show()
     }
 
@@ -636,10 +650,8 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         }
 
         binding.dropdownCountryText.setOnItemClickListener { parent, view, position, id ->
-
             binding.dropdownStateText.text.clear()
             val countrySelected = binding.dropDownProfileCountry.editText?.text.toString()
-
             //Get Id Of Country
             getIdCountry(countrySelected)?.let { presenter?.getStateDataPresenter(it) }
         }
