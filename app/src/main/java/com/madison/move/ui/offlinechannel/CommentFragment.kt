@@ -18,7 +18,6 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.source.MediaSource
 import com.madison.move.R
 import com.madison.move.databinding.FragmentCommentBinding
 import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
@@ -313,10 +312,6 @@ open class CommentFragment : Fragment(), CommentListener {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = adapterComment
         }
-    }
-
-    override fun buildMediaSource(parse: Uri?): MediaSource {
-        TODO("Not yet implemented")
     }
 
     private fun getData() {
