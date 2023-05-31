@@ -4,7 +4,6 @@ package com.madison.move.ui.home
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +20,6 @@ import com.madison.move.data.model.carousel.DataVideoCarousel
 import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.model.category.DataCategory
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
-import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.databinding.FragmentHomeBinding
 import com.madison.move.ui.base.BaseFragment
