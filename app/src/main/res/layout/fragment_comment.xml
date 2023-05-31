@@ -9,31 +9,17 @@
     <RelativeLayout
         android:id="@+id/contrain_video"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_180sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.exoplayer2.ui.PlayerView
-            android:id="@+id/play_view"
+        <WebView
+            android:id="@+id/web_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_180sdp"
-            android:background="#000000"
-            app:controller_layout_id="@layout/custum_controler"
-            app:hide_on_touch="true"
-            app:player_layout_id="@layout/exo_player_view"
-            app:resize_mode="fill"
-            app:show_timeout="4000"
-            app:surface_type="surface_view"
-            app:use_controller="true"
-            argType:ignore="MissingClass">
+            android:background="#000000">
 
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-
-        </com.google.android.exoplayer2.ui.PlayerView>
+        </WebView>
 
     </RelativeLayout>
 
