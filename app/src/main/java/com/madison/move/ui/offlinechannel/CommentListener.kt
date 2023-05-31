@@ -5,7 +5,6 @@ import android.net.Uri
 import android.view.View
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
-import com.google.android.exoplayer2.source.MediaSource
 
 interface CommentListener {
     fun onBackPressed()
@@ -36,6 +35,5 @@ interface CommentListener {
     fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton)
     fun hideKeyboard(view: View)
     fun onLoadComment(listComment: MutableList<Comment>)
-    fun buildMediaSource(parse: Uri?): MediaSource
 
 }
