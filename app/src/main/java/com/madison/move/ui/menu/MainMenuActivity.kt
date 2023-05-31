@@ -144,17 +144,13 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         supportFragmentManager.beginTransaction()
             .replace(binding.contentFrameMain.id, HomeFragment()).commit()
 
-
     }
-
-
     override fun listener() {
 
         binding.layoutUserInfo.constraintLayout.setOnClickListener {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             supportFragmentManager.beginTransaction()
                 .replace(binding.contentFrameMain.id, ProfileFragment()).commit()
-
         }
 
 
@@ -176,7 +172,6 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
                 supportFragmentManager.beginTransaction()
                     .replace(binding.contentFrameMain.id, CommentFragment()).commit()
-
             }
 
             layoutToolBar.imvLogo.setOnClickListener {
@@ -233,16 +228,12 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
                 supportFragmentManager.beginTransaction()
                     .replace(binding.contentFrameMain.id, HomeFragment()).commit()
-
             }
-
-
 
             menuTvSettting.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
                 supportFragmentManager.beginTransaction()
                     .replace(binding.contentFrameMain.id, ProfileFragment()).commit()
-
             }
         }
     }
