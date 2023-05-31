@@ -50,6 +50,8 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         const val COUNTRY_NOT_IN_LIST = "COUNTRY_NOT_IN_LIST"
         const val USER_NAME_INVALID = "US_INVALID"
         const val USER_NAME_FORMAT = "US_FORMAT"
+        const val TOKEN_USER_PREFERENCE = "tokenUser"
+        const val TOKEN = "token"
 
     }
 
@@ -87,9 +89,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
         //Get Token From Preferences
         getSharedPreferences = requireContext().getSharedPreferences(
-            "tokenUser", AppCompatActivity.MODE_PRIVATE
+            TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
         )
-        tokenUser = getSharedPreferences?.getString("token", null)
+        tokenUser = getSharedPreferences?.getString(TOKEN, null)
 
 
         onHandleLogic()

@@ -38,7 +38,6 @@ class HomePresenter(
             }
 
             override fun onFailure(call: Call<CarouselResponse>, t: Throwable) {
-                Log.e("ERROR", t.message.toString())
                 view?.onErrorMoveData(t.message.toString())
             }
         })
@@ -55,7 +54,6 @@ class HomePresenter(
             }
 
             override fun onFailure(call: Call<CategoryResponse>, t: Throwable) {
-                Log.e("ERROR", t.message.toString())
                 view?.onErrorMoveData(t.message.toString())
             }
         })
@@ -79,7 +77,6 @@ class HomePresenter(
                 }
 
                 override fun onFailure(call: Call<VideoSuggestionResponse>, t: Throwable) {
-                    Log.e("ERROR", t.message.toString())
                     view?.onErrorMoveData(t.message.toString())
                 }
             })
@@ -98,7 +95,6 @@ class HomePresenter(
                 }
 
                 override fun onFailure(call: Call<VideoSuggestionResponse>, t: Throwable) {
-                    Log.e("ERROR", t.message.toString())
                     view?.onErrorMoveData(t.message.toString())
                 }
             })

@@ -42,17 +42,18 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     private var tokenUser: String? = null
     private var tokenResponse: LoginResponse? = null
     private var getSharedPreferences: SharedPreferences? = null
-    private var userDung = User(
-        1, "vudung", "vudung@gmail.com", "", "123", R.drawable.avatar, 1, "Male", "", 1, "", false
-    )
 
+    companion object {
+        const val TOKEN_USER_PREFERENCE = "tokenUser"
+        const val TOKEN = "token"
+    }
 
     override fun createPresenter(): MenuPresenter = MenuPresenter(this)
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         //clear token when re-launch app
-        val settings = getSharedPreferences("tokenUser", Context.MODE_PRIVATE)
+        val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
         settings.edit().clear().apply()
 
         binding = ActivityMainMenuBinding.inflate(layoutInflater)
@@ -64,8 +65,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     override fun onResume() {
         super.onResume()
 
-        getSharedPreferences = getSharedPreferences("tokenUser", MODE_PRIVATE)
-        tokenUser = getSharedPreferences?.getString("token", null)
+        getSharedPreferences = getSharedPreferences(TOKEN_USER_PREFERENCE, MODE_PRIVATE)
+        tokenUser = getSharedPreferences?.getString(TOKEN, null)
 
         //If token null show menu of login -- if not null show menu logout
         if (tokenUser == null) {
@@ -80,7 +81,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 menulogout.text = getString(R.string.txt_log_out)
                 menuTvSettting.visibility = View.VISIBLE
                 layoutUserInfo.constraintLayout.visibility = View.VISIBLE
-                layoutUserInfo.txtUsernameNavbar.text = userDung.username
+                layoutUserInfo.txtUsernameNavbar.text = dataUserLogin?.username
                 menuTvFollowing.visibility = View.VISIBLE
             }
         }
@@ -141,7 +142,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
         // add home
         supportFragmentManager.beginTransaction()
-            .replace(binding.contentFrameMain.id, HomeFragment(), "MY_FRAGMENT").commit()
+            .replace(binding.contentFrameMain.id, HomeFragment()).commit()
 
 
     }
@@ -149,20 +150,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
     override fun listener() {
 
-
         binding.layoutUserInfo.constraintLayout.setOnClickListener {
-
-            val profileFragment = ProfileFragment()
-
-            if (userDung.role) {
-                val bundle = Bundle()
-                bundle.putParcelable("user", userDung)
-                profileFragment.arguments = bundle
-            }
             binding.drawerLayout.closeDrawer(GravityCompat.START)
-
             supportFragmentManager.beginTransaction()
-                .replace(binding.contentFrameMain.id, profileFragment).commit()
+                .replace(binding.contentFrameMain.id, ProfileFragment()).commit()
 
         }
 
@@ -208,7 +199,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                     Toast.makeText(applicationContext, "Logout Successfully!", Toast.LENGTH_SHORT)
                         .show()
 
-                    val settings = getSharedPreferences("tokenUser", Context.MODE_PRIVATE)
+                    val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
                     settings.edit().clear().apply()
                     tokenUser = null
                     tokenResponse = null
@@ -249,14 +240,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
             menuTvSettting.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
-
-                val profileFragment = ProfileFragment()
-
-                val bundle = Bundle()
-                bundle.putParcelable("user", userDung)
-                profileFragment.arguments = bundle
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrameMain.id, profileFragment).commit()
+                    .replace(binding.contentFrameMain.id, ProfileFragment()).commit()
 
             }
         }
@@ -308,8 +293,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         Toast.makeText(this, loginResponse.message.toString(), Toast.LENGTH_SHORT).show()
 
         //Set Data to Preferences
-        val sharedPreferences = getSharedPreferences("tokenUser", MODE_PRIVATE)
-        sharedPreferences?.edit()?.putString("token", tokenUser.toString())?.apply()
+        val sharedPreferences = getSharedPreferences(TOKEN_USER_PREFERENCE, MODE_PRIVATE)
+        sharedPreferences?.edit()?.putString(TOKEN, tokenUser.toString())?.apply()
 
         binding.apply {
             menulogout.text = getString(R.string.txt_log_out)
@@ -324,11 +309,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                     .into(binding.layoutUserInfo.imgMenuUserAvatar)
             }
 
-            if (dataUserLogin?.kol == 0){
+            if (dataUserLogin?.kol == 0) {
                 binding.layoutUserInfo.imgBlueTickNavbar.isVisible = false
             }
         }
-
 
         //Reload Current Screen
         val currentFragment: Fragment? =
