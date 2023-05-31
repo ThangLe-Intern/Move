@@ -50,6 +50,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         const val COUNTRY_NOT_IN_LIST = "COUNTRY_NOT_IN_LIST"
         const val USER_NAME_INVALID = "US_INVALID"
         const val USER_NAME_FORMAT = "US_FORMAT"
+        const val FULL_NAMESAKE = "FULL_NAMESAKE"
         const val TOKEN_USER_PREFERENCE = "tokenUser"
         const val TOKEN = "token"
 
@@ -145,12 +146,27 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             3
         }
 
+        val newMonth: String
+        when (binding.dropdownMonthText.text.toString()) {
+            months[0] -> newMonth = "01"
+            months[1] -> newMonth = "02"
+            months[2] -> newMonth = "03"
+            months[3] -> newMonth = "04"
+            months[4] -> newMonth = "05"
+            months[5] -> newMonth = "06"
+            months[6] -> newMonth = "07"
+            months[7] -> newMonth = "08"
+            months[8] -> newMonth = "09"
+            months[9] -> newMonth = "10"
+            months[10] -> newMonth = "11"
+            months[11] -> newMonth = "12"
+            else -> newMonth = "01"
+        }
+
         //Get DOB
         val date =
-            "${binding.dropdownYearText.text}-${binding.dropdownMonthText.text}-${binding.dropdownDayText.text}".trim()
+            "${binding.dropdownYearText.text}-${newMonth}-${binding.dropdownDayText.text}".trim()
 
-        val format = "yyyy-MM-dd"
-        val newDob = convertStringToDate(date, format)
 
         //Get Country & State ID
         val countryID = getIdCountry(newCountry)
@@ -159,7 +175,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
         return ProfileRequest(
             newCity,
-            newDob,
+            date,
             countryID,
             newFullName,
             newGender,
@@ -168,16 +184,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             newUserName,
         )
 
-    }
-
-    private fun convertStringToDate(dateString: String, format: String): Date? {
-        val dateFormat = SimpleDateFormat(format)
-        return try {
-            dateFormat.parse(dateString)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
     }
 
 
@@ -477,6 +483,17 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 binding.txtErrorUsername.apply {
                     visibility = View.VISIBLE
                     text = context.getString(R.string.txt_error_contains_alpnum)
+                }
+                binding.editUsername.apply {
+                    setBackgroundResource(R.drawable.custom_edittext_error)
+                    requestFocus()
+                }
+            }
+
+            FULL_NAMESAKE -> {
+                binding.txtErrorUsername.apply {
+                    visibility = View.VISIBLE
+                    text = context.getString(R.string.txt_error_full_name_sake)
                 }
                 binding.editUsername.apply {
                     setBackgroundResource(R.drawable.custom_edittext_error)

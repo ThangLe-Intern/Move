@@ -17,11 +17,13 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
 
     private val dataManager: DataManager = DataManager.instance
 
-    companion object{
+    companion object {
         const val FULL_NAME_AT_LEAST_4_CHARS = "FN_4_CH"
         const val USER_NAME_LENGTH = "US_LTH"
         const val USER_NAME_INVALID = "US_INVALID"
         const val USER_NAME_FORMAT = "US_FORMAT"
+        const val FULL_NAMESAKE = "FULL_NAMESAKE"
+
     }
 
     override fun onShowLoadingPresenter() {
@@ -31,17 +33,17 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
         view?.onShowError(errorType)
     }
 
-    override fun onSaveProfileClickPresenter(token: String,profileRequest: ProfileRequest) {
+    override fun onSaveProfileClickPresenter(token: String, profileRequest: ProfileRequest) {
         val listAcceptChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
 
-        if (profileRequest.fullname?.length!! < 4 || profileRequest.fullname?.length!! >100 ){
-          return onShowErrorPresenter(FULL_NAME_AT_LEAST_4_CHARS)
+        if (profileRequest.fullname?.length!! < 4 || profileRequest.fullname?.length!! > 100) {
+            return onShowErrorPresenter(FULL_NAME_AT_LEAST_4_CHARS)
         }
-        if (profileRequest.username?.length!! < 4 || profileRequest.username?.length!! > 25){
+        if (profileRequest.username?.length!! < 4 || profileRequest.username?.length!! > 25) {
             return onShowErrorPresenter(USER_NAME_LENGTH)
         }
 
-        if (!hasNumber(profileRequest.username.toString())){
+        if (!hasNumber(profileRequest.username.toString())) {
             return onShowErrorPresenter(USER_NAME_FORMAT)
         }
 
@@ -51,24 +53,25 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
             }
         }
 
-        dataManager.movieRepository.updateProfileUser("Bearer $token",profileRequest)
+        dataManager.movieRepository.updateProfileUser("Bearer $token", profileRequest)
             ?.enqueue(object : Callback<UpdateProfileResponse> {
                 override fun onResponse(
-                    call: Call<UpdateProfileResponse>, profileResponse: Response<UpdateProfileResponse>
+                    call: Call<UpdateProfileResponse>,
+                    profileResponse: Response<UpdateProfileResponse>
                 ) {
                     if (profileResponse.body() != null) {
-                        view?.onSuccessUpdateProfile(profileResponse.body()!!)
+                            view?.onSuccessUpdateProfile(profileResponse.body()!!)
                     }
 
                     if (profileResponse.errorBody() != null) {
-                        Log.d("KEKE","Update Profile Failed!")
+                        view?.onShowError(FULL_NAMESAKE)
                     }
                 }
+
                 override fun onFailure(call: Call<UpdateProfileResponse>, t: Throwable) {
                     view?.onErrorGetProfile(t.message.toString())
                 }
             })
-
 
 
     }
@@ -84,7 +87,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                     }
 
                     if (profileResponse.errorBody() != null) {
-                        Log.d("KEKE","Get Profile Failed!")
+                        Log.d("KEKE", "Get Profile Failed!")
                     }
                 }
 
@@ -105,7 +108,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                     }
 
                     if (countryResponse.errorBody() != null) {
-                        Log.d("KEKE","Get Country Failed!")
+                        Log.d("KEKE", "Get Country Failed!")
                     }
                 }
 
@@ -127,7 +130,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                     }
 
                     if (stateResponse.errorBody() != null) {
-                        Log.d("KEKE","Get State Failed!")
+                        Log.d("KEKE", "Get State Failed!")
                     }
                 }
 

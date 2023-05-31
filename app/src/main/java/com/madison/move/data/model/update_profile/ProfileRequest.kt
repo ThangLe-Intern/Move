@@ -11,7 +11,7 @@ data class ProfileRequest(
     val address: String?,
     @SerializedName("birthday")
     @Expose
-    val birthday: Date?,
+    val birthday: String?,
     @SerializedName("country_id")
     @Expose
     val countryId: Int?,

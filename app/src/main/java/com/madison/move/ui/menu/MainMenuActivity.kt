@@ -52,6 +52,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
+
         //clear token when re-launch app
         val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
         settings.edit().clear().apply()
@@ -190,9 +191,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
 
                     //clear token when logout
-
-                    Toast.makeText(applicationContext, "Logout Successfully!", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(applicationContext, "Logout Successfully!", Toast.LENGTH_SHORT).show()
 
                     val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
                     settings.edit().clear().apply()
