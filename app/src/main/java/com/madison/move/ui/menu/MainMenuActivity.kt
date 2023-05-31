@@ -160,12 +160,12 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
             }
 
-            binding.menuTvFollowing.setOnClickListener {
-                binding.drawerLayout.closeDrawer(GravityCompat.START)
-                supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrameMain.id, CommentFragment()).commit()
-
-            }
+//            binding.menuTvFollowing.setOnClickListener {
+//                binding.drawerLayout.closeDrawer(GravityCompat.START)
+//                supportFragmentManager.beginTransaction()
+//                    .replace(binding.contentFrameMain.id, CommentFragment(null)).commit()
+//
+//            }
 
             layoutToolBar.imvLogo.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)

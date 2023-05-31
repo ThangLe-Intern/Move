@@ -6,6 +6,7 @@ import com.madison.move.data.model.Video
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.model.login.LoginResponse
+import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.data.source.MoveDataSource
 import retrofit2.Call
@@ -51,6 +52,10 @@ class MoveCacheDataSource : MoveDataSource {
     }
 
     override fun getVideoSuggestion(): Call<VideoSuggestionResponse>? {
+        return null
+    }
+
+    override fun getVideoDetail(id: Int): Call<VideoDetailResponse>? {
         return null
     }
 

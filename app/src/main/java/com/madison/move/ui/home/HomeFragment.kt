@@ -9,11 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.madison.move.R
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.carousel.DataVideoCarousel
 import com.madison.move.data.model.category.CategoryResponse
@@ -26,6 +28,7 @@ import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.home.adapter.CarouselViewPagerAdapter
 import com.madison.move.ui.home.adapter.CategoryAdapter
 import com.madison.move.ui.home.adapter.VideoSuggestionAdapter
+import com.madison.move.ui.offlinechannel.CommentFragment
 import kotlin.math.abs
 
 class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
@@ -153,6 +156,14 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         binding.listVideoSuggestion.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = videoSuggestionAdapter
+        }
+        videoSuggestionAdapter.onClickVideo = object : VideoSuggestionAdapter.ListenerVideoSuggestion{
+            override fun onClickVideoSuggest(dataVideoSuggestion: DataVideoSuggestion) {
+                val activity: AppCompatActivity = requireActivity() as AppCompatActivity
+                val commentFragment = CommentFragment(dataVideoSuggestion)
+                activity.supportFragmentManager.beginTransaction().replace(R.id.content_frame_main,commentFragment).commit()
+            }
+
         }
     }
 

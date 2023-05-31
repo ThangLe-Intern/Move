@@ -2,7 +2,6 @@ package com.madison.move.ui.offlinechannel
 
 import android.app.Activity
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,17 +18,23 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.madison.move.R
+import com.madison.move.data.model.videodetail.VideoDetailResponse
+import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentCommentBinding
+import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
 import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
 
-open class CommentFragment : Fragment(), CommentListener {
+open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?) : BaseFragment<CommentPresenter>(), CommentListener,CommentContract.CommentContract {
     private lateinit var binding: FragmentCommentBinding
     lateinit var adapterComment: ListCommentAdapter
     private var listComment: MutableList<Comment> = mutableListOf()
-
     private var currentFragment: Fragment? = null
     private lateinit var handler: Handler
+
+
+    override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,7 +56,7 @@ open class CommentFragment : Fragment(), CommentListener {
         currentFragment = this
 
         val iframeContent =
-            "<html><body style=\"margin:0; padding:0\"><iframe src=\"https://player.vimeo.com/video/831402333\" width=\"100%\" height=\"100%\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>" // Lấy nội dung iframe từ API
+            "<html><body style=\"margin:0; padding:0\"><iframe src=\"https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4\" width=\"100%\" height=\"100%\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>" // Lấy nội dung iframe từ API
 
         binding.webView.getSettings().setJavaScriptEnabled(true)
 
@@ -61,7 +66,26 @@ open class CommentFragment : Fragment(), CommentListener {
             "utf-8"
         )
 
+        binding.nameUserProflie.text = dataVideoSuggestion?.thumbnail.toString()
+
+        presenter?.apply {
+            getVideoDetail("", dataVideoSuggestion?.id ?: 0)
+        }
         return binding.root
+    }
+
+
+
+    override fun onBottomNavigateSystemUI() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSuccessGetVideoSuggestion(videoDetailsSuggestionResponse: VideoDetailResponse) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onError(errorMessage: String) {
+        TODO("Not yet implemented")
     }
 
     override fun onBackPressed() {

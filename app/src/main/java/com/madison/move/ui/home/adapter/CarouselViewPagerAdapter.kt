@@ -75,7 +75,7 @@ class CarouselViewPagerAdapter(
 
             binding.layoutFeatureFragment.setOnClickListener {
                     val activity: AppCompatActivity = it.context as AppCompatActivity
-                    val commentFragment = CommentFragment()
+                    val commentFragment = CommentFragment(null)
                     activity.supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.content_frame_main, commentFragment)

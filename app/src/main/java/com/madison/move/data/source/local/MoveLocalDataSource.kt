@@ -5,6 +5,7 @@ import com.madison.move.data.model.Video
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.model.login.LoginResponse
+import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.data.source.MoveDataSource
 import com.madison.move.utils.DiskExecutor
@@ -54,6 +55,10 @@ class MoveLocalDataSource private constructor(
     }
 
     override fun getVideoSuggestion(): Call<VideoSuggestionResponse>? {
+        return null
+    }
+
+    override fun getVideoDetail(id: Int): Call<VideoDetailResponse>? {
         return null
     }
 
