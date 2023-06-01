@@ -155,7 +155,6 @@
             android:id="@+id/txt_video_suggestion_rate_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_8sdp"
             android:fontFamily="@font/montserrat_bold"
             android:text="@string/video_rateNumber"
             android:textColor="@color/black"

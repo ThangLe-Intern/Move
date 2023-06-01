@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -79,6 +80,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     private val currentYear = Year.now().value
     private val years = (1900..currentYear).map { it.toString() }.toMutableList()
 
+    private var progressBar: RelativeLayout? = null
     override fun createPresenter(): ProfilePresenter = ProfilePresenter(this)
 
 
@@ -95,9 +97,15 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         tokenUser = getSharedPreferences?.getString(TOKEN, null)
 
 
-        onHandleLogic()
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        progressBar = activity?.findViewById(R.id.progress_main_layout)
+        progressBar?.visibility = View.VISIBLE
+        onHandleLogic()
     }
 
     private fun onHandleLogic() {
@@ -410,6 +418,8 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         if (userData != null && listDataCountry != null) {
             userData?.let { setUserData(it) }
         }
+
+        progressBar?.visibility = View.GONE
     }
 
     override fun onSuccessGetStateData(stateResponse: StateResponse) {
@@ -432,6 +442,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     override fun onSuccessUpdateProfile(updateProfileResponse: UpdateProfileResponse) {
         binding.txtErrorFullName.visibility = View.GONE
         binding.txtErrorFullName.focusable = View.FOCUSABLE
+        onResume()
         Toast.makeText(
             activity?.applicationContext,
             updateProfileResponse.message.toString(),

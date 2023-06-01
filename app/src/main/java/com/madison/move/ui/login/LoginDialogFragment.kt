@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -28,7 +29,7 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
     LoginContract.LoginView {
     private lateinit var binding: FragmentLoginDialogBinding
     private lateinit var presenter: LoginPresenter
-
+    var progressBar: RelativeLayout? = null
     companion object {
         const val EMAIL_INVALID = "EMAIL_INVALID"
         const val EMAIL_CONTAIN_SPACE = "EMAIL_CONTAIN_SPACE"
@@ -182,6 +183,11 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
 
     override fun onSendDataToActivity(email: String, password: String) {
         mOnInputListener?.sendData(email,password,this)
+        this.view?.visibility = View.INVISIBLE
+
+        progressBar = activity?.findViewById(R.id.progress_main_layout)
+        progressBar?.visibility = View.VISIBLE
+
     }
 
     override fun onResponseError(errorType: String) {

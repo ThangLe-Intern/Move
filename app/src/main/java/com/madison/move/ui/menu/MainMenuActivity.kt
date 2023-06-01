@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -23,7 +24,6 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.madison.move.R
-import com.madison.move.data.model.User
 import com.madison.move.data.model.login.DataUserLogin
 import com.madison.move.data.model.login.LoginResponse
 import com.madison.move.data.model.logout.LogoutResponse
@@ -36,9 +36,10 @@ import com.madison.move.ui.login.LoginDialogFragment
 import com.madison.move.ui.offlinechannel.CommentFragment
 import com.madison.move.ui.profile.ProfileFragment
 
+
 class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     NavigationView.OnNavigationItemSelectedListener, LoginDialogFragment.OnInputListener {
-    private lateinit var binding: ActivityMainMenuBinding
+    lateinit var mainMenuBinding: ActivityMainMenuBinding
     private var dataUserLogin: DataUserLogin? = null
     private var tokenUser: String? = null
     private var tokenResponse: LoginResponse? = null
@@ -58,8 +59,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
         settings.edit().clear().apply()
 
-        binding = ActivityMainMenuBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        mainMenuBinding = ActivityMainMenuBinding.inflate(layoutInflater)
+        setContentView(mainMenuBinding.root)
         super.onCreate(savedInstanceState)
 
     }
@@ -72,14 +73,14 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
         //If token null show menu of login -- if not null show menu logout
         if (tokenUser == null) {
-            binding.apply {
+            mainMenuBinding.apply {
                 menulogout.text = getString(R.string.txt_log_in)
                 menuTvSettting.visibility = View.GONE
                 layoutUserInfo.constraintLayout.visibility = View.GONE
                 menuTvFollowing.visibility = View.GONE
             }
         } else {
-            binding.apply {
+            mainMenuBinding.apply {
                 menulogout.text = getString(R.string.txt_log_out)
                 menuTvSettting.visibility = View.VISIBLE
                 layoutUserInfo.constraintLayout.visibility = View.VISIBLE
@@ -89,16 +90,26 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         }
     }
 
-    override fun initView() {
-        setSupportActionBar(binding.layoutToolBar.toolbar)
+    fun isDeviceOnline(context: Context): Boolean {
+        val connMgr = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connMgr.activeNetworkInfo
+        val isOnline = networkInfo != null && networkInfo.isConnected
+        if (!isOnline) Toast.makeText(context, " No internet Connection ", Toast.LENGTH_SHORT)
+            .show()
+        return isOnline
+    }
 
-        val navigationView = binding.navNew
+
+    override fun initView() {
+        setSupportActionBar(mainMenuBinding.layoutToolBar.toolbar)
+
+        val navigationView = mainMenuBinding.navNew
         navigationView.setNavigationItemSelectedListener(this)
 
         val toggle = ActionBarDrawerToggle(
             this,
-            binding.drawerLayout,
-            binding.layoutToolBar.toolbar,
+            mainMenuBinding.drawerLayout,
+            mainMenuBinding.layoutToolBar.toolbar,
             R.string.opem_name,
             R.string.close_name
         )
@@ -108,92 +119,92 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         toggle.isDrawerIndicatorEnabled = false
         toggle.setHomeAsUpIndicator(R.drawable.ic_menu)
 
-        binding.groupItemChild.visibility = View.GONE
+        mainMenuBinding.groupItemChild.visibility = View.GONE
         toggle.setToolbarNavigationClickListener { view ->
-            binding.drawerLayout.openDrawer(GravityCompat.START)
+            mainMenuBinding.drawerLayout.openDrawer(GravityCompat.START)
         }
 
-        binding.drawerLayout.addDrawerListener(toggle)
+        mainMenuBinding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
 
-        binding.groupItemChild.visibility = View.GONE
-        binding.menuTvMore.setOnClickListener {
+        mainMenuBinding.groupItemChild.visibility = View.GONE
+        mainMenuBinding.menuTvMore.setOnClickListener {
             var isImageChanged = false
             val originalImage: Drawable = resources.getDrawable(R.drawable.ic_arrow_down, null)
             val newImage: Drawable = resources.getDrawable(R.drawable.ic_arrow_up, null)
 
-            if (!isImageChanged && binding.groupItemChild.visibility == View.VISIBLE) {
-                binding.groupItemChild.visibility = View.GONE
-                binding.imgdown.setImageDrawable(originalImage)
+            if (!isImageChanged && mainMenuBinding.groupItemChild.visibility == View.VISIBLE) {
+                mainMenuBinding.groupItemChild.visibility = View.GONE
+                mainMenuBinding.imgdown.setImageDrawable(originalImage)
                 isImageChanged = true
             } else {
-                binding.imgdown.setImageDrawable(newImage)
+                mainMenuBinding.imgdown.setImageDrawable(newImage)
                 isImageChanged = false
-                binding.groupItemChild.visibility = View.VISIBLE
+                mainMenuBinding.groupItemChild.visibility = View.VISIBLE
             }
         }
-        binding.menuTvFollowing.setOnClickListener {
+        mainMenuBinding.menuTvFollowing.setOnClickListener {
             recreate()
         }
 
         val imgViewClose: ImageView = findViewById(R.id.imgclose)
         imgViewClose.setOnClickListener {
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
         }
 
         // add home
         supportFragmentManager.beginTransaction()
-            .replace(binding.contentFrameMain.id, HomeFragment()).commit()
+            .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
 
     }
     override fun listener() {
 
-        binding.layoutUserInfo.constraintLayout.setOnClickListener {
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
+        mainMenuBinding.layoutUserInfo.constraintLayout.setOnClickListener {
+            mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
             supportFragmentManager.beginTransaction()
-                .replace(binding.contentFrameMain.id, ProfileFragment()).commit()
+                .replace(mainMenuBinding.contentFrameMain.id, ProfileFragment()).commit()
         }
 
 
-        binding.apply {
+        mainMenuBinding.apply {
             menuTvFaq.setOnClickListener {
-                binding.drawerLayout.closeDrawer(GravityCompat.START)
+                mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrameMain.id, FAQFragment()).commit()
+                    .replace(mainMenuBinding.contentFrameMain.id, FAQFragment()).commit()
             }
 
             menuTvGuideline.setOnClickListener {
-                binding.drawerLayout.closeDrawer(GravityCompat.START)
+                mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrameMain.id, GuidelinesFragment()).commit()
+                    .replace(mainMenuBinding.contentFrameMain.id, GuidelinesFragment()).commit()
 
             }
 
-            binding.menuTvFollowing.setOnClickListener {
-                binding.drawerLayout.closeDrawer(GravityCompat.START)
+            mainMenuBinding.menuTvFollowing.setOnClickListener {
+                mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrameMain.id, CommentFragment()).commit()
+                    .replace(mainMenuBinding.contentFrameMain.id, CommentFragment()).commit()
             }
 
             layoutToolBar.imvLogo.setOnClickListener {
-                binding.drawerLayout.closeDrawer(GravityCompat.START)
+                mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrameMain.id, HomeFragment()).commit()
+                    .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
             }
 
             menulogout.setOnClickListener {
 
                 if (tokenUser == null) {
-                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
                     val loginDialog = LoginDialogFragment(this@MainMenuActivity)
                     loginDialog.show(supportFragmentManager, "login Dialog")
                 } else {
-                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
 
                     tokenUser?.let { token -> presenter?.logoutRequest(token) }
 
-                    binding.apply {
+                    mainMenuBinding.apply {
                         menulogout.text = getString(R.string.txt_log_in)
                         menuTvSettting.visibility = View.GONE
                         layoutUserInfo.constraintLayout.visibility = View.GONE
@@ -203,15 +214,15 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             }
 
             layoutUserInfo.logo.setOnClickListener {
-                binding.drawerLayout.closeDrawer(GravityCompat.START)
+                mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrameMain.id, HomeFragment()).commit()
+                    .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
             }
 
             menuTvSettting.setOnClickListener {
-                binding.drawerLayout.closeDrawer(GravityCompat.START)
+                mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrameMain.id, ProfileFragment()).commit()
+                    .replace(mainMenuBinding.contentFrameMain.id, ProfileFragment()).commit()
             }
         }
     }
@@ -236,8 +247,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     }
 
     override fun onBackPressed() {
-        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
+        if (mainMenuBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
         } else {
             onBackPressedDispatcher.onBackPressed()
         }
@@ -265,7 +276,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         val sharedPreferences = getSharedPreferences(TOKEN_USER_PREFERENCE, MODE_PRIVATE)
         sharedPreferences?.edit()?.putString(TOKEN, tokenUser.toString())?.apply()
 
-        binding.apply {
+        mainMenuBinding.apply {
             menulogout.text = getString(R.string.txt_log_out)
             menuTvSettting.visibility = View.VISIBLE
             menuTvFollowing.visibility = View.VISIBLE
@@ -275,11 +286,11 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             layoutUserInfo.txtUsernameNavbar.text = dataUserLogin?.username.toString()
             if (dataUserLogin?.img != null) {
                 Glide.with(this@MainMenuActivity).load(dataUserLogin?.img)
-                    .into(binding.layoutUserInfo.imgMenuUserAvatar)
+                    .into(mainMenuBinding.layoutUserInfo.imgMenuUserAvatar)
             }
 
             if (dataUserLogin?.kol == 0) {
-                binding.layoutUserInfo.imgBlueTickNavbar.isVisible = false
+                mainMenuBinding.layoutUserInfo.imgBlueTickNavbar.isVisible = false
             }
         }
 
@@ -294,7 +305,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             }
             is ProfileFragment -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrameMain.id, HomeFragment()).commit()
+                    .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
             }
         }
 
@@ -319,7 +330,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             }
             is ProfileFragment -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrameMain.id, HomeFragment()).commit()
+                    .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
             }
         }
     }

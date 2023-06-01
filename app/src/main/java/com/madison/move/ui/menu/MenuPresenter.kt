@@ -27,6 +27,8 @@ class MenuPresenter(override var view: MainContract.View?) : MainContract.Presen
                     }
 
                     if (loginResponse.errorBody() != null) {
+                        fragment.view?.findViewById<RelativeLayout>(R.id.progress_main_layout)?.visibility = View.GONE
+                        fragment.view?.visibility = View.VISIBLE
                         fragment.view?.findViewById<RelativeLayout>(R.id.layout_error_message)?.visibility = View.VISIBLE
                     }
                 }
