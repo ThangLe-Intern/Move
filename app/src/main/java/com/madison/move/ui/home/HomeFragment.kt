@@ -8,7 +8,6 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -29,8 +28,8 @@ import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.home.adapter.CarouselViewPagerAdapter
 import com.madison.move.ui.home.adapter.CategoryAdapter
 import com.madison.move.ui.home.adapter.VideoSuggestionAdapter
-import com.madison.move.ui.menu.MainMenuActivity
 import kotlin.math.abs
+
 
 class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 

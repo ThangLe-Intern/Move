@@ -90,6 +90,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         }
     }
 
+    //Check Device On Connection Internet or Not
     fun isDeviceOnline(context: Context): Boolean {
         val connMgr = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connMgr.activeNetworkInfo
