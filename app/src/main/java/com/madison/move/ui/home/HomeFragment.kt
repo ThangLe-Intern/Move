@@ -34,7 +34,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     private lateinit var carouselViewPagerAdapter: CarouselViewPagerAdapter
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var videoSuggestionAdapter: VideoSuggestionAdapter
-    private lateinit var handler: Handler
+    private var handler: Handler = Handler(Looper.getMainLooper())
 
     private var getSharedPreferences: SharedPreferences? = null
     var videoCarouselData: ArrayList<DataVideoCarousel> = arrayListOf()
@@ -42,6 +42,11 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     var categoryList: ArrayList<DataCategory> = arrayListOf()
     var videoList: ArrayList<DataVideoSuggestion> = arrayListOf()
     private var tokenUser: String? = null
+
+    companion object{
+        const val TOKEN_USER_PREFERENCE = "tokenUser"
+        const val TOKEN = "token"
+    }
 
 
     override fun createPresenter(): HomePresenter = HomePresenter(this)
@@ -71,16 +76,15 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         super.onResume()
         onRefreshData()
         //Slider for carousel
-        handler = Handler(Looper.myLooper()!!)
         handler.postDelayed(runnable, 3000)
     }
 
-     fun onRefreshData(){
+    private fun onRefreshData() {
         getSharedPreferences = requireContext().getSharedPreferences(
-            "tokenUser", AppCompatActivity.MODE_PRIVATE
+            TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
         )
 
-        tokenUser = getSharedPreferences?.getString("token", null)
+        tokenUser = getSharedPreferences?.getString(TOKEN, null)
 
         //if token not null get video suggestion for each user -- else get for all user
         videoList.clear()
@@ -89,8 +93,8 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         }
 
         if (tokenUser != null) {
-            presenter?.getVideoSuggestionForUserData(tokenUser.toString())
-        }else{
+            presenter?.getVideoSuggestionForUserData(tokenUser?: "")
+        } else {
             presenter?.getVideoSuggestionData()
         }
 
@@ -121,7 +125,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     override fun onSuccessVideoSuggestionForUser(videoSuggestionResponse: VideoSuggestionResponse) {
         videoList = videoSuggestionResponse.videoSuggestion.data as ArrayList<DataVideoSuggestion>
-//        presenter?.onShowVideoSuggestionPresenter(videoList)
+        presenter?.onShowVideoSuggestionPresenter(videoList)
     }
 
     override fun onErrorMoveData(error: String) {

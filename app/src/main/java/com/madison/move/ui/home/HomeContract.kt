@@ -4,7 +4,6 @@ import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.carousel.DataVideoCarousel
 import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.model.category.DataCategory
-import com.madison.move.data.model.login.LoginResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.ui.base.BasePresenter
@@ -41,6 +40,6 @@ interface HomeContract {
 
         fun getCategoryData()
         fun getVideoSuggestionData()
-        fun getVideoSuggestionForUserData(token:String)
+        fun getVideoSuggestionForUserData(token: String)
     }
 }

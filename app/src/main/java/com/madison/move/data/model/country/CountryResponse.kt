@@ -1,16 +1,17 @@
-package com.madison.move.data.model.category
+package com.madison.move.data.model.country
+
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class CategoryResponse(
-    @Expose
+data class CountryResponse(
     @SerializedName("data")
-    val data: List<DataCategory>?,
     @Expose
+    val dataCountry: List<DataCountry>?,
     @SerializedName("status_code")
-    val statusCode: Int?,
     @Expose
+    val statusCode: Int?,
     @SerializedName("success")
+    @Expose
     val success: Boolean?
 )
