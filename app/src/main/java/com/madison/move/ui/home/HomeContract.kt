@@ -23,8 +23,8 @@ interface HomeContract {
         fun onShowListVideoSuggestion(listVideoSuggestion: ArrayList<DataVideoSuggestion>)
         fun onSuccessCarouselData(response: CarouselResponse)
         fun onSuccessCategoryData(categoryResponse: CategoryResponse)
-
         fun onSuccessVideoSuggestionData(videoSuggestionResponse: VideoSuggestionResponse)
+        fun onSuccessVideoSuggestionForUser(videoSuggestionResponse: VideoSuggestionResponse)
         fun onErrorMoveData(error: String)
     }
 
@@ -40,5 +40,6 @@ interface HomeContract {
 
         fun getCategoryData()
         fun getVideoSuggestionData()
+        fun getVideoSuggestionForUserData(token: String)
     }
 }

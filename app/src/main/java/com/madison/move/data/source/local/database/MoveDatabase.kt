@@ -10,7 +10,7 @@ import com.madison.move.data.source.local.MoveDao
 
 @Database(entities = [Video::class], version = 1, exportSchema = false)
 abstract class MoveDatabase : RoomDatabase() {
-    abstract fun movieDao(): MoveDao
+    abstract fun moveDao(): MoveDao
 
     companion object {
         private var sInstance: MoveDatabase? = null
@@ -21,7 +21,7 @@ abstract class MoveDatabase : RoomDatabase() {
                         Room.databaseBuilder(
                             it,
                             MoveDatabase::class.java,
-                            "Movie.db"
+                            "Move.db"
                         ).build()
                     }
                 }

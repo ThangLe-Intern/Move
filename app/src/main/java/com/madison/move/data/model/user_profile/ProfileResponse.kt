@@ -1,16 +1,16 @@
-package com.madison.move.data.model.category
+package com.madison.move.data.model.user_profile
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class CategoryResponse(
+data class ProfileResponse(
     @Expose
     @SerializedName("data")
-    val data: List<DataCategory>?,
+    val dataUser: DataUser?,
     @Expose
     @SerializedName("status_code")
     val statusCode: Int?,
     @Expose
     @SerializedName("success")
-    val success: Boolean?
+    val success: Boolean
 )

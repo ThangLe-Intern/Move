@@ -2,8 +2,10 @@ package com.madison.move.ui.profile
 
 
 import android.app.Activity
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.service.autofill.UserData
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -16,12 +18,26 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.github.drjacky.imagepicker.ImagePicker
 import com.github.drjacky.imagepicker.constant.ImageProvider
 import com.madison.move.R
 import com.madison.move.data.model.User
+import com.madison.move.data.model.country.CountryResponse
+import com.madison.move.data.model.country.DataCountry
+import com.madison.move.data.model.state.DataState
+import com.madison.move.data.model.state.StateResponse
+import com.madison.move.data.model.update_profile.ProfileRequest
+import com.madison.move.data.model.update_profile.UpdateProfileResponse
+import com.madison.move.data.model.user_profile.DataUser
+import com.madison.move.data.model.user_profile.ProfileResponse
 import com.madison.move.databinding.FragmentProfileBinding
 import com.madison.move.ui.base.BaseFragment
+import kotlinx.coroutines.awaitCancellation
+import java.text.SimpleDateFormat
+import java.time.Year
+import java.util.*
 
 
 class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.ProfileView {
@@ -34,55 +50,36 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         const val COUNTRY_NOT_IN_LIST = "COUNTRY_NOT_IN_LIST"
         const val USER_NAME_INVALID = "US_INVALID"
         const val USER_NAME_FORMAT = "US_FORMAT"
+        const val FULL_NAMESAKE = "FULL_NAMESAKE"
+        const val TOKEN_USER_PREFERENCE = "tokenUser"
+        const val TOKEN = "token"
 
     }
 
+    private var getSharedPreferences: SharedPreferences? = null
+    private var tokenUser: String? = null
+
     private lateinit var binding: FragmentProfileBinding
-    private var user: User = User()
     private var newFullName = ""
     private var newUserName = ""
     private var isChangeRadioButton = false
     private var isFillAllDoB = false
-    private var newDob = ""
     private var newCountry = ""
     private var newState = ""
     private var newCity = ""
 
-
-    private var listState: ArrayList<String> = arrayListOf()
-
-    private var listStateVietNam: ArrayList<String> =
-        arrayListOf("Ha Noi", "Da Nang", "Hue", "Ho Chi Minh", "Hai Phong")
-    private var listStateSingapore: ArrayList<String> =
-        arrayListOf("Sing 1", "Sing 2", "Sing 3", "Sing 4", "Sing 5")
-    private var listStateKorea: ArrayList<String> =
-        arrayListOf("Korea 1", "Korea 2", "Korea 3", "Korea 4", "Korea 5")
-    private var listStateJapan: ArrayList<String> =
-        arrayListOf("Japan 1", "Japan 2", "Japan 3", "Japan 4", "Japan 5")
-
-    private var listCountry: ArrayList<String> =
-        arrayListOf("VietNam", "Singapore", "Korea", "Japan")
-
+    private var listDataCountry: ArrayList<DataCountry>? = null
+    private var listDataState: ArrayList<DataState>? = null
+    private var userData: DataUser? = null
 
     private lateinit var arrayAdapter: ArrayAdapter<String>
     private val months = arrayOf(
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     )
-    private val years = (1900..2023).map { it.toString() }.toMutableList()
-    private var userNewProfile = User()
+    private val currentYear = Year.now().value
+    private val years = (1900..currentYear).map { it.toString() }.toMutableList()
 
-    override fun createPresenter(): ProfilePresenter = ProfilePresenter(this, userNewProfile)
+    override fun createPresenter(): ProfilePresenter = ProfilePresenter(this)
 
 
     override fun onCreateView(
@@ -90,80 +87,105 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
-        val bundle = arguments
-        bundle?.getParcelable<User>("user")?.also {
-            user = it
-        }
-        setUserData(user)
 
-        binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
-
-        presenter.apply {
-
-        }
+        //Get Token From Preferences
+        getSharedPreferences = requireContext().getSharedPreferences(
+            TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
+        )
+        tokenUser = getSharedPreferences?.getString(TOKEN, null)
 
 
-        binding.saveSettingBtn.setOnClickListener {
-            presenter?.onSaveProfileClickPresenter(getNewProfile())
-        }
+        onHandleLogic()
 
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initView()
+    private fun onHandleLogic() {
 
-    }
+        //Get Data From Server
+        presenter?.apply {
+            getCountryDataPresenter()
+            getProfileUserDataPresenter(tokenUser.toString())
+        }
 
-    override fun initView() {
+
+        //Enable Button Setting when All Field are Fill
+        binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
+        binding.saveSettingBtn.setOnClickListener {
+            tokenUser?.let { token ->
+                presenter?.onSaveProfileClickPresenter(
+                    token, getNewProfile()
+                )
+            }
+        }
+
+
+        //Handle Function
         handleRadioButton()
-        handleDropDownState(binding.dropdownCountryText.text.toString().trim())
-        handleDropDownCountry()
         hideHintTextInputLayout()
         handleUserInput()
-        handleDropDownDob()
         handlePickerImage()
     }
 
-    private fun getNewProfile(): User {
+    private fun getNewProfile(): ProfileRequest {
         val newUserName = binding.editUsername.text.toString().trim()
         val newFullName = binding.editProfileFullName.text.toString().trim()
         val newCountry = binding.dropdownCountryText.text.toString().trim()
         val newState = binding.dropdownStateText.text.toString().trim()
         val newCity = binding.editProfileCity.text.toString().trim()
 
-        val newAddress = "$newCity-$newState-$newCountry"
 
-        val newGender: String = if (binding.radioMale.isChecked) {
-            binding.radioMale.text.toString()
+//        val newAvatar = binding.imgProfileUser.tag.toString()
 
+        //Get Gender
+        val newGender: Int = if (binding.radioMale.isChecked) {
+            1
         } else if (binding.radioFemale.isChecked) {
-            binding.radioFemale.text.toString()
+            2
         } else {
-            binding.radioRatherNotSay.text.toString()
+            3
         }
-        val newDob =
-            "${binding.dropdownDayText.text}/${binding.dropdownMonthText.text}/${binding.dropdownYearText.text}".trim()
 
-        userNewProfile =
-            User(
-                1,
-                newUserName,
-                user.email,
-                newFullName,
-                user.password,
-                user.avatar,
-                1,
-                newGender,
-                newDob,
-                1,
-                newAddress
-            )
+        val newMonth: String
+        when (binding.dropdownMonthText.text.toString()) {
+            months[0] -> newMonth = "01"
+            months[1] -> newMonth = "02"
+            months[2] -> newMonth = "03"
+            months[3] -> newMonth = "04"
+            months[4] -> newMonth = "05"
+            months[5] -> newMonth = "06"
+            months[6] -> newMonth = "07"
+            months[7] -> newMonth = "08"
+            months[8] -> newMonth = "09"
+            months[9] -> newMonth = "10"
+            months[10] -> newMonth = "11"
+            months[11] -> newMonth = "12"
+            else -> newMonth = "01"
+        }
 
-        return userNewProfile
+        //Get DOB
+        val date =
+            "${binding.dropdownYearText.text}-${newMonth}-${binding.dropdownDayText.text}".trim()
+
+
+        //Get Country & State ID
+        val countryID = getIdCountry(newCountry)
+        val stateId = getIdState(newState)
+
+
+        return ProfileRequest(
+            newCity,
+            date,
+            countryID,
+            newFullName,
+            newGender,
+            "",
+            stateId,
+            newUserName,
+        )
 
     }
+
 
     private fun isAllFieldsNotNull(): Boolean {
 
@@ -184,13 +206,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             isChangeRadioButton = true
         }
 
-        return newFullName.isNotEmpty() &&
-                newUserName.isNotEmpty() &&
-                newCountry.isNotEmpty() &&
-                newState.isNotEmpty() &&
-                newCity.isNotEmpty() &&
-                isChangeRadioButton &&
-                isFillAllDoB
+        return newFullName.isNotEmpty() && newUserName.isNotEmpty() && newCountry.isNotEmpty() && newState.isNotEmpty() && newCity.isNotEmpty() && isChangeRadioButton && isFillAllDoB
 
 
     }
@@ -207,9 +223,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val listSpecialCharacter = "!@#$%^&*()_-+={}][|<>,?/.®©€¥£¢"
 
-                //Handle Input User Name From User
-
-
                 //Handle  Input Full Name From User
 
                 val nameText = binding.editProfileFullName.text.toString()
@@ -218,7 +231,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                     return binding.editProfileFullName.setText(nameText.dropLast(1))
                 }
 
-                if (nameText.contains("  ") || nameText.contains(". ") || nameText.contains(" .")) {
+                if (nameText.contains("  ") || nameText.contains(" .")) {
                     return binding.editProfileFullName.setText(nameText.dropLast(1))
                 }
 
@@ -290,53 +303,84 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     private fun handlePickerImage() {
         binding.txtProfileUpdatePicture.setOnClickListener {
             activity?.let { it1 ->
-                ImagePicker.with(it1)
-                    .crop()
-                    .cropOval()
-                    .maxResultSize(1000, 1000, false)
+                ImagePicker.with(it1).crop().cropOval().maxResultSize(1000, 1000, false)
                     .provider(ImageProvider.BOTH) // Or bothCameraGallery()
                     .setDismissListener {
                         Log.d("ImagePicker", "onDismiss")
-                    }
-                    .createIntentFromDialog { launcher.launch(it) }
+                    }.createIntentFromDialog { launcher.launch(it) }
             }
         }
     }
 
 
-    private fun setUserData(user: User) {
+    private fun setUserData(user: DataUser) {
 
         binding.editUsername.setText(user.username)
         binding.editProfileEmail.setText(user.email)
         binding.editProfileFullName.setText(user.fullname)
         binding.editProfileCity.setText(user.address)
 
-        user.avatar.also {
-            if (it != null) {
-                binding.imgProfileUser.setImageResource(it)
-            }
+        //Set User Avatar
+        if (user.img != null) {
+            Glide.with(this).load(user.img).into(binding.imgProfileUser)
+        } else {
+            binding.imgProfileUser.setImageResource(R.drawable.avatar)
         }
 
-
+        //Set User Gender
         when (user.gender) {
-            "Male" -> {
+            1 -> {
                 binding.radioMale.isChecked = true
             }
-            "Female" -> {
+            2 -> {
                 binding.radioFemale.isChecked = true
+
             }
-            "Rather" -> {
+            3 -> {
                 binding.radioRatherNotSay.isChecked = true
             }
         }
 
-        if (user.dob != "") {
-            binding.dropdownYearText.setText(getString(R.string.dob_years))
-            binding.dropdownMonthText.setText(getString(R.string.dob_month))
-            binding.dropdownDayText.setText("1")
+        //Set User Dob
+        if (user.birthday != null) {
+
+            val dateParts = user.birthday.split("-")
+            val year = dateParts[0]
+            val month: String = dateParts[1]
+            val day = dateParts[2]
+
+            binding.dropdownYearText.setText(year)
+            binding.dropdownDayText.setText(day)
+
+            when (month) {
+                "01" -> binding.dropdownMonthText.setText(months[0])
+                "02" -> binding.dropdownMonthText.setText(months[1])
+                "03" -> binding.dropdownMonthText.setText(months[2])
+                "04" -> binding.dropdownMonthText.setText(months[3])
+                "05" -> binding.dropdownMonthText.setText(months[4])
+                "06" -> binding.dropdownMonthText.setText(months[5])
+                "07" -> binding.dropdownMonthText.setText(months[6])
+                "08" -> binding.dropdownMonthText.setText(months[7])
+                "09" -> binding.dropdownMonthText.setText(months[8])
+                "10" -> binding.dropdownMonthText.setText(months[9])
+                "11" -> binding.dropdownMonthText.setText(months[10])
+                "12" -> binding.dropdownMonthText.setText(months[11])
+                "13" -> binding.dropdownMonthText.setText(months[12])
+            }
+        }
+        listDataCountry?.forEach { it ->
+            if (it.id == user.countryId) {
+                binding.dropdownCountryText.setText(it.name)
+
+                //Add data again
+                if (listDataCountry != null) {
+                    handleDropDownCountry(listDataCountry!!)
+                }
+            }
         }
 
-
+        //Handle Dob Selected
+        handleDropDownDob()
         val monthSelected = binding.dropDownProfileMonth.editText?.text.toString()
         val yearSelected = binding.dropDownProfileYear.editText?.text.toString()
         onHandleListOfDay(monthSelected, yearSelected)
@@ -347,14 +391,56 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     }
 
-    override fun onSaveProfileClick() {
+    override fun onSuccessGetProfileData(profileResponse: ProfileResponse) {
+        userData = profileResponse.dataUser
+        listDataCountry?.forEach {
+            if (it.id != null && it.id == userData?.countryId) presenter?.getStateDataPresenter(it.id)
+        }
+        if (userData != null && listDataCountry != null) {
+            userData?.let { setUserData(it) }
+        }
+    }
+
+    override fun onSuccessGetCountryData(countryResponse: CountryResponse) {
+        handleDropDownCountry(countryResponse.dataCountry as ArrayList<DataCountry>)
+        listDataCountry = countryResponse.dataCountry
+        listDataCountry?.forEach {
+            if (it.id != null && it.id == userData?.countryId) presenter?.getStateDataPresenter(it.id)
+        }
+        if (userData != null && listDataCountry != null) {
+            userData?.let { setUserData(it) }
+        }
+    }
+
+    override fun onSuccessGetStateData(stateResponse: StateResponse) {
+        handleDropDownState(stateResponse.data as ArrayList<DataState>)
+        listDataState = stateResponse.data
+        if (userData?.stateId != null) {
+            //Set State Infomation
+            listDataState?.forEach {
+                if (it.id == userData!!.stateId) {
+                    binding.dropdownStateText.setText(it.name)
+                    if (listDataState != null) {
+                        handleDropDownState(listDataState!!)
+                    }
+                }
+            }
+            binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
+        }
+    }
+
+    override fun onSuccessUpdateProfile(updateProfileResponse: UpdateProfileResponse) {
         binding.txtErrorFullName.visibility = View.GONE
         binding.txtErrorFullName.focusable = View.FOCUSABLE
         Toast.makeText(
             activity?.applicationContext,
-            "Update Profile Successful",
+            updateProfileResponse.message.toString(),
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    override fun onErrorGetProfile(errorType: String) {
+        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
     }
 
     override fun onShowError(errorType: String) {
@@ -381,8 +467,8 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 }
 
             }
-            
-            USER_NAME_INVALID ->{
+
+            USER_NAME_INVALID -> {
                 binding.txtErrorUsername.apply {
                     visibility = View.VISIBLE
                     text = context.getString(R.string.txt_error_spc_chars)
@@ -404,6 +490,17 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 }
             }
 
+            FULL_NAMESAKE -> {
+                binding.txtErrorUsername.apply {
+                    visibility = View.VISIBLE
+                    text = context.getString(R.string.txt_error_full_name_sake)
+                }
+                binding.editUsername.apply {
+                    setBackgroundResource(R.drawable.custom_edittext_error)
+                    requestFocus()
+                }
+            }
+
             STATE_NOT_IN_LIST -> {
 
             }
@@ -416,7 +513,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
             }
         }
-
     }
 
 
@@ -481,19 +577,18 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         if (isThirtyDaysMonth(monthSelected)) {
             days = (1..30).map { it.toString() }.toMutableList()
         } else if (monthSelected == "Feb") {
-            days =
-                if (isLeapYear(yearSelected.toInt())) {
-                    (1..29).map { it.toString() }.toMutableList()
-                } else {
-                    (1..28).map { it.toString() }.toMutableList()
-                }
+            days = if (isLeapYear(yearSelected.toInt())) {
+                (1..29).map { it.toString() }.toMutableList()
+            } else {
+                (1..28).map { it.toString() }.toMutableList()
+            }
         } else {
-            if (binding.dropdownMonthText.text.toString()
+            days = if (binding.dropdownMonthText.text.toString()
                     .isNotEmpty() || binding.dropdownYearText.text.toString().isNotEmpty()
             ) {
-                days = (1..31).map { it.toString() }.toMutableList()
+                (1..31).map { it.toString() }.toMutableList()
             } else {
-                days = mutableListOf()
+                mutableListOf()
             }
         }
 
@@ -520,41 +615,21 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         ))
     }
 
-    private fun dropDownAdapter(listAdapter: ArrayList<String>): ArrayAdapter<String> {
-        return context?.let {
-            ArrayAdapter(
-                it.applicationContext,
-                R.layout.item_dropdown,
-                listAdapter
-            )
-        }!!
-    }
 
-
-    private fun handleDropDownState(countrySelected: String) {
-        if (countrySelected.isNotEmpty() && countrySelected != "None") {
-            when (countrySelected) {
-                "VietNam" -> {
-                    binding.dropdownStateText.setAdapter(dropDownAdapter(listStateVietNam))
-                    listState = listStateVietNam
-                }
-                "Korea" -> {
-                    binding.dropdownStateText.setAdapter(dropDownAdapter(listStateKorea))
-                    listState = listStateKorea
-                }
-                "Singapore" -> {
-                    binding.dropdownStateText.setAdapter(dropDownAdapter(listStateSingapore))
-                    listState = listStateSingapore
-                }
-                "Japan" -> {
-                    binding.dropdownStateText.setAdapter(dropDownAdapter(listStateJapan))
-                    listState = listStateJapan
-                }
-            }
+    private fun handleDropDownState(listDataState: ArrayList<DataState>) {
+        val listState = ArrayList<String>()
+        listDataState.forEach {
+            it.name?.let { it1 -> listState.add(it1) }
         }
 
-//        binding.dropdownStateText.inputType = EditorInfo.TYPE_NULL
 
+        arrayAdapter = context?.let {
+            ArrayAdapter(
+                it.applicationContext, R.layout.item_dropdown, listState
+            )
+        }!!
+
+        binding.dropdownStateText.setAdapter(arrayAdapter)
         binding.dropdownStateText.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
                 val inputStateText = binding.dropdownStateText.text.toString().trim()
@@ -566,17 +641,19 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         }
     }
 
-    private fun handleDropDownCountry() {
-        for (i in 1..3) {
-            listCountry.addAll(arrayListOf("Viet Nam", "Singapore", "Korea", "Japan"))
+    private fun handleDropDownCountry(listDataCountry: ArrayList<DataCountry>) {
+
+        val listCountry = ArrayList<String>()
+        listDataCountry.forEach {
+            it.name?.let { it1 -> listCountry.add(it1) }
         }
+
         arrayAdapter = context?.let {
             ArrayAdapter(
-                it.applicationContext,
-                R.layout.item_dropdown,
-                listCountry
+                it.applicationContext, R.layout.item_dropdown, listCountry
             )
         }!!
+
         binding.dropdownCountryText.setAdapter(arrayAdapter)
 //        binding.dropdownCountryText.inputType = EditorInfo.TYPE_NULL
 
@@ -594,8 +671,27 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         binding.dropdownCountryText.setOnItemClickListener { parent, view, position, id ->
             binding.dropdownStateText.text.clear()
             val countrySelected = binding.dropDownProfileCountry.editText?.text.toString()
-            handleDropDownState(countrySelected)
+            //Get Id Of Country
+            getIdCountry(countrySelected)?.let { presenter?.getStateDataPresenter(it) }
         }
+    }
+
+    private fun getIdCountry(countryName: String): Int? {
+        listDataCountry?.forEach {
+            if (countryName == it.name) {
+                return it.id
+            }
+        }
+        return 0
+    }
+
+    private fun getIdState(stateName: String): Int? {
+        listDataState?.forEach {
+            if (stateName == it.name) {
+                return it.id
+            }
+        }
+        return 0
     }
 
     private fun handleRadioButton() {

@@ -5,13 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import com.madison.move.data.model.Video
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
+import com.madison.move.data.model.country.CountryResponse
 import com.madison.move.data.model.login.LoginResponse
+import com.madison.move.data.model.state.StateResponse
+import com.madison.move.data.model.update_profile.ProfileRequest
+import com.madison.move.data.model.update_profile.UpdateProfileResponse
+import com.madison.move.data.model.user_profile.ProfileResponse
 import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.data.source.MoveDataSource
 import retrofit2.Call
 
 
 class MoveCacheDataSource : MoveDataSource {
+
 
     private val cachedMovies: SparseArray<Video> = SparseArray<Video>()
 
@@ -54,7 +60,31 @@ class MoveCacheDataSource : MoveDataSource {
         return null
     }
 
+    override fun getVideoSuggestionForUser(token: String): Call<VideoSuggestionResponse>? {
+        return null
+    }
+
+
     override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {
+        return null
+    }
+
+    override fun getUserProfile(token: String): Call<ProfileResponse>? {
+        return null
+    }
+
+    override fun getCountryData(): Call<CountryResponse>? {
+        return null
+    }
+
+    override fun getStateData(countryID: Int): Call<StateResponse>? {
+        return null
+    }
+
+    override fun updateProfileUser(
+        token: String,
+        profileRequest: ProfileRequest
+    ): Call<UpdateProfileResponse>? {
         return null
     }
 
