@@ -24,8 +24,10 @@ import com.madison.move.databinding.FragmentCommentBinding
 import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
 import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
+import kotlin.math.roundToInt
 
-open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?) : BaseFragment<CommentPresenter>(), CommentListener,CommentContract.CommentContract {
+open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?) :
+    BaseFragment<CommentPresenter>(), CommentListener, CommentContract.CommentContract {
     private lateinit var binding: FragmentCommentBinding
     lateinit var adapterComment: ListCommentAdapter
     private var listComment: MutableList<Comment> = mutableListOf()
@@ -55,56 +57,52 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
 
         currentFragment = this
 
-/*        val iframeContent =
-            "<html><body style=\"margin:0; padding:0\"><iframe src=\"https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4\" width=\"100%\" height=\"100%\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>" // Lấy nội dung iframe từ API
+        binding.apply {
+            nameUserProflie.text = dataVideoSuggestion?.username.toString()
+            tvJust.text = getString(R.string.video_category, dataVideoSuggestion?.categoryName.toString())
+            tvrateNumber.text = dataVideoSuggestion?.rating.toString()
 
-        binding.webView.getSettings().setJavaScriptEnabled(true)
-
-        binding.webView.loadData(
-            iframeContent,
-            "text/html",
-            "utf-8"
-        )*/
-
-        binding.nameUserProflie.text = dataVideoSuggestion?.username.toString()
-        binding.tvJust.text = dataVideoSuggestion?.categoryName.toString()
-        binding.tvrateNumber.text = dataVideoSuggestion?.rating.toString()
-        if (dataVideoSuggestion?.categoryName != null && dataVideoSuggestion.categoryName == "Just Move") {
-            binding.cardviewTimeLine.visibility = View.INVISIBLE
-            binding.cardviewBeginner.visibility = View.INVISIBLE
-        } else {
-            binding.cardviewTimeLine.visibility = View.VISIBLE
-            binding.cardviewBeginner.visibility = View.VISIBLE
-
-            when (dataVideoSuggestion?.level) {
-                1 -> binding.txtBeginner.text =
-                    activity?.getString(R.string.txt_level_beginner)
-                2 -> binding.txtBeginner.text =
-                    activity?.getString(R.string.txt_level_inter)
-                3 -> binding.txtBeginner.text =
-                    activity?.getString(R.string.txt_level_advanced)
+            if (dataVideoSuggestion?.rating == null) {
+                tvrateNumber.text = 0.toString()
+            } else {
+                val roundOff = (dataVideoSuggestion.rating?.times(100.0))?.roundToInt()?.div(100.0)
+                tvrateNumber.text = roundOff.toString()
             }
+            if (dataVideoSuggestion?.categoryName != null && dataVideoSuggestion.categoryName == "Just Move") {
+                cardviewTimeLine.visibility = View.INVISIBLE
+                cardviewBeginner.visibility = View.INVISIBLE
+            } else {
+                cardviewTimeLine.visibility = View.VISIBLE
+                cardviewBeginner.visibility = View.VISIBLE
 
-            when (dataVideoSuggestion?.duration) {
-                1 -> binding.txtTimeLine.text =
-                    activity?.getString(R.string.timeOfCategory)
-                2 -> binding.txtTimeLine.text =
-                    activity?.getString(R.string.duration_second)
-                3 -> binding.txtTimeLine.text =
-                    activity?.getString(R.string.duration_third)
+                when (dataVideoSuggestion?.level) {
+                    1 -> txtBeginner.text =
+                        activity?.getString(R.string.txt_level_beginner)
+                    2 -> txtBeginner.text =
+                        activity?.getString(R.string.txt_level_inter)
+                    3 -> txtBeginner.text =
+                        activity?.getString(R.string.txt_level_advanced)
+                }
+
+                when (dataVideoSuggestion?.duration) {
+                    1 -> txtTimeLine.text =
+                        activity?.getString(R.string.timeOfCategory)
+                    2 -> txtTimeLine.text =
+                        activity?.getString(R.string.duration_second)
+                    3 -> txtTimeLine.text =
+                        activity?.getString(R.string.duration_third)
+                }
             }
         }
 
-
-
-
-
         presenter?.apply {
-            getVideoDetail("Bearer 573|FFsfn3YCojvXRiF21RkYBSTLPh5XOAO7udNrZr0Y", dataVideoSuggestion?.id ?: 0)
+            getVideoDetail(
+                "Bearer 682|rKppsit3oZgeQK3jlqsUGBZTZTTECWE5J6Uh2KAH",
+                dataVideoSuggestion?.id ?: 0
+            )
         }
         return binding.root
     }
-
 
 
     override fun onBottomNavigateSystemUI() {
@@ -113,9 +111,9 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
 
     override fun onSuccessGetVideoSuggestion(videoDetailsSuggestionResponse: VideoDetailResponse) {
         val iframeContent =
-            "<html><body style=\"margin:0; padding:0\"><iframe src=\"https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4\" width=\"100%\" height=\"100%\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>" // Lấy nội dung iframe từ API
+            "<html><body style=\"margin:0; padding:0\"><iframe src=\"https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\" width=\"100%\" height=\"100%\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>" // Lấy nội dung iframe từ API
 
-//        val iframeContent2 =
+//        val iframeContent2 =https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4
 //            "<html><body style=\"margin:0; padding:0\"><iframe src=\"{${videoDetailsSuggestionResponse.posts.urlVideo}}\" width=\"100%\" height=\"100%\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>" // Lấy nội dung iframe từ API
 
         binding.webView.getSettings().setJavaScriptEnabled(true)
@@ -295,6 +293,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                                     sendButton.visibility = View.GONE
                                 }
                             }
+
                             override fun afterTextChanged(s: Editable?) {
                             }
 

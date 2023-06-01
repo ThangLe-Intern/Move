@@ -57,7 +57,7 @@
                         android:id="@+id/avart_profile"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_marginTop="23dp"
+                        android:layout_marginTop="17dp"
                         android:src="@drawable/avatar1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -67,6 +67,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
                         android:fontFamily="@font/montserrat_regular"
                         android:text="@string/nameProfile"
                         android:textColor="@color/black"
@@ -79,7 +80,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:layout_marginTop="11dp"
+                        android:layout_marginTop="2dp"
                         android:fontFamily="@font/montserrat_regular"
                         android:text="@string/video_category"
                         android:textSize="16sp"
@@ -89,7 +90,7 @@
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardview_beginner"
                         android:layout_width="@dimen/_57sdp"
-                        android:layout_height="@dimen/_16sdp"
+                        android:layout_height="@dimen/_18sdp"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="@dimen/_10sdp"
                         app:cardBackgroundColor="@color/gray"
@@ -115,32 +116,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="15dp"
-                        android:layout_marginTop="7dp"
+                        android:layout_marginTop="4dp"
                         android:src="@drawable/ic_tick"
-                        app:layout_constraintStart_toEndOf="@id/name_user_proflie"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintStart_toEndOf="@+id/name_user_proflie"
+                        app:layout_constraintTop_toTopOf="@+id/name_user_proflie"
+                        app:layout_constraintBottom_toBottomOf="@id/name_user_proflie"/>
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/img_dots"
-                        android:layout_width="4dp"
-                        android:layout_height="4dp"
-                        android:layout_marginStart="7dp"
-                        android:src="@drawable/ic_dots"
-                        app:layout_constraintStart_toEndOf="@+id/tv_just"
-                        app:layout_constraintTop_toTopOf="@+id/tv_just"
-                        app:layout_constraintEnd_toStartOf="@id/img_star"
-                        app:layout_constraintBottom_toBottomOf="@+id/tv_just"
-                        />
+
+
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/img_star"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="12dp"
                         android:src="@drawable/rate"
-                       app:layout_constraintStart_toEndOf="@id/img_dots"
-                        app:layout_constraintTop_toTopOf="@id/img_dots"
-                        app:layout_constraintBottom_toBottomOf="@id/img_dots"
+                       app:layout_constraintStart_toEndOf="@id/tv_just"
+                        app:layout_constraintTop_toTopOf="@id/tv_just"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_just"
                         app:layout_constraintEnd_toStartOf="@id/tvrateNumber"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -149,7 +142,7 @@
                         android:id="@+id/tvrateNumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="6dp"
                         android:text="@string/video_rateNumber"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@id/img_star"
@@ -161,7 +154,7 @@
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardview_time_line"
                         android:layout_width="@dimen/_57sdp"
-                        android:layout_height="@dimen/_16sdp"
+                        android:layout_height="@dimen/_18sdp"
                         android:layout_marginStart="13dp"
                         app:cardBackgroundColor="@color/gray"
                         app:cardCornerRadius="15dp"
