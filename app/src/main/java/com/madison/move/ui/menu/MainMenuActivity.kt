@@ -1,6 +1,7 @@
 package com.madison.move.ui.menu
 
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Rect
@@ -14,6 +15,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -44,6 +46,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     private var tokenUser: String? = null
     private var tokenResponse: LoginResponse? = null
     private var getSharedPreferences: SharedPreferences? = null
+    private var fragmentLogin:DialogFragment? = null
 
     companion object {
         const val TOKEN_USER_PREFERENCE = "tokenUser"
@@ -262,11 +265,12 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
     //Get Token From Server
     override fun sendData(email: String, password: String, fragment: DialogFragment) {
-        presenter?.onGetTokenPresenter(email, password, fragment)
+        presenter?.onGetTokenPresenter(email, password)
+        fragmentLogin = fragment
     }
 
     override fun onSuccessGetToken(loginResponse: LoginResponse) {
-
+        fragmentLogin?.dismiss()
         tokenResponse = loginResponse
         tokenUser = tokenResponse?.token
         dataUserLogin = tokenResponse?.dataUserLogin
@@ -336,14 +340,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         }
     }
 
-    override fun onError(error: String) {
-        Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+    override fun onError(error: String?) {
+        fragmentLogin?.view?.findViewById<RelativeLayout>(R.id.progress_main_layout)?.visibility = View.GONE
+        fragmentLogin?.view?.visibility = View.VISIBLE
+        fragmentLogin?.view?.findViewById<RelativeLayout>(R.id.layout_error_message)?.visibility = View.VISIBLE
     }
-
-
-    override fun onStop() {
-        super.onStop()
-    }
-
 
 }

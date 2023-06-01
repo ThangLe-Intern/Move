@@ -1,5 +1,6 @@
 package com.madison.move.ui.login
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -30,6 +31,8 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
     private lateinit var binding: FragmentLoginDialogBinding
     private lateinit var presenter: LoginPresenter
     var progressBar: RelativeLayout? = null
+    var progressDialog: ProgressDialog? = null
+
     companion object {
         const val EMAIL_INVALID = "EMAIL_INVALID"
         const val EMAIL_CONTAIN_SPACE = "EMAIL_CONTAIN_SPACE"
@@ -182,11 +185,14 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
 
 
     override fun onSendDataToActivity(email: String, password: String) {
-        mOnInputListener?.sendData(email,password,this)
-        this.view?.visibility = View.INVISIBLE
 
-        progressBar = activity?.findViewById(R.id.progress_main_layout)
-        progressBar?.visibility = View.VISIBLE
+        mOnInputListener?.sendData(email, password, this)
+        this.view?.visibility = View.INVISIBLE
+//        onShowProgressDialog()
+
+/*        progressBar = activity?.findViewById(R.id.progress_main_layout)
+        progressBar?.visibility = View.VISIBLE*/
+
 
     }
 
@@ -196,10 +202,24 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
 
     //Send user token from Fragment To Activity
     interface OnInputListener {
-        fun sendData(email: String, password: String,fragment: DialogFragment)
+        fun sendData(email: String, password: String, fragment: DialogFragment)
     }
 
     override fun onBottomNavigateSystemUI() {
 
     }
+
+    fun onShowProgressDialog() {
+        progressDialog = ProgressDialog(activity?.applicationContext)
+        progressDialog?.setContentView(R.layout.progress_dialog)
+        progressDialog?.setCanceledOnTouchOutside(true)
+        progressDialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        progressDialog?.show()
+    }
+
+    fun onHideProgressDialog() {
+        progressDialog?.dismiss()
+    }
+
+
 }

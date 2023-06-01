@@ -15,7 +15,7 @@ import retrofit2.Response
 
 class MenuPresenter(override var view: MainContract.View?) : MainContract.Presenter {
     private val dataManager: DataManager = DataManager.instance
-    override fun onGetTokenPresenter(email: String, password: String, fragment: DialogFragment) {
+    override fun onGetTokenPresenter(email: String, password: String) {
         dataManager.movieRepository.getTokenLogin(email, password)
             ?.enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(
@@ -23,13 +23,10 @@ class MenuPresenter(override var view: MainContract.View?) : MainContract.Presen
                 ) {
                     if (loginResponse.body() != null) {
                         view?.onSuccessGetToken(loginResponse.body()!!)
-                        fragment.dismiss()
                     }
 
                     if (loginResponse.errorBody() != null) {
-                        fragment.view?.findViewById<RelativeLayout>(R.id.progress_main_layout)?.visibility = View.GONE
-                        fragment.view?.visibility = View.VISIBLE
-                        fragment.view?.findViewById<RelativeLayout>(R.id.layout_error_message)?.visibility = View.VISIBLE
+                        view?.onError(null)
                     }
                 }
 
