@@ -6,6 +6,7 @@ import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.model.country.CountryResponse
 import com.madison.move.data.model.login.LoginResponse
+import com.madison.move.data.model.logout.LogoutResponse
 import com.madison.move.data.model.state.StateResponse
 import com.madison.move.data.model.update_profile.ProfileRequest
 import com.madison.move.data.model.update_profile.UpdateProfileResponse
@@ -30,6 +31,7 @@ interface MoveDataSource {
     fun getVideoSuggestion(): Call<VideoSuggestionResponse>?
     fun getVideoSuggestionForUser(token:String): Call<VideoSuggestionResponse>?
     fun getTokenLogin(email:String, password:String): Call<LoginResponse>?
+    fun logOutUser(token: String): Call<LogoutResponse>?
     fun getUserProfile(token: String): Call<ProfileResponse>?
     fun getCountryData(): Call<CountryResponse>?
     fun getStateData(countryID: Int):Call<StateResponse>?

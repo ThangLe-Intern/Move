@@ -4,6 +4,7 @@ import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.model.country.CountryResponse
 import com.madison.move.data.model.login.LoginResponse
+import com.madison.move.data.model.logout.LogoutResponse
 import com.madison.move.data.model.state.StateResponse
 import com.madison.move.data.model.update_profile.ProfileRequest
 import com.madison.move.data.model.update_profile.UpdateProfileResponse
@@ -37,6 +38,9 @@ interface MoveApi {
         @Query("password")
         password: String
     ): Call<LoginResponse>
+
+    @POST("logout")
+    fun logoutRequest(@Header("Authorization") authorization: String):Call<LogoutResponse>
 
     @GET("users/information")
     fun getUserProfile(@Header("Authorization") authorization: String): Call<ProfileResponse>

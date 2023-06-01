@@ -26,6 +26,7 @@ import com.madison.move.R
 import com.madison.move.data.model.User
 import com.madison.move.data.model.login.DataUserLogin
 import com.madison.move.data.model.login.LoginResponse
+import com.madison.move.data.model.logout.LogoutResponse
 import com.madison.move.databinding.ActivityMainMenuBinding
 import com.madison.move.ui.base.BaseActivity
 import com.madison.move.ui.faq.FAQFragment
@@ -190,13 +191,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 } else {
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
 
-                    //clear token when logout
-                    Toast.makeText(applicationContext, "Logout Successfully!", Toast.LENGTH_SHORT).show()
-
-                    val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
-                    settings.edit().clear().apply()
-                    tokenUser = null
-                    tokenResponse = null
+                    tokenUser?.let { token -> presenter?.logoutRequest(token) }
 
                     binding.apply {
                         menulogout.text = getString(R.string.txt_log_in)
@@ -204,22 +199,6 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                         layoutUserInfo.constraintLayout.visibility = View.GONE
                         menuTvFollowing.visibility = View.GONE
                     }
-
-                    //Reload Current Screen
-                    val currentFragment: Fragment? =
-                        supportFragmentManager.findFragmentById(R.id.content_frame_main)
-
-                    when (currentFragment) {
-                        is HomeFragment -> currentFragment.onResume()
-                        is FAQFragment -> {
-                            //Refresh Data FAQ when Logout
-                        }
-                        is ProfileFragment -> {
-                            supportFragmentManager.beginTransaction()
-                                .replace(binding.contentFrameMain.id, HomeFragment()).commit()
-                        }
-                    }
-
                 }
             }
 
@@ -319,6 +298,34 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             }
         }
 
+    }
+
+    override fun onSuccessLogout(logoutResponse: LogoutResponse) {
+        Toast.makeText(this, logoutResponse.message?: "", Toast.LENGTH_SHORT).show()
+        //clear token when logout
+        val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
+        settings.edit().clear().apply()
+        tokenUser = null
+        tokenResponse = null
+
+        //Reload Current Screen
+        val currentFragment: Fragment? =
+            supportFragmentManager.findFragmentById(R.id.content_frame_main)
+
+        when (currentFragment) {
+            is HomeFragment -> currentFragment.onResume()
+            is FAQFragment -> {
+                //Refresh Data FAQ when Logout
+            }
+            is ProfileFragment -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(binding.contentFrameMain.id, HomeFragment()).commit()
+            }
+        }
+    }
+
+    override fun onError(error: String) {
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
     }
 
 

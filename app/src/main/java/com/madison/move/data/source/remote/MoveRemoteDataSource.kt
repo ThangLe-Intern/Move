@@ -6,6 +6,7 @@ import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.model.country.CountryResponse
 import com.madison.move.data.model.login.LoginResponse
+import com.madison.move.data.model.logout.LogoutResponse
 import com.madison.move.data.model.state.StateResponse
 import com.madison.move.data.model.update_profile.ProfileRequest
 import com.madison.move.data.model.update_profile.UpdateProfileResponse
@@ -63,6 +64,10 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
 
     override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {
         return moveApi.loginApi(email, password)
+    }
+
+    override fun logOutUser(token: String): Call<LogoutResponse>? {
+        return moveApi.logoutRequest(token)
     }
 
     override fun getUserProfile(token: String): Call<ProfileResponse>? {

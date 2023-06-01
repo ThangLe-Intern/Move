@@ -7,6 +7,7 @@ import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.category.CategoryResponse
 import com.madison.move.data.model.country.CountryResponse
 import com.madison.move.data.model.login.LoginResponse
+import com.madison.move.data.model.logout.LogoutResponse
 import com.madison.move.data.model.state.StateResponse
 import com.madison.move.data.model.update_profile.ProfileRequest
 import com.madison.move.data.model.update_profile.UpdateProfileResponse
@@ -66,6 +67,10 @@ class MoveCacheDataSource : MoveDataSource {
 
 
     override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {
+        return null
+    }
+
+    override fun logOutUser(token: String): Call<LogoutResponse>? {
         return null
     }
 
