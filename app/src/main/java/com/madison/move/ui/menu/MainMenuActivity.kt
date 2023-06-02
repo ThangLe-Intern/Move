@@ -66,8 +66,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     override fun onCreate(savedInstanceState: Bundle?) {
 
         //clear token when re-launch app
-        val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
-        settings.edit().clear().apply()
+        onClearPreferences()
 
         mainMenuBinding = ActivityMainMenuBinding.inflate(layoutInflater)
         setContentView(mainMenuBinding.root)
@@ -75,9 +74,15 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
         mainMenuBinding.menuTvBrowse.setOnClickListener {
             mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
-            onShowProgressDialog()
-        }
+//            onShowProgressDialog()
 
+            if (isDeviceOnline(this)) {
+                Toast.makeText(this, "You are Online", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, " No internet Connection ", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
     }
 
     override fun onResume() {
@@ -144,13 +149,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     }
 
     //Check Device On Connection Internet or Not
-    fun isDeviceOnline(context: Context): Boolean {
+    private fun isDeviceOnline(context: Context): Boolean {
         val connMgr = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connMgr.activeNetworkInfo
-        val isOnline = networkInfo != null && networkInfo.isConnected
-        if (!isOnline) Toast.makeText(context, " No internet Connection ", Toast.LENGTH_SHORT)
-            .show()
-        return isOnline
+        return networkInfo != null && networkInfo.isConnected
     }
 
 
@@ -341,10 +343,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     override fun onSuccessLogout(logoutResponse: LogoutResponse) {
         Toast.makeText(this, logoutResponse.message ?: "", Toast.LENGTH_SHORT).show()
         //clear token when logout
-        val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
-        settings.edit().clear().apply()
-        tokenUser = null
-        tokenResponse = null
+        onClearPreferences()
 
         //Reload Current Screen
         onReload()
@@ -376,6 +375,13 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
     fun onHideProgressDialog() {
         progressDialog?.dismiss()
+    }
+
+    fun onClearPreferences(){
+        val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
+        settings.edit().clear().apply()
+        tokenUser = null
+        tokenResponse = null
     }
 
 
