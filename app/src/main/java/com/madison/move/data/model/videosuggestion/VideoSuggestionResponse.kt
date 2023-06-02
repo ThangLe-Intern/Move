@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 data class VideoSuggestionResponse(
     @Expose
     @SerializedName("data")
-    val videoSuggestion: VideoSuggestion,
+    val videoSuggestion: VideoSuggestion?,
     @Expose
     @SerializedName("status_code")
-    val statusCode: Int,
+    val statusCode: Int?,
     @Expose
     @SerializedName("success")
-    val success: Boolean
+    val success: Boolean?
 )

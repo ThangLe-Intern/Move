@@ -40,7 +40,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     private var handler: Handler = Handler(Looper.getMainLooper())
 
     private var getSharedPreferences: SharedPreferences? = null
-    var videoCarouselData: ArrayList<DataVideoCarousel> = arrayListOf()
+    var videoCarouselData: ArrayList<DataVideoSuggestion> = arrayListOf()
     var featuredList: ArrayList<FeaturedFragment> = arrayListOf()
     var categoryList: ArrayList<DataCategory> = arrayListOf()
     var videoList: ArrayList<DataVideoSuggestion> = arrayListOf()
@@ -140,13 +140,13 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     override fun onSuccessVideoSuggestionData(videoSuggestionResponse: VideoSuggestionResponse) {
         isGetVideoSuggestionSuccess = true
-        videoList = videoSuggestionResponse.videoSuggestion.data as ArrayList<DataVideoSuggestion>
+        videoList = videoSuggestionResponse.videoSuggestion?.data as ArrayList<DataVideoSuggestion>
         presenter?.onShowVideoSuggestionPresenter(videoList)
     }
 
     override fun onSuccessVideoSuggestionForUser(videoSuggestionResponse: VideoSuggestionResponse) {
         isGetVideoSuggestionSuccess = true
-        videoList = videoSuggestionResponse.videoSuggestion.data as ArrayList<DataVideoSuggestion>
+        videoList = videoSuggestionResponse.videoSuggestion?.data as ArrayList<DataVideoSuggestion>
         presenter?.onShowVideoSuggestionPresenter(videoList)
     }
 
@@ -161,7 +161,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     //Show Video To Carousel
     override fun onShowFeaturedCarousel(
         featuredFragmentList: ArrayList<FeaturedFragment>,
-        videoCarouselData: ArrayList<DataVideoCarousel>
+        videoCarouselData: ArrayList<DataVideoSuggestion>
     ) {
         handler = Handler(Looper.myLooper()!!)
         carouselViewPagerAdapter = CarouselViewPagerAdapter(

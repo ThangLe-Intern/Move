@@ -14,12 +14,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
+import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.github.drjacky.imagepicker.ImagePicker
 import com.github.drjacky.imagepicker.constant.ImageProvider
@@ -35,6 +39,7 @@ import com.madison.move.data.model.user_profile.DataUser
 import com.madison.move.data.model.user_profile.ProfileResponse
 import com.madison.move.databinding.FragmentProfileBinding
 import com.madison.move.ui.base.BaseFragment
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.awaitCancellation
 import java.text.SimpleDateFormat
 import java.time.Year
@@ -113,13 +118,16 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         //Get Data From Server
         presenter?.apply {
             getCountryDataPresenter()
-            getProfileUserDataPresenter(tokenUser.toString())
+            getProfileUserDataPresenter(tokenUser ?: "")
         }
 
 
         //Enable Button Setting when All Field are Fill
         binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
+
         binding.saveSettingBtn.setOnClickListener {
+            progressBar = activity?.findViewById(R.id.progress_main_layout)
+            progressBar?.visibility = View.VISIBLE
             tokenUser?.let { token ->
                 presenter?.onSaveProfileClickPresenter(
                     token, getNewProfile()
@@ -248,10 +256,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                         return binding.editProfileFullName.setText(nameText.dropLast(1))
                     }
                 }
-
-
-                //
-
                 //Handle Input City From User
                 val cityText = binding.editProfileCity.text.toString()
                 val matches = arrayOf("  ", "..", ",,", "--", " ,", " .", "- -", "//", " /", "/ ")
@@ -407,6 +411,28 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         if (userData != null && listDataCountry != null) {
             userData?.let { setUserData(it) }
         }
+
+
+        if (binding.txtErrorUsername.visibility != View.VISIBLE) {
+            val layoutUserMenuInfo =
+                activity?.findViewById<LinearLayoutCompat>(R.id.layout_user_info)
+            val userMenuInfo = layoutUserMenuInfo?.findViewById<LinearLayout>(R.id.constraintLayout)
+            val userImage: CircleImageView? = userMenuInfo?.findViewById(R.id.img_menu_user_avatar)
+            val userName: AppCompatTextView? = userMenuInfo?.findViewById(R.id.txt_username_navbar)
+
+            userName?.text = userData?.username
+/*            val drawable = binding.imgProfileUser.drawable
+            userImage?.setImageDrawable(drawable)*/
+
+            if (userData?.img != null) {
+                if (userImage != null) {
+                    Glide.with(this).load(userData?.img).into(userImage)
+                }
+            } else {
+                userImage?.setImageResource(R.drawable.avatar)
+            }
+        }
+
     }
 
     override fun onSuccessGetCountryData(countryResponse: CountryResponse) {
@@ -418,8 +444,8 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         if (userData != null && listDataCountry != null) {
             userData?.let { setUserData(it) }
         }
-
         progressBar?.visibility = View.GONE
+
     }
 
     override fun onSuccessGetStateData(stateResponse: StateResponse) {
@@ -443,11 +469,13 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         binding.txtErrorFullName.visibility = View.GONE
         binding.txtErrorFullName.focusable = View.FOCUSABLE
         onResume()
+
         Toast.makeText(
             activity?.applicationContext,
             updateProfileResponse.message.toString(),
             Toast.LENGTH_SHORT
         ).show()
+
     }
 
     override fun onErrorGetProfile(errorType: String) {
@@ -510,6 +538,8 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                     setBackgroundResource(R.drawable.custom_edittext_error)
                     requestFocus()
                 }
+                progressBar?.visibility = View.GONE
+
             }
 
             STATE_NOT_IN_LIST -> {

@@ -1,10 +1,12 @@
 package com.madison.move.ui.menu
 
 
-import android.app.ProgressDialog
+import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.os.Build
@@ -12,6 +14,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
@@ -46,7 +49,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     private var tokenUser: String? = null
     private var tokenResponse: LoginResponse? = null
     private var getSharedPreferences: SharedPreferences? = null
-    private var fragmentLogin:DialogFragment? = null
+    private var fragmentLogin: DialogFragment? = null
+    var progressDialog: Dialog? = null
 
     companion object {
         const val TOKEN_USER_PREFERENCE = "tokenUser"
@@ -65,6 +69,11 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         mainMenuBinding = ActivityMainMenuBinding.inflate(layoutInflater)
         setContentView(mainMenuBinding.root)
         super.onCreate(savedInstanceState)
+
+        mainMenuBinding.menuTvBrowse.setOnClickListener {
+            mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
+            onShowProgressDialog()
+        }
 
     }
 
@@ -148,9 +157,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 mainMenuBinding.groupItemChild.visibility = View.VISIBLE
             }
         }
-        mainMenuBinding.menuTvFollowing.setOnClickListener {
-            recreate()
-        }
+
+//        mainMenuBinding.menuTvFollowing.setOnClickListener {
+//            recreate()
+//        }
 
         val imgViewClose: ImageView = findViewById(R.id.imgclose)
         imgViewClose.setOnClickListener {
@@ -162,6 +172,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
 
     }
+
     override fun listener() {
 
         mainMenuBinding.layoutUserInfo.constraintLayout.setOnClickListener {
@@ -292,6 +303,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             if (dataUserLogin?.img != null) {
                 Glide.with(this@MainMenuActivity).load(dataUserLogin?.img)
                     .into(mainMenuBinding.layoutUserInfo.imgMenuUserAvatar)
+            } else {
+                mainMenuBinding.layoutUserInfo.imgMenuUserAvatar.setImageResource(R.drawable.avatar)
             }
 
             if (dataUserLogin?.kol == 0) {
@@ -317,7 +330,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     }
 
     override fun onSuccessLogout(logoutResponse: LogoutResponse) {
-        Toast.makeText(this, logoutResponse.message?: "", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, logoutResponse.message ?: "", Toast.LENGTH_SHORT).show()
         //clear token when logout
         val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
         settings.edit().clear().apply()
@@ -341,9 +354,32 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     }
 
     override fun onError(error: String?) {
-        fragmentLogin?.view?.findViewById<RelativeLayout>(R.id.progress_main_layout)?.visibility = View.GONE
+        fragmentLogin?.view?.findViewById<RelativeLayout>(R.id.progress_main_layout)?.visibility =
+            View.GONE
         fragmentLogin?.view?.visibility = View.VISIBLE
-        fragmentLogin?.view?.findViewById<RelativeLayout>(R.id.layout_error_message)?.visibility = View.VISIBLE
+        fragmentLogin?.view?.findViewById<RelativeLayout>(R.id.layout_error_message)?.visibility =
+            View.VISIBLE
     }
+
+
+    fun onShowProgressDialog() {
+
+        progressDialog = Dialog(this)
+
+        progressDialog?.setContentView(R.layout.progress_dialog)
+        progressDialog?.setCanceledOnTouchOutside(false)
+        progressDialog?.window?.apply {
+            setLayout(
+                WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT
+            )
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        }
+        progressDialog?.show()
+    }
+
+    fun onHideProgressDialog() {
+        progressDialog?.dismiss()
+    }
+
 
 }

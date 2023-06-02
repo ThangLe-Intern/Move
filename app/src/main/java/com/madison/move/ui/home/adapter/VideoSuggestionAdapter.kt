@@ -53,8 +53,8 @@ class VideoSuggestionAdapter(
 
 
             if (video.categoryName != null && video.categoryName == "Just Move") {
-                binding.cardViewVideoSuggestionDuration.visibility = View.INVISIBLE
-                binding.cardViewVideoSuggestionUserLevel.visibility = View.INVISIBLE
+                binding.cardViewVideoSuggestionDuration.visibility = View.GONE
+                binding.cardViewVideoSuggestionUserLevel.visibility = View.GONE
             } else {
                 binding.cardViewVideoSuggestionDuration.visibility = View.VISIBLE
                 binding.cardViewVideoSuggestionUserLevel.visibility = View.VISIBLE

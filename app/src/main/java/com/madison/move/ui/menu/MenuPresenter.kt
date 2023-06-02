@@ -1,11 +1,5 @@
 package com.madison.move.ui.menu
 
-import android.util.Log
-import android.view.View
-import android.widget.RelativeLayout
-import android.widget.Toast
-import androidx.fragment.app.DialogFragment
-import com.madison.move.R
 import com.madison.move.data.DataManager
 import com.madison.move.data.model.login.LoginResponse
 import com.madison.move.data.model.logout.LogoutResponse
