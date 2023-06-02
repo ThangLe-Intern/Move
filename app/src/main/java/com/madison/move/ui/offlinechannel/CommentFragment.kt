@@ -2,7 +2,6 @@ package com.madison.move.ui.offlinechannel
 
 import android.app.Activity
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.Fragment
@@ -26,10 +26,12 @@ import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
 open class CommentFragment : Fragment(), CommentListener {
     private lateinit var binding: FragmentCommentBinding
     lateinit var adapterComment: ListCommentAdapter
-    private var listComment: MutableList<Comment> = mutableListOf()
+    private var listComment:MutableList<Comment> = mutableListOf()
 
     private var currentFragment: Fragment? = null
     private lateinit var handler: Handler
+
+    private var isLoading = false
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,13 +41,15 @@ open class CommentFragment : Fragment(), CommentListener {
         binding = FragmentCommentBinding.inflate(inflater, container, false)
 
         val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
-        userComment(
-            binding.cancelButton,
-            binding.sendButton,
-            binding.edtUserComment,
-            listComment,
-            user4
-        )
+        listComment?.let {
+            userComment(
+                binding.cancelButton,
+                binding.sendButton,
+                binding.edtUserComment,
+                it,
+                user4
+            )
+        }
         handler = Handler(Looper.getMainLooper())
 
         currentFragment = this
@@ -62,6 +66,11 @@ open class CommentFragment : Fragment(), CommentListener {
         )
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initScrollListener()
     }
 
     override fun onBackPressed() {
@@ -272,7 +281,7 @@ open class CommentFragment : Fragment(), CommentListener {
                         )
 
                         for (i in listCommentReply) {
-                            Log.d("DUNG", i.content)
+                            i.content?.let { it1 -> Log.d("DUNG", it1) }
                         }
 
                         var adapterReply = ListReplyAdapter(listCommentReply)
@@ -322,7 +331,7 @@ open class CommentFragment : Fragment(), CommentListener {
         val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
 
 
-        listComment.add(
+        listComment?.add(
             Comment(
                 1, "DSMLMFLSKEMFKLM", "Just now",
                 mutableListOf(
@@ -334,9 +343,56 @@ open class CommentFragment : Fragment(), CommentListener {
             )
         )
 
-        listComment.add(Comment(2, "ALO SONDASDK", "Just now", mutableListOf(), user2))
-        listComment.add(Comment(3, "KAMAVINGAR HALANDES", "Just now", mutableListOf(), user3))
-        listComment.add(Comment(4, "SDASDESADASD", "Just now", mutableListOf(), user4))
+        listComment?.add(Comment(2, "ALO SONDASDK", "Just now", mutableListOf(), user2))
+        listComment?.add(Comment(3, "KAMAVINGAR HALANDES", "Just now", mutableListOf(), user3))
+        listComment?.add(Comment(4, "SDASDESADASD", "Just now", mutableListOf(), user4))
+
+
+    }
+
+    private fun initScrollListener() {
+        binding.listComment.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged( recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                if (!isLoading) {
+                    //Nếu item cuối cùng của layout = với giá trị cuối của recycleView thì ta gọi hàm LoadMore
+                    if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == listComment.size-1) {
+                        //bottom of list!
+                        loadMore()
+                        isLoading = true
+                    }
+                }
+            }
+        })
+    }
+
+    private fun loadMore() {
+        val user1 = DataModelComment(R.drawable.avatar, "Vu Dung", false)
+
+        val handler = Handler()
+        handler.postDelayed({
+            listComment.removeAt(listComment.size - 1)
+            val scrollPosition: Int = listComment.size
+            adapterComment.notifyItemRemoved(scrollPosition)
+            var currentSize = scrollPosition
+            val nextLimit = currentSize + 10
+            while (currentSize - 1 < nextLimit) {
+                listComment.add(Comment(
+                    1, "${currentSize}", "Just now",
+                    mutableListOf(
+                        Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1)
+                    ), user1
+                ))
+                currentSize++
+            }
+            adapterComment.notifyDataSetChanged()
+            isLoading = false
+        }, 5000)
 
 
     }
