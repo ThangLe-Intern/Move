@@ -415,7 +415,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             val userMenuInfo = layoutUserMenuInfo?.findViewById<LinearLayout>(R.id.constraintLayout)
             val userImage: CircleImageView? = userMenuInfo?.findViewById(R.id.img_menu_user_avatar)
             val userName: AppCompatTextView? = userMenuInfo?.findViewById(R.id.txt_username_navbar)
-
+            val userTick:ImageView? = userMenuInfo?.findViewById(R.id.img_blue_tick_navbar)
             userName?.text = userData?.username
 /*            val drawable = binding.imgProfileUser.drawable
             userImage?.setImageDrawable(drawable)*/
@@ -427,6 +427,14 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             } else {
                 userImage?.setImageResource(R.drawable.avatar)
             }
+
+            if (userData?.kol == 0){
+                userTick?.visibility = View.GONE
+            }else{
+                userTick?.visibility = View.VISIBLE
+            }
+
+
         }
 
     }

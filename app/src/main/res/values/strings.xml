@@ -133,9 +133,10 @@
     <string name="txt_level_inter">Intermediate</string>
     <string name="txt_level_advanced">Advanced</string>
     <string name="count_view">%s views</string>
-    <string name="video_post_time">%s • %s days ago</string>
+    <string name="video_post_time">• %s days ago</string>
     <string name="txt_error_full_name_sake">Username already exists, Please enter another username!</string>
     <string name="loading">Loading…</string>
+    <string name="a_day_ago">A day ago</string>
 
 
 </resources>

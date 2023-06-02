@@ -28,10 +28,12 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
+import com.google.gson.Gson
 import com.madison.move.R
 import com.madison.move.data.model.login.DataUserLogin
 import com.madison.move.data.model.login.LoginResponse
 import com.madison.move.data.model.logout.LogoutResponse
+import com.madison.move.data.model.user_profile.DataUser
 import com.madison.move.databinding.ActivityMainMenuBinding
 import com.madison.move.ui.base.BaseActivity
 import com.madison.move.ui.faq.FAQFragment
@@ -51,10 +53,12 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     private var getSharedPreferences: SharedPreferences? = null
     private var fragmentLogin: DialogFragment? = null
     var progressDialog: Dialog? = null
+    val gson = Gson()
 
     companion object {
         const val TOKEN_USER_PREFERENCE = "tokenUser"
         const val TOKEN = "token"
+        const val USER_DATA = "user"
     }
 
     override fun createPresenter(): MenuPresenter = MenuPresenter(this)
@@ -92,12 +96,22 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 menuTvFollowing.visibility = View.GONE
             }
         } else {
+
+            val jsonUser = getSharedPreferences?.getString(USER_DATA, null)
+            val user = gson.fromJson(jsonUser, DataUserLogin::class.java)
+
             mainMenuBinding.apply {
                 menulogout.text = getString(R.string.txt_log_out)
                 menuTvSettting.visibility = View.VISIBLE
                 layoutUserInfo.constraintLayout.visibility = View.VISIBLE
-                layoutUserInfo.txtUsernameNavbar.text = dataUserLogin?.username
                 menuTvFollowing.visibility = View.VISIBLE
+                layoutUserInfo.txtUsernameNavbar.text = user?.username
+                if (user.img != null) {
+                    Glide.with(this@MainMenuActivity).load(user.img)
+                        .into(mainMenuBinding.layoutUserInfo.imgMenuUserAvatar)
+                } else {
+                    mainMenuBinding.layoutUserInfo.imgMenuUserAvatar.setImageResource(R.drawable.avatar)
+                }
             }
         }
     }
@@ -290,8 +304,17 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
         //Set Data to Preferences
         val sharedPreferences = getSharedPreferences(TOKEN_USER_PREFERENCE, MODE_PRIVATE)
-        sharedPreferences?.edit()?.putString(TOKEN, tokenUser.toString())?.apply()
+        val gson = Gson()
+        val dataUserLoginString = gson.toJson(dataUserLogin)
 
+        with(sharedPreferences.edit()) {
+            putString(TOKEN, tokenUser)
+            putString(USER_DATA, dataUserLoginString)
+            apply()
+        }
+
+
+        //Change menu bar
         mainMenuBinding.apply {
             menulogout.text = getString(R.string.txt_log_out)
             menuTvSettting.visibility = View.VISIBLE
@@ -362,7 +385,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     }
 
 
-    fun onShowProgressDialog() {
+    private fun onShowProgressDialog() {
 
         progressDialog = Dialog(this)
 

@@ -23,11 +23,11 @@ class VideoSuggestionAdapter(
 
             binding.apply {
                 txtVideoSuggestionUsername.text = video.username
-                txtVideoSuggestionCategory.text = activity.getString(
+                txtVideoSuggestionUploadTime.text = activity.getString(
                     R.string.video_post_time,
-                    video.categoryName.toString(),
                     video.postedDayAgo.toString()
                 )
+                txtVideoSuggestionCategory.text = video.categoryName
                 txtTitleOfVideoSuggestion.text = video.title
                 txtVideoSuggestionView.text = video.totalView.toString()
             }
