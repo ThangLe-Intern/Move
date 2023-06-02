@@ -24,10 +24,20 @@ class CarouselViewPagerAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    var onClickVideoCarousel : ListenerCarouselVideo ?= null
+
+    fun onClick(onClickCarousel: ListenerCarouselVideo){
+        this.onClickVideoCarousel = onClickCarousel
+    }
+
     inner class ViewHolder(val binding: FragmentFeaturedBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(fragment: FeaturedFragment, videoCarousel: DataVideoSuggestion) {
             binding.apply {
+                layoutFeatureFragment.setOnClickListener {
+                    onClickVideoCarousel?.onClickVideoCarousel(videoCarousel)
+                }
+
                 txtFeatureUsername.text = videoCarousel.username
                 txtFeatureVideoTitle.text = videoCarousel.title
                 txtViewCount.text = videoCarousel.countView.toString()
@@ -74,15 +84,6 @@ class CarouselViewPagerAdapter(
 
 
 
-            binding.layoutFeatureFragment.setOnClickListener {
-                    val activity: AppCompatActivity = it.context as AppCompatActivity
-                    val commentFragment = CommentFragment(null)
-                    activity.supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.content_frame_main, commentFragment)
-                        .commit()
-
-                }
         }
     }
 
@@ -111,5 +112,9 @@ class CarouselViewPagerAdapter(
         listFragment.addAll(listFragment)
         videoCarouselData.addAll(videoCarouselData)
         notifyDataSetChanged()
+    }
+
+    interface ListenerCarouselVideo{
+        fun onClickVideoCarousel(dataVideoCarousel: DataVideoSuggestion)
     }
 }

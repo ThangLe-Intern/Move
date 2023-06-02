@@ -17,7 +17,9 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.madison.move.R
+import com.madison.move.data.model.carousel.DataVideoCarousel
 import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentCommentBinding
@@ -26,7 +28,8 @@ import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
 import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
 import kotlin.math.roundToInt
 
-open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?) :
+open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?,
+                            private val dataVideoCarousel: DataVideoSuggestion?) :
     BaseFragment<CommentPresenter>(), CommentListener, CommentContract.CommentContract {
     private lateinit var binding: FragmentCommentBinding
     lateinit var adapterComment: ListCommentAdapter
@@ -56,9 +59,59 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         currentFragment = this
 
         binding.apply {
+
+            nameUserProflie.text = dataVideoCarousel?.username.toString()
+            tvJust.text = getString(R.string.video_category, dataVideoCarousel?.categoryName.toString())
+            tvrateNumber.text = dataVideoCarousel?.rating.toString()
+
+            if (dataVideoCarousel?.img != null) {
+                activity?.let { Glide.with(it).load(dataVideoCarousel.img).into(avartProfile) }
+            } else {
+                avartProfile.setImageResource(R.drawable.avatar)
+            }
+
+            if (dataVideoCarousel?.rating == null) {
+                tvrateNumber.text = 0.toString()
+            } else {
+                val roundOff = (dataVideoCarousel.rating?.times(100.0))?.roundToInt()?.div(100.0)
+                tvrateNumber.text = roundOff.toString()
+            }
+            if (dataVideoCarousel?.categoryName != null && dataVideoCarousel.categoryName == "Just Move") {
+                cardviewTimeLine.visibility = View.INVISIBLE
+                cardviewBeginner.visibility = View.INVISIBLE
+            } else {
+                cardviewTimeLine.visibility = View.VISIBLE
+                cardviewBeginner.visibility = View.VISIBLE
+
+                when (dataVideoCarousel?.level) {
+                    1 -> txtBeginner.text =
+                        activity?.getString(R.string.txt_level_beginner)
+                    2 -> txtBeginner.text =
+                        activity?.getString(R.string.txt_level_inter)
+                    3 -> txtBeginner.text =
+                        activity?.getString(R.string.txt_level_advanced)
+                }
+
+                when (dataVideoCarousel?.duration) {
+                    1 -> txtTimeLine.text =
+                        activity?.getString(R.string.timeOfCategory)
+                    2 -> txtTimeLine.text =
+                        activity?.getString(R.string.duration_second)
+                    3 -> txtTimeLine.text =
+                        activity?.getString(R.string.duration_third)
+                }
+            }
+
+
             nameUserProflie.text = dataVideoSuggestion?.username.toString()
             tvJust.text = getString(R.string.video_category, dataVideoSuggestion?.categoryName.toString())
             tvrateNumber.text = dataVideoSuggestion?.rating.toString()
+
+            if (dataVideoSuggestion?.img != null) {
+                activity?.let { Glide.with(it).load(dataVideoSuggestion.img).into(avartProfile) }
+            } else {
+                avartProfile.setImageResource(R.drawable.avatar)
+            }
 
             if (dataVideoSuggestion?.rating == null) {
                 tvrateNumber.text = 0.toString()

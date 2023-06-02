@@ -108,7 +108,6 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
 
-
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -116,6 +115,18 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
                 handler.postDelayed(runnable, 3000)
             }
         })
+
+        carouselViewPagerAdapter.onClickVideoCarousel = object  : CarouselViewPagerAdapter.ListenerCarouselVideo{
+            override fun onClickVideoCarousel(dataVideoCarousel: DataVideoSuggestion) {
+                val activity: AppCompatActivity = context as AppCompatActivity
+                val commentFragment = CommentFragment(dataVideoCarousel,null)
+                activity.supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.content_frame_main, commentFragment)
+                    .commit()
+            }
+
+        }
 
 
     }
@@ -158,7 +169,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         videoSuggestionAdapter.onClickVideo = object : VideoSuggestionAdapter.ListenerVideoSuggestion{
             override fun onClickVideoSuggest(dataVideoSuggestion: DataVideoSuggestion) {
                 val activity: AppCompatActivity = requireActivity() as AppCompatActivity
-                val commentFragment = CommentFragment(dataVideoSuggestion)
+                val commentFragment = CommentFragment(dataVideoSuggestion,null)
                 activity.supportFragmentManager.beginTransaction().replace(R.id.content_frame_main,commentFragment).commit()
             }
 
