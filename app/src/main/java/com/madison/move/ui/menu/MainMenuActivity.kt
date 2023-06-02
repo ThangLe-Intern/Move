@@ -33,7 +33,6 @@ import com.madison.move.R
 import com.madison.move.data.model.login.DataUserLogin
 import com.madison.move.data.model.login.LoginResponse
 import com.madison.move.data.model.logout.LogoutResponse
-import com.madison.move.data.model.user_profile.DataUser
 import com.madison.move.databinding.ActivityMainMenuBinding
 import com.madison.move.ui.base.BaseActivity
 import com.madison.move.ui.faq.FAQFragment
@@ -89,29 +88,57 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
         //If token null show menu of login -- if not null show menu logout
         if (tokenUser == null) {
-            mainMenuBinding.apply {
-                menulogout.text = getString(R.string.txt_log_in)
-                menuTvSettting.visibility = View.GONE
-                layoutUserInfo.constraintLayout.visibility = View.GONE
-                menuTvFollowing.visibility = View.GONE
-            }
+            onLogout()
         } else {
+            onLogin()
+        }
+    }
 
-            val jsonUser = getSharedPreferences?.getString(USER_DATA, null)
-            val user = gson.fromJson(jsonUser, DataUserLogin::class.java)
+    private fun onLogin() {
+        val jsonUser = getSharedPreferences?.getString(USER_DATA, null)
+        val user = gson.fromJson(jsonUser, DataUserLogin::class.java)
 
-            mainMenuBinding.apply {
-                menulogout.text = getString(R.string.txt_log_out)
-                menuTvSettting.visibility = View.VISIBLE
-                layoutUserInfo.constraintLayout.visibility = View.VISIBLE
-                menuTvFollowing.visibility = View.VISIBLE
-                layoutUserInfo.txtUsernameNavbar.text = user?.username
-                if (user.img != null) {
-                    Glide.with(this@MainMenuActivity).load(user.img)
-                        .into(mainMenuBinding.layoutUserInfo.imgMenuUserAvatar)
-                } else {
-                    mainMenuBinding.layoutUserInfo.imgMenuUserAvatar.setImageResource(R.drawable.avatar)
-                }
+        mainMenuBinding.apply {
+            menulogout.text = getString(R.string.txt_log_out)
+            menuTvSettting.visibility = View.VISIBLE
+            layoutUserInfo.constraintLayout.visibility = View.VISIBLE
+            menuTvFollowing.visibility = View.VISIBLE
+            layoutUserInfo.txtUsernameNavbar.text = user?.username
+
+            if (user.img != null) {
+                Glide.with(this@MainMenuActivity).load(user.img)
+                    .into(mainMenuBinding.layoutUserInfo.imgMenuUserAvatar)
+            } else {
+                mainMenuBinding.layoutUserInfo.imgMenuUserAvatar.setImageResource(R.drawable.avatar)
+            }
+
+            mainMenuBinding.layoutUserInfo.imgBlueTickNavbar.isVisible = user?.kol != 0
+
+        }
+    }
+
+    private fun onLogout() {
+        mainMenuBinding.apply {
+            menulogout.text = getString(R.string.txt_log_in)
+            menuTvSettting.visibility = View.GONE
+            layoutUserInfo.constraintLayout.visibility = View.GONE
+            menuTvFollowing.visibility = View.GONE
+        }
+    }
+
+    private fun onReload() {
+        //Reload Current Screen
+        val currentFragment: Fragment? =
+            supportFragmentManager.findFragmentById(R.id.content_frame_main)
+
+        when (currentFragment) {
+            is HomeFragment -> currentFragment.onResume()
+            is FAQFragment -> {
+                //Refresh Data FAQ when Logout
+            }
+            is ProfileFragment -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
             }
         }
     }
@@ -164,10 +191,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             if (!isImageChanged && mainMenuBinding.groupItemChild.visibility == View.VISIBLE) {
                 mainMenuBinding.groupItemChild.visibility = View.GONE
                 mainMenuBinding.imgdown.setImageDrawable(originalImage)
-                isImageChanged = true
             } else {
                 mainMenuBinding.imgdown.setImageDrawable(newImage)
-                isImageChanged = false
                 mainMenuBinding.groupItemChild.visibility = View.VISIBLE
             }
         }
@@ -232,13 +257,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                     mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
 
                     tokenUser?.let { token -> presenter?.logoutRequest(token) }
+                    onLogout()
 
-                    mainMenuBinding.apply {
-                        menulogout.text = getString(R.string.txt_log_in)
-                        menuTvSettting.visibility = View.GONE
-                        layoutUserInfo.constraintLayout.visibility = View.GONE
-                        menuTvFollowing.visibility = View.GONE
-                    }
                 }
             }
 
@@ -313,42 +333,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             apply()
         }
 
-
-        //Change menu bar
-        mainMenuBinding.apply {
-            menulogout.text = getString(R.string.txt_log_out)
-            menuTvSettting.visibility = View.VISIBLE
-            menuTvFollowing.visibility = View.VISIBLE
-            layoutUserInfo.constraintLayout.visibility = View.VISIBLE
-
-            //Set User Information To Menu
-            layoutUserInfo.txtUsernameNavbar.text = dataUserLogin?.username.toString()
-            if (dataUserLogin?.img != null) {
-                Glide.with(this@MainMenuActivity).load(dataUserLogin?.img)
-                    .into(mainMenuBinding.layoutUserInfo.imgMenuUserAvatar)
-            } else {
-                mainMenuBinding.layoutUserInfo.imgMenuUserAvatar.setImageResource(R.drawable.avatar)
-            }
-
-            if (dataUserLogin?.kol == 0) {
-                mainMenuBinding.layoutUserInfo.imgBlueTickNavbar.isVisible = false
-            }
-        }
-
-        //Reload Current Screen
-        val currentFragment: Fragment? =
-            supportFragmentManager.findFragmentById(R.id.content_frame_main)
-
-        when (currentFragment) {
-            is HomeFragment -> currentFragment.onResume()
-            is FAQFragment -> {
-                //Refresh Data FAQ when Logout
-            }
-            is ProfileFragment -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
-            }
-        }
+        onLogin()
+        onReload()
 
     }
 
@@ -361,19 +347,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         tokenResponse = null
 
         //Reload Current Screen
-        val currentFragment: Fragment? =
-            supportFragmentManager.findFragmentById(R.id.content_frame_main)
-
-        when (currentFragment) {
-            is HomeFragment -> currentFragment.onResume()
-            is FAQFragment -> {
-                //Refresh Data FAQ when Logout
-            }
-            is ProfileFragment -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
-            }
-        }
+        onReload()
     }
 
     override fun onError(error: String?) {
