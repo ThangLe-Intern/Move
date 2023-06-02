@@ -15,7 +15,7 @@ interface HomeContract {
 
         fun onShowFeaturedCarousel(
             featuredFragmentList: ArrayList<FeaturedFragment>,
-            videoCarouselData: ArrayList<DataVideoCarousel>
+            videoCarouselData: ArrayList<DataVideoSuggestion>
         )
 
         fun onCarouselTransformer()
@@ -31,7 +31,7 @@ interface HomeContract {
     interface Presenter : BasePresenter<HomeView> {
         fun onShowFeaturedCarouselPresenter(
             fragmentFeaturedList: ArrayList<FeaturedFragment>,
-            videoCarouselData: ArrayList<DataVideoCarousel>
+            videoCarouselData: ArrayList<DataVideoSuggestion>
         )
 
         fun onShowCategoryPresenter(listCategory: ArrayList<DataCategory>)

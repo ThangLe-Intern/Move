@@ -126,7 +126,7 @@
     <string name="txt_required">*</string>
     <string name="txt_pls_enter_password">Please enter password!</string>
     <string name="txt_pls_enter_email">Please enter email!</string>
-    <string name="error_user_name">Username contains at least 4 chars and maximum 25 chars</string>
+    <string name="error_user_name">Username must be 4–25 characters and contain both numbers and letters</string>
     <string name="txt_error_spc_chars">Username cannot contain special character &#38; whitespace</string>
     <string name="txt_error_contains_alpnum">Username must contain alphanumeric characters</string>
     <string name="txt_level_beginner">Beginner</string>
@@ -135,6 +135,7 @@
     <string name="count_view">%s views</string>
     <string name="video_post_time">%s • %s days ago</string>
     <string name="txt_error_full_name_sake">Username already exists, Please enter another username!</string>
+    <string name="loading">Loading...</string>
 
 
 </resources>

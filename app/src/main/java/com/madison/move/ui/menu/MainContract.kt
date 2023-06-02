@@ -13,11 +13,11 @@ interface MainContract {
     interface View : BaseView {
         fun onSuccessGetToken(loginResponse: LoginResponse)
         fun onSuccessLogout(logoutResponse: LogoutResponse)
-        fun onError(error: String)
+        fun onError(error: String?)
     }
 
     interface Presenter : BasePresenter<View> {
-        fun onGetTokenPresenter(email: String, password: String, fragment: DialogFragment)
+        fun onGetTokenPresenter(email: String, password: String)
         fun logoutRequest(token: String)
     }
 }
