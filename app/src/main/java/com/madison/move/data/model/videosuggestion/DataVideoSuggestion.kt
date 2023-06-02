@@ -38,6 +38,10 @@ data class DataVideoSuggestion(
     @SerializedName("total_view")
     val totalView: Int?,
     @Expose
+    @SerializedName("count_view")
+    val countView: Int?,
+    @Expose
     @SerializedName("username")
     val username: String?
+
 )

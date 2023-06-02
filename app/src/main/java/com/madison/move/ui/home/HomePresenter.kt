@@ -21,7 +21,7 @@ class HomePresenter(
 
     override fun onShowFeaturedCarouselPresenter(
         fragmentFeaturedList: ArrayList<FeaturedFragment>,
-        videoCarouselData: ArrayList<DataVideoCarousel>
+        videoCarouselData: ArrayList<DataVideoSuggestion>
     ) {
         view?.onShowFeaturedCarousel(fragmentFeaturedList, videoCarouselData)
         view?.onCarouselTransformer()

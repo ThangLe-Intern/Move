@@ -37,7 +37,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     private lateinit var videoSuggestionAdapter: VideoSuggestionAdapter
     private lateinit var handler: Handler
 
-    var videoCarouselData: ArrayList<DataVideoCarousel> = arrayListOf()
+    var videoCarouselData: ArrayList<DataVideoSuggestion> = arrayListOf()
     var featuredList: ArrayList<FeaturedFragment> = arrayListOf()
     var categoryList: ArrayList<DataCategory> = arrayListOf()
     var videoList: ArrayList<DataVideoSuggestion> = arrayListOf()
@@ -93,7 +93,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     //Show Video To Carousel
     override fun onShowFeaturedCarousel(
         featuredFragmentList: ArrayList<FeaturedFragment>,
-        videoCarouselData: ArrayList<DataVideoCarousel>
+        videoCarouselData: ArrayList<DataVideoSuggestion>
     ) {
         handler = Handler(Looper.myLooper()!!)
         carouselViewPagerAdapter = CarouselViewPagerAdapter(

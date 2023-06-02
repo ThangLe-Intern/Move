@@ -33,7 +33,10 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
     private var listComment: MutableList<Comment> = mutableListOf()
     private var currentFragment: Fragment? = null
     private lateinit var handler: Handler
+    private var dataList: MutableList<String> = mutableListOf()
 
+    var isLoading = false
+    var hasMoreData = true
 
     override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
 
@@ -101,7 +104,37 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                 dataVideoSuggestion?.id ?: 0
             )
         }
+
+        binding.nestedscrollView.setOnScrollChangeListener{ _, _, scrollY, _, _ ->
+            val recyclerViewHeight = binding.listComment.height
+            val totalContentHeight =  binding.nestedscrollView.getChildAt(0).height
+            val scrollThreshold = totalContentHeight - recyclerViewHeight
+            if (scrollY >= scrollThreshold && !isLoading && hasMoreData) {
+                // Người dùng đã cuộn đến cuối trang và không có tải dữ liệu nào đang diễn ra
+                // Thực hiện tải thêm dữ liệu tại đây
+                loadMoreData()
+            }
+        }
         return binding.root
+    }
+    fun loadMoreData() {
+        isLoading = true
+        val newDataList = fetchData()
+        if (newDataList.isNotEmpty()) {
+            dataList.addAll(newDataList)
+            adapterComment.notifyDataSetChanged()
+        }
+        isLoading = false
+        hasMoreData = newDataList.isNotEmpty()
+    }
+    fun fetchData(): List<String> {
+        val newDataList = mutableListOf<String>()
+        for (i in 1..10) {
+            val newItem = "Item ${dataList.size + i}"
+            newDataList.add(newItem)
+        }
+
+        return newDataList
     }
 
 
