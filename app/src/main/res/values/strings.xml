@@ -64,7 +64,7 @@
     <string name="dd">DD</string>
     <string name="mm">MM</string>
     <string name="yyyy">YYYY</string>
-    <string name="error_fullname_chars">Full name contains at least 4 chars and maximum 100 chars</string>
+    <string name="error_fullname_chars">Fullname must be 4–100 characters and contain both normal characters, dot, space</string>
     <string name="dob_years">2002</string>
     <string name="dob_month">Jan</string>
     <string name="txt_log_in">Login</string>
@@ -135,7 +135,7 @@
     <string name="count_view">%s views</string>
     <string name="video_post_time">%s • %s days ago</string>
     <string name="txt_error_full_name_sake">Username already exists, Please enter another username!</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
 
 
 </resources>

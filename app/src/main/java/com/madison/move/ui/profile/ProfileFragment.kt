@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.service.autofill.UserData
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -13,22 +12,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.ArrayAdapter
-import android.widget.LinearLayout
-import android.widget.RadioButton
-import android.widget.RelativeLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.github.drjacky.imagepicker.ImagePicker
 import com.github.drjacky.imagepicker.constant.ImageProvider
 import com.madison.move.R
-import com.madison.move.data.model.User
 import com.madison.move.data.model.country.CountryResponse
 import com.madison.move.data.model.country.DataCountry
 import com.madison.move.data.model.state.DataState
@@ -40,10 +33,7 @@ import com.madison.move.data.model.user_profile.ProfileResponse
 import com.madison.move.databinding.FragmentProfileBinding
 import com.madison.move.ui.base.BaseFragment
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.coroutines.awaitCancellation
-import java.text.SimpleDateFormat
 import java.time.Year
-import java.util.*
 
 
 class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.ProfileView {
@@ -343,12 +333,17 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         when (user.gender) {
             1 -> {
                 binding.radioMale.isChecked = true
+                binding.radioFemale.isChecked = false
+                binding.radioRatherNotSay.isChecked = false
             }
             2 -> {
+                binding.radioMale.isChecked = false
                 binding.radioFemale.isChecked = true
-
+                binding.radioRatherNotSay.isChecked = false
             }
             3 -> {
+                binding.radioMale.isChecked = false
+                binding.radioFemale.isChecked = false
                 binding.radioRatherNotSay.isChecked = true
             }
         }
@@ -404,6 +399,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     }
 
     override fun onSuccessGetProfileData(profileResponse: ProfileResponse) {
+
         userData = profileResponse.dataUser
         listDataCountry?.forEach {
             if (it.id != null && it.id == userData?.countryId) presenter?.getStateDataPresenter(it.id)
@@ -538,8 +534,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                     setBackgroundResource(R.drawable.custom_edittext_error)
                     requestFocus()
                 }
-                progressBar?.visibility = View.GONE
-
             }
 
             STATE_NOT_IN_LIST -> {
@@ -554,6 +548,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
             }
         }
+        progressBar?.visibility = View.GONE
     }
 
 
