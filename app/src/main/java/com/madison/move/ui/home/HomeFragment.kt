@@ -116,9 +116,9 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             }
         })
 
-        carouselViewPagerAdapter.onClickVideoCarousel = object  : CarouselViewPagerAdapter.ListenerCarouselVideo{
+        carouselViewPagerAdapter.onClickVideoCarousel = object  : CarouselViewPagerAdapter.setListenerCarouselVideo{
             override fun onClickVideoCarousel(dataVideoCarousel: DataVideoSuggestion) {
-                val activity: AppCompatActivity = context as AppCompatActivity
+                val activity = requireActivity() as AppCompatActivity
                 val commentFragment = CommentFragment(dataVideoCarousel,null)
                 activity.supportFragmentManager
                     .beginTransaction()
@@ -166,9 +166,9 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             layoutManager = LinearLayoutManager(context)
             adapter = videoSuggestionAdapter
         }
-        videoSuggestionAdapter.onClickVideo = object : VideoSuggestionAdapter.ListenerVideoSuggestion{
+        videoSuggestionAdapter.onClickVideo = object : VideoSuggestionAdapter.setListenerVideoSuggestion{
             override fun onClickVideoSuggest(dataVideoSuggestion: DataVideoSuggestion) {
-                val activity: AppCompatActivity = requireActivity() as AppCompatActivity
+                val activity = requireActivity() as AppCompatActivity
                 val commentFragment = CommentFragment(dataVideoSuggestion,null)
                 activity.supportFragmentManager.beginTransaction().replace(R.id.content_frame_main,commentFragment).commit()
             }

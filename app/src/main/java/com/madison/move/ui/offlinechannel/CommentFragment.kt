@@ -165,9 +165,6 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         val iframeContent =
             "<html><body style=\"margin:0; padding:0\"><iframe src=\"https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\" width=\"100%\" height=\"100%\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>" // Lấy nội dung iframe từ API
 
-//        val iframeContent2 =https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4
-//            "<html><body style=\"margin:0; padding:0\"><iframe src=\"{${videoDetailsSuggestionResponse.posts.urlVideo}}\" width=\"100%\" height=\"100%\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>" // Lấy nội dung iframe từ API
-
         binding.webView.getSettings().setJavaScriptEnabled(true)
 
         binding.webView.loadData(
@@ -229,9 +226,6 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                 }
 
                 override fun afterTextChanged(s: Editable?) {
-/*                if (!s.isNullOrEmpty()) {
-                    binding.edtUserComment.clearFocus()
-                }*/
                 }
             })
             onFocusChangeListener =
@@ -454,8 +448,48 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         )
 
         listComment.add(Comment(2, "ALO SONDASDK", "Just now", mutableListOf(), user2))
-        listComment.add(Comment(3, "KAMAVINGAR HALANDES", "Just now", mutableListOf(), user3))
+        listComment.add(Comment(
+            1, "DSMLMFLSKEMFKLM", "Just now",
+            mutableListOf(
+                Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
+                Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
+                Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
+                Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
+            ), user1
+        ))
         listComment.add(Comment(4, "SDASDESADASD", "Just now", mutableListOf(), user4))
+        listComment.add(
+            Comment(
+                1, "DSMLMFLSKEMFKLM", "Just now",
+                mutableListOf(
+                    Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
+                    Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
+                    Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
+                    Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
+                ), user1
+            )
+        )
+
+        listComment.add(Comment(
+            1, "DSMLMFLSKEMFKLM", "Just now",
+            mutableListOf(
+                Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
+                Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
+                Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
+                Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
+            ), user1
+        ))
+        listComment.add(Comment(3, "KAMAVINGAR HALANDES", "Just now", mutableListOf(), user3))
+        listComment.add(Comment(
+            1, "DSMLMFLSKEMFKLM", "Just now",
+            mutableListOf(
+                Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
+                Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
+                Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
+                Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
+            ), user1
+        ))
+
 
 
     }

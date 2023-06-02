@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 data class VideoDetailResponse(
     @Expose
     @SerializedName("posts")
-    val posts: Posts,
+    val posts: Posts?,
     @Expose
     @SerializedName("status")
-    val status: Int
+    val status: Int?
 )

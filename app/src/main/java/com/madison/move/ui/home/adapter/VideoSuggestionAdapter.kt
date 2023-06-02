@@ -16,8 +16,8 @@ import kotlin.math.roundToInt
 class VideoSuggestionAdapter(
     var activity: HomeFragment, var listVideo: ArrayList<DataVideoSuggestion>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    var onClickVideo: ListenerVideoSuggestion ?= null
-    fun onClick(onClick: ListenerVideoSuggestion){
+    var onClickVideo: setListenerVideoSuggestion ?= null
+    fun onClick(onClick: setListenerVideoSuggestion){
         this.onClickVideo = onClick
     }
 
@@ -108,7 +108,7 @@ class VideoSuggestionAdapter(
         (holder as ViewHolder).onBind(listVideo[position])
     }
 
-    interface ListenerVideoSuggestion{
+    interface setListenerVideoSuggestion{
         fun onClickVideoSuggest(dataVideoSuggestion: DataVideoSuggestion)
     }
 }

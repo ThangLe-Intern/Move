@@ -8,28 +8,28 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class CommentPresenter (
-    override var view : CommentContract.CommentContract?
+class CommentPresenter(
+    override var view: CommentContract.CommentContract?
 
-    ):CommentContract.CommentPresenter{
+) : CommentContract.CommentPresenter {
 
     private val dataManager: DataManager = DataManager.instance
 
-    override fun getVideoDetail(authorization:String ,id :Int) {
-        dataManager.movieRepository.getVideoDetail(authorization,id)?.enqueue(object :
+    override fun getVideoDetail(authorization: String, id: Int) {
+        dataManager.movieRepository.getVideoDetail(authorization, id)?.enqueue(object :
             Callback<VideoDetailResponse> {
             override fun onResponse(
                 call: Call<VideoDetailResponse>,
                 response: Response<VideoDetailResponse>
             ) {
-                if (response.body() != null){
+                if (response.body() != null) {
                     view?.onSuccessGetVideoSuggestion(response.body()!!)
                 }
             }
 
             override fun onFailure(call: Call<VideoDetailResponse>, t: Throwable) {
                 Log.e("ERROR", t.message.toString())
-               view?.onError(t.message.toString())
+                view?.onError(t.message.toString())
             }
 
         })

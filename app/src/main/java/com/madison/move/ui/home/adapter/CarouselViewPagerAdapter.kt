@@ -24,9 +24,9 @@ class CarouselViewPagerAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var onClickVideoCarousel : ListenerCarouselVideo ?= null
+    var onClickVideoCarousel : setListenerCarouselVideo ?= null
 
-    fun onClick(onClickCarousel: ListenerCarouselVideo){
+    fun onClick(onClickCarousel: setListenerCarouselVideo){
         this.onClickVideoCarousel = onClickCarousel
     }
 
@@ -114,7 +114,7 @@ class CarouselViewPagerAdapter(
         notifyDataSetChanged()
     }
 
-    interface ListenerCarouselVideo{
+    interface setListenerCarouselVideo{
         fun onClickVideoCarousel(dataVideoCarousel: DataVideoSuggestion)
     }
 }
