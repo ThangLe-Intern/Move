@@ -58,6 +58,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         const val TOKEN_USER_PREFERENCE = "tokenUser"
         const val TOKEN = "token"
         const val USER_DATA = "user"
+        const val NO_INTERNET = "No internet Connection, Please try again! "
+        const val INTERNET = "You are Online"
     }
 
     override fun createPresenter(): MenuPresenter = MenuPresenter(this)
@@ -80,10 +82,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         if (!isDeviceOnline(this)) {
             onShowProgressDialog()
             Toast.makeText(
-                this, " No internet Connection, Please try again! ", Toast.LENGTH_SHORT
+                this, NO_INTERNET, Toast.LENGTH_SHORT
             ).show()
         } else {
-            Toast.makeText(this, "You are Online", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, INTERNET, Toast.LENGTH_SHORT).show()
             onReload()
             //If token null show menu of login -- if not null show menu logout
 
