@@ -43,7 +43,7 @@ import com.madison.move.ui.offlinechannel.CommentFragment
 import com.madison.move.ui.profile.ProfileFragment
 
 
-class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,MainInterface,
+class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainInterface,
     NavigationView.OnNavigationItemSelectedListener, LoginDialogFragment.OnInputListener {
     lateinit var mainMenuBinding: ActivityMainMenuBinding
     private var dataUserLogin: DataUserLogin? = null
@@ -143,10 +143,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,MainIn
                 //Refresh Data FAQ when Logout
             }
             is ProfileFragment -> {
-                if(tokenUser == null){
+                if (tokenUser == null) {
                     supportFragmentManager.beginTransaction()
                         .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
-                }else{
+                } else {
                     supportFragmentManager.beginTransaction()
                         .replace(mainMenuBinding.contentFrameMain.id, ProfileFragment()).commit()
                 }
@@ -314,11 +314,12 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,MainIn
 
     override fun onSuccessGetToken(loginResponse: LoginResponse) {
         fragmentLogin?.dismiss()
-        tokenResponse = loginResponse
-        tokenUser = tokenResponse?.token
-        dataUserLogin = tokenResponse?.dataUserLogin
 
-        Toast.makeText(this, loginResponse.message.toString(), Toast.LENGTH_SHORT).show()
+        tokenResponse = loginResponse
+
+        tokenUser = tokenResponse?.token
+
+        dataUserLogin = tokenResponse?.dataUserLogin
 
         //Set Data to Preferences
         val sharedPreferences = getSharedPreferences(TOKEN_USER_PREFERENCE, MODE_PRIVATE)

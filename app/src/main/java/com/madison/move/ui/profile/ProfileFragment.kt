@@ -2,7 +2,6 @@ package com.madison.move.ui.profile
 
 
 import android.app.Activity
-import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
@@ -33,7 +32,6 @@ import com.madison.move.data.model.user_profile.DataUser
 import com.madison.move.data.model.user_profile.ProfileResponse
 import com.madison.move.databinding.FragmentProfileBinding
 import com.madison.move.ui.base.BaseFragment
-import com.madison.move.ui.menu.MainInterface
 import de.hdodenhof.circleimageview.CircleImageView
 import java.time.Year
 
@@ -43,12 +41,13 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     companion object {
         const val FULL_NAME_AT_LEAST_4_CHARS = "FN_4_CH"
         const val USER_NAME_CONTAINS_WHITE_SPACE = "USER_WS"
+        const val USER_NAME_AT_LEAST_4_CHARS = "US_4_CH"
         const val USER_NAME_LENGTH = "US_LTH"
         const val STATE_NOT_IN_LIST = "STATE_NOT_IN_LIST"
         const val COUNTRY_NOT_IN_LIST = "COUNTRY_NOT_IN_LIST"
         const val USER_NAME_INVALID = "US_INVALID"
         const val USER_NAME_FORMAT = "US_FORMAT"
-        const val FULL_NAMESAKE = "FULL_NAMESAKE"
+        const val USERNAME_NAMESAKE = "FULL_NAMESAKE"
         const val TOKEN_USER_PREFERENCE = "tokenUser"
         const val TOKEN = "token"
 
@@ -85,7 +84,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-        if (mListener?.isDeviceOnlineCheck() == false){
+        if (mListener?.isDeviceOnlineCheck() == false) {
             mListener?.onShowDisconnectDialog()
         }
 
@@ -120,9 +119,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
 
         binding.saveSettingBtn.setOnClickListener {
-            if (mListener?.isDeviceOnlineCheck() == false){
+            if (mListener?.isDeviceOnlineCheck() == false) {
                 mListener?.onShowDisconnectDialog()
-            }else{
+            } else {
                 progressBar = activity?.findViewById(R.id.progress_main_layout)
                 progressBar?.visibility = View.VISIBLE
                 tokenUser?.let { token ->
@@ -423,7 +422,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             val userMenuInfo = layoutUserMenuInfo?.findViewById<LinearLayout>(R.id.constraintLayout)
             val userImage: CircleImageView? = userMenuInfo?.findViewById(R.id.img_menu_user_avatar)
             val userName: AppCompatTextView? = userMenuInfo?.findViewById(R.id.txt_username_navbar)
-            val userTick:ImageView? = userMenuInfo?.findViewById(R.id.img_blue_tick_navbar)
+            val userTick: ImageView? = userMenuInfo?.findViewById(R.id.img_blue_tick_navbar)
             userName?.text = userData?.username
 /*            val drawable = binding.imgProfileUser.drawable
             userImage?.setImageDrawable(drawable)*/
@@ -436,9 +435,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 userImage?.setImageResource(R.drawable.avatar)
             }
 
-            if (userData?.kol == 0){
+            if (userData?.kol == 0) {
                 userTick?.visibility = View.GONE
-            }else{
+            } else {
                 userTick?.visibility = View.VISIBLE
             }
 
@@ -496,6 +495,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     override fun onShowError(errorType: String) {
         when (errorType) {
+
             FULL_NAME_AT_LEAST_4_CHARS -> {
                 binding.txtErrorFullName.apply {
                     visibility = View.VISIBLE
@@ -507,7 +507,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 }
             }
 
-            USER_NAME_LENGTH -> {
+            USER_NAME_AT_LEAST_4_CHARS -> {
                 binding.txtErrorUsername.apply {
                     visibility = View.VISIBLE
                     text = context.getString(R.string.error_user_name)
@@ -516,7 +516,17 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                     setBackgroundResource(R.drawable.custom_edittext_error)
                     requestFocus()
                 }
+            }
 
+            USER_NAME_LENGTH ->{
+                binding.txtErrorUsername.apply {
+                    visibility = View.VISIBLE
+                    text = context.getString(R.string.txt_error_us_25_char)
+                }
+                binding.editUsername.apply {
+                    setBackgroundResource(R.drawable.custom_edittext_error)
+                    requestFocus()
+                }
             }
 
             USER_NAME_INVALID -> {
@@ -541,7 +551,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 }
             }
 
-            FULL_NAMESAKE -> {
+            USERNAME_NAMESAKE -> {
                 binding.txtErrorUsername.apply {
                     visibility = View.VISIBLE
                     text = context.getString(R.string.txt_error_full_name_sake)

@@ -19,6 +19,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
 
     companion object {
         const val FULL_NAME_AT_LEAST_4_CHARS = "FN_4_CH"
+        const val USER_NAME_AT_LEAST_4_CHARS = "US_4_CH"
         const val USER_NAME_LENGTH = "US_LTH"
         const val USER_NAME_INVALID = "US_INVALID"
         const val USER_NAME_FORMAT = "US_FORMAT"
@@ -36,14 +37,19 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
     override fun onSaveProfileClickPresenter(token: String, profileRequest: ProfileRequest) {
         val listAcceptChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
 
-        if (profileRequest.fullname?.length!! < 4 || profileRequest.fullname?.length!! > 100) {
+        if (profileRequest.fullname?.length!! < 4 || profileRequest.fullname.length > 100) {
             return onShowErrorPresenter(FULL_NAME_AT_LEAST_4_CHARS)
         }
-        if (profileRequest.username?.length!! < 4 || profileRequest.username?.length!! > 25) {
+
+        if (profileRequest.username?.length!! < 4) {
+            return onShowErrorPresenter(USER_NAME_AT_LEAST_4_CHARS)
+        }
+
+        if (profileRequest.username.length > 25) {
             return onShowErrorPresenter(USER_NAME_LENGTH)
         }
 
-        if (!hasNumber(profileRequest.username.toString())) {
+        if (!hasNumber(profileRequest.username.toString()) || !hasAlphabet(profileRequest.username.toString())) {
             return onShowErrorPresenter(USER_NAME_FORMAT)
         }
 
@@ -60,7 +66,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                     profileResponse: Response<UpdateProfileResponse>
                 ) {
                     if (profileResponse.body() != null) {
-                            view?.onSuccessUpdateProfile(profileResponse.body()!!)
+                        view?.onSuccessUpdateProfile(profileResponse.body()!!)
                     }
 
                     if (profileResponse.errorBody() != null) {
@@ -98,24 +104,23 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
     }
 
     override fun getCountryDataPresenter() {
-        dataManager.movieRepository.getCountryData()
-            ?.enqueue(object : Callback<CountryResponse> {
-                override fun onResponse(
-                    call: Call<CountryResponse>, countryResponse: Response<CountryResponse>
-                ) {
-                    if (countryResponse.body() != null) {
-                        view?.onSuccessGetCountryData(countryResponse.body()!!)
-                    }
-
-                    if (countryResponse.errorBody() != null) {
-                        Log.d("KEKE", "Get Country Failed!")
-                    }
+        dataManager.movieRepository.getCountryData()?.enqueue(object : Callback<CountryResponse> {
+            override fun onResponse(
+                call: Call<CountryResponse>, countryResponse: Response<CountryResponse>
+            ) {
+                if (countryResponse.body() != null) {
+                    view?.onSuccessGetCountryData(countryResponse.body()!!)
                 }
 
-                override fun onFailure(call: Call<CountryResponse>, t: Throwable) {
-                    view?.onErrorGetProfile(t.message.toString())
+                if (countryResponse.errorBody() != null) {
+                    Log.d("KEKE", "Get Country Failed!")
                 }
-            })
+            }
+
+            override fun onFailure(call: Call<CountryResponse>, t: Throwable) {
+                view?.onErrorGetProfile(t.message.toString())
+            }
+        })
     }
 
     override fun getStateDataPresenter(countryID: Int) {
@@ -142,6 +147,11 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
 
     private fun hasNumber(input: String): Boolean {
         val regex = Regex("[0-9]")
+        return regex.containsMatchIn(input)
+    }
+
+    private fun hasAlphabet(input: String): Boolean {
+        val regex = Regex("[A-Za-z]")
         return regex.containsMatchIn(input)
     }
 
