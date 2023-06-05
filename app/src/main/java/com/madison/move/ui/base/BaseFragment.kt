@@ -1,11 +1,14 @@
 package com.madison.move.ui.base
 
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import com.madison.move.ui.menu.MainContract
+import com.madison.move.ui.menu.MainInterface
 
 abstract class BaseFragment<Presenter : Any> : Fragment(), BaseView {
 
@@ -15,6 +18,17 @@ abstract class BaseFragment<Presenter : Any> : Fragment(), BaseView {
 
     open fun listener() {}
 
+    var mListener: MainInterface? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        // Initialize the interface variable
+        mListener = activity as MainInterface
+        if (mListener == null) {
+            throw ClassCastException("$activity must implement MainInterface")
+        }
+    }
 
     protected abstract fun createPresenter(): Presenter?
 
@@ -30,6 +44,7 @@ abstract class BaseFragment<Presenter : Any> : Fragment(), BaseView {
         initView()
         listener()
     }
+
 
     override fun onBottomNavigateSystemUI() {
 

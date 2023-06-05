@@ -2,6 +2,7 @@ package com.madison.move.ui.profile
 
 
 import android.app.Activity
+import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
@@ -32,6 +33,7 @@ import com.madison.move.data.model.user_profile.DataUser
 import com.madison.move.data.model.user_profile.ProfileResponse
 import com.madison.move.databinding.FragmentProfileBinding
 import com.madison.move.ui.base.BaseFragment
+import com.madison.move.ui.menu.MainInterface
 import de.hdodenhof.circleimageview.CircleImageView
 import java.time.Year
 
@@ -77,13 +79,15 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     private var progressBar: RelativeLayout? = null
     override fun createPresenter(): ProfilePresenter = ProfilePresenter(this)
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+
+        if (mListener?.isDeviceOnlineCheck() == false){
+            mListener?.onShowDisconnectDialog()
+        }
 
         //Get Token From Preferences
         getSharedPreferences = requireContext().getSharedPreferences(
@@ -116,12 +120,16 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
 
         binding.saveSettingBtn.setOnClickListener {
-            progressBar = activity?.findViewById(R.id.progress_main_layout)
-            progressBar?.visibility = View.VISIBLE
-            tokenUser?.let { token ->
-                presenter?.onSaveProfileClickPresenter(
-                    token, getNewProfile()
-                )
+            if (mListener?.isDeviceOnlineCheck() == false){
+                mListener?.onShowDisconnectDialog()
+            }else{
+                progressBar = activity?.findViewById(R.id.progress_main_layout)
+                progressBar?.visibility = View.VISIBLE
+                tokenUser?.let { token ->
+                    presenter?.onSaveProfileClickPresenter(
+                        token, getNewProfile()
+                    )
+                }
             }
         }
 

@@ -22,10 +22,10 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
@@ -43,7 +43,7 @@ import com.madison.move.ui.offlinechannel.CommentFragment
 import com.madison.move.ui.profile.ProfileFragment
 
 
-class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
+class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,MainInterface,
     NavigationView.OnNavigationItemSelectedListener, LoginDialogFragment.OnInputListener {
     lateinit var mainMenuBinding: ActivityMainMenuBinding
     private var dataUserLogin: DataUserLogin? = null
@@ -51,7 +51,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     private var tokenResponse: LoginResponse? = null
     private var getSharedPreferences: SharedPreferences? = null
     private var fragmentLogin: DialogFragment? = null
-    var progressDialog: Dialog? = null
+    var disconnectDialog: Dialog? = null
     val gson = Gson()
 
     companion object {
@@ -72,30 +72,29 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         setContentView(mainMenuBinding.root)
         super.onCreate(savedInstanceState)
 
-        mainMenuBinding.menuTvBrowse.setOnClickListener {
-            mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
-//            onShowProgressDialog()
-
-            if (isDeviceOnline(this)) {
-                Toast.makeText(this, "You are Online", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, " No internet Connection ", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
     }
 
     override fun onResume() {
         super.onResume()
 
-        getSharedPreferences = getSharedPreferences(TOKEN_USER_PREFERENCE, MODE_PRIVATE)
-        tokenUser = getSharedPreferences?.getString(TOKEN, null)
-
-        //If token null show menu of login -- if not null show menu logout
-        if (tokenUser == null) {
-            onLogout()
+        if (!isDeviceOnline(this)) {
+            onShowProgressDialog()
+            Toast.makeText(
+                this, " No internet Connection, Please try again! ", Toast.LENGTH_SHORT
+            ).show()
         } else {
-            onLogin()
+            Toast.makeText(this, "You are Online", Toast.LENGTH_SHORT).show()
+            onReload()
+            //If token null show menu of login -- if not null show menu logout
+
+            getSharedPreferences = getSharedPreferences(TOKEN_USER_PREFERENCE, MODE_PRIVATE)
+            tokenUser = getSharedPreferences?.getString(TOKEN, null)
+
+            if (tokenUser == null) {
+                onLogout()
+            } else {
+                onLogin()
+            }
         }
     }
 
@@ -133,26 +132,27 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
     private fun onReload() {
         //Reload Current Screen
-        val currentFragment: Fragment? =
-            supportFragmentManager.findFragmentById(R.id.content_frame_main)
 
-        when (currentFragment) {
-            is HomeFragment -> currentFragment.onResume()
+
+        when (supportFragmentManager.findFragmentById(R.id.content_frame_main)) {
+            is HomeFragment -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
+            }
             is FAQFragment -> {
                 //Refresh Data FAQ when Logout
             }
             is ProfileFragment -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
+                if(tokenUser == null){
+                    supportFragmentManager.beginTransaction()
+                        .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
+                }else{
+                    supportFragmentManager.beginTransaction()
+                        .replace(mainMenuBinding.contentFrameMain.id, ProfileFragment()).commit()
+                }
+
             }
         }
-    }
-
-    //Check Device On Connection Internet or Not
-    private fun isDeviceOnline(context: Context): Boolean {
-        val connMgr = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = connMgr.activeNetworkInfo
-        return networkInfo != null && networkInfo.isConnected
     }
 
 
@@ -198,10 +198,6 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                 mainMenuBinding.groupItemChild.visibility = View.VISIBLE
             }
         }
-
-//        mainMenuBinding.menuTvFollowing.setOnClickListener {
-//            recreate()
-//        }
 
         val imgViewClose: ImageView = findViewById(R.id.imgclose)
         imgViewClose.setOnClickListener {
@@ -360,27 +356,39 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
     }
 
+    override fun onShowDisconnectDialog() {
+        onShowProgressDialog()
+    }
+
+    override fun isDeviceOnlineCheck(): Boolean {
+        return isDeviceOnline(this)
+    }
+
 
     private fun onShowProgressDialog() {
 
-        progressDialog = Dialog(this)
+        disconnectDialog = Dialog(this)
 
-        progressDialog?.setContentView(R.layout.progress_dialog)
-        progressDialog?.setCanceledOnTouchOutside(false)
-        progressDialog?.window?.apply {
+        disconnectDialog?.setContentView(R.layout.progress_dialog)
+        disconnectDialog?.setCanceledOnTouchOutside(false)
+        disconnectDialog?.window?.apply {
             setLayout(
                 WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT
             )
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
         }
-        progressDialog?.show()
+        disconnectDialog?.show()
+
+
+        val btnTryAgain = disconnectDialog?.findViewById<AppCompatTextView>(R.id.txt_try_again)
+        btnTryAgain?.setOnClickListener {
+            disconnectDialog?.dismiss()
+            onResume()
+        }
+
     }
 
-    fun onHideProgressDialog() {
-        progressDialog?.dismiss()
-    }
-
-    fun onClearPreferences(){
+    private fun onClearPreferences() {
         val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
         settings.edit().clear().apply()
         tokenUser = null

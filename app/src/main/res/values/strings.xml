@@ -137,6 +137,8 @@
     <string name="txt_error_full_name_sake">Username already exists, Please enter another username!</string>
     <string name="loading">Loading…</string>
     <string name="a_day_ago">A day ago</string>
+    <string name="txt_no_internet_connection">No internet connection, Please try again!</string>
+    <string name="txt_try_again">Try Again</string>
 
 
 </resources>

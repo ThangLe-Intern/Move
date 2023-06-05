@@ -17,21 +17,47 @@
         android:background="@drawable/custom_dialog_progress"
         >
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_progress_logo"
+            android:layout_width="@dimen/_110sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/ic_login_logo" />
+
         <ProgressBar
             android:id="@+id/progress_loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_below="@id/img_progress_logo"
             />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_progress_loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/loading"
-            android:textSize="@dimen/_15ssp"
+            android:text="@string/txt_no_internet_connection"
+            android:textSize="@dimen/_11ssp"
+            android:fontFamily="@font/montserrat_regular"
             android:layout_below="@id/progress_loading"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_try_again"
+            android:layout_below="@id/txt_progress_loading"
+            android:text="@string/txt_try_again"
+            android:textSize="@dimen/_13ssp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:textColor="@color/move_green"
+            android:fontFamily="@font/montserrat_semi_bold"
             />
 
     </RelativeLayout>

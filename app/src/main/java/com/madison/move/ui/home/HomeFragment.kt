@@ -1,6 +1,7 @@
 package com.madison.move.ui.home
 
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
@@ -28,6 +29,7 @@ import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.home.adapter.CarouselViewPagerAdapter
 import com.madison.move.ui.home.adapter.CategoryAdapter
 import com.madison.move.ui.home.adapter.VideoSuggestionAdapter
+import com.madison.move.ui.menu.MainInterface
 import kotlin.math.abs
 
 
@@ -56,7 +58,6 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         const val TOKEN = "token"
     }
 
-
     override fun createPresenter(): HomePresenter = HomePresenter(this)
 
     override fun onCreateView(
@@ -67,12 +68,16 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         //Disable nested scroll of recyclerview
         binding.listVideoSuggestion.isNestedScrollingEnabled = false
 
+        if (mListener?.isDeviceOnlineCheck() == false){
+            mListener?.onShowDisconnectDialog()
+        }
+
         presenter?.apply {
             getFeaturedVideoData()
             getCategoryData()
         }
 
-        return binding.root
+            return binding.root
     }
 
     override fun onPause() {
@@ -82,6 +87,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     override fun onResume() {
         super.onResume()
+
         onRefreshData()
         //Slider for carousel
         handler.postDelayed(runnable, 3000)
@@ -151,7 +157,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     }
 
     override fun onErrorMoveData(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+//        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
     }
 
     private val runnable = Runnable {

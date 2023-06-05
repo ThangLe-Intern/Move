@@ -1,6 +1,5 @@
 package com.madison.move.ui.menu
 
-import androidx.fragment.app.DialogFragment
 import com.madison.move.data.model.login.LoginResponse
 import com.madison.move.data.model.logout.LogoutResponse
 import com.madison.move.ui.base.BaseView
