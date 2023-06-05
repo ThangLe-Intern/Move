@@ -12,9 +12,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +22,7 @@ import com.madison.move.R
 import com.madison.move.databinding.FragmentCommentBinding
 import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
 import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
+
 
 open class CommentFragment : Fragment(), CommentListener {
     private lateinit var binding: FragmentCommentBinding
@@ -40,6 +41,7 @@ open class CommentFragment : Fragment(), CommentListener {
     ): View? {
 
         binding = FragmentCommentBinding.inflate(inflater, container, false)
+
 
         val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
         listComment?.let {
@@ -71,6 +73,7 @@ open class CommentFragment : Fragment(), CommentListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initScrollListener()
     }
 
@@ -353,34 +356,23 @@ open class CommentFragment : Fragment(), CommentListener {
     }
 
     private fun initScrollListener() {
-        binding.listComment.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-            }
+        binding.listComment.isNestedScrollingEnabled = false
 
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                //               if (dy > 0){
-                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
-                val visibleItemcount = recyclerView.layoutManager?.childCount
-                val pastVisibleItem = linearLayoutManager?.findFirstCompletelyVisibleItemPosition()
-                val total = adapterComment.itemCount
-                if (!isLoading) {
-                    if (visibleItemcount != null) {
-                        if ((visibleItemcount + pastVisibleItem!!) >= total) {
-                            page++
-                            loadMore()
-                        }
+
+        binding.nestedComment.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            if (v.getChildAt(v.childCount - 1) != null) {
+                if (scrollY > oldScrollY) {
+                    if (scrollY >= v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight) {
+                        isLoading = true
+                        loadMore()
                     }
                 }
-
-                super.onScrolled(recyclerView, dx, dy)
             }
         })
     }
 
     private fun loadMore() {
         val user1 = DataModelComment(R.drawable.avatar, "Vu Dung", false)
-        isLoading = true
         binding.progressBar.visibility = View.VISIBLE
         val handler = Handler()
         handler.postDelayed({
@@ -392,7 +384,7 @@ open class CommentFragment : Fragment(), CommentListener {
             while (currentSize - 1 < nextLimit) {
                 listComment.add(
                     Comment(
-                        1, "${currentSize}", "Just now",
+                        1, "$currentSize", "Just now",
                         mutableListOf(
                             Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1)
                         ), user1

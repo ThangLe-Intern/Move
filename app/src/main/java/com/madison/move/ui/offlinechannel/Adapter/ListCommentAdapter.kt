@@ -142,7 +142,7 @@ class ListCommentAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType === VIEW_TYPE_ITEM) {
+        return if (viewType == VIEW_TYPE_ITEM) {
             ViewHolder(ItemUserCommentBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         } else {
             ViewHolder(ItemUserCommentBinding.inflate(LayoutInflater.from(parent.context), parent, false))
