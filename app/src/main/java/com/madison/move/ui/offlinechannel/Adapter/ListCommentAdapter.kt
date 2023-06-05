@@ -161,7 +161,7 @@ class ListCommentAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (listComment.get(position) == listComment.last()) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
+        return if (listComment.get(position) == null) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
     }
 
     interface ReplyListener {

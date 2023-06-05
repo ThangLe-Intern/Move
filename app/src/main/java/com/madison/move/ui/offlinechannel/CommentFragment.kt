@@ -26,10 +26,11 @@ import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
 open class CommentFragment : Fragment(), CommentListener {
     private lateinit var binding: FragmentCommentBinding
     lateinit var adapterComment: ListCommentAdapter
-    private var listComment:MutableList<Comment> = mutableListOf()
+    private var listComment: MutableList<Comment> = mutableListOf()
 
     private var currentFragment: Fragment? = null
     private lateinit var handler: Handler
+    var page = 1
 
     private var isLoading = false
     override fun onCreateView(
@@ -236,6 +237,7 @@ open class CommentFragment : Fragment(), CommentListener {
                                     sendButton.visibility = View.GONE
                                 }
                             }
+
                             override fun afterTextChanged(s: Editable?) {
                             }
 
@@ -352,28 +354,34 @@ open class CommentFragment : Fragment(), CommentListener {
 
     private fun initScrollListener() {
         binding.listComment.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged( recyclerView: RecyclerView, newState: Int) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
+                //               if (dy > 0){
                 val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                val visibleItemcount = recyclerView.layoutManager?.childCount
+                val pastVisibleItem = linearLayoutManager?.findFirstCompletelyVisibleItemPosition()
+                val total = adapterComment.itemCount
                 if (!isLoading) {
-                    //Nếu item cuối cùng của layout = với giá trị cuối của recycleView thì ta gọi hàm LoadMore
-                    if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == listComment.size-1) {
-                        //bottom of list!
-                        loadMore()
-                        isLoading = true
+                    if (visibleItemcount != null) {
+                        if ((visibleItemcount + pastVisibleItem!!) >= total) {
+                            page++
+                            loadMore()
+                        }
                     }
                 }
+
+                super.onScrolled(recyclerView, dx, dy)
             }
         })
     }
 
     private fun loadMore() {
         val user1 = DataModelComment(R.drawable.avatar, "Vu Dung", false)
-
+        isLoading = true
+        binding.progressBar.visibility = View.VISIBLE
         val handler = Handler()
         handler.postDelayed({
             listComment.removeAt(listComment.size - 1)
@@ -382,17 +390,20 @@ open class CommentFragment : Fragment(), CommentListener {
             var currentSize = scrollPosition
             val nextLimit = currentSize + 10
             while (currentSize - 1 < nextLimit) {
-                listComment.add(Comment(
-                    1, "${currentSize}", "Just now",
-                    mutableListOf(
-                        Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1)
-                    ), user1
-                ))
+                listComment.add(
+                    Comment(
+                        1, "${currentSize}", "Just now",
+                        mutableListOf(
+                            Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1)
+                        ), user1
+                    )
+                )
                 currentSize++
             }
             adapterComment.notifyDataSetChanged()
             isLoading = false
-        }, 5000)
+            binding.progressBar.visibility = View.VISIBLE
+        }, 3000)
 
 
     }

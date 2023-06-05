@@ -265,6 +265,14 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/layout_userComment" />
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/progress_bar"
+                        app:layout_constraintTop_toBottomOf="@id/listComment"
+                        app:layout_constraintStart_toStartOf="@id/listComment"
+                        app:layout_constraintEnd_toEndOf="@id/listComment"/>
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
