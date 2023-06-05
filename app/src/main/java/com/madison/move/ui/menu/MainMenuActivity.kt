@@ -79,16 +79,6 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     override fun onResume() {
         super.onResume()
 
-        if (!isDeviceOnline(this)) {
-            onShowProgressDialog()
-            Toast.makeText(
-                this, NO_INTERNET, Toast.LENGTH_SHORT
-            ).show()
-        } else {
-            Toast.makeText(this, INTERNET, Toast.LENGTH_SHORT).show()
-            onReload()
-            //If token null show menu of login -- if not null show menu logout
-
             getSharedPreferences = getSharedPreferences(TOKEN_USER_PREFERENCE, MODE_PRIVATE)
             tokenUser = getSharedPreferences?.getString(TOKEN, null)
 
@@ -97,7 +87,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
             } else {
                 onLogin()
             }
-        }
+
     }
 
     private fun onLogin() {
@@ -386,7 +376,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         val btnTryAgain = disconnectDialog?.findViewById<AppCompatTextView>(R.id.txt_try_again)
         btnTryAgain?.setOnClickListener {
             disconnectDialog?.dismiss()
-            onResume()
+            onReload()
         }
 
     }
