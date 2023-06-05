@@ -53,16 +53,29 @@ class ListReplyAdapter(var listReply: MutableList<Comment>) :
                 btnLikeTick.visibility = View.GONE
                 btnDisLiketike.visibility = View.GONE
 
+
+                var currentNumber = 0
+                btnLikeTick.visibility = View.GONE
                 btnLike.setOnClickListener {
                     if (btnLikeTick.isGone) {
                         btnLikeTick.visibility = View.VISIBLE
+                        currentNumber ++
+                        numberLike.text = currentNumber.toString()
                         btnDisLiketike.visibility = View.GONE
-                    } else if (btnLikeTick.isVisible) {
+                    } else  if(btnLikeTick.isVisible){
                         btnLikeTick.visibility = View.GONE
+                        currentNumber --
+                        numberLike.text = currentNumber.toString()
                     }
                 }
+
+                btnDisLiketike.visibility = View.GONE
                 btnDisLike.setOnClickListener {
-                    if (btnDisLiketike.isGone) {
+                    if (btnDisLiketike.isGone ) {
+                        if (btnLikeTick.isVisible){
+                            currentNumber --
+                            numberLike.text = currentNumber.toString()
+                        }
                         btnLikeTick.visibility = View.GONE
                         btnDisLiketike.visibility = View.VISIBLE
                     } else if (btnDisLiketike.isVisible) {

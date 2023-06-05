@@ -1,6 +1,7 @@
 package com.madison.move.ui.offlinechannel.Adapter
 
 
+import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -45,8 +46,9 @@ class ListCommentAdapter(
                 commentContent.text = comment.content
                 listReply.visibility = View.VISIBLE
             }
-            binding.layoutShow.setOnClickListener {
-                binding.apply {
+            binding.apply {
+                layoutShow.setOnClickListener {
+                    cardViewReport.visibility = View.GONE
                     listReply.visibility =
                         if (listReply.isVisible) View.GONE else View.VISIBLE
                     imgArrowDownGreen.setImageResource(
@@ -66,23 +68,37 @@ class ListCommentAdapter(
             }
 
             binding.apply {
+                var currentNumber = 0
                 btnLikeTick.visibility = View.GONE
                 btnLike.setOnClickListener {
                     if (btnLikeTick.isGone) {
                         btnLikeTick.visibility = View.VISIBLE
+                        currentNumber++
+                        numberLike.text = currentNumber.toString()
                         btnDisLiketike.visibility = View.GONE
-                    } else if (binding.btnLikeTick.isVisible) {
+                        cardViewReport.visibility = View.GONE
+                    } else if (btnLikeTick.isVisible) {
                         btnLikeTick.visibility = View.GONE
+                        currentNumber--
+                        numberLike.text = currentNumber.toString()
+                        cardViewReport.visibility = View.GONE
                     }
                 }
 
                 btnDisLiketike.visibility = View.GONE
                 btnDisLike.setOnClickListener {
                     if (btnDisLiketike.isGone) {
+                        if (btnLikeTick.isVisible) {
+                            currentNumber--
+                            numberLike.text = currentNumber.toString()
+                            cardViewReport.visibility = View.GONE
+                        }
                         btnLikeTick.visibility = View.GONE
                         btnDisLiketike.visibility = View.VISIBLE
+                        cardViewReport.visibility = View.GONE
                     } else if (btnDisLiketike.isVisible) {
                         btnDisLiketike.visibility = View.GONE
+                        cardViewReport.visibility = View.GONE
                     }
                 }
 
@@ -93,20 +109,19 @@ class ListCommentAdapter(
                 var isReportVisible = false
                 cardViewReport.visibility = View.GONE
                 btnReport.setOnClickListener {
-
-                    isReportVisible = !isReportVisible
-                    cardViewReport.visibility = if (isReportVisible) View.VISIBLE else View.GONE
+                    showReportDiaLog()
+//                    isReportVisible = !isReportVisible
+//                    cardViewReport.visibility = if (isReportVisible) View.VISIBLE else View.GONE
                 }
 
 
 
-              rootView.setOnClickListener {
+                rootView.setOnClickListener {
                     if (isReportVisible) {
                         isReportVisible = false
                         cardViewReport.visibility = View.GONE
                     }
                 }
-
                 cardViewReport.setOnClickListener {
                     cardViewReport.visibility = View.GONE
                 }
@@ -117,7 +132,7 @@ class ListCommentAdapter(
 
             binding.apply {
                 layoutUserReply.visibility = View.GONE
-               btnReply.setOnClickListener {
+                btnReply.setOnClickListener {
                     if (layoutUserReply.isGone) {
                         layoutUserReply.visibility = View.VISIBLE
 
@@ -136,6 +151,18 @@ class ListCommentAdapter(
             }
         }
     }
+    private fun showReportDiaLog(){
+        val dialog = AlertDialog.Builder(context)
+            .setTitle("")
+            .setPositiveButton("Report Comment") { _, _ ->
+            }
+            .setNegativeButton("") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+
+        dialog.show()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ViewHolder(
@@ -147,6 +174,7 @@ class ListCommentAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as ViewHolder).onBind(listComment[position])
+
     }
 
     override fun getItemCount(): Int {
