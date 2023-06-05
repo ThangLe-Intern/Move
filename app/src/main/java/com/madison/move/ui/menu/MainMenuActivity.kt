@@ -355,6 +355,9 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         fragmentLogin?.view?.visibility = View.VISIBLE
         fragmentLogin?.view?.findViewById<RelativeLayout>(R.id.layout_error_message)?.visibility =
             View.VISIBLE
+
+        mainMenuBinding.progressMainLayout.visibility = View.GONE
+
     }
 
 
