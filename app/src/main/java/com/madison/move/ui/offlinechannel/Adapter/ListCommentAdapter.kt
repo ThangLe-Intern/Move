@@ -37,7 +37,7 @@ class ListCommentAdapter(
 
             val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
 
-            adapterReply = comment.listChild?.let { ListReplyAdapter(it) }!!
+            adapterReply = comment.listChild?.let { ListReplyAdapter(it)} !!
             itemView.findViewById<RecyclerView>(R.id.listReply).apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterReply
@@ -63,7 +63,7 @@ class ListCommentAdapter(
                     )
                 }
             }
-            if (comment.listChild!!.isNotEmpty()) {
+            if (comment.listChild?.isNotEmpty() == true) {
                 binding.layoutShow.visibility = View.VISIBLE
             } else {
                 binding.layoutShow.visibility = View.GONE
@@ -90,7 +90,7 @@ class ListCommentAdapter(
                     }
                 }
 
-                if (!comment.user?.isTicked!!) {
+                if (comment.user?.isTicked == true) {
                     bluetick.visibility = View.GONE
                 }
 
