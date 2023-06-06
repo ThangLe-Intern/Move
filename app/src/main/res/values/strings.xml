@@ -140,6 +140,7 @@
     <string name="txt_no_internet_connection">No internet connection, Please try again!</string>
     <string name="txt_try_again">Try Again</string>
     <string name="txt_error_us_25_char">Maximum 25 characters required.</string>
+    <string name="txt_no_internet">No Internet Connection</string>
 
 
 </resources>

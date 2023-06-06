@@ -32,13 +32,8 @@ class VideoSuggestionAdapter(
                 txtVideoSuggestionView.text = video.totalView.toString()
             }
 
-
-            if (video.rating == null) {
-                binding.txtVideoSuggestionRateNumber.text = 0.toString()
-            } else {
-                val roundOff = (video.rating?.times(100.0))?.roundToInt()?.div(100.0)
-                binding.txtVideoSuggestionRateNumber.text = roundOff.toString()
-            }
+            val roundOff = (video.rating?.times(100.0))?.roundToInt()?.div(100.0) ?: 0
+            binding.txtVideoSuggestionRateNumber.text = roundOff.toString()
 
             if (video.thumbnail != null) {
                 Glide.with(activity).load(video.thumbnail)

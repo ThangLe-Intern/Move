@@ -41,12 +41,14 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
 
 
     var mListener: MainInterface? = null
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
         // Initialize the interface variable
-        mListener = activity as MainInterface
+        if (activity != null){
+            mListener = activity as MainInterface
+        }
+
         if (mListener == null) {
             throw ClassCastException("$activity must implement MainInterface")
         }

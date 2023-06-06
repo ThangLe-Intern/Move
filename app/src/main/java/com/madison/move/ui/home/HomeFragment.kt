@@ -71,11 +71,10 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     override fun onResume() {
         super.onResume()
-
         onRefreshData()
+
         //Slider for carousel
         handler.postDelayed(runnable, 3000)
-
     }
 
 
@@ -158,7 +157,6 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
 
     override fun onErrorMoveData(error: String) {
-//        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
         mListener?.onShowDisconnectDialog()
     }
 
