@@ -95,24 +95,17 @@ class ListCommentAdapter(
                         if (btnLikeTick.isVisible) {
                             currentNumber--
                             numberLike.text = currentNumber.toString()
-//                            cardViewReport.visibility = View.GONE
                         }
                         btnLikeTick.visibility = View.GONE
                         btnDisLiketike.visibility = View.VISIBLE
-//                        cardViewReport.visibility = View.GONE
                     } else if (btnDisLiketike.isVisible) {
                         btnDisLiketike.visibility = View.GONE
-//                        cardViewReport.visibility = View.GONE
                     }
                 }
 
                 if (!comment.user.isTicked) {
                     bluetick.visibility = View.GONE
                 }
-//
-//                var isReportVisible = false
-//                cardViewReport.visibility = View.
-
                 btnReport.setOnClickListener {
                     val inflater = LayoutInflater.from(context)
                     val dialogView = inflater.inflate(R.layout.dialog_report, null)
@@ -127,7 +120,7 @@ class ListCommentAdapter(
                     val location = IntArray(2)
                     btnReport.getLocationInWindow(location)
 
-                    val x = location[0] - dialogView.width - 1 // Dịch dialog sang bên trái 1 đơn vị
+                    val x = location[0] - dialogView.width - 1
                     val y = location[1] - dialogView.height
 
                     popupWindow.showAtLocation(btnReport, Gravity.NO_GRAVITY, x, y)
@@ -143,21 +136,12 @@ class ListCommentAdapter(
                         }
                     })
 
-                    dialogView.setOnTouchListener { _, event ->
+                    dialogView.setOnTouchListener { _, _ ->
                         popupWindow.dismiss()
                         true
                     }
                 }
 
-//                rootView.setOnClickListener {
-//                    if (isReportVisible) {
-//                        isReportVisible = false
-//                        cardViewReport.visibility = View.GONE
-//                    }
-//                }
-//                cardViewReport.setOnClickListener {
-//                    cardViewReport.visibility = View.GONE
-//                }
                 sendButtonReply.setOnClickListener {
                     notifyDataSetChanged()
                 }

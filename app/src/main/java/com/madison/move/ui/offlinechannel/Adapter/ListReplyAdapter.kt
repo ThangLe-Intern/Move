@@ -1,5 +1,6 @@
 package com.madison.move.ui.offlinechannel.Adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.*
 import android.widget.PopupWindow
@@ -20,6 +21,7 @@ class ListReplyAdapter(
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        @SuppressLint("ClickableViewAccessibility")
         fun onBind(comment: Comment) {
             binding.apply {
                 line2.visibility = View.GONE
@@ -65,29 +67,11 @@ class ListReplyAdapter(
                         }
                     })
 
-                    dialogView.setOnTouchListener { _, event ->
+                    dialogView.setOnTouchListener { _, _ ->
                         popupWindow.dismiss()
                         true
                     }
                 }
-
-//                var isReportVisible = false
-//                cardViewReport.visibility = View.GONE
-//                btnReport.setOnClickListener {
-//                    isReportVisible = !isReportVisible
-//                    cardViewReport.visibility = if (isReportVisible) View.VISIBLE else View.GONE
-//                }
-
-//                rootView.setOnClickListener {
-//                    if (isReportVisible){
-//                        isReportVisible = false
-//                        cardViewReport.visibility = View.GONE
-//                    }
-//                }
-//
-//                cardViewReport.setOnClickListener {
-//                    cardViewReport.visibility = View.GONE
-//                }
 
                 layoutUserReply.visibility = View.GONE
 
