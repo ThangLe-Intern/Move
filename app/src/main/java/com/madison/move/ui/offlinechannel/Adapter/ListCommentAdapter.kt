@@ -2,15 +2,11 @@ package com.madison.move.ui.offlinechannel.Adapter
 
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
 import android.view.*
-import android.widget.ImageView
 import android.widget.PopupWindow
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,7 +34,7 @@ class ListCommentAdapter(
 
             val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
 
-            adapterReply = ListReplyAdapter(comment.listChild,context)
+            adapterReply = ListReplyAdapter(comment.listChild, context)
             itemView.findViewById<RecyclerView>(R.id.listReply).apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterReply
@@ -52,7 +48,6 @@ class ListCommentAdapter(
             }
             binding.apply {
                 layoutShow.setOnClickListener {
-//                    cardViewReport.visibility = View.GONE
                     listReply.visibility =
                         if (listReply.isVisible) View.GONE else View.VISIBLE
                     imgArrowDownGreen.setImageResource(
@@ -80,12 +75,10 @@ class ListCommentAdapter(
                         currentNumber++
                         numberLike.text = currentNumber.toString()
                         btnDisLiketike.visibility = View.GONE
-//                        cardViewReport.visibility = View.GONE
                     } else if (btnLikeTick.isVisible) {
                         btnLikeTick.visibility = View.GONE
                         currentNumber--
                         numberLike.text = currentNumber.toString()
-//                        cardViewReport.visibility = View.GONE
                     }
                 }
 
@@ -125,7 +118,8 @@ class ListCommentAdapter(
 
                     popupWindow.showAtLocation(btnReport, Gravity.NO_GRAVITY, x, y)
 
-                    dialogView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    dialogView.viewTreeObserver.addOnGlobalLayoutListener(object :
+                        ViewTreeObserver.OnGlobalLayoutListener {
                         override fun onGlobalLayout() {
                             dialogView.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
