@@ -75,7 +75,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                 }
 
                 override fun onFailure(call: Call<UpdateProfileResponse>, t: Throwable) {
-                    view?.onErrorGetProfile(t.message.toString())
+                    view?.onErrorGetProfile(t.message ?: "")
                 }
             })
 
@@ -93,12 +93,12 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                     }
 
                     if (profileResponse.errorBody() != null) {
-                        Log.d("KEKE", "Get Profile Failed!")
+
                     }
                 }
 
                 override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
-                    view?.onErrorGetProfile(t.message.toString())
+                    view?.onErrorGetProfile(t.message ?: "")
                 }
             })
     }
@@ -113,12 +113,12 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                 }
 
                 if (countryResponse.errorBody() != null) {
-                    Log.d("KEKE", "Get Country Failed!")
+
                 }
             }
 
             override fun onFailure(call: Call<CountryResponse>, t: Throwable) {
-                view?.onErrorGetProfile(t.message.toString())
+                view?.onErrorGetProfile(t.message ?: "")
             }
         })
     }
@@ -135,12 +135,12 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                     }
 
                     if (stateResponse.errorBody() != null) {
-                        Log.d("KEKE", "Get State Failed!")
+
                     }
                 }
 
                 override fun onFailure(call: Call<StateResponse>, t: Throwable) {
-                    view?.onErrorGetProfile(t.message.toString())
+                    view?.onErrorGetProfile(t.message ?: "")
                 }
             })
     }

@@ -38,7 +38,7 @@ class HomePresenter(
             }
 
             override fun onFailure(call: Call<CarouselResponse>, t: Throwable) {
-                view?.onErrorMoveData(t.message.toString())
+                view?.onErrorMoveData(t.message ?: "")
             }
         })
     }
@@ -54,7 +54,7 @@ class HomePresenter(
             }
 
             override fun onFailure(call: Call<CategoryResponse>, t: Throwable) {
-                view?.onErrorMoveData(t.message.toString())
+                view?.onErrorMoveData(t.message ?: "")
             }
         })
     }
@@ -77,7 +77,7 @@ class HomePresenter(
                 }
 
                 override fun onFailure(call: Call<VideoSuggestionResponse>, t: Throwable) {
-                    view?.onErrorMoveData(t.message.toString())
+                    view?.onErrorMoveData(t.message ?: "")
                 }
             })
     }
@@ -95,7 +95,7 @@ class HomePresenter(
                 }
 
                 override fun onFailure(call: Call<VideoSuggestionResponse>, t: Throwable) {
-                    view?.onErrorMoveData(t.message.toString())
+                    view?.onErrorMoveData(t.message ?: "")
                 }
             })
     }
