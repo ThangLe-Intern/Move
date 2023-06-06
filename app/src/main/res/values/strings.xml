@@ -134,6 +134,7 @@
     <string name="txt_level_advanced">Advanced</string>
     <string name="count_view">%s views</string>
     <string name="video_post_time">%s • %s days ago</string>
+    <string name="txt_error_full_name_sake">Username already exists, Please enter another username!</string>
 
 
 </resources>

@@ -17,7 +17,7 @@ class DataManager private constructor() {
             val movieApi: MoveApi = MoveService.getInstance().getMovieApi()
             val movieRemote: MoveRemoteDataSource = MoveRemoteDataSource.getInstance(movieApi)
 
-            val movieDao: MoveDao = MoveDatabase.instance.movieDao()
+            val movieDao: MoveDao = MoveDatabase.instance.moveDao()
             val movieLocal: MoveLocalDataSource = MoveLocalDataSource.getInstance(movieDao)
 
             val movieCache: MoveCacheDataSource = MoveCacheDataSource.getsInstance()

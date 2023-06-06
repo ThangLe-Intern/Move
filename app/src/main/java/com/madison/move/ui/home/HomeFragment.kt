@@ -1,6 +1,7 @@
 package com.madison.move.ui.home
 
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -35,12 +36,19 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     private lateinit var carouselViewPagerAdapter: CarouselViewPagerAdapter
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var videoSuggestionAdapter: VideoSuggestionAdapter
-    private lateinit var handler: Handler
+    private var handler: Handler = Handler(Looper.getMainLooper())
 
     var videoCarouselData: ArrayList<DataVideoSuggestion> = arrayListOf()
+    private var getSharedPreferences: SharedPreferences? = null
     var featuredList: ArrayList<FeaturedFragment> = arrayListOf()
     var categoryList: ArrayList<DataCategory> = arrayListOf()
     var videoList: ArrayList<DataVideoSuggestion> = arrayListOf()
+    private var tokenUser: String? = null
+
+    companion object{
+        const val TOKEN_USER_PREFERENCE = "tokenUser"
+        const val TOKEN = "token"
+    }
 
 
     override fun createPresenter(): HomePresenter = HomePresenter(this)
@@ -50,14 +58,50 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+        //Disable nested scroll of recyclerview
         binding.listVideoSuggestion.isNestedScrollingEnabled = false
+
         presenter?.apply {
             getFeaturedVideoData()
             getCategoryData()
-            getVideoSuggestionData()
         }
+
         return binding.root
     }
+
+    override fun onPause() {
+        super.onPause()
+        handler.removeCallbacks(runnable)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        onRefreshData()
+        //Slider for carousel
+        handler.postDelayed(runnable, 3000)
+    }
+
+    private fun onRefreshData() {
+        getSharedPreferences = requireContext().getSharedPreferences(
+            TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
+        )
+
+        tokenUser = getSharedPreferences?.getString(TOKEN, null)
+
+        //if token not null get video suggestion for each user -- else get for all user
+        videoList.clear()
+        if (this::videoSuggestionAdapter.isInitialized) {
+            videoSuggestionAdapter.notifyDataSetChanged()
+        }
+
+        if (tokenUser != null) {
+            presenter?.getVideoSuggestionForUserData(tokenUser?: "")
+        } else {
+            presenter?.getVideoSuggestionData()
+        }
+
+    }
+
 
     override fun onSuccessCarouselData(response: CarouselResponse) {
 
@@ -77,7 +121,11 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     }
 
     override fun onSuccessVideoSuggestionData(videoSuggestionResponse: VideoSuggestionResponse) {
+        videoList = videoSuggestionResponse.videoSuggestion.data as ArrayList<DataVideoSuggestion>
+        presenter?.onShowVideoSuggestionPresenter(videoList)
+    }
 
+    override fun onSuccessVideoSuggestionForUser(videoSuggestionResponse: VideoSuggestionResponse) {
         videoList = videoSuggestionResponse.videoSuggestion.data as ArrayList<DataVideoSuggestion>
         presenter?.onShowVideoSuggestionPresenter(videoList)
     }
@@ -175,17 +223,5 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
         }
     }
-
-    override fun onPause() {
-        super.onPause()
-        handler.removeCallbacks(runnable)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        handler = Handler(Looper.myLooper()!!)
-        handler.postDelayed(runnable, 3000)
-    }
-
 
 }

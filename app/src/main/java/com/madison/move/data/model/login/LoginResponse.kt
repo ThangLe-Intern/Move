@@ -5,10 +5,13 @@ import com.google.gson.annotations.SerializedName
 
 data class LoginResponse(
     @Expose
+    @SerializedName("data")
+    val dataUserLogin: DataUserLogin?,
+    @Expose
     @SerializedName("message")
     val message: String?,
     @Expose
-    @SerializedName("status_code")
+    @SerializedName("statusCode")
     val statusCode: Int?,
     @Expose
     @SerializedName("success")
