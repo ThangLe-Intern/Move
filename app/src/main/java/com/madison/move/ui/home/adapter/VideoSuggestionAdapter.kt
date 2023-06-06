@@ -22,14 +22,15 @@ class VideoSuggestionAdapter(
         fun onBind(video: DataVideoSuggestion) {
 
             binding.apply {
-                txtVideoSuggestionUsername.text = video.username
+                txtVideoSuggestionUsername.text = video.username ?: ""
                 txtVideoSuggestionUploadTime.text = activity.getString(
-                    R.string.video_post_time,
-                    video.postedDayAgo.toString()
+                    R.string.video_post_time, video.postedDayAgo.toString()
                 )
-                txtVideoSuggestionCategory.text = video.categoryName
-                txtTitleOfVideoSuggestion.text = video.title
-                txtVideoSuggestionView.text = video.totalView.toString()
+                txtVideoSuggestionCategory.text = video.categoryName ?: ""
+                txtTitleOfVideoSuggestion.text = video.title ?: ""
+
+                val viewCount = video.countView ?: 0
+                txtVideoSuggestionView.text = viewCount.toString()
             }
 
             val roundOff = (video.rating?.times(100.0))?.roundToInt()?.div(100.0) ?: 0
@@ -76,7 +77,8 @@ class VideoSuggestionAdapter(
             binding.layoutVideoSuggestion.setOnClickListener {
                 val activity: AppCompatActivity = it.context as AppCompatActivity
                 val commentFragment = CommentFragment()
-                activity.supportFragmentManager.beginTransaction().replace(R.id.content_frame_main,commentFragment).commit()
+                activity.supportFragmentManager.beginTransaction()
+                    .replace(R.id.content_frame_main, commentFragment).commit()
             }
 
         }

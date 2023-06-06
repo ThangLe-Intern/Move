@@ -27,10 +27,13 @@ class CarouselViewPagerAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(fragment: FeaturedFragment, videoCarousel: DataVideoSuggestion) {
             binding.apply {
-                txtFeatureUsername.text = videoCarousel.username
-                txtFeatureVideoTitle.text = videoCarousel.title
-                txtViewCount.text = videoCarousel.countView.toString()
-                txtFeatureVideoCategory.text = videoCarousel.categoryName
+                txtFeatureUsername.text = videoCarousel.username ?: ""
+                txtFeatureVideoTitle.text = videoCarousel.title ?: ""
+
+                val viewCount = videoCarousel.countView ?: 0
+                txtViewCount.text = viewCount.toString()
+
+                txtFeatureVideoCategory.text = videoCarousel.categoryName ?: ""
             }
 
             if (videoCarousel.categoryName != null && videoCarousel.categoryName == "Just Move") {

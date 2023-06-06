@@ -76,14 +76,14 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     override fun onResume() {
         super.onResume()
 
-            getSharedPreferences = getSharedPreferences(TOKEN_USER_PREFERENCE, MODE_PRIVATE)
-            tokenUser = getSharedPreferences?.getString(TOKEN, null)
+        getSharedPreferences = getSharedPreferences(TOKEN_USER_PREFERENCE, MODE_PRIVATE)
+        tokenUser = getSharedPreferences?.getString(TOKEN, null)
 
-            if (tokenUser == null) {
-                onLogout()
-            } else {
-                onLogin()
-            }
+        if (tokenUser == null) {
+            onLogout()
+        } else {
+            onLogin()
+        }
 
     }
 
@@ -122,9 +122,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     private fun onReload() {
         //Reload Current Screen
 
-        when (val currentFragment = supportFragmentManager.findFragmentById(R.id.content_frame_main)) {
+        when (val currentFragment =
+            supportFragmentManager.findFragmentById(R.id.content_frame_main)) {
             is HomeFragment -> {
-               currentFragment.onResume()
+                currentFragment.onResume()
             }
             is FAQFragment -> {
                 //Refresh Data FAQ when Logout
@@ -239,9 +240,9 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
                     loginDialog.show(supportFragmentManager, "login Dialog")
                 } else {
                     mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
-                    if(!isDeviceOnline(this@MainMenuActivity)){
+                    if (!isDeviceOnline(this@MainMenuActivity)) {
                         onShowProgressDialog()
-                    }else{
+                    } else {
                         tokenUser?.let { token -> presenter?.logoutRequest(token) }
                         onLogout()
                     }
@@ -346,10 +347,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     }
 
     override fun onShowDisconnectDialog() {
-        if (disconnectDialog?.isShowing == null || disconnectDialog?.isShowing == false ){
+        if (disconnectDialog?.isShowing == null || disconnectDialog?.isShowing == false) {
             onShowProgressDialog()
-        }else{
-            Log.d("KKK",disconnectDialog?.isShowing.toString())
+        } else {
+            Log.d("KKK", disconnectDialog?.isShowing.toString())
         }
     }
 
@@ -373,20 +374,19 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     private fun onShowProgressDialog() {
 
         disconnectDialog = Dialog(this)
-
-        disconnectDialog?.setContentView(R.layout.progress_dialog)
-        disconnectDialog?.setCanceledOnTouchOutside(false)
-        disconnectDialog?.window?.apply {
-            setLayout(
-                WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT
-            )
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        disconnectDialog?.apply {
+            setContentView(R.layout.progress_dialog)
+            setCanceledOnTouchOutside(false)
+            window?.apply {
+                setLayout(
+                    WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT
+                )
+                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            }
+            show()
         }
-        disconnectDialog?.show()
 
-
-        val btnTryAgain = disconnectDialog?.findViewById<AppCompatTextView>(R.id.txt_try_again)
-        btnTryAgain?.setOnClickListener {
+        disconnectDialog?.findViewById<AppCompatTextView>(R.id.txt_try_again)?.setOnClickListener {
             disconnectDialog?.dismiss()
             onReload()
         }

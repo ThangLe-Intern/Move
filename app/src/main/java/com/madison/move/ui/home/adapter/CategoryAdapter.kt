@@ -21,7 +21,7 @@ class CategoryAdapter(
                 Glide.with(activity).load(category.img).into(binding.imgCategory)
             }
 
-            binding.txtCategoryType.text = category.name
+            binding.txtCategoryType.text = category.name ?: ""
             binding.txtCategoryView.text =
                 activity.getString(R.string.count_view, category.viewCount.toString() ?: "")
         }
