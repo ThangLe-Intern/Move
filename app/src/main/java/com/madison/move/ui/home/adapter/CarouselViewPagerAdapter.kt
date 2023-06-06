@@ -108,6 +108,11 @@ class CarouselViewPagerAdapter(
 
     }
 
+    fun onClearCarousel(){
+        var size = listFragment.size
+        listFragment.clear();
+        notifyItemRangeRemoved(0, size);
+    }
 
     private val runnable = Runnable {
 //        viewPager2.currentItem = 0

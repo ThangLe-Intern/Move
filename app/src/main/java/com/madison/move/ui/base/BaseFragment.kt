@@ -52,11 +52,15 @@ abstract class BaseFragment<Presenter : Any> : Fragment(), BaseView {
 
     override fun onResume() {
         super.onResume()
+
         listener()
+
+        //Check Internet Connection
+/*
         if (mListener?.isDeviceOnlineCheck() == false) {
             Toast.makeText(activity, NO_INTERNET, Toast.LENGTH_SHORT).show()
             mListener?.onShowDisconnectDialog()
-        }
+        }*/
     }
 
     fun onReloadUserMenu(){

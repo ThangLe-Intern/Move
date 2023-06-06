@@ -67,11 +67,6 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         //Disable nested scroll of recyclerview
         binding.listVideoSuggestion.isNestedScrollingEnabled = false
 
-        presenter?.apply {
-            getFeaturedVideoData()
-            getCategoryData()
-        }
-
         return binding.root
 
     }
@@ -90,9 +85,27 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     }
 
+
+
     private fun onRefreshData() {
 
         mListener?.onShowProgressBar()
+
+        if (this::carouselViewPagerAdapter.isInitialized) {
+            // Clear the data in the adapter
+            carouselViewPagerAdapter.onClearCarousel()
+            // Notify the adapter of the data change
+            carouselViewPagerAdapter.notifyDataSetChanged();
+            // Reset the ViewPager to the first item
+            binding.viewPager.currentItem = 0
+        }
+
+
+        presenter?.apply {
+            getFeaturedVideoData()
+            getCategoryData()
+        }
+
 
 
         getSharedPreferences = requireContext().getSharedPreferences(
@@ -152,7 +165,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     override fun onErrorMoveData(error: String) {
 //        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
-//        mListener?.onShowDisconnectDialog()
+        mListener?.onShowDisconnectDialog()
     }
 
     private val runnable = Runnable {
@@ -164,6 +177,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         featuredFragmentList: ArrayList<FeaturedFragment>,
         videoCarouselData: ArrayList<DataVideoSuggestion>
     ) {
+
         handler = Handler(Looper.myLooper()!!)
         carouselViewPagerAdapter = CarouselViewPagerAdapter(
             this@HomeFragment, featuredFragmentList, videoCarouselData, binding.viewPager

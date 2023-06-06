@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -348,7 +349,11 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     }
 
     override fun onShowDisconnectDialog() {
-        onShowProgressDialog()
+        if (disconnectDialog?.isShowing == null || disconnectDialog?.isShowing == false ){
+            onShowProgressDialog()
+        }else{
+            Log.d("KKK",disconnectDialog?.isShowing.toString())
+        }
     }
 
     override fun isDeviceOnlineCheck(): Boolean {

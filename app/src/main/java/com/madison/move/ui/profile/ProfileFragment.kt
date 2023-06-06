@@ -474,8 +474,8 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     }
 
     override fun onErrorGetProfile(errorType: String) {
-        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
-//        mListener?.onShowDisconnectDialog()
+//        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
+        mListener?.onShowDisconnectDialog()
     }
 
     override fun onShowError(errorType: String) {
