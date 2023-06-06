@@ -2,12 +2,11 @@ package com.madison.move.ui.profile
 
 import android.util.Log
 import com.madison.move.data.DataManager
-import com.madison.move.data.model.User
-import com.madison.move.data.model.country.CountryResponse
-import com.madison.move.data.model.state.StateResponse
-import com.madison.move.data.model.update_profile.ProfileRequest
-import com.madison.move.data.model.update_profile.UpdateProfileResponse
-import com.madison.move.data.model.user_profile.ProfileResponse
+import com.madison.move.data.model.ObjectResponse
+import com.madison.move.data.model.DataCountry
+import com.madison.move.data.model.DataState
+import com.madison.move.data.model.ProfileRequest
+import com.madison.move.data.model.DataUser
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -60,10 +59,10 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
         }
 
         dataManager.movieRepository.updateProfileUser("Bearer $token", profileRequest)
-            ?.enqueue(object : Callback<UpdateProfileResponse> {
+            ?.enqueue(object : Callback<ObjectResponse<DataUser>> {
                 override fun onResponse(
-                    call: Call<UpdateProfileResponse>,
-                    profileResponse: Response<UpdateProfileResponse>
+                    call: Call<ObjectResponse<DataUser>>,
+                    profileResponse: Response<ObjectResponse<DataUser>>
                 ) {
                     if (profileResponse.body() != null) {
                         view?.onSuccessUpdateProfile(profileResponse.body()!!)
@@ -74,7 +73,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                     }
                 }
 
-                override fun onFailure(call: Call<UpdateProfileResponse>, t: Throwable) {
+                override fun onFailure(call: Call<ObjectResponse<DataUser>>, t: Throwable) {
                     view?.onErrorGetProfile(t.message.toString())
                 }
             })
@@ -84,9 +83,10 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
 
     override fun getProfileUserDataPresenter(token: String) {
         dataManager.movieRepository.getUserProfile("Bearer $token")
-            ?.enqueue(object : Callback<ProfileResponse> {
+            ?.enqueue(object : Callback<ObjectResponse<DataUser>> {
                 override fun onResponse(
-                    call: Call<ProfileResponse>, profileResponse: Response<ProfileResponse>
+                    call: Call<ObjectResponse<DataUser>>,
+                    profileResponse: Response<ObjectResponse<DataUser>>
                 ) {
                     if (profileResponse.body() != null) {
                         view?.onSuccessGetProfileData(profileResponse.body()!!)
@@ -97,37 +97,39 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                     }
                 }
 
-                override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
+                override fun onFailure(call: Call<ObjectResponse<DataUser>>, t: Throwable) {
                     view?.onErrorGetProfile(t.message.toString())
                 }
             })
     }
 
     override fun getCountryDataPresenter() {
-        dataManager.movieRepository.getCountryData()?.enqueue(object : Callback<CountryResponse> {
-            override fun onResponse(
-                call: Call<CountryResponse>, countryResponse: Response<CountryResponse>
-            ) {
-                if (countryResponse.body() != null) {
-                    view?.onSuccessGetCountryData(countryResponse.body()!!)
+        dataManager.movieRepository.getCountryData()
+            ?.enqueue(object : Callback<ObjectResponse<List<DataCountry>>> {
+                override fun onResponse(
+                    call: Call<ObjectResponse<List<DataCountry>>>,
+                    countryResponse: Response<ObjectResponse<List<DataCountry>>>
+                ) {
+                    if (countryResponse.body() != null) {
+                        view?.onSuccessGetCountryData(countryResponse.body()!!)
+                    }
+
+                    if (countryResponse.errorBody() != null) {
+                        Log.d("KEKE", "Get Country Failed!")
+                    }
                 }
 
-                if (countryResponse.errorBody() != null) {
-                    Log.d("KEKE", "Get Country Failed!")
+                override fun onFailure(call: Call<ObjectResponse<List<DataCountry>>>, t: Throwable) {
+                    view?.onErrorGetProfile(t.message.toString())
                 }
-            }
-
-            override fun onFailure(call: Call<CountryResponse>, t: Throwable) {
-                view?.onErrorGetProfile(t.message.toString())
-            }
-        })
+            })
     }
 
     override fun getStateDataPresenter(countryID: Int) {
         dataManager.movieRepository.getStateData(countryID)
-            ?.enqueue(object : Callback<StateResponse> {
+            ?.enqueue(object : Callback<ObjectResponse<List<DataState>>> {
                 override fun onResponse(
-                    call: Call<StateResponse>, stateResponse: Response<StateResponse>
+                    call: Call<ObjectResponse<List<DataState>>>, stateResponse: Response<ObjectResponse<List<DataState>>>
                 ) {
 
                     if (stateResponse.body() != null) {
@@ -139,7 +141,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                     }
                 }
 
-                override fun onFailure(call: Call<StateResponse>, t: Throwable) {
+                override fun onFailure(call: Call<ObjectResponse<List<DataState>>>, t: Throwable) {
                     view?.onErrorGetProfile(t.message.toString())
                 }
             })

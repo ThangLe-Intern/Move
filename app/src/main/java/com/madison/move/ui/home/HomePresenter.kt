@@ -1,13 +1,10 @@
 package com.madison.move.ui.home
 
-import android.util.Log
 import com.madison.move.data.DataManager
-import com.madison.move.data.model.carousel.CarouselResponse
-import com.madison.move.data.model.carousel.DataVideoCarousel
-import com.madison.move.data.model.category.CategoryResponse
-import com.madison.move.data.model.category.DataCategory
+import com.madison.move.data.model.ObjectResponse
+import com.madison.move.data.model.DataCategory
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
-import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
+import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,32 +25,33 @@ class HomePresenter(
     }
 
     override fun getFeaturedVideoData() {
-        dataManager.movieRepository.getCarousel()?.enqueue(object : Callback<CarouselResponse> {
+        dataManager.movieRepository.getCarousel()?.enqueue(object : Callback<ObjectResponse<List<DataVideoSuggestion>>> {
             override fun onResponse(
-                call: Call<CarouselResponse>, carouselResponse: Response<CarouselResponse>
+                call: Call<ObjectResponse<List<DataVideoSuggestion>>>, carouselResponse: Response<ObjectResponse<List<DataVideoSuggestion>>>
             ) {
                 if (carouselResponse.body() != null) {
+                    carouselResponse.body()
                     view?.onSuccessCarouselData(carouselResponse.body()!!)
                 }
             }
 
-            override fun onFailure(call: Call<CarouselResponse>, t: Throwable) {
+            override fun onFailure(call: Call<ObjectResponse<List<DataVideoSuggestion>>>, t: Throwable) {
                 view?.onErrorMoveData(t.message.toString())
             }
         })
     }
 
     override fun getCategoryData() {
-        dataManager.movieRepository.getCategory()?.enqueue(object : Callback<CategoryResponse> {
+        dataManager.movieRepository.getCategory()?.enqueue(object : Callback<ObjectResponse<List<DataCategory>>> {
             override fun onResponse(
-                call: Call<CategoryResponse>, categoryResponse: Response<CategoryResponse>
+                call: Call<ObjectResponse<List<DataCategory>>>, objectResponse: Response<ObjectResponse<List<DataCategory>>>
             ) {
-                if (categoryResponse.body() != null) {
-                    view?.onSuccessCategoryData(categoryResponse.body()!!)
+                if (objectResponse.body() != null) {
+                    view?.onSuccessCategoryData(objectResponse.body()!!)
                 }
             }
 
-            override fun onFailure(call: Call<CategoryResponse>, t: Throwable) {
+            override fun onFailure(call: Call<ObjectResponse<List<DataCategory>>>, t: Throwable) {
                 view?.onErrorMoveData(t.message.toString())
             }
         })
@@ -66,17 +64,17 @@ class HomePresenter(
 
     override fun getVideoSuggestionData() {
         dataManager.movieRepository.getVideoSuggestion()
-            ?.enqueue(object : Callback<VideoSuggestionResponse> {
+            ?.enqueue(object : Callback<ObjectResponse<VideoSuggestion>> {
                 override fun onResponse(
-                    call: Call<VideoSuggestionResponse>,
-                    videoSuggestionResponse: Response<VideoSuggestionResponse>
+                    call: Call<ObjectResponse<VideoSuggestion>>,
+                    videoSuggestionResponse: Response<ObjectResponse<VideoSuggestion>>
                 ) {
                     if (videoSuggestionResponse.body() != null) {
                         view?.onSuccessVideoSuggestionData(videoSuggestionResponse.body()!!)
                     }
                 }
 
-                override fun onFailure(call: Call<VideoSuggestionResponse>, t: Throwable) {
+                override fun onFailure(call: Call<ObjectResponse<VideoSuggestion>>, t: Throwable) {
                     view?.onErrorMoveData(t.message.toString())
                 }
             })
@@ -84,17 +82,17 @@ class HomePresenter(
 
     override fun getVideoSuggestionForUserData(token: String) {
         dataManager.movieRepository.getVideoSuggestionForUser("Bearer $token")
-            ?.enqueue(object : Callback<VideoSuggestionResponse> {
+            ?.enqueue(object : Callback<ObjectResponse<VideoSuggestion>> {
                 override fun onResponse(
-                    call: Call<VideoSuggestionResponse>,
-                    videoSuggestionResponse: Response<VideoSuggestionResponse>
+                    call: Call<ObjectResponse<VideoSuggestion>>,
+                    videoSuggestionResponse: Response<ObjectResponse<VideoSuggestion>>
                 ) {
                     if (videoSuggestionResponse.body() != null) {
                         view?.onSuccessVideoSuggestionForUser(videoSuggestionResponse.body()!!)
                     }
                 }
 
-                override fun onFailure(call: Call<VideoSuggestionResponse>, t: Throwable) {
+                override fun onFailure(call: Call<ObjectResponse<VideoSuggestion>>, t: Throwable) {
                     view?.onErrorMoveData(t.message.toString())
                 }
             })

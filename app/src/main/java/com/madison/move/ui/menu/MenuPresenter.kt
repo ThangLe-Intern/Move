@@ -1,8 +1,8 @@
 package com.madison.move.ui.menu
 
 import com.madison.move.data.DataManager
-import com.madison.move.data.model.login.LoginResponse
-import com.madison.move.data.model.logout.LogoutResponse
+import com.madison.move.data.model.ObjectResponse
+import com.madison.move.data.model.DataUser
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -11,9 +11,9 @@ class MenuPresenter(override var view: MainContract.View?) : MainContract.Presen
     private val dataManager: DataManager = DataManager.instance
     override fun onGetTokenPresenter(email: String, password: String) {
         dataManager.movieRepository.getTokenLogin(email, password)
-            ?.enqueue(object : Callback<LoginResponse> {
+            ?.enqueue(object : Callback<ObjectResponse<DataUser>> {
                 override fun onResponse(
-                    call: Call<LoginResponse>, loginResponse: Response<LoginResponse>
+                    call: Call<ObjectResponse<DataUser>>, loginResponse: Response<ObjectResponse<DataUser>>
                 ) {
                     if (loginResponse.body() != null) {
                         view?.onSuccessGetToken(loginResponse.body()!!)
@@ -24,23 +24,23 @@ class MenuPresenter(override var view: MainContract.View?) : MainContract.Presen
                     }
                 }
 
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                override fun onFailure(call: Call<ObjectResponse<DataUser>>, t: Throwable) {
                 }
             })
     }
 
     override fun logoutRequest(token: String) {
         dataManager.movieRepository.logOutUser("Bearer $token")
-            ?.enqueue(object : Callback<LogoutResponse> {
+            ?.enqueue(object : Callback<ObjectResponse<DataUser>> {
                 override fun onResponse(
-                    call: Call<LogoutResponse>, logoutResponse: Response<LogoutResponse>
+                    call: Call<ObjectResponse<DataUser>>, logoutResponse: Response<ObjectResponse<DataUser>>
                 ) {
                     if (logoutResponse.body() != null) {
                         view?.onSuccessLogout(logoutResponse.body()!!)
                     }
                 }
 
-                override fun onFailure(call: Call<LogoutResponse>, t: Throwable) {
+                override fun onFailure(call: Call<ObjectResponse<DataUser>>, t: Throwable) {
                     t.message?.let { view?.onError(it) }
                 }
             })

@@ -16,26 +16,19 @@ import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.LinearLayoutCompat
 import com.bumptech.glide.Glide
 import com.github.drjacky.imagepicker.ImagePicker
 import com.github.drjacky.imagepicker.constant.ImageProvider
 import com.google.gson.Gson
 import com.madison.move.R
-import com.madison.move.data.model.country.CountryResponse
-import com.madison.move.data.model.country.DataCountry
-import com.madison.move.data.model.state.DataState
-import com.madison.move.data.model.state.StateResponse
-import com.madison.move.data.model.update_profile.ProfileRequest
-import com.madison.move.data.model.update_profile.UpdateProfileResponse
-import com.madison.move.data.model.user_profile.DataUser
-import com.madison.move.data.model.user_profile.ProfileResponse
+import com.madison.move.data.model.ObjectResponse
+import com.madison.move.data.model.DataCountry
+import com.madison.move.data.model.DataState
+import com.madison.move.data.model.ProfileRequest
+import com.madison.move.data.model.DataUser
 import com.madison.move.databinding.FragmentProfileBinding
 import com.madison.move.ui.base.BaseFragment
-import com.madison.move.ui.menu.MainInterface
 import com.madison.move.ui.menu.MainMenuActivity
-import de.hdodenhof.circleimageview.CircleImageView
 import java.time.Year
 
 
@@ -399,9 +392,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     }
 
-    override fun onSuccessGetProfileData(profileResponse: ProfileResponse) {
+    override fun onSuccessGetProfileData(profileResponse: ObjectResponse<DataUser>) {
 
-        userData = profileResponse.dataUser
+        userData = profileResponse.data
         listDataCountry?.forEach {
             if (it.id != null && it.id == userData?.countryId) presenter?.getStateDataPresenter(it.id)
         }
@@ -430,9 +423,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     }
 
-    override fun onSuccessGetCountryData(countryResponse: CountryResponse) {
-        handleDropDownCountry(countryResponse.dataCountry as ArrayList<DataCountry>)
-        listDataCountry = countryResponse.dataCountry
+    override fun onSuccessGetCountryData(countryResponse: ObjectResponse<List<DataCountry>>) {
+        handleDropDownCountry(countryResponse.data as ArrayList<DataCountry>)
+        listDataCountry = countryResponse.data
         listDataCountry?.forEach {
             if (it.id != null && it.id == userData?.countryId) presenter?.getStateDataPresenter(it.id)
         }
@@ -443,7 +436,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     }
 
-    override fun onSuccessGetStateData(stateResponse: StateResponse) {
+    override fun onSuccessGetStateData(stateResponse: ObjectResponse<List<DataState>>) {
         handleDropDownState(stateResponse.data as ArrayList<DataState>)
         listDataState = stateResponse.data
         if (userData?.stateId != null) {
@@ -460,7 +453,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         }
     }
 
-    override fun onSuccessUpdateProfile(updateProfileResponse: UpdateProfileResponse) {
+    override fun onSuccessUpdateProfile(updateProfileResponse: ObjectResponse<DataUser>) {
         binding.txtErrorFullName.visibility = View.GONE
         binding.txtErrorFullName.focusable = View.FOCUSABLE
         onResume()

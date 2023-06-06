@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.madison.move.R
-import com.madison.move.data.model.carousel.DataVideoCarousel
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentFeaturedBinding
 import com.madison.move.ui.home.FeaturedFragment
