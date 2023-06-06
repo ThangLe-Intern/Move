@@ -1,4 +1,4 @@
-package com.madison.move.data.model.state
+package com.madison.move.data.model
 
 
 import com.google.gson.annotations.SerializedName

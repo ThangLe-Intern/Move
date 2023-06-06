@@ -8,7 +8,6 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -31,9 +30,8 @@ import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.madison.move.R
-import com.madison.move.data.model.login.LoginResponse
-import com.madison.move.data.model.logout.LogoutResponse
-import com.madison.move.data.model.user_profile.DataUser
+import com.madison.move.data.model.ObjectResponse
+import com.madison.move.data.model.DataUser
 import com.madison.move.databinding.ActivityMainMenuBinding
 import com.madison.move.ui.base.BaseActivity
 import com.madison.move.ui.faq.FAQFragment
@@ -49,7 +47,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     lateinit var mainMenuBinding: ActivityMainMenuBinding
     private var dataUserLogin: DataUser? = null
     private var tokenUser: String? = null
-    private var tokenResponse: LoginResponse? = null
+    private var tokenResponse: ObjectResponse<DataUser>? = null
     private var getSharedPreferences: SharedPreferences? = null
     private var fragmentLogin: DialogFragment? = null
     var disconnectDialog: Dialog? = null
@@ -302,15 +300,14 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         fragmentLogin = fragment
     }
 
-    override fun onSuccessGetToken(loginResponse: LoginResponse) {
+    override fun onSuccessGetToken(loginResponse: ObjectResponse<DataUser>) {
 
         fragmentLogin?.dismiss()
 
-        tokenResponse = loginResponse
+        Toast.makeText(this, loginResponse.message, Toast.LENGTH_SHORT).show()
 
-        tokenUser = tokenResponse?.token
-
-        dataUserLogin = tokenResponse?.dataUserLogin
+        tokenUser = loginResponse.token
+        dataUserLogin = loginResponse.data
 
         //Set Data to Preferences
         val sharedPreferences = getSharedPreferences(TOKEN_USER_PREFERENCE, MODE_PRIVATE)
@@ -328,7 +325,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
 
     }
 
-    override fun onSuccessLogout(logoutResponse: LogoutResponse) {
+    override fun onSuccessLogout(logoutResponse: ObjectResponse<DataUser>) {
         Toast.makeText(this, logoutResponse.message ?: "", Toast.LENGTH_SHORT).show()
         //clear token when logout
         onClearPreferences()

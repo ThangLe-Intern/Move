@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.madison.move.R
-import com.madison.move.data.model.category.DataCategory
+import com.madison.move.data.model.DataCategory
 import com.madison.move.databinding.ItemCategoryBinding
 import com.madison.move.ui.home.HomeFragment
 

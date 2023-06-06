@@ -1,4 +1,4 @@
-package com.madison.move.data.model.user_profile
+package com.madison.move.data.model
 
 
 import com.google.gson.annotations.SerializedName
