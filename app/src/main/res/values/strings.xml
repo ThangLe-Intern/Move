@@ -27,7 +27,7 @@
     <string name="viewOfVideo">1.34k</string>
     <string name="video_title">Leg days</string>
     <string name="username">Vu Dung</string>
-    <string name="video_category">Just Move</string>
+    <string name="video_category">%s •</string>
     <string name="video_rateNumber">4.5</string>
     <string name="typeOfUser">Beginner</string>
     <string name="category_title">MMA</string>

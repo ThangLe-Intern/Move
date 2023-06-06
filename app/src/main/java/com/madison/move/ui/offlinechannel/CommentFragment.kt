@@ -18,19 +18,27 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.madison.move.R
+import com.madison.move.data.model.carousel.DataVideoCarousel
+import com.madison.move.data.model.videodetail.VideoDetailResponse
+import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentCommentBinding
+import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
 import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
+import kotlin.math.roundToInt
 
-
-open class CommentFragment : Fragment(), CommentListener {
+open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?,
+                            private val dataVideoCarousel: DataVideoSuggestion?) :
+    BaseFragment<CommentPresenter>(), CommentListener, CommentContract.CommentContract {
     private lateinit var binding: FragmentCommentBinding
     lateinit var adapterComment: ListCommentAdapter
     private var listComment: MutableList<Comment> = mutableListOf()
-
     private var currentFragment: Fragment? = null
     private lateinit var handler: Handler
+    override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
+
     var page = 1
 
     private var isLoading = false
@@ -41,7 +49,6 @@ open class CommentFragment : Fragment(), CommentListener {
     ): View? {
 
         binding = FragmentCommentBinding.inflate(inflater, container, false)
-
 
         val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
         listComment?.let {
@@ -57,8 +64,112 @@ open class CommentFragment : Fragment(), CommentListener {
 
         currentFragment = this
 
+        binding.apply {
+
+            nameUserProflie.text = dataVideoCarousel?.username.toString()
+            tvJust.text = getString(R.string.video_category, dataVideoCarousel?.categoryName.toString())
+            tvrateNumber.text = dataVideoCarousel?.rating.toString()
+
+            if (dataVideoCarousel?.img != null) {
+                activity?.let { Glide.with(it).load(dataVideoCarousel.img).into(avartProfile) }
+            } else {
+                avartProfile.setImageResource(R.drawable.avatar)
+            }
+
+            if (dataVideoCarousel?.rating == null) {
+                tvrateNumber.text = 0.toString()
+            } else {
+                val roundOff = (dataVideoCarousel.rating?.times(100.0))?.roundToInt()?.div(100.0)
+                tvrateNumber.text = roundOff.toString()
+            }
+            if (dataVideoCarousel?.categoryName != null && dataVideoCarousel.categoryName == "Just Move") {
+                cardviewTimeLine.visibility = View.INVISIBLE
+                cardviewBeginner.visibility = View.INVISIBLE
+            } else {
+                cardviewTimeLine.visibility = View.VISIBLE
+                cardviewBeginner.visibility = View.VISIBLE
+
+                when (dataVideoCarousel?.level) {
+                    1 -> txtBeginner.text =
+                        activity?.getString(R.string.txt_level_beginner)
+                    2 -> txtBeginner.text =
+                        activity?.getString(R.string.txt_level_inter)
+                    3 -> txtBeginner.text =
+                        activity?.getString(R.string.txt_level_advanced)
+                }
+
+                when (dataVideoCarousel?.duration) {
+                    1 -> txtTimeLine.text =
+                        activity?.getString(R.string.timeOfCategory)
+                    2 -> txtTimeLine.text =
+                        activity?.getString(R.string.duration_second)
+                    3 -> txtTimeLine.text =
+                        activity?.getString(R.string.duration_third)
+                }
+            }
+
+
+            nameUserProflie.text = dataVideoSuggestion?.username.toString()
+            tvJust.text = getString(R.string.video_category, dataVideoSuggestion?.categoryName.toString())
+            tvrateNumber.text = dataVideoSuggestion?.rating.toString()
+
+            if (dataVideoSuggestion?.img != null) {
+                activity?.let { Glide.with(it).load(dataVideoSuggestion.img).into(avartProfile) }
+            } else {
+                avartProfile.setImageResource(R.drawable.avatar)
+            }
+
+            if (dataVideoSuggestion?.rating == null) {
+                tvrateNumber.text = 0.toString()
+            } else {
+                val roundOff = (dataVideoSuggestion.rating?.times(100.0))?.roundToInt()?.div(100.0)
+                tvrateNumber.text = roundOff.toString()
+            }
+            if (dataVideoSuggestion?.categoryName != null && dataVideoSuggestion.categoryName == "Just Move") {
+                cardviewTimeLine.visibility = View.INVISIBLE
+                cardviewBeginner.visibility = View.INVISIBLE
+            } else {
+                cardviewTimeLine.visibility = View.VISIBLE
+                cardviewBeginner.visibility = View.VISIBLE
+
+                when (dataVideoSuggestion?.level) {
+                    1 -> txtBeginner.text =
+                        activity?.getString(R.string.txt_level_beginner)
+                    2 -> txtBeginner.text =
+                        activity?.getString(R.string.txt_level_inter)
+                    3 -> txtBeginner.text =
+                        activity?.getString(R.string.txt_level_advanced)
+                }
+
+                when (dataVideoSuggestion?.duration) {
+                    1 -> txtTimeLine.text =
+                        activity?.getString(R.string.timeOfCategory)
+                    2 -> txtTimeLine.text =
+                        activity?.getString(R.string.duration_second)
+                    3 -> txtTimeLine.text =
+                        activity?.getString(R.string.duration_third)
+                }
+            }
+        }
+
+        presenter?.apply {
+            getVideoDetail(
+                "Bearer 738|lIWZa37uiaezo9V3GubQHPCIzbp7ygRRyk63ZIS4",
+                dataVideoSuggestion?.id ?: 0
+            )
+        }
+
+        return binding.root
+    }
+
+
+    override fun onBottomNavigateSystemUI() {
+
+    }
+
+    override fun onSuccessGetVideoSuggestion(videoDetailsSuggestionResponse: VideoDetailResponse) {
         val iframeContent =
-            "<html><body style=\"margin:0; padding:0\"><iframe src=\"https://player.vimeo.com/video/831402333\" width=\"100%\" height=\"100%\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>" // Lấy nội dung iframe từ API
+            "<html><body style=\"margin:0; padding:0\"><iframe src=\"https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\" width=\"100%\" height=\"100%\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>" // Lấy nội dung iframe từ API
 
         binding.webView.getSettings().setJavaScriptEnabled(true)
 
@@ -68,7 +179,10 @@ open class CommentFragment : Fragment(), CommentListener {
             "utf-8"
         )
 
-        return binding.root
+    }
+
+    override fun onError(errorMessage: String) {
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,7 +192,7 @@ open class CommentFragment : Fragment(), CommentListener {
     }
 
     override fun onBackPressed() {
-        TODO("Not yet implemented")
+
     }
 
     override fun userComment(
@@ -124,9 +238,6 @@ open class CommentFragment : Fragment(), CommentListener {
                 }
 
                 override fun afterTextChanged(s: Editable?) {
-/*                if (!s.isNullOrEmpty()) {
-                    binding.edtUserComment.clearFocus()
-                }*/
                 }
             })
             onFocusChangeListener =

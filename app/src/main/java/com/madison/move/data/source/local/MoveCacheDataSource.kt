@@ -11,6 +11,7 @@ import com.madison.move.data.model.state.StateResponse
 import com.madison.move.data.model.update_profile.ProfileRequest
 import com.madison.move.data.model.update_profile.UpdateProfileResponse
 import com.madison.move.data.model.user_profile.ProfileResponse
+import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.data.source.MoveDataSource
 import retrofit2.Call
@@ -57,6 +58,10 @@ class MoveCacheDataSource : MoveDataSource {
     }
 
     override fun getVideoSuggestion(): Call<VideoSuggestionResponse>? {
+        return null
+    }
+
+    override fun getVideoDetail(authorization: String, id: Int): Call<VideoDetailResponse>? {
         return null
     }
 

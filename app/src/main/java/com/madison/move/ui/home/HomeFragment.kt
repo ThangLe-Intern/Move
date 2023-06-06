@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.madison.move.R
 import com.madison.move.data.model.carousel.CarouselResponse
 import com.madison.move.data.model.carousel.DataVideoCarousel
 import com.madison.move.data.model.category.CategoryResponse
@@ -26,6 +27,7 @@ import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.home.adapter.CarouselViewPagerAdapter
 import com.madison.move.ui.home.adapter.CategoryAdapter
 import com.madison.move.ui.home.adapter.VideoSuggestionAdapter
+import com.madison.move.ui.offlinechannel.CommentFragment
 import kotlin.math.abs
 
 class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
@@ -36,8 +38,8 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     private lateinit var videoSuggestionAdapter: VideoSuggestionAdapter
     private var handler: Handler = Handler(Looper.getMainLooper())
 
+    var videoCarouselData: ArrayList<DataVideoSuggestion> = arrayListOf()
     private var getSharedPreferences: SharedPreferences? = null
-    var videoCarouselData: ArrayList<DataVideoCarousel> = arrayListOf()
     var featuredList: ArrayList<FeaturedFragment> = arrayListOf()
     var categoryList: ArrayList<DataCategory> = arrayListOf()
     var videoList: ArrayList<DataVideoSuggestion> = arrayListOf()
@@ -139,7 +141,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     //Show Video To Carousel
     override fun onShowFeaturedCarousel(
         featuredFragmentList: ArrayList<FeaturedFragment>,
-        videoCarouselData: ArrayList<DataVideoCarousel>
+        videoCarouselData: ArrayList<DataVideoSuggestion>
     ) {
         handler = Handler(Looper.myLooper()!!)
         carouselViewPagerAdapter = CarouselViewPagerAdapter(
@@ -154,7 +156,6 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
 
-
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -162,6 +163,18 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
                 handler.postDelayed(runnable, 3000)
             }
         })
+
+        carouselViewPagerAdapter.onClickVideoCarousel = object  : CarouselViewPagerAdapter.setListenerCarouselVideo{
+            override fun onClickVideoCarousel(dataVideoCarousel: DataVideoSuggestion) {
+                val activity = requireActivity() as AppCompatActivity
+                val commentFragment = CommentFragment(dataVideoCarousel,null)
+                activity.supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.content_frame_main, commentFragment)
+                    .commit()
+            }
+
+        }
 
 
     }
@@ -195,12 +208,20 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     //Show list of Video Suggestion
     override fun onShowListVideoSuggestion(listVideoSuggestion: ArrayList<DataVideoSuggestion>) {
+
         videoSuggestionAdapter = VideoSuggestionAdapter(this, listVideoSuggestion)
         binding.listVideoSuggestion.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = videoSuggestionAdapter
         }
-    }
+        videoSuggestionAdapter.onClickVideo = object : VideoSuggestionAdapter.setListenerVideoSuggestion{
+            override fun onClickVideoSuggest(dataVideoSuggestion: DataVideoSuggestion) {
+                val activity = requireActivity() as AppCompatActivity
+                val commentFragment = CommentFragment(dataVideoSuggestion,null)
+                activity.supportFragmentManager.beginTransaction().replace(R.id.content_frame_main,commentFragment).commit()
+            }
 
+        }
+    }
 
 }

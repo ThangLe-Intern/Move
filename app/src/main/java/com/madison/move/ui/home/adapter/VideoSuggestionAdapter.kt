@@ -16,12 +16,19 @@ import kotlin.math.roundToInt
 class VideoSuggestionAdapter(
     var activity: HomeFragment, var listVideo: ArrayList<DataVideoSuggestion>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    var onClickVideo: setListenerVideoSuggestion ?= null
+    fun onClick(onClick: setListenerVideoSuggestion){
+        this.onClickVideo = onClick
+    }
 
     inner class ViewHolder(val binding: ItemVideoSuggestionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(video: DataVideoSuggestion) {
 
             binding.apply {
+                layoutVideoSuggestion.setOnClickListener {
+                    onClickVideo?.onClickVideoSuggest(video)
+                }
                 txtVideoSuggestionUsername.text = video.username
                 txtVideoSuggestionCategory.text = activity.getString(
                     R.string.video_post_time,
@@ -78,11 +85,11 @@ class VideoSuggestionAdapter(
                 }
             }
 
-            binding.layoutVideoSuggestion.setOnClickListener {
-                val activity: AppCompatActivity = it.context as AppCompatActivity
-                val commentFragment = CommentFragment()
-                activity.supportFragmentManager.beginTransaction().replace(R.id.content_frame_main,commentFragment).commit()
-            }
+//            binding.layoutVideoSuggestion.setOnClickListener {
+//                val activity: AppCompatActivity = it.context as AppCompatActivity
+//                val commentFragment = CommentFragment(null)
+//                activity.supportFragmentManager.beginTransaction().replace(R.id.content_frame_main,commentFragment).commit()
+//            }
 
         }
     }
@@ -101,4 +108,7 @@ class VideoSuggestionAdapter(
         (holder as ViewHolder).onBind(listVideo[position])
     }
 
+    interface setListenerVideoSuggestion{
+        fun onClickVideoSuggest(dataVideoSuggestion: DataVideoSuggestion)
+    }
 }

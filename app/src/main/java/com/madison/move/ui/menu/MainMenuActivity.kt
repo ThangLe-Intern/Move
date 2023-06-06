@@ -23,7 +23,6 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.madison.move.R
-import com.madison.move.data.model.User
 import com.madison.move.data.model.login.DataUserLogin
 import com.madison.move.data.model.login.LoginResponse
 import com.madison.move.databinding.ActivityMainMenuBinding
@@ -32,7 +31,6 @@ import com.madison.move.ui.faq.FAQFragment
 import com.madison.move.ui.guidelines.GuidelinesFragment
 import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.login.LoginDialogFragment
-import com.madison.move.ui.offlinechannel.CommentFragment
 import com.madison.move.ui.profile.ProfileFragment
 
 class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
@@ -146,6 +144,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             .replace(binding.contentFrameMain.id, HomeFragment()).commit()
 
     }
+
     override fun listener() {
 
         binding.layoutUserInfo.constraintLayout.setOnClickListener {
@@ -169,12 +168,6 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
 
             }
 
-            binding.menuTvFollowing.setOnClickListener {
-                binding.drawerLayout.closeDrawer(GravityCompat.START)
-                supportFragmentManager.beginTransaction()
-                    .replace(binding.contentFrameMain.id, CommentFragment()).commit()
-            }
-
             layoutToolBar.imvLogo.setOnClickListener {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
                 supportFragmentManager.beginTransaction()
@@ -191,7 +184,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
 
                     //clear token when logout
-                    Toast.makeText(applicationContext, "Logout Successfully!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Logout Successfully!", Toast.LENGTH_SHORT)
+                        .show()
 
                     val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
                     settings.edit().clear().apply()
