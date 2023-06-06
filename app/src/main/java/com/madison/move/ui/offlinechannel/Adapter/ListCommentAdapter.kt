@@ -1,11 +1,12 @@
 package com.madison.move.ui.offlinechannel.Adapter
 
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.ImageView
+import android.widget.PopupWindow
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
@@ -24,17 +25,20 @@ class ListCommentAdapter(
     var listComment: MutableList<Comment>,
     val replyListener: ReplyListener,
 
+
     ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     lateinit var adapterReply: ListReplyAdapter
 
+
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("ClickableViewAccessibility")
         fun onBind(comment: Comment) {
 
             val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
 
-            adapterReply = ListReplyAdapter(comment.listChild)
+            adapterReply = ListReplyAdapter(comment.listChild,context)
             itemView.findViewById<RecyclerView>(R.id.listReply).apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterReply
@@ -48,7 +52,7 @@ class ListCommentAdapter(
             }
             binding.apply {
                 layoutShow.setOnClickListener {
-                    cardViewReport.visibility = View.GONE
+//                    cardViewReport.visibility = View.GONE
                     listReply.visibility =
                         if (listReply.isVisible) View.GONE else View.VISIBLE
                     imgArrowDownGreen.setImageResource(
@@ -76,12 +80,12 @@ class ListCommentAdapter(
                         currentNumber++
                         numberLike.text = currentNumber.toString()
                         btnDisLiketike.visibility = View.GONE
-                        cardViewReport.visibility = View.GONE
+//                        cardViewReport.visibility = View.GONE
                     } else if (btnLikeTick.isVisible) {
                         btnLikeTick.visibility = View.GONE
                         currentNumber--
                         numberLike.text = currentNumber.toString()
-                        cardViewReport.visibility = View.GONE
+//                        cardViewReport.visibility = View.GONE
                     }
                 }
 
@@ -91,40 +95,69 @@ class ListCommentAdapter(
                         if (btnLikeTick.isVisible) {
                             currentNumber--
                             numberLike.text = currentNumber.toString()
-                            cardViewReport.visibility = View.GONE
+//                            cardViewReport.visibility = View.GONE
                         }
                         btnLikeTick.visibility = View.GONE
                         btnDisLiketike.visibility = View.VISIBLE
-                        cardViewReport.visibility = View.GONE
+//                        cardViewReport.visibility = View.GONE
                     } else if (btnDisLiketike.isVisible) {
                         btnDisLiketike.visibility = View.GONE
-                        cardViewReport.visibility = View.GONE
+//                        cardViewReport.visibility = View.GONE
                     }
                 }
 
                 if (!comment.user.isTicked) {
                     bluetick.visibility = View.GONE
                 }
+//
+//                var isReportVisible = false
+//                cardViewReport.visibility = View.
 
-                var isReportVisible = false
-                cardViewReport.visibility = View.GONE
                 btnReport.setOnClickListener {
-                    showReportDiaLog()
-//                    isReportVisible = !isReportVisible
-//                    cardViewReport.visibility = if (isReportVisible) View.VISIBLE else View.GONE
-                }
+                    val inflater = LayoutInflater.from(context)
+                    val dialogView = inflater.inflate(R.layout.dialog_report, null)
 
+                    val popupWindow = PopupWindow(
+                        dialogView,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        true
+                    )
 
+                    val location = IntArray(2)
+                    btnReport.getLocationInWindow(location)
 
-                rootView.setOnClickListener {
-                    if (isReportVisible) {
-                        isReportVisible = false
-                        cardViewReport.visibility = View.GONE
+                    val x = location[0] - dialogView.width - 1 // Dịch dialog sang bên trái 1 đơn vị
+                    val y = location[1] - dialogView.height
+
+                    popupWindow.showAtLocation(btnReport, Gravity.NO_GRAVITY, x, y)
+
+                    dialogView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            dialogView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                            val popupX = x - (dialogView.width - btnReport.width) / 2
+                            val popupY = y - dialogView.height
+
+                            popupWindow.update(popupX, popupY, -1, -1, true)
+                        }
+                    })
+
+                    dialogView.setOnTouchListener { _, event ->
+                        popupWindow.dismiss()
+                        true
                     }
                 }
-                cardViewReport.setOnClickListener {
-                    cardViewReport.visibility = View.GONE
-                }
+
+//                rootView.setOnClickListener {
+//                    if (isReportVisible) {
+//                        isReportVisible = false
+//                        cardViewReport.visibility = View.GONE
+//                    }
+//                }
+//                cardViewReport.setOnClickListener {
+//                    cardViewReport.visibility = View.GONE
+//                }
                 sendButtonReply.setOnClickListener {
                     notifyDataSetChanged()
                 }
@@ -150,18 +183,6 @@ class ListCommentAdapter(
                 }
             }
         }
-    }
-    private fun showReportDiaLog(){
-        val dialog = AlertDialog.Builder(context)
-            .setTitle("")
-            .setPositiveButton("Report Comment") { _, _ ->
-            }
-            .setNegativeButton("") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .create()
-
-        dialog.show()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

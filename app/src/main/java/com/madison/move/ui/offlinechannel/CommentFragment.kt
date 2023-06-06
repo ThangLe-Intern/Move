@@ -1,7 +1,6 @@
 package com.madison.move.ui.offlinechannel
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
@@ -15,13 +14,11 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.madison.move.R
-import com.madison.move.data.model.carousel.DataVideoCarousel
 import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentCommentBinding
@@ -30,8 +27,10 @@ import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
 import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
 import kotlin.math.roundToInt
 
-open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?,
-                            private val dataVideoCarousel: DataVideoSuggestion?) :
+open class CommentFragment(
+    private val dataVideoSuggestion: DataVideoSuggestion?,
+    private val dataVideoCarousel: DataVideoSuggestion?
+) :
     BaseFragment<CommentPresenter>(), CommentListener, CommentContract.CommentContract {
     private lateinit var binding: FragmentCommentBinding
     lateinit var adapterComment: ListCommentAdapter
@@ -63,7 +62,8 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         binding.apply {
 
             nameUserProflie.text = dataVideoCarousel?.username.toString()
-            tvJust.text = getString(R.string.video_category, dataVideoCarousel?.categoryName.toString())
+            tvJust.text =
+                getString(R.string.video_category, dataVideoCarousel?.categoryName.toString())
             tvrateNumber.text = dataVideoCarousel?.rating.toString()
 
             if (dataVideoCarousel?.img != null) {
@@ -106,7 +106,8 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
 
 
             nameUserProflie.text = dataVideoSuggestion?.username.toString()
-            tvJust.text = getString(R.string.video_category, dataVideoSuggestion?.categoryName.toString())
+            tvJust.text =
+                getString(R.string.video_category, dataVideoSuggestion?.categoryName.toString())
             tvrateNumber.text = dataVideoSuggestion?.rating.toString()
 
             if (dataVideoSuggestion?.img != null) {
@@ -390,7 +391,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                             Log.d("DUNG", i.content)
                         }
 
-                        var adapterReply = ListReplyAdapter(listCommentReply)
+                        var adapterReply = ListReplyAdapter(listCommentReply,requireContext())
                         list.apply {
                             layoutManager = LinearLayoutManager(context)
                             adapter = adapterReply
@@ -450,15 +451,17 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         )
 
         listComment.add(Comment(2, "ALO SONDASDK", "Just now", mutableListOf(), user2))
-        listComment.add(Comment(
-            1, "DSMLMFLSKEMFKLM", "Just now",
-            mutableListOf(
-                Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
-                Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
-                Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
-                Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
-            ), user1
-        ))
+        listComment.add(
+            Comment(
+                1, "DSMLMFLSKEMFKLM", "Just now",
+                mutableListOf(
+                    Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
+                    Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
+                    Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
+                    Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
+                ), user1
+            )
+        )
         listComment.add(Comment(4, "SDASDESADASD", "Just now", mutableListOf(), user4))
         listComment.add(
             Comment(
@@ -472,26 +475,29 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
             )
         )
 
-        listComment.add(Comment(
-            1, "DSMLMFLSKEMFKLM", "Just now",
-            mutableListOf(
-                Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
-                Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
-                Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
-                Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
-            ), user1
-        ))
+        listComment.add(
+            Comment(
+                1, "DSMLMFLSKEMFKLM", "Just now",
+                mutableListOf(
+                    Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
+                    Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
+                    Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
+                    Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
+                ), user1
+            )
+        )
         listComment.add(Comment(3, "KAMAVINGAR HALANDES", "Just now", mutableListOf(), user3))
-        listComment.add(Comment(
-            1, "DSMLMFLSKEMFKLM", "Just now",
-            mutableListOf(
-                Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
-                Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
-                Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
-                Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
-            ), user1
-        ))
-
+        listComment.add(
+            Comment(
+                1, "DSMLMFLSKEMFKLM", "Just now",
+                mutableListOf(
+                    Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
+                    Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
+                    Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
+                    Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
+                ), user1
+            )
+        )
 
 
     }

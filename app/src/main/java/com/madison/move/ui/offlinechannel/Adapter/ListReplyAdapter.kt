@@ -1,15 +1,19 @@
 package com.madison.move.ui.offlinechannel.Adapter
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.content.Context
+import android.view.*
+import android.widget.PopupWindow
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.madison.move.R
 import com.madison.move.databinding.ItemUserCommentBinding
 import com.madison.move.ui.offlinechannel.Comment
 
-class ListReplyAdapter(var listReply: MutableList<Comment>) :
+class ListReplyAdapter(
+    var listReply: MutableList<Comment>,
+    private var context: Context,
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
@@ -30,23 +34,60 @@ class ListReplyAdapter(var listReply: MutableList<Comment>) :
                 }
                 btnReply.visibility = View.INVISIBLE
 
-                var isReportVisible = false
-                cardViewReport.visibility = View.GONE
                 btnReport.setOnClickListener {
-                    isReportVisible = !isReportVisible
-                    cardViewReport.visibility = if (isReportVisible) View.VISIBLE else View.GONE
-                }
+                    val inflater = LayoutInflater.from(context)
+                    val dialogView = inflater.inflate(R.layout.dialog_report, null)
 
-                rootView.setOnClickListener {
-                    if (isReportVisible){
-                        isReportVisible = false
-                        cardViewReport.visibility = View.GONE
+                    val popupWindow = PopupWindow(
+                        dialogView,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        true
+                    )
+
+                    val location = IntArray(2)
+                    btnReport.getLocationInWindow(location)
+
+                    val x = location[0] - dialogView.width - 1 // Dịch dialog sang bên trái 1 đơn vị
+                    val y = location[1] - dialogView.height
+
+                    popupWindow.showAtLocation(btnReport, Gravity.NO_GRAVITY, x, y)
+
+                    dialogView.viewTreeObserver.addOnGlobalLayoutListener(object :
+                        ViewTreeObserver.OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            dialogView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                            val popupX = x - (dialogView.width - btnReport.width) / 2
+                            val popupY = y - dialogView.height
+
+                            popupWindow.update(popupX, popupY, -1, -1, true)
+                        }
+                    })
+
+                    dialogView.setOnTouchListener { _, event ->
+                        popupWindow.dismiss()
+                        true
                     }
                 }
 
-                cardViewReport.setOnClickListener {
-                    cardViewReport.visibility = View.GONE
-                }
+//                var isReportVisible = false
+//                cardViewReport.visibility = View.GONE
+//                btnReport.setOnClickListener {
+//                    isReportVisible = !isReportVisible
+//                    cardViewReport.visibility = if (isReportVisible) View.VISIBLE else View.GONE
+//                }
+
+//                rootView.setOnClickListener {
+//                    if (isReportVisible){
+//                        isReportVisible = false
+//                        cardViewReport.visibility = View.GONE
+//                    }
+//                }
+//
+//                cardViewReport.setOnClickListener {
+//                    cardViewReport.visibility = View.GONE
+//                }
 
                 layoutUserReply.visibility = View.GONE
 
@@ -59,21 +100,21 @@ class ListReplyAdapter(var listReply: MutableList<Comment>) :
                 btnLike.setOnClickListener {
                     if (btnLikeTick.isGone) {
                         btnLikeTick.visibility = View.VISIBLE
-                        currentNumber ++
+                        currentNumber++
                         numberLike.text = currentNumber.toString()
                         btnDisLiketike.visibility = View.GONE
-                    } else  if(btnLikeTick.isVisible){
+                    } else if (btnLikeTick.isVisible) {
                         btnLikeTick.visibility = View.GONE
-                        currentNumber --
+                        currentNumber--
                         numberLike.text = currentNumber.toString()
                     }
                 }
 
                 btnDisLiketike.visibility = View.GONE
                 btnDisLike.setOnClickListener {
-                    if (btnDisLiketike.isGone ) {
-                        if (btnLikeTick.isVisible){
-                            currentNumber --
+                    if (btnDisLiketike.isGone) {
+                        if (btnLikeTick.isVisible) {
+                            currentNumber--
                             numberLike.text = currentNumber.toString()
                         }
                         btnLikeTick.visibility = View.GONE
