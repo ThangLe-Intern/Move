@@ -10,6 +10,7 @@ import com.madison.move.data.model.state.StateResponse
 import com.madison.move.data.model.update_profile.ProfileRequest
 import com.madison.move.data.model.update_profile.UpdateProfileResponse
 import com.madison.move.data.model.user_profile.ProfileResponse
+import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.data.source.local.MoveCacheDataSource
 import com.madison.move.data.source.local.MoveLocalDataSource
@@ -63,6 +64,10 @@ class MoveRepository private constructor(
 
     override fun getVideoSuggestionForUser(token: String): Call<VideoSuggestionResponse>? {
         return moveRemote.getVideoSuggestionForUser(token)
+    }
+
+    override fun getVideoDetail(authorization:String,id: Int): Call<VideoDetailResponse>? {
+        return moveRemote.getVideoDetail(authorization,id)
     }
 
     override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {

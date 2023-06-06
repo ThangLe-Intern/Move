@@ -9,6 +9,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.madison.move.R
 import com.madison.move.data.model.carousel.DataVideoCarousel
+import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentFeaturedBinding
 import com.madison.move.ui.home.FeaturedFragment
 import com.madison.move.ui.home.HomeFragment
@@ -18,15 +19,25 @@ import kotlin.math.roundToInt
 class CarouselViewPagerAdapter(
     var activity: HomeFragment,
     var listFragment: ArrayList<FeaturedFragment>,
-    var videoCarouselData: ArrayList<DataVideoCarousel>,
+    var videoCarouselData: ArrayList<DataVideoSuggestion>,
     private val viewPager2: ViewPager2
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    var onClickVideoCarousel : setListenerCarouselVideo ?= null
+
+    fun onClick(onClickCarousel: setListenerCarouselVideo){
+        this.onClickVideoCarousel = onClickCarousel
+    }
+
     inner class ViewHolder(val binding: FragmentFeaturedBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun onBind(fragment: FeaturedFragment, videoCarousel: DataVideoCarousel) {
+        fun onBind(fragment: FeaturedFragment, videoCarousel: DataVideoSuggestion) {
             binding.apply {
+                layoutFeatureFragment.setOnClickListener {
+                    onClickVideoCarousel?.onClickVideoCarousel(videoCarousel)
+                }
+
                 txtFeatureUsername.text = videoCarousel.username
                 txtFeatureVideoTitle.text = videoCarousel.title
                 txtViewCount.text = videoCarousel.countView.toString()
@@ -73,14 +84,6 @@ class CarouselViewPagerAdapter(
 
 
 
-            binding.layoutFeatureFragment.setOnClickListener {
-                    val activity: AppCompatActivity = it.context as AppCompatActivity
-                    val commentFragment = CommentFragment()
-                    activity.supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.content_frame_main, commentFragment)
-                        .commit()
-                }
         }
     }
 
@@ -109,5 +112,9 @@ class CarouselViewPagerAdapter(
         listFragment.addAll(listFragment)
         videoCarouselData.addAll(videoCarouselData)
         notifyDataSetChanged()
+    }
+
+    interface setListenerCarouselVideo{
+        fun onClickVideoCarousel(dataVideoCarousel: DataVideoSuggestion)
     }
 }
