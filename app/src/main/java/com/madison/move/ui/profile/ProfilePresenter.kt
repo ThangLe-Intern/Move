@@ -73,7 +73,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                     }
                 }
 
-                override fun onFailure(call: Call<UpdateProfileResponse>, t: Throwable) {
+                override fun onFailure(call: Call<ObjectResponse<DataUser>>, t: Throwable) {
                     view?.onErrorGetProfile(t.message ?: "")
                 }
             })
@@ -97,7 +97,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                     }
                 }
 
-                override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
+                override fun onFailure(call: Call<ObjectResponse<DataUser>>, t: Throwable) {
                     view?.onErrorGetProfile(t.message ?: "")
                 }
             })
@@ -113,20 +113,25 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                     if (countryResponse.body() != null) {
                         view?.onSuccessGetCountryData(countryResponse.body()!!)
                     }
-                if (countryResponse.errorBody() != null) {
+                    if (countryResponse.errorBody() != null) {
+                    }
                 }
 
-            override fun onFailure(call: Call<CountryResponse>, t: Throwable) {
-                view?.onErrorGetProfile(t.message ?: "")
-            }
-        })
+                override fun onFailure(
+                    call: Call<ObjectResponse<List<DataCountry>>>,
+                    t: Throwable
+                ) {
+                    view?.onErrorGetProfile(t.message ?: "")
+                }
+            })
     }
 
     override fun getStateDataPresenter(countryID: Int) {
         dataManager.movieRepository.getStateData(countryID)
             ?.enqueue(object : Callback<ObjectResponse<List<DataState>>> {
                 override fun onResponse(
-                    call: Call<ObjectResponse<List<DataState>>>, stateResponse: Response<ObjectResponse<List<DataState>>>
+                    call: Call<ObjectResponse<List<DataState>>>,
+                    stateResponse: Response<ObjectResponse<List<DataState>>>
                 ) {
 
                     if (stateResponse.body() != null) {
@@ -138,7 +143,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                     }
                 }
 
-                override fun onFailure(call: Call<StateResponse>, t: Throwable) {
+                override fun onFailure(call: Call<ObjectResponse<List<DataState>>>, t: Throwable) {
                     view?.onErrorGetProfile(t.message ?: "")
                 }
             })
