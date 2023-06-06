@@ -79,7 +79,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     private val currentYear = Year.now().value
     private val years = (1900..currentYear).map { it.toString() }.toMutableList()
 
-    private var progressBar: RelativeLayout? = null
     override fun createPresenter(): ProfilePresenter = ProfilePresenter(this)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -98,8 +97,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     override fun onResume() {
         super.onResume()
-        progressBar = activity?.findViewById(R.id.progress_main_layout)
-        progressBar?.visibility = View.VISIBLE
+        mListener?.onShowProgressBar()
         onHandleLogic()
     }
 
@@ -119,8 +117,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             if (mListener?.isDeviceOnlineCheck() == false) {
                 mListener?.onShowDisconnectDialog()
             } else {
-                progressBar = activity?.findViewById(R.id.progress_main_layout)
-                progressBar?.visibility = View.VISIBLE
+                mListener?.onShowProgressBar()
                 tokenUser?.let { token ->
                     presenter?.onSaveProfileClickPresenter(
                         token, getNewProfile()
@@ -442,7 +439,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         if (userData != null && listDataCountry != null) {
             userData?.let { setUserData(it) }
         }
-        progressBar?.visibility = View.GONE
+        mListener?.onHideProgressBar()
 
     }
 
@@ -478,6 +475,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     override fun onErrorGetProfile(errorType: String) {
         Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
+//        mListener?.onShowDisconnectDialog()
     }
 
     override fun onShowError(errorType: String) {
@@ -561,7 +559,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
             }
         }
-        progressBar?.visibility = View.GONE
+        mListener?.onHideProgressBar()
     }
 
 

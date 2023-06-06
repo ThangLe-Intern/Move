@@ -52,8 +52,6 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     private var isGetCategorySuccess = false
     private var isGetVideoSuggestionSuccess = false
 
-    private var progressBar: RelativeLayout? = null
-
     companion object {
         const val TOKEN_USER_PREFERENCE = "tokenUser"
         const val TOKEN = "token"
@@ -94,8 +92,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     private fun onRefreshData() {
 
-        progressBar = activity?.findViewById(R.id.progress_main_layout)
-        progressBar?.visibility = View.VISIBLE
+        mListener?.onShowProgressBar()
 
 
         getSharedPreferences = requireContext().getSharedPreferences(
@@ -155,6 +152,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     override fun onErrorMoveData(error: String) {
 //        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+//        mListener?.onShowDisconnectDialog()
     }
 
     private val runnable = Runnable {
@@ -181,7 +179,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
 
         if (isGetCarouselSuccess && isGetCategorySuccess && isGetVideoSuggestionSuccess) {
-            progressBar?.visibility = View.GONE
+            mListener?.onHideProgressBar()
         }
 
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -222,7 +220,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         }
 
         if (isGetCarouselSuccess && isGetCategorySuccess && isGetVideoSuggestionSuccess) {
-            progressBar?.visibility = View.GONE
+            mListener?.onHideProgressBar()
         }
 
     }
@@ -236,7 +234,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         }
 
         if (isGetCarouselSuccess && isGetCategorySuccess && isGetVideoSuggestionSuccess) {
-            progressBar?.visibility = View.GONE
+            mListener?.onHideProgressBar()
         }
 
     }

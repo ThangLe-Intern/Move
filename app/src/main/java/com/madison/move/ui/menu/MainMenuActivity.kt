@@ -359,6 +359,14 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         onLogin()
     }
 
+    override fun onShowProgressBar() {
+        mainMenuBinding.progressMainLayout.visibility = View.VISIBLE
+    }
+
+    override fun onHideProgressBar() {
+        mainMenuBinding.progressMainLayout.visibility = View.GONE
+    }
+
 
     private fun onShowProgressDialog() {
 

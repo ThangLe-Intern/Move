@@ -5,4 +5,6 @@ interface MainInterface {
     fun isDeviceOnlineCheck():Boolean
 
     fun onReloadUserInfoMenu()
+    fun onShowProgressBar()
+    fun onHideProgressBar()
 }
