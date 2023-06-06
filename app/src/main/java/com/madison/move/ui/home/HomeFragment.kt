@@ -52,7 +52,8 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     private var isGetCategorySuccess = false
     private var isGetVideoSuggestionSuccess = false
 
-    private var progressBar:RelativeLayout? = null
+    private var progressBar: RelativeLayout? = null
+
     companion object {
         const val TOKEN_USER_PREFERENCE = "tokenUser"
         const val TOKEN = "token"
@@ -68,16 +69,13 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         //Disable nested scroll of recyclerview
         binding.listVideoSuggestion.isNestedScrollingEnabled = false
 
-        if (mListener?.isDeviceOnlineCheck() == false){
-            mListener?.onShowDisconnectDialog()
-        }
-
         presenter?.apply {
             getFeaturedVideoData()
             getCategoryData()
         }
 
-            return binding.root
+        return binding.root
+
     }
 
     override fun onPause() {
@@ -91,6 +89,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         onRefreshData()
         //Slider for carousel
         handler.postDelayed(runnable, 3000)
+
     }
 
     private fun onRefreshData() {
@@ -110,8 +109,6 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         if (this::videoSuggestionAdapter.isInitialized) {
             videoSuggestionAdapter.notifyDataSetChanged()
         }
-
-
 
         if (tokenUser != null) {
             presenter?.getVideoSuggestionForUserData(tokenUser ?: "")

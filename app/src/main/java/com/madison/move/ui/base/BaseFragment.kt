@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.madison.move.ui.menu.MainContract
@@ -19,6 +20,11 @@ abstract class BaseFragment<Presenter : Any> : Fragment(), BaseView {
     open fun listener() {}
 
     var mListener: MainInterface? = null
+
+    companion object {
+        const val NO_INTERNET = "No internet Connection, Please try again! "
+        const val INTERNET = "You are Online"
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -42,7 +48,19 @@ abstract class BaseFragment<Presenter : Any> : Fragment(), BaseView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+    }
+
+    override fun onResume() {
+        super.onResume()
         listener()
+        if (mListener?.isDeviceOnlineCheck() == false) {
+            Toast.makeText(activity, NO_INTERNET, Toast.LENGTH_SHORT).show()
+            mListener?.onShowDisconnectDialog()
+        }
+    }
+
+    fun onReloadUserMenu(){
+        mListener?.onReloadUserInfoMenu()
     }
 
 

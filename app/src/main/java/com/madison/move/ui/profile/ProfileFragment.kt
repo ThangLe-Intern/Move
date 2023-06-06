@@ -21,6 +21,7 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import com.bumptech.glide.Glide
 import com.github.drjacky.imagepicker.ImagePicker
 import com.github.drjacky.imagepicker.constant.ImageProvider
+import com.google.gson.Gson
 import com.madison.move.R
 import com.madison.move.data.model.country.CountryResponse
 import com.madison.move.data.model.country.DataCountry
@@ -32,6 +33,8 @@ import com.madison.move.data.model.user_profile.DataUser
 import com.madison.move.data.model.user_profile.ProfileResponse
 import com.madison.move.databinding.FragmentProfileBinding
 import com.madison.move.ui.base.BaseFragment
+import com.madison.move.ui.menu.MainInterface
+import com.madison.move.ui.menu.MainMenuActivity
 import de.hdodenhof.circleimageview.CircleImageView
 import java.time.Year
 
@@ -50,7 +53,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         const val USERNAME_NAMESAKE = "FULL_NAMESAKE"
         const val TOKEN_USER_PREFERENCE = "tokenUser"
         const val TOKEN = "token"
-
+        const val USER_DATA = "user"
     }
 
     private var getSharedPreferences: SharedPreferences? = null
@@ -84,17 +87,11 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-        if (mListener?.isDeviceOnlineCheck() == false) {
-            mListener?.onShowDisconnectDialog()
-        }
-
         //Get Token From Preferences
         getSharedPreferences = requireContext().getSharedPreferences(
             TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
         )
         tokenUser = getSharedPreferences?.getString(TOKEN, null)
-
-
 
         return binding.root
     }
@@ -417,31 +414,21 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
 
         if (binding.txtErrorUsername.visibility != View.VISIBLE) {
-            val layoutUserMenuInfo =
-                activity?.findViewById<LinearLayoutCompat>(R.id.layout_user_info)
-            val userMenuInfo = layoutUserMenuInfo?.findViewById<LinearLayout>(R.id.constraintLayout)
-            val userImage: CircleImageView? = userMenuInfo?.findViewById(R.id.img_menu_user_avatar)
-            val userName: AppCompatTextView? = userMenuInfo?.findViewById(R.id.txt_username_navbar)
-            val userTick: ImageView? = userMenuInfo?.findViewById(R.id.img_blue_tick_navbar)
-            userName?.text = userData?.username
-/*            val drawable = binding.imgProfileUser.drawable
-            userImage?.setImageDrawable(drawable)*/
 
-            if (userData?.img != null) {
-                if (userImage != null) {
-                    Glide.with(this).load(userData?.img).into(userImage)
-                }
-            } else {
-                userImage?.setImageResource(R.drawable.avatar)
+            //Set Data to Preferences
+            getSharedPreferences = requireContext().getSharedPreferences(
+                MainMenuActivity.TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
+            )
+            val gson = Gson()
+            val newUserDataString = gson.toJson(userData)
+
+            with(getSharedPreferences?.edit()) {
+                this?.putString(USER_DATA, newUserDataString)
+                this?.apply()
             }
 
-            if (userData?.kol == 0) {
-                userTick?.visibility = View.GONE
-            } else {
-                userTick?.visibility = View.VISIBLE
-            }
-
-
+            //Reload Info User At MenuBar
+            onReloadUserMenu()
         }
 
     }
@@ -518,7 +505,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 }
             }
 
-            USER_NAME_LENGTH ->{
+            USER_NAME_LENGTH -> {
                 binding.txtErrorUsername.apply {
                     visibility = View.VISIBLE
                     text = context.getString(R.string.txt_error_us_25_char)

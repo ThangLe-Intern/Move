@@ -30,9 +30,9 @@ import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.madison.move.R
-import com.madison.move.data.model.login.DataUserLogin
 import com.madison.move.data.model.login.LoginResponse
 import com.madison.move.data.model.logout.LogoutResponse
+import com.madison.move.data.model.user_profile.DataUser
 import com.madison.move.databinding.ActivityMainMenuBinding
 import com.madison.move.ui.base.BaseActivity
 import com.madison.move.ui.faq.FAQFragment
@@ -46,7 +46,7 @@ import com.madison.move.ui.profile.ProfileFragment
 class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainInterface,
     NavigationView.OnNavigationItemSelectedListener, LoginDialogFragment.OnInputListener {
     lateinit var mainMenuBinding: ActivityMainMenuBinding
-    private var dataUserLogin: DataUserLogin? = null
+    private var dataUserLogin: DataUser? = null
     private var tokenUser: String? = null
     private var tokenResponse: LoginResponse? = null
     private var getSharedPreferences: SharedPreferences? = null
@@ -58,8 +58,6 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         const val TOKEN_USER_PREFERENCE = "tokenUser"
         const val TOKEN = "token"
         const val USER_DATA = "user"
-        const val NO_INTERNET = "No internet Connection, Please try again! "
-        const val INTERNET = "You are Online"
     }
 
     override fun createPresenter(): MenuPresenter = MenuPresenter(this)
@@ -92,7 +90,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
 
     private fun onLogin() {
         val jsonUser = getSharedPreferences?.getString(USER_DATA, null)
-        val user = gson.fromJson(jsonUser, DataUserLogin::class.java)
+        val user = gson.fromJson(jsonUser, DataUser::class.java)
 
         mainMenuBinding.apply {
             menulogout.text = getString(R.string.txt_log_out)
@@ -125,11 +123,9 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     private fun onReload() {
         //Reload Current Screen
 
-
-        when (supportFragmentManager.findFragmentById(R.id.content_frame_main)) {
+        when (val currentFragment = supportFragmentManager.findFragmentById(R.id.content_frame_main)) {
             is HomeFragment -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
+               currentFragment.onResume()
             }
             is FAQFragment -> {
                 //Refresh Data FAQ when Logout
@@ -139,8 +135,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
                     supportFragmentManager.beginTransaction()
                         .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
                 } else {
-                    supportFragmentManager.beginTransaction()
-                        .replace(mainMenuBinding.contentFrameMain.id, ProfileFragment()).commit()
+                    currentFragment.onResume()
                 }
 
             }
@@ -245,10 +240,12 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
                     loginDialog.show(supportFragmentManager, "login Dialog")
                 } else {
                     mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
-
-                    tokenUser?.let { token -> presenter?.logoutRequest(token) }
-                    onLogout()
-
+                    if(!isDeviceOnline(this@MainMenuActivity)){
+                        onShowProgressDialog()
+                    }else{
+                        tokenUser?.let { token -> presenter?.logoutRequest(token) }
+                        onLogout()
+                    }
                 }
             }
 
@@ -305,6 +302,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     }
 
     override fun onSuccessGetToken(loginResponse: LoginResponse) {
+
         fragmentLogin?.dismiss()
 
         tokenResponse = loginResponse
@@ -355,6 +353,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
 
     override fun isDeviceOnlineCheck(): Boolean {
         return isDeviceOnline(this)
+    }
+
+    override fun onReloadUserInfoMenu() {
+        onLogin()
     }
 
 

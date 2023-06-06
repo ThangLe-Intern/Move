@@ -54,8 +54,12 @@ class CarouselViewPagerAdapter(
                 }
             }
 
-            val roundOff = (videoCarousel.rating?.times(100.0))?.roundToInt()?.div(100.0)
-            binding.txtFeaturedRateNumber.text = roundOff.toString()
+            if (videoCarousel.rating?.toString() == null){
+                binding.txtFeaturedRateNumber.text = 0.toString()
+            }else{
+                val roundOff = (videoCarousel.rating.times(100.0)).roundToInt().div(100.0)
+                binding.txtFeaturedRateNumber.text = roundOff.toString()
+            }
 
             if (videoCarousel.thumbnail != null) {
                 Glide.with(activity)

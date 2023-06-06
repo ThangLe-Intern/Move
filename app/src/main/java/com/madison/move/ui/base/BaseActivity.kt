@@ -37,8 +37,6 @@ abstract class BaseActivity<Presenter : Any> : AppCompatActivity(), BaseView {
             window.decorView.findViewById(R.id.content)
         ).let { controller ->
             controller.hide(WindowInsetsCompat.Type.systemBars())
-
-
             controller.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
