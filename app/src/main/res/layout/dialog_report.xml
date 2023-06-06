@@ -12,13 +12,13 @@
         android:background="@color/white"
         android:divider="@android:color/transparent"
         android:dividerHeight="0.0px"
-        android:elevation="8dp"
-        app:cardCornerRadius="10dp"
+        android:elevation="@dimen/dp_8"
+        app:cardCornerRadius="@dimen/dp_10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        card_view:cardElevation="10dp"
+        card_view:cardElevation="@dimen/dp_10"
         card_view:cardPreventCornerOverlap="false">
 
         <TextView
@@ -29,10 +29,10 @@
             android:layout_gravity="center"
             android:fontFamily="@font/montserrat_regular"
             android:gravity="center"
-            android:padding="10dp"
+            android:padding="@dimen/dp_10"
             android:text="Report comment"
             android:textColor="@color/black"
-            android:textSize="16dp" />
+            android:textSize="@dimen/dp_16" />
 
     </androidx.cardview.widget.CardView>
 

@@ -67,17 +67,17 @@ class ListCommentAdapter(
             }
 
             binding.apply {
-                var currentNumber = 0
+                var currentNumber : Int? = 0
                 btnLikeTick.visibility = View.GONE
                 btnLike.setOnClickListener {
                     if (btnLikeTick.isGone) {
                         btnLikeTick.visibility = View.VISIBLE
-                        currentNumber++
+                        currentNumber = currentNumber?.plus(1) ?: 1
                         numberLike.text = currentNumber.toString()
                         btnDisLiketike.visibility = View.GONE
                     } else if (btnLikeTick.isVisible) {
                         btnLikeTick.visibility = View.GONE
-                        currentNumber--
+                        currentNumber = currentNumber?.minus(1) ?: 0
                         numberLike.text = currentNumber.toString()
                     }
                 }
@@ -86,7 +86,7 @@ class ListCommentAdapter(
                 btnDisLike.setOnClickListener {
                     if (btnDisLiketike.isGone) {
                         if (btnLikeTick.isVisible) {
-                            currentNumber--
+                            currentNumber = currentNumber?.minus(1) ?: 0
                             numberLike.text = currentNumber.toString()
                         }
                         btnLikeTick.visibility = View.GONE
