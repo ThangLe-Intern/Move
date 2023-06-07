@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.service.autofill.UserData
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -13,31 +12,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.ArrayAdapter
-import android.widget.RadioButton
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.github.drjacky.imagepicker.ImagePicker
 import com.github.drjacky.imagepicker.constant.ImageProvider
+import com.google.gson.Gson
 import com.madison.move.R
-import com.madison.move.data.model.User
-import com.madison.move.data.model.country.CountryResponse
-import com.madison.move.data.model.country.DataCountry
-import com.madison.move.data.model.state.DataState
-import com.madison.move.data.model.state.StateResponse
-import com.madison.move.data.model.update_profile.ProfileRequest
-import com.madison.move.data.model.update_profile.UpdateProfileResponse
-import com.madison.move.data.model.user_profile.DataUser
-import com.madison.move.data.model.user_profile.ProfileResponse
+import com.madison.move.data.model.ObjectResponse
+import com.madison.move.data.model.DataCountry
+import com.madison.move.data.model.DataState
+import com.madison.move.data.model.ProfileRequest
+import com.madison.move.data.model.DataUser
 import com.madison.move.databinding.FragmentProfileBinding
 import com.madison.move.ui.base.BaseFragment
-import kotlinx.coroutines.awaitCancellation
-import java.text.SimpleDateFormat
+import com.madison.move.ui.menu.MainMenuActivity
 import java.time.Year
-import java.util.*
 
 
 class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.ProfileView {
@@ -45,19 +37,21 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     companion object {
         const val FULL_NAME_AT_LEAST_4_CHARS = "FN_4_CH"
         const val USER_NAME_CONTAINS_WHITE_SPACE = "USER_WS"
+        const val USER_NAME_AT_LEAST_4_CHARS = "US_4_CH"
         const val USER_NAME_LENGTH = "US_LTH"
         const val STATE_NOT_IN_LIST = "STATE_NOT_IN_LIST"
         const val COUNTRY_NOT_IN_LIST = "COUNTRY_NOT_IN_LIST"
         const val USER_NAME_INVALID = "US_INVALID"
         const val USER_NAME_FORMAT = "US_FORMAT"
-        const val FULL_NAMESAKE = "FULL_NAMESAKE"
+        const val USERNAME_NAMESAKE = "FULL_NAMESAKE"
         const val TOKEN_USER_PREFERENCE = "tokenUser"
         const val TOKEN = "token"
-
+        const val USER_DATA = "user"
     }
 
     private var getSharedPreferences: SharedPreferences? = null
     private var tokenUser: String? = null
+    private var isOpenGallery = false
 
     private lateinit var binding: FragmentProfileBinding
     private var newFullName = ""
@@ -80,13 +74,12 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     private val years = (1900..currentYear).map { it.toString() }.toMutableList()
 
     override fun createPresenter(): ProfilePresenter = ProfilePresenter(this)
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+
 
         //Get Token From Preferences
         getSharedPreferences = requireContext().getSharedPreferences(
@@ -94,10 +87,16 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         )
         tokenUser = getSharedPreferences?.getString(TOKEN, null)
 
-
-        onHandleLogic()
-
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isOpenGallery) {
+            mListener?.onShowProgressBar()
+            onHandleLogic()
+        }
+
     }
 
     private fun onHandleLogic() {
@@ -105,17 +104,24 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         //Get Data From Server
         presenter?.apply {
             getCountryDataPresenter()
-            getProfileUserDataPresenter(tokenUser.toString())
+            getProfileUserDataPresenter(tokenUser ?: "")
         }
 
 
         //Enable Button Setting when All Field are Fill
         binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
+
         binding.saveSettingBtn.setOnClickListener {
-            tokenUser?.let { token ->
-                presenter?.onSaveProfileClickPresenter(
-                    token, getNewProfile()
-                )
+            isOpenGallery = false
+            if (mListener?.isDeviceOnlineCheck() == false) {
+                mListener?.onShowDisconnectDialog()
+            } else {
+                mListener?.onShowProgressBar()
+                tokenUser?.let { token ->
+                    presenter?.onSaveProfileClickPresenter(
+                        token, getNewProfile()
+                    )
+                }
             }
         }
 
@@ -240,10 +246,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                         return binding.editProfileFullName.setText(nameText.dropLast(1))
                     }
                 }
-
-
-                //
-
                 //Handle Input City From User
                 val cityText = binding.editProfileCity.text.toString()
                 val matches = arrayOf("  ", "..", ",,", "--", " ,", " .", "- -", "//", " /", "/ ")
@@ -283,8 +285,10 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
+                isOpenGallery = true
                 val uri = it.data?.data!!
                 mProfileUri = uri
+                Log.d("ZEZE", uri.toString())
                 binding.imgProfileUser.setLocalImage(uri, false)
             } else {
                 parseError(it)
@@ -331,12 +335,17 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         when (user.gender) {
             1 -> {
                 binding.radioMale.isChecked = true
+                binding.radioFemale.isChecked = false
+                binding.radioRatherNotSay.isChecked = false
             }
             2 -> {
+                binding.radioMale.isChecked = false
                 binding.radioFemale.isChecked = true
-
+                binding.radioRatherNotSay.isChecked = false
             }
             3 -> {
+                binding.radioMale.isChecked = false
+                binding.radioFemale.isChecked = false
                 binding.radioRatherNotSay.isChecked = true
             }
         }
@@ -391,28 +400,51 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     }
 
-    override fun onSuccessGetProfileData(profileResponse: ProfileResponse) {
-        userData = profileResponse.dataUser
+    override fun onSuccessGetProfileData(profileResponse: ObjectResponse<DataUser>) {
+
+        userData = profileResponse.data
         listDataCountry?.forEach {
             if (it.id != null && it.id == userData?.countryId) presenter?.getStateDataPresenter(it.id)
         }
         if (userData != null && listDataCountry != null) {
             userData?.let { setUserData(it) }
         }
+
+
+        if (binding.txtErrorUsername.visibility != View.VISIBLE) {
+
+            //Set Data to Preferences
+            getSharedPreferences = requireContext().getSharedPreferences(
+                MainMenuActivity.TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
+            )
+            val gson = Gson()
+            val newUserDataString = gson.toJson(userData)
+
+            with(getSharedPreferences?.edit()) {
+                this?.putString(USER_DATA, newUserDataString)
+                this?.apply()
+            }
+
+            //Reload Info User At MenuBar
+            onReloadUserMenu()
+        }
+
     }
 
-    override fun onSuccessGetCountryData(countryResponse: CountryResponse) {
-        handleDropDownCountry(countryResponse.dataCountry as ArrayList<DataCountry>)
-        listDataCountry = countryResponse.dataCountry
+    override fun onSuccessGetCountryData(countryResponse: ObjectResponse<List<DataCountry>>) {
+        handleDropDownCountry(countryResponse.data as ArrayList<DataCountry>)
+        listDataCountry = countryResponse.data
         listDataCountry?.forEach {
             if (it.id != null && it.id == userData?.countryId) presenter?.getStateDataPresenter(it.id)
         }
         if (userData != null && listDataCountry != null) {
             userData?.let { setUserData(it) }
         }
+        mListener?.onHideProgressBar()
+
     }
 
-    override fun onSuccessGetStateData(stateResponse: StateResponse) {
+    override fun onSuccessGetStateData(stateResponse: ObjectResponse<List<DataState>>) {
         handleDropDownState(stateResponse.data as ArrayList<DataState>)
         listDataState = stateResponse.data
         if (userData?.stateId != null) {
@@ -429,22 +461,28 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         }
     }
 
-    override fun onSuccessUpdateProfile(updateProfileResponse: UpdateProfileResponse) {
+    override fun onSuccessUpdateProfile(updateProfileResponse: ObjectResponse<DataUser>) {
         binding.txtErrorFullName.visibility = View.GONE
         binding.txtErrorFullName.focusable = View.FOCUSABLE
+        onResume()
+
         Toast.makeText(
             activity?.applicationContext,
             updateProfileResponse.message.toString(),
             Toast.LENGTH_SHORT
         ).show()
+
     }
 
     override fun onErrorGetProfile(errorType: String) {
-        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
+//        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
+        mListener?.onShowDisconnectDialog()
     }
+
 
     override fun onShowError(errorType: String) {
         when (errorType) {
+
             FULL_NAME_AT_LEAST_4_CHARS -> {
                 binding.txtErrorFullName.apply {
                     visibility = View.VISIBLE
@@ -456,7 +494,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 }
             }
 
-            USER_NAME_LENGTH -> {
+            USER_NAME_AT_LEAST_4_CHARS -> {
                 binding.txtErrorUsername.apply {
                     visibility = View.VISIBLE
                     text = context.getString(R.string.error_user_name)
@@ -465,7 +503,17 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                     setBackgroundResource(R.drawable.custom_edittext_error)
                     requestFocus()
                 }
+            }
 
+            USER_NAME_LENGTH -> {
+                binding.txtErrorUsername.apply {
+                    visibility = View.VISIBLE
+                    text = context.getString(R.string.txt_error_us_25_char)
+                }
+                binding.editUsername.apply {
+                    setBackgroundResource(R.drawable.custom_edittext_error)
+                    requestFocus()
+                }
             }
 
             USER_NAME_INVALID -> {
@@ -490,7 +538,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 }
             }
 
-            FULL_NAMESAKE -> {
+            USERNAME_NAMESAKE -> {
                 binding.txtErrorUsername.apply {
                     visibility = View.VISIBLE
                     text = context.getString(R.string.txt_error_full_name_sake)
@@ -513,6 +561,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
             }
         }
+        mListener?.onHideProgressBar()
     }
 
 

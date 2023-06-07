@@ -4,8 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
@@ -199,6 +198,6 @@
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </FrameLayout>

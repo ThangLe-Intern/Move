@@ -38,6 +38,8 @@ class ListCommentAdapter(
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterReply
             }
+
+
             binding.apply {
                 avatar.setImageResource(comment.user.avt)
                 username.text = comment.user.name
@@ -45,6 +47,8 @@ class ListCommentAdapter(
                 commentContent.text = comment.content
                 listReply.visibility = View.VISIBLE
             }
+
+
             binding.layoutShow.setOnClickListener {
                 binding.apply {
                     listReply.visibility =

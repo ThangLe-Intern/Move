@@ -1,17 +1,15 @@
 package com.madison.move.data.source
 
-import androidx.lifecycle.MutableLiveData
+import com.madison.move.data.model.ObjectResponse
 import com.madison.move.data.model.Video
-import com.madison.move.data.model.carousel.CarouselResponse
-import com.madison.move.data.model.category.CategoryResponse
-import com.madison.move.data.model.country.CountryResponse
-import com.madison.move.data.model.login.LoginResponse
+import com.madison.move.data.model.DataCategory
+import com.madison.move.data.model.DataCountry
+import com.madison.move.data.model.DataState
+import com.madison.move.data.model.ProfileRequest
+import com.madison.move.data.model.DataUser
 import com.madison.move.data.model.videodetail.VideoDetailResponse
-import com.madison.move.data.model.state.StateResponse
-import com.madison.move.data.model.update_profile.ProfileRequest
-import com.madison.move.data.model.update_profile.UpdateProfileResponse
-import com.madison.move.data.model.user_profile.ProfileResponse
-import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
+import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
+import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import retrofit2.Call
 
 
@@ -24,19 +22,15 @@ interface MoveDataSource {
 
     fun getVideos(callback: LoadVideosCallback?)
     fun saveVideos(videos: List<Video?>?)
-    fun testFun(): Int
-    fun getCarousel(): Call<CarouselResponse>?
-    fun setCarousel(): MutableLiveData<CarouselResponse>
-    fun getCategory(): Call<CategoryResponse>?
-    fun getVideoSuggestion(): Call<VideoSuggestionResponse>?
-    fun getVideoSuggestionForUser(token:String): Call<VideoSuggestionResponse>?
-
+    fun getCarousel(): Call<ObjectResponse<List<DataVideoSuggestion>>>?
+    fun getCategory(): Call<ObjectResponse<List<DataCategory>>>?
+    fun getVideoSuggestion(): Call<ObjectResponse<VideoSuggestion>>?
+    fun getVideoSuggestionForUser(token:String): Call<ObjectResponse<VideoSuggestion>>?
+    fun getTokenLogin(email:String, password:String): Call<ObjectResponse<DataUser>>?
+    fun logOutUser(token: String): Call<ObjectResponse<DataUser>>?
+    fun getUserProfile(token: String): Call<ObjectResponse<DataUser>>?
+    fun getCountryData(): Call<ObjectResponse<List<DataCountry>>>?
+    fun getStateData(countryID: Int):Call<ObjectResponse<List<DataState>>>?
+    fun updateProfileUser(token: String, profileRequest: ProfileRequest): Call<ObjectResponse<DataUser>>?
     fun getVideoDetail(authorization: String,id : Int):Call<VideoDetailResponse>?
-
-    fun getTokenLogin(email:String, password:String): Call<LoginResponse>?
-    fun getUserProfile(token: String): Call<ProfileResponse>?
-    fun getCountryData(): Call<CountryResponse>?
-    fun getStateData(countryID: Int):Call<StateResponse>?
-    fun updateProfileUser(token: String, profileRequest: ProfileRequest): Call<UpdateProfileResponse>?
-
 }
