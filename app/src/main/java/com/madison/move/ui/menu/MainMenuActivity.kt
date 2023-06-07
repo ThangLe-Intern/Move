@@ -219,12 +219,6 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
 
             }
 
-            mainMenuBinding.menuTvFollowing.setOnClickListener {
-                mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
-                supportFragmentManager.beginTransaction()
-                    .replace(mainMenuBinding.contentFrameMain.id, CommentFragment()).commit()
-            }
-
             layoutToolBar.imvLogo.setOnClickListener {
                 mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
                 supportFragmentManager.beginTransaction()

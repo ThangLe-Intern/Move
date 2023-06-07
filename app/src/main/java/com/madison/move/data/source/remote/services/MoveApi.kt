@@ -6,6 +6,7 @@ import com.madison.move.data.model.DataCountry
 import com.madison.move.data.model.DataState
 import com.madison.move.data.model.ProfileRequest
 import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import com.madison.move.data.source.remote.model.MoveResponse
@@ -37,11 +38,8 @@ interface MoveApi {
     ): Call<VideoDetailResponse>
 
 
-
-
     @GET("videos-you-may-like")
     fun getVideoSuggestionForUser(@Header("Authorization") authorization: String): Call<ObjectResponse<VideoSuggestion>>
-
 
     @POST("login")
     fun loginApi(

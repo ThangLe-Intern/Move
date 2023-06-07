@@ -7,6 +7,7 @@ import com.madison.move.data.model.DataCountry
 import com.madison.move.data.model.DataState
 import com.madison.move.data.model.ProfileRequest
 import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import com.madison.move.data.source.MoveDataSource
@@ -56,13 +57,13 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
         return moveApi.getVideoSuggestionForUser(token)
     }
 
-    override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>> {
-    override fun getVideoDetail(authorization: String, id: Int): Call<VideoDetailResponse>? {
+
+    override fun getVideoDetail(authorization: String, id: Int): Call<VideoDetailResponse> {
         return moveApi.getDetailVideoSuggestion(authorization, id)
     }
 
-    override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {
-        return moveApi.loginApi(email, password)
+    override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>> {
+        return moveApi.loginApi(email,password)
     }
 
     override fun logOutUser(token: String): Call<ObjectResponse<DataUser>> {

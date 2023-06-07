@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.madison.move.R
 import com.madison.move.data.model.ObjectResponse
 import com.madison.move.data.model.DataCategory
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
@@ -177,6 +178,19 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             this@HomeFragment, featuredFragmentList, videoCarouselData, binding.viewPager
         )
 
+
+/*        carouselViewPagerAdapter.onClickVideoCarousel = object  : CarouselViewPagerAdapter.setListenerCarouselVideo{
+            override fun onClickVideoCarousel(dataVideoCarousel: DataVideoSuggestion) {
+                val activity = requireActivity() as AppCompatActivity
+                val commentFragment = CommentFragment(dataVideoCarousel,null)
+                activity.supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.content_frame_main, commentFragment)
+                    .commit()
+            }
+
+        }*/
+
         binding.viewPager.apply {
             adapter = carouselViewPagerAdapter
             offscreenPageLimit = 3
@@ -197,19 +211,6 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
                 handler.postDelayed(runnable, 3000)
             }
         })
-
-        carouselViewPagerAdapter.onClickVideoCarousel = object  : CarouselViewPagerAdapter.setListenerCarouselVideo{
-            override fun onClickVideoCarousel(dataVideoCarousel: DataVideoSuggestion) {
-                val activity = requireActivity() as AppCompatActivity
-                val commentFragment = CommentFragment(dataVideoCarousel,null)
-                activity.supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.content_frame_main, commentFragment)
-                    .commit()
-            }
-
-        }
-
 
     }
 
@@ -254,11 +255,6 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             adapter = videoSuggestionAdapter
         }
 
-        if (isGetCarouselSuccess && isGetCategorySuccess && isGetVideoSuggestionSuccess) {
-            mListener?.onHideProgressBar()
-        }
-
-    }
         videoSuggestionAdapter.onClickVideo = object : VideoSuggestionAdapter.setListenerVideoSuggestion{
             override fun onClickVideoSuggest(dataVideoSuggestion: DataVideoSuggestion) {
                 val activity = requireActivity() as AppCompatActivity
@@ -267,6 +263,11 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             }
 
         }
+
+        if (isGetCarouselSuccess && isGetCategorySuccess && isGetVideoSuggestionSuccess) {
+            mListener?.onHideProgressBar()
+        }
+
     }
 
 }

@@ -78,13 +78,6 @@ class VideoSuggestionAdapter(
                 }
             }
 
-            binding.layoutVideoSuggestion.setOnClickListener {
-                val activity: AppCompatActivity = it.context as AppCompatActivity
-                val commentFragment = CommentFragment()
-                activity.supportFragmentManager.beginTransaction()
-                    .replace(R.id.content_frame_main, commentFragment).commit()
-            }
-
         }
     }
 

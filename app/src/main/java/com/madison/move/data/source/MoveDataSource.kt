@@ -7,6 +7,7 @@ import com.madison.move.data.model.DataCountry
 import com.madison.move.data.model.DataState
 import com.madison.move.data.model.ProfileRequest
 import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import retrofit2.Call

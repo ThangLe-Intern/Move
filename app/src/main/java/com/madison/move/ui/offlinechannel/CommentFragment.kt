@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.madison.move.R
-import com.madison.move.data.model.carousel.DataVideoCarousel
 import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentCommentBinding

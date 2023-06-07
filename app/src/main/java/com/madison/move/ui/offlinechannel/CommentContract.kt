@@ -1,8 +1,6 @@
 package com.madison.move.ui.offlinechannel
 
-import android.os.Message
 import com.madison.move.data.model.videodetail.VideoDetailResponse
-import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
 import com.madison.move.ui.base.BasePresenter
 import com.madison.move.ui.base.BaseView
 
