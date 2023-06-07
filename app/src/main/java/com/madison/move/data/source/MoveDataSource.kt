@@ -32,5 +32,5 @@ interface MoveDataSource {
     fun getCountryData(): Call<ObjectResponse<List<DataCountry>>>?
     fun getStateData(countryID: Int):Call<ObjectResponse<List<DataState>>>?
     fun updateProfileUser(token: String, profileRequest: ProfileRequest): Call<ObjectResponse<DataUser>>?
-    fun getVideoDetail(authorization: String,id : Int):Call<VideoDetailResponse>?
+    fun getVideoDetail(id : Int):Call<VideoDetailResponse>?
 }

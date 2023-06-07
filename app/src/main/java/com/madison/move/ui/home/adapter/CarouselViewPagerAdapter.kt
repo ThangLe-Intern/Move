@@ -23,10 +23,21 @@ class CarouselViewPagerAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    var onClickVideoCarousel : setListenerCarouselVideo ?= null
+    interface setListenerCarouselVideo{
+        fun onClickVideoCarousel(dataVideoCarousel: DataVideoSuggestion)
+    }
+
     inner class ViewHolder(val binding: FragmentFeaturedBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(fragment: FeaturedFragment, videoCarousel: DataVideoSuggestion) {
+
             binding.apply {
+
+                layoutFeatureFragment.setOnClickListener {
+                    onClickVideoCarousel?.onClickVideoCarousel(videoCarousel)
+                }
+
                 txtFeatureUsername.text = videoCarousel.username ?: ""
                 txtFeatureVideoTitle.text = videoCarousel.title ?: ""
 

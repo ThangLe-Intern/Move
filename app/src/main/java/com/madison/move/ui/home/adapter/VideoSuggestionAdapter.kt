@@ -26,6 +26,10 @@ class VideoSuggestionAdapter(
         fun onBind(video: DataVideoSuggestion) {
 
             binding.apply {
+                layoutVideoSuggestion.setOnClickListener {
+                    onClickVideo?.onClickVideoSuggest(video)
+                }
+
                 txtVideoSuggestionUsername.text = video.username ?: ""
                 txtVideoSuggestionUploadTime.text = activity.getString(
                     R.string.video_post_time, video.postedDayAgo.toString()

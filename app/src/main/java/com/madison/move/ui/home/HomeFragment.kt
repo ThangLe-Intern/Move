@@ -178,8 +178,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             this@HomeFragment, featuredFragmentList, videoCarouselData, binding.viewPager
         )
 
-
-/*        carouselViewPagerAdapter.onClickVideoCarousel = object  : CarouselViewPagerAdapter.setListenerCarouselVideo{
+        carouselViewPagerAdapter.onClickVideoCarousel = object  : CarouselViewPagerAdapter.setListenerCarouselVideo{
             override fun onClickVideoCarousel(dataVideoCarousel: DataVideoSuggestion) {
                 val activity = requireActivity() as AppCompatActivity
                 val commentFragment = CommentFragment(dataVideoCarousel,null)
@@ -189,7 +188,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
                     .commit()
             }
 
-        }*/
+        }
 
         binding.viewPager.apply {
             adapter = carouselViewPagerAdapter
@@ -257,6 +256,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
         videoSuggestionAdapter.onClickVideo = object : VideoSuggestionAdapter.setListenerVideoSuggestion{
             override fun onClickVideoSuggest(dataVideoSuggestion: DataVideoSuggestion) {
+                Toast.makeText(activity, "ttt", Toast.LENGTH_SHORT).show()
                 val activity = requireActivity() as AppCompatActivity
                 val commentFragment = CommentFragment(dataVideoSuggestion,null)
                 activity.supportFragmentManager.beginTransaction().replace(R.id.content_frame_main,commentFragment).commit()

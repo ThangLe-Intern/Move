@@ -20,12 +20,12 @@ class ListCommentAdapter(
     private var context: Context,
     var listComment: MutableList<Comment>,
     val replyListener: ReplyListener,
-    ) :
+) :
 
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     lateinit var adapterReply: ListReplyAdapter
 
-    companion object{
+    companion object {
         private const val VIEW_TYPE_ITEM = 0
         private const val VIEW_TYPE_LOADING = 1
     }
@@ -38,9 +38,8 @@ class ListCommentAdapter(
 
             val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
 
-            adapterReply = ListReplyAdapter(comment.listChild, context)
-            val adapterReply = comment.listChild?.let { ListReplyAdapter(it) } ?: ListReplyAdapter(
-                listComment
+            val adapterReply = comment.listChild?.let { ListReplyAdapter(it,context) } ?: ListReplyAdapter(
+                listComment, context
             )
             itemView.findViewById<RecyclerView>(R.id.listReply).apply {
                 layoutManager = LinearLayoutManager(context)
@@ -55,8 +54,7 @@ class ListCommentAdapter(
             }
             binding.apply {
                 layoutShow.setOnClickListener {
-                    listReply.visibility =
-                        if (listReply.isVisible) View.GONE else View.VISIBLE
+                    listReply.visibility = if (listReply.isVisible) View.GONE else View.VISIBLE
                     imgArrowDownGreen.setImageResource(
                         if (listReply.isVisible) R.drawable.ic_ic_arrow_up_green
                         else R.drawable.ic_arrow_down_green
@@ -74,7 +72,7 @@ class ListCommentAdapter(
             }
 
             binding.apply {
-                var currentNumber : Int? = 0
+                var currentNumber: Int? = 0
                 btnLikeTick.visibility = View.GONE
                 btnLike.setOnClickListener {
                     if (btnLikeTick.isGone) {
@@ -174,9 +172,17 @@ class ListCommentAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_ITEM) {
-            ViewHolder(ItemUserCommentBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            ViewHolder(
+                ItemUserCommentBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false
+                )
+            )
         } else {
-            ViewHolder(ItemUserCommentBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            ViewHolder(
+                ItemUserCommentBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false
+                )
+            )
         }
     }
 
@@ -204,9 +210,7 @@ class ListCommentAdapter(
         )
 
         fun onWriteCommentListener(
-            editText: AppCompatEditText,
-            cancelButton: AppCompatButton,
-            sendButton: AppCompatButton
+            editText: AppCompatEditText, cancelButton: AppCompatButton, sendButton: AppCompatButton
         )
 
         fun onCancelUserComment(cancelButton: AppCompatButton, editText: AppCompatEditText)
