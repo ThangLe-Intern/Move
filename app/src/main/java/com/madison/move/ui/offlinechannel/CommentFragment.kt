@@ -154,7 +154,6 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
 
         presenter?.apply {
             getVideoDetail(
-                "Bearer 738|lIWZa37uiaezo9V3GubQHPCIzbp7ygRRyk63ZIS4",
                 dataVideoSuggestion?.id ?: 0
             )
         }
@@ -169,7 +168,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
 
     override fun onSuccessGetVideoSuggestion(videoDetailsSuggestionResponse: VideoDetailResponse) {
         val iframeContent =
-            "<html><body style=\"margin:0; padding:0\"><iframe src=\"https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\" width=\"100%\" height=\"100%\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>" // Lấy nội dung iframe từ API
+            "<html><body style=\"margin:0; padding:0\"><iframe src=\"https://player.vimeo.com/videos/828977401\" width=\"100%\" height=\"100%\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>" // Lấy nội dung iframe từ API
 
         binding.webView.getSettings().setJavaScriptEnabled(true)
 

@@ -15,8 +15,8 @@ class CommentPresenter(
 
     private val dataManager: DataManager = DataManager.instance
 
-    override fun getVideoDetail(authorization: String, id: Int) {
-        dataManager.movieRepository.getVideoDetail(authorization, id)?.enqueue(object :
+    override fun getVideoDetail(id: Int) {
+        dataManager.movieRepository.getVideoDetail(id)?.enqueue(object :
             Callback<VideoDetailResponse> {
             override fun onResponse(
                 call: Call<VideoDetailResponse>,

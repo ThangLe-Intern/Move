@@ -31,7 +31,7 @@ interface MoveDataSource {
     fun getVideoSuggestion(): Call<VideoSuggestionResponse>?
     fun getVideoSuggestionForUser(token:String): Call<VideoSuggestionResponse>?
 
-    fun getVideoDetail(authorization: String,id : Int):Call<VideoDetailResponse>?
+    fun getVideoDetail(id : Int):Call<VideoDetailResponse>?
 
     fun getTokenLogin(email:String, password:String): Call<LoginResponse>?
     fun getUserProfile(token: String): Call<ProfileResponse>?
