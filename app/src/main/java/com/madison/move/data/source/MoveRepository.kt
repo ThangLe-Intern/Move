@@ -1,12 +1,15 @@
 package com.madison.move.data.source
 
-import androidx.lifecycle.MutableLiveData
+import com.madison.move.data.model.ObjectResponse
 import com.madison.move.data.model.Video
-import com.madison.move.data.model.carousel.CarouselResponse
-import com.madison.move.data.model.category.CategoryResponse
-import com.madison.move.data.model.login.LoginResponse
+import com.madison.move.data.model.DataCategory
+import com.madison.move.data.model.DataCountry
+import com.madison.move.data.model.DataState
+import com.madison.move.data.model.ProfileRequest
+import com.madison.move.data.model.DataUser
 import com.madison.move.data.model.videodetail.VideoDetailResponse
-import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
+import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
+import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import com.madison.move.data.source.local.MoveCacheDataSource
 import com.madison.move.data.source.local.MoveLocalDataSource
 import com.madison.move.data.source.remote.MoveRemoteDataSource
@@ -14,7 +17,7 @@ import retrofit2.Call
 
 
 class MoveRepository private constructor(
-    private val movieRemote: MoveDataSource,
+    private val moveRemote: MoveDataSource,
     private val movieLocal: MoveDataSource,
     private val movieCache: MoveDataSource,
 ) : MoveDataSource {
@@ -39,36 +42,56 @@ class MoveRepository private constructor(
         movieLocal.saveVideos(videos)
     }
 
-    override fun testFun() = movieRemote.testFun()
-    override fun getCarousel(): Call<CarouselResponse>? {
-        return movieRemote.getCarousel()
+    override fun getCarousel(): Call<ObjectResponse<List<DataVideoSuggestion>>>? {
+        return moveRemote.getCarousel()
     }
 
-    override fun setCarousel(): MutableLiveData<CarouselResponse> {
-        getCarousel()
-        return movieRemote.setCarousel()
+    override fun getCategory(): Call<ObjectResponse<List<DataCategory>>>? {
+        return moveRemote.getCategory()
     }
 
-    override fun getCategory(): Call<CategoryResponse>? {
-        return movieRemote.getCategory()
+    override fun getVideoSuggestion(): Call<ObjectResponse<VideoSuggestion>>? {
+        return moveRemote.getVideoSuggestion()
     }
 
-    override fun getVideoSuggestion(): Call<VideoSuggestionResponse>? {
-        return movieRemote.getVideoSuggestion()
+    override fun getVideoSuggestionForUser(token: String): Call<ObjectResponse<VideoSuggestion>>? {
+        return moveRemote.getVideoSuggestionForUser(token)
     }
 
+    override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>>? {
+        return moveRemote.getTokenLogin(email,password)
+
+    }
     override fun getVideoDetail(authorization:String,id: Int): Call<VideoDetailResponse>? {
-        return movieRemote.getVideoDetail(authorization,id)
+        return moveRemote.getVideoDetail(authorization,id)
     }
 
-    override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {
-        return movieRemote.getTokenLogin(email, password)
+    override fun logOutUser(token: String): Call<ObjectResponse<DataUser>>? {
+        return moveRemote.logOutUser(token)
+    }
+
+    override fun getUserProfile(token: String): Call<ObjectResponse<DataUser>>? {
+        return moveRemote.getUserProfile(token)
+    }
+
+    override fun getCountryData(): Call<ObjectResponse<List<DataCountry>>>? {
+        return moveRemote.getCountryData()
+    }
+
+    override fun getStateData(countryID: Int): Call<ObjectResponse<List<DataState>>>? {
+        return moveRemote.getStateData(countryID)
+    }
+
+    override fun updateProfileUser(
+        token: String,
+        profileRequest: ProfileRequest
+    ): Call<ObjectResponse<DataUser>>? {
+        return moveRemote.updateProfileUser(token,profileRequest)
     }
 
 
     private fun getMoviesFromLocalDataSource(callback: MoveDataSource.LoadVideosCallback) {
         movieLocal.getVideos(object : MoveDataSource.LoadVideosCallback {
-
             override fun onVideosLoaded(videos: List<Video?>?) {
                 callback.onVideosLoaded(videos)
                 refreshCache(videos)
@@ -81,13 +104,11 @@ class MoveRepository private constructor(
             override fun onError() {
 
             }
-
-
         })
     }
 
     private fun getVideosFromRemoteDataSource(callback: MoveDataSource.LoadVideosCallback) {
-        movieRemote.getVideos(object : MoveDataSource.LoadVideosCallback {
+        moveRemote.getVideos(object : MoveDataSource.LoadVideosCallback {
 
             override fun onVideosLoaded(videos: List<Video?>?) {
                 callback.onVideosLoaded(videos)

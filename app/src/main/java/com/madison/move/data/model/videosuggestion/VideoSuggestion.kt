@@ -6,29 +6,29 @@ import com.google.gson.annotations.SerializedName
 data class VideoSuggestion(
     @Expose
     @SerializedName("current_page")
-    val currentPage: Int,
+    val currentPage: Int?,
     @Expose
     @SerializedName("data")
-    val `data`: List<DataVideoSuggestion>,
+    val data: List<DataVideoSuggestion>?,
     @Expose
     @SerializedName("first_page_url")
-    val firstPageUrl: String,
+    val firstPageUrl: String?,
     @Expose
     @SerializedName("from")
-    val from: Int,
+    val from: Int?,
     @Expose
     @SerializedName("next_page_url")
-    val nextPageUrl: String,
+    val nextPageUrl: String?,
     @Expose
     @SerializedName("path")
-    val path: String,
+    val path: String?,
     @Expose
     @SerializedName("per_page")
-    val perPage: Int,
+    val perPage: Int?,
     @Expose
     @SerializedName("prev_page_url")
-    val prevPageUrl: String,
+    val prevPageUrl: String?,
     @Expose
     @SerializedName("to")
-    val to: Int
+    val to: Int?
 )

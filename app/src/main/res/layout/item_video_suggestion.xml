@@ -117,28 +117,26 @@
                     android:id="@+id/txt_video_suggestion_username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_7sdp"
                     android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_regular"
                     android:gravity="start"
                     android:maxLines="1"
-                    android:layout_marginStart="@dimen/_7sdp"
-                    android:fontFamily="@font/montserrat_regular"
                     android:text="@string/username"
-                    android:textSize="@dimen/_11ssp"
-                 />
+                    android:textSize="@dimen/_11ssp" />
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/img_video_suggestion_blueTick"
                 android:layout_width="@dimen/_12sdp"
                 android:layout_height="@dimen/_12sdp"
-                android:layout_marginStart="-15dp"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="-15dp"
                 android:layout_toEndOf="@+id/layout_suggestion_message_username"
                 app:srcCompat="@drawable/blue_tick" />
 
 
         </RelativeLayout>
-
 
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -156,7 +154,6 @@
             android:id="@+id/txt_video_suggestion_rate_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_8sdp"
             android:fontFamily="@font/montserrat_bold"
             android:text="@string/video_rateNumber"
             android:textColor="@color/black"
@@ -179,18 +176,46 @@
             app:layout_constraintStart_toStartOf="@+id/img_video_suggestion_user_avatar"
             app:layout_constraintTop_toBottomOf="@+id/img_video_suggestion_user_avatar" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txt_video_suggestion_category"
+        <RelativeLayout
+            android:id="@+id/layout_suggestion_category"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:fontFamily="@font/montserrat_regular"
-            android:text="@string/category_title"
-            android:textSize="@dimen/_11ssp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/_2sdp"
+            app:layout_constraintEnd_toEndOf="@id/txt_video_suggestion_rate_number"
             app:layout_constraintStart_toStartOf="@id/img_video_suggestion_user_avatar"
-            app:layout_constraintTop_toBottomOf="@+id/txt_title_of_video_suggestion" />
+            app:layout_constraintTop_toBottomOf="@id/txt_title_of_video_suggestion">
 
+            <LinearLayout
+                android:id="@+id/layout_suggestion_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingEnd="@dimen/_90sdp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_video_suggestion_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:gravity="start"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="@string/category_title"
+                    android:textSize="@dimen/_11ssp" />
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txt_video_suggestion_upload_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-100dp"
+                android:layout_toEndOf="@+id/layout_suggestion_title"
+                android:maxLines="1"
+                android:textSize="@dimen/_11ssp"
+                android:layout_marginBottom="1dp"
+                android:text="@string/a_day_ago" />
+        </RelativeLayout>
 
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/layout_card_view_duration"
@@ -201,7 +226,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/img_video_suggestion_user_avatar"
-            app:layout_constraintTop_toBottomOf="@+id/txt_video_suggestion_category">
+            app:layout_constraintTop_toBottomOf="@+id/layout_suggestion_category">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView_video_suggestion_user_level"

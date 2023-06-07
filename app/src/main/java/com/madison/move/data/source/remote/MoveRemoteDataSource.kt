@@ -1,12 +1,15 @@
 package com.madison.move.data.source.remote
 
-import androidx.lifecycle.MutableLiveData
+import com.madison.move.data.model.ObjectResponse
 import com.madison.move.data.model.Video
-import com.madison.move.data.model.carousel.CarouselResponse
-import com.madison.move.data.model.category.CategoryResponse
-import com.madison.move.data.model.login.LoginResponse
+import com.madison.move.data.model.DataCategory
+import com.madison.move.data.model.DataCountry
+import com.madison.move.data.model.DataState
+import com.madison.move.data.model.ProfileRequest
+import com.madison.move.data.model.DataUser
 import com.madison.move.data.model.videodetail.VideoDetailResponse
-import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
+import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
+import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import com.madison.move.data.source.MoveDataSource
 import com.madison.move.data.source.remote.model.MoveResponse
 import com.madison.move.data.source.remote.services.MoveApi
@@ -37,36 +40,59 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
     }
 
 
-    override fun getCarousel(): Call<CarouselResponse> {
+    override fun getCarousel(): Call<ObjectResponse<List<DataVideoSuggestion>>> {
         return moveApi.getCarousel()
     }
 
-    override fun setCarousel(): MutableLiveData<CarouselResponse> {
-        return null!!
-    }
 
-    override fun getCategory(): Call<CategoryResponse>? {
+    override fun getCategory(): Call<ObjectResponse<List<DataCategory>>> {
         return moveApi.getCategory()
     }
 
-    override fun getVideoSuggestion(): Call<VideoSuggestionResponse>? {
+    override fun getVideoSuggestion(): Call<ObjectResponse<VideoSuggestion>> {
         return moveApi.getVideoSuggestion()
     }
 
-    override fun getVideoDetail(authorization: String, id: Int): Call<VideoDetailResponse>? {
+    override fun getVideoSuggestionForUser(token: String): Call<ObjectResponse<VideoSuggestion>> {
+        return moveApi.getVideoSuggestionForUser(token)
+    }
+
+
+    override fun getVideoDetail(authorization: String, id: Int): Call<VideoDetailResponse> {
         return moveApi.getDetailVideoSuggestion(authorization, id)
     }
 
-    override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {
-        return moveApi.loginApi(email, password)
+    override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>> {
+        return moveApi.loginApi(email,password)
+    }
+
+    override fun logOutUser(token: String): Call<ObjectResponse<DataUser>> {
+        return moveApi.logoutRequest(token)
+    }
+
+    override fun getUserProfile(token: String): Call<ObjectResponse<DataUser>> {
+        return moveApi.getUserProfile(token)
+    }
+
+    override fun getCountryData(): Call<ObjectResponse<List<DataCountry>>>? {
+        return moveApi.getCountry()
+    }
+
+    override fun getStateData(countryID: Int): Call<ObjectResponse<List<DataState>>> {
+        return moveApi.getStates(countryID)
+    }
+
+
+    override fun updateProfileUser(
+        token: String,
+        profileRequest: ProfileRequest
+    ): Call<ObjectResponse<DataUser>>? {
+        return moveApi.updateProfile(token, profileRequest)
     }
 
     override fun saveVideos(videos: List<Video?>?) {
 
     }
-
-    override fun testFun() = 2
-
 
     companion object {
         private var instance: MoveRemoteDataSource? = null

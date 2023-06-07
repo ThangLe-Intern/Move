@@ -174,8 +174,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_3sdp"
             android:layout_marginEnd="@dimen/_10sdp"
+            android:elevation="@dimen/_5sdp"
             app:cardBackgroundColor="@color/gray"
             app:cardCornerRadius="15dp"
+            app:cardMaxElevation="0dp"
             app:cardElevation="0dp">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -194,6 +196,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_3sdp"
+            app:cardMaxElevation="0dp"
             app:cardBackgroundColor="@color/gray"
             app:cardCornerRadius="15dp"
             app:cardElevation="0dp">
