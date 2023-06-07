@@ -65,13 +65,13 @@
                     />
 
                 <View
-                    android:layout_width="@dimen/_32sdp"
+                    android:layout_width="@dimen/_20sdp"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
                     android:background="@drawable/bg_right_banner" />
 
                 <View
-                    android:layout_width="@dimen/_29sdp"
+                    android:layout_width="@dimen/_20sdp"
                     android:layout_height="match_parent"
                     android:layout_gravity="start"
                     android:background="@drawable/bg_left_banner"

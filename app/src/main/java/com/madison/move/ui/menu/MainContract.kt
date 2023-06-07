@@ -1,8 +1,7 @@
 package com.madison.move.ui.menu
 
-import androidx.fragment.app.DialogFragment
-import com.madison.move.data.model.login.LoginResponse
-import com.madison.move.data.model.logout.LogoutResponse
+import com.madison.move.data.model.ObjectResponse
+import com.madison.move.data.model.DataUser
 import com.madison.move.ui.base.BaseView
 import com.madison.move.ui.base.BasePresenter
 
@@ -11,8 +10,8 @@ import com.madison.move.ui.base.BasePresenter
  */
 interface MainContract {
     interface View : BaseView {
-        fun onSuccessGetToken(loginResponse: LoginResponse)
-        fun onSuccessLogout(logoutResponse: LogoutResponse)
+        fun onSuccessGetToken(loginResponse: ObjectResponse<DataUser>)
+        fun onSuccessLogout(logoutResponse: ObjectResponse<DataUser>)
         fun onError(error: String?)
     }
 

@@ -1,11 +1,9 @@
 package com.madison.move.ui.home
 
-import com.madison.move.data.model.carousel.CarouselResponse
-import com.madison.move.data.model.carousel.DataVideoCarousel
-import com.madison.move.data.model.category.CategoryResponse
-import com.madison.move.data.model.category.DataCategory
+import com.madison.move.data.model.ObjectResponse
+import com.madison.move.data.model.DataCategory
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
-import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
+import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import com.madison.move.ui.base.BasePresenter
 import com.madison.move.ui.base.BaseView
 
@@ -21,10 +19,10 @@ interface HomeContract {
         fun onCarouselTransformer()
         fun onShowListCategory(listCategory: ArrayList<DataCategory>)
         fun onShowListVideoSuggestion(listVideoSuggestion: ArrayList<DataVideoSuggestion>)
-        fun onSuccessCarouselData(response: CarouselResponse)
-        fun onSuccessCategoryData(categoryResponse: CategoryResponse)
-        fun onSuccessVideoSuggestionData(videoSuggestionResponse: VideoSuggestionResponse)
-        fun onSuccessVideoSuggestionForUser(videoSuggestionResponse: VideoSuggestionResponse)
+        fun onSuccessCarouselData(response: ObjectResponse<List<DataVideoSuggestion>>)
+        fun onSuccessCategoryData(objectResponse: ObjectResponse<List<DataCategory>>)
+        fun onSuccessVideoSuggestionData(videoSuggestionResponse: ObjectResponse<VideoSuggestion>)
+        fun onSuccessVideoSuggestionForUser(videoSuggestionResponse: ObjectResponse<VideoSuggestion>)
         fun onErrorMoveData(error: String)
     }
 

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.madison.move.R
-import com.madison.move.data.model.category.DataCategory
+import com.madison.move.data.model.DataCategory
 import com.madison.move.databinding.ItemCategoryBinding
 import com.madison.move.ui.home.HomeFragment
 
@@ -21,7 +21,7 @@ class CategoryAdapter(
                 Glide.with(activity).load(category.img).into(binding.imgCategory)
             }
 
-            binding.txtCategoryType.text = category.name
+            binding.txtCategoryType.text = category.name ?: ""
             binding.txtCategoryView.text =
                 activity.getString(R.string.count_view, category.viewCount.toString() ?: "")
         }

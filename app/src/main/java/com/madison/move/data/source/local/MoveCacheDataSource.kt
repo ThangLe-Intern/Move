@@ -1,18 +1,15 @@
 package com.madison.move.data.source.local
 
 import android.util.SparseArray
-import androidx.lifecycle.MutableLiveData
+import com.madison.move.data.model.ObjectResponse
 import com.madison.move.data.model.Video
-import com.madison.move.data.model.carousel.CarouselResponse
-import com.madison.move.data.model.category.CategoryResponse
-import com.madison.move.data.model.country.CountryResponse
-import com.madison.move.data.model.login.LoginResponse
-import com.madison.move.data.model.logout.LogoutResponse
-import com.madison.move.data.model.state.StateResponse
-import com.madison.move.data.model.update_profile.ProfileRequest
-import com.madison.move.data.model.update_profile.UpdateProfileResponse
-import com.madison.move.data.model.user_profile.ProfileResponse
-import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
+import com.madison.move.data.model.DataCategory
+import com.madison.move.data.model.DataCountry
+import com.madison.move.data.model.DataState
+import com.madison.move.data.model.ProfileRequest
+import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
+import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import com.madison.move.data.source.MoveDataSource
 import retrofit2.Call
 
@@ -45,51 +42,47 @@ class MoveCacheDataSource : MoveDataSource {
         }
     }
 
-    override fun getCarousel(): Call<CarouselResponse>? {
+    override fun getCarousel(): Call<ObjectResponse<List<DataVideoSuggestion>>>? {
         return null
     }
 
-    override fun setCarousel(): MutableLiveData<CarouselResponse> {
-        return null!!
-    }
-
-    override fun getCategory(): Call<CategoryResponse>? {
+    override fun getCategory(): Call<ObjectResponse<List<DataCategory>>>? {
         return null
     }
 
-    override fun getVideoSuggestion(): Call<VideoSuggestionResponse>? {
+    override fun getVideoSuggestion(): Call<ObjectResponse<VideoSuggestion>>? {
         return null
     }
 
-    override fun getVideoSuggestionForUser(token: String): Call<VideoSuggestionResponse>? {
+    override fun getVideoSuggestionForUser(token: String): Call<ObjectResponse<VideoSuggestion>>? {
         return null
     }
 
 
-    override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {
+    override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>>? {
         return null
     }
 
-    override fun logOutUser(token: String): Call<LogoutResponse>? {
+    override fun logOutUser(token: String): Call<ObjectResponse<DataUser>>? {
         return null
     }
 
-    override fun getUserProfile(token: String): Call<ProfileResponse>? {
+    override fun getUserProfile(token: String): Call<ObjectResponse<DataUser>>? {
         return null
     }
 
-    override fun getCountryData(): Call<CountryResponse>? {
+    override fun getCountryData(): Call<ObjectResponse<List<DataCountry>>>? {
         return null
     }
 
-    override fun getStateData(countryID: Int): Call<StateResponse>? {
+    override fun getStateData(countryID: Int): Call<ObjectResponse<List<DataState>>>? {
         return null
     }
 
     override fun updateProfileUser(
         token: String,
         profileRequest: ProfileRequest
-    ): Call<UpdateProfileResponse>? {
+    ): Call<ObjectResponse<DataUser>>? {
         return null
     }
 
@@ -103,5 +96,4 @@ class MoveCacheDataSource : MoveDataSource {
         }
     }
 
-    override fun testFun(): Int = 0
 }

@@ -16,23 +16,19 @@ import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.LinearLayoutCompat
 import com.bumptech.glide.Glide
 import com.github.drjacky.imagepicker.ImagePicker
 import com.github.drjacky.imagepicker.constant.ImageProvider
+import com.google.gson.Gson
 import com.madison.move.R
-import com.madison.move.data.model.country.CountryResponse
-import com.madison.move.data.model.country.DataCountry
-import com.madison.move.data.model.state.DataState
-import com.madison.move.data.model.state.StateResponse
-import com.madison.move.data.model.update_profile.ProfileRequest
-import com.madison.move.data.model.update_profile.UpdateProfileResponse
-import com.madison.move.data.model.user_profile.DataUser
-import com.madison.move.data.model.user_profile.ProfileResponse
+import com.madison.move.data.model.ObjectResponse
+import com.madison.move.data.model.DataCountry
+import com.madison.move.data.model.DataState
+import com.madison.move.data.model.ProfileRequest
+import com.madison.move.data.model.DataUser
 import com.madison.move.databinding.FragmentProfileBinding
 import com.madison.move.ui.base.BaseFragment
-import de.hdodenhof.circleimageview.CircleImageView
+import com.madison.move.ui.menu.MainMenuActivity
 import java.time.Year
 
 
@@ -41,19 +37,21 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     companion object {
         const val FULL_NAME_AT_LEAST_4_CHARS = "FN_4_CH"
         const val USER_NAME_CONTAINS_WHITE_SPACE = "USER_WS"
+        const val USER_NAME_AT_LEAST_4_CHARS = "US_4_CH"
         const val USER_NAME_LENGTH = "US_LTH"
         const val STATE_NOT_IN_LIST = "STATE_NOT_IN_LIST"
         const val COUNTRY_NOT_IN_LIST = "COUNTRY_NOT_IN_LIST"
         const val USER_NAME_INVALID = "US_INVALID"
         const val USER_NAME_FORMAT = "US_FORMAT"
-        const val FULL_NAMESAKE = "FULL_NAMESAKE"
+        const val USERNAME_NAMESAKE = "FULL_NAMESAKE"
         const val TOKEN_USER_PREFERENCE = "tokenUser"
         const val TOKEN = "token"
-
+        const val USER_DATA = "user"
     }
 
     private var getSharedPreferences: SharedPreferences? = null
     private var tokenUser: String? = null
+    private var isOpenGallery = false
 
     private lateinit var binding: FragmentProfileBinding
     private var newFullName = ""
@@ -75,15 +73,13 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     private val currentYear = Year.now().value
     private val years = (1900..currentYear).map { it.toString() }.toMutableList()
 
-    private var progressBar: RelativeLayout? = null
     override fun createPresenter(): ProfilePresenter = ProfilePresenter(this)
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+
 
         //Get Token From Preferences
         getSharedPreferences = requireContext().getSharedPreferences(
@@ -91,16 +87,16 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         )
         tokenUser = getSharedPreferences?.getString(TOKEN, null)
 
-
-
         return binding.root
     }
 
     override fun onResume() {
         super.onResume()
-        progressBar = activity?.findViewById(R.id.progress_main_layout)
-        progressBar?.visibility = View.VISIBLE
-        onHandleLogic()
+        if (!isOpenGallery) {
+            mListener?.onShowProgressBar()
+            onHandleLogic()
+        }
+
     }
 
     private fun onHandleLogic() {
@@ -116,12 +112,16 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
 
         binding.saveSettingBtn.setOnClickListener {
-            progressBar = activity?.findViewById(R.id.progress_main_layout)
-            progressBar?.visibility = View.VISIBLE
-            tokenUser?.let { token ->
-                presenter?.onSaveProfileClickPresenter(
-                    token, getNewProfile()
-                )
+            isOpenGallery = false
+            if (mListener?.isDeviceOnlineCheck() == false) {
+                mListener?.onShowDisconnectDialog()
+            } else {
+                mListener?.onShowProgressBar()
+                tokenUser?.let { token ->
+                    presenter?.onSaveProfileClickPresenter(
+                        token, getNewProfile()
+                    )
+                }
             }
         }
 
@@ -285,8 +285,10 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
+                isOpenGallery = true
                 val uri = it.data?.data!!
                 mProfileUri = uri
+                Log.d("ZEZE", uri.toString())
                 binding.imgProfileUser.setLocalImage(uri, false)
             } else {
                 parseError(it)
@@ -398,9 +400,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     }
 
-    override fun onSuccessGetProfileData(profileResponse: ProfileResponse) {
+    override fun onSuccessGetProfileData(profileResponse: ObjectResponse<DataUser>) {
 
-        userData = profileResponse.dataUser
+        userData = profileResponse.data
         listDataCountry?.forEach {
             if (it.id != null && it.id == userData?.countryId) presenter?.getStateDataPresenter(it.id)
         }
@@ -410,49 +412,39 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
 
         if (binding.txtErrorUsername.visibility != View.VISIBLE) {
-            val layoutUserMenuInfo =
-                activity?.findViewById<LinearLayoutCompat>(R.id.layout_user_info)
-            val userMenuInfo = layoutUserMenuInfo?.findViewById<LinearLayout>(R.id.constraintLayout)
-            val userImage: CircleImageView? = userMenuInfo?.findViewById(R.id.img_menu_user_avatar)
-            val userName: AppCompatTextView? = userMenuInfo?.findViewById(R.id.txt_username_navbar)
-            val userTick:ImageView? = userMenuInfo?.findViewById(R.id.img_blue_tick_navbar)
-            userName?.text = userData?.username
-/*            val drawable = binding.imgProfileUser.drawable
-            userImage?.setImageDrawable(drawable)*/
 
-            if (userData?.img != null) {
-                if (userImage != null) {
-                    Glide.with(this).load(userData?.img).into(userImage)
-                }
-            } else {
-                userImage?.setImageResource(R.drawable.avatar)
+            //Set Data to Preferences
+            getSharedPreferences = requireContext().getSharedPreferences(
+                MainMenuActivity.TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
+            )
+            val gson = Gson()
+            val newUserDataString = gson.toJson(userData)
+
+            with(getSharedPreferences?.edit()) {
+                this?.putString(USER_DATA, newUserDataString)
+                this?.apply()
             }
 
-            if (userData?.kol == 0){
-                userTick?.visibility = View.GONE
-            }else{
-                userTick?.visibility = View.VISIBLE
-            }
-
-
+            //Reload Info User At MenuBar
+            onReloadUserMenu()
         }
 
     }
 
-    override fun onSuccessGetCountryData(countryResponse: CountryResponse) {
-        handleDropDownCountry(countryResponse.dataCountry as ArrayList<DataCountry>)
-        listDataCountry = countryResponse.dataCountry
+    override fun onSuccessGetCountryData(countryResponse: ObjectResponse<List<DataCountry>>) {
+        handleDropDownCountry(countryResponse.data as ArrayList<DataCountry>)
+        listDataCountry = countryResponse.data
         listDataCountry?.forEach {
             if (it.id != null && it.id == userData?.countryId) presenter?.getStateDataPresenter(it.id)
         }
         if (userData != null && listDataCountry != null) {
             userData?.let { setUserData(it) }
         }
-        progressBar?.visibility = View.GONE
+        mListener?.onHideProgressBar()
 
     }
 
-    override fun onSuccessGetStateData(stateResponse: StateResponse) {
+    override fun onSuccessGetStateData(stateResponse: ObjectResponse<List<DataState>>) {
         handleDropDownState(stateResponse.data as ArrayList<DataState>)
         listDataState = stateResponse.data
         if (userData?.stateId != null) {
@@ -469,7 +461,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         }
     }
 
-    override fun onSuccessUpdateProfile(updateProfileResponse: UpdateProfileResponse) {
+    override fun onSuccessUpdateProfile(updateProfileResponse: ObjectResponse<DataUser>) {
         binding.txtErrorFullName.visibility = View.GONE
         binding.txtErrorFullName.focusable = View.FOCUSABLE
         onResume()
@@ -483,11 +475,14 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     }
 
     override fun onErrorGetProfile(errorType: String) {
-        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
+//        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
+        mListener?.onShowDisconnectDialog()
     }
+
 
     override fun onShowError(errorType: String) {
         when (errorType) {
+
             FULL_NAME_AT_LEAST_4_CHARS -> {
                 binding.txtErrorFullName.apply {
                     visibility = View.VISIBLE
@@ -499,7 +494,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 }
             }
 
-            USER_NAME_LENGTH -> {
+            USER_NAME_AT_LEAST_4_CHARS -> {
                 binding.txtErrorUsername.apply {
                     visibility = View.VISIBLE
                     text = context.getString(R.string.error_user_name)
@@ -508,7 +503,17 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                     setBackgroundResource(R.drawable.custom_edittext_error)
                     requestFocus()
                 }
+            }
 
+            USER_NAME_LENGTH -> {
+                binding.txtErrorUsername.apply {
+                    visibility = View.VISIBLE
+                    text = context.getString(R.string.txt_error_us_25_char)
+                }
+                binding.editUsername.apply {
+                    setBackgroundResource(R.drawable.custom_edittext_error)
+                    requestFocus()
+                }
             }
 
             USER_NAME_INVALID -> {
@@ -533,7 +538,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 }
             }
 
-            FULL_NAMESAKE -> {
+            USERNAME_NAMESAKE -> {
                 binding.txtErrorUsername.apply {
                     visibility = View.VISIBLE
                     text = context.getString(R.string.txt_error_full_name_sake)
@@ -556,7 +561,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
             }
         }
-        progressBar?.visibility = View.GONE
+        mListener?.onHideProgressBar()
     }
 
 

@@ -8,9 +8,9 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -22,18 +22,16 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.madison.move.R
-import com.madison.move.data.model.login.DataUserLogin
-import com.madison.move.data.model.login.LoginResponse
-import com.madison.move.data.model.logout.LogoutResponse
-import com.madison.move.data.model.user_profile.DataUser
+import com.madison.move.data.model.ObjectResponse
+import com.madison.move.data.model.DataUser
 import com.madison.move.databinding.ActivityMainMenuBinding
 import com.madison.move.ui.base.BaseActivity
 import com.madison.move.ui.faq.FAQFragment
@@ -44,15 +42,15 @@ import com.madison.move.ui.offlinechannel.CommentFragment
 import com.madison.move.ui.profile.ProfileFragment
 
 
-class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
+class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainInterface,
     NavigationView.OnNavigationItemSelectedListener, LoginDialogFragment.OnInputListener {
     lateinit var mainMenuBinding: ActivityMainMenuBinding
-    private var dataUserLogin: DataUserLogin? = null
+    private var dataUserLogin: DataUser? = null
     private var tokenUser: String? = null
-    private var tokenResponse: LoginResponse? = null
+    private var tokenResponse: ObjectResponse<DataUser>? = null
     private var getSharedPreferences: SharedPreferences? = null
     private var fragmentLogin: DialogFragment? = null
-    var progressDialog: Dialog? = null
+    var disconnectDialog: Dialog? = null
     val gson = Gson()
 
     companion object {
@@ -67,17 +65,11 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
     override fun onCreate(savedInstanceState: Bundle?) {
 
         //clear token when re-launch app
-        val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
-        settings.edit().clear().apply()
+        onClearPreferences()
 
         mainMenuBinding = ActivityMainMenuBinding.inflate(layoutInflater)
         setContentView(mainMenuBinding.root)
         super.onCreate(savedInstanceState)
-
-        mainMenuBinding.menuTvBrowse.setOnClickListener {
-            mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
-            onShowProgressDialog()
-        }
 
     }
 
@@ -87,43 +79,67 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         getSharedPreferences = getSharedPreferences(TOKEN_USER_PREFERENCE, MODE_PRIVATE)
         tokenUser = getSharedPreferences?.getString(TOKEN, null)
 
-        //If token null show menu of login -- if not null show menu logout
         if (tokenUser == null) {
-            mainMenuBinding.apply {
-                menulogout.text = getString(R.string.txt_log_in)
-                menuTvSettting.visibility = View.GONE
-                layoutUserInfo.constraintLayout.visibility = View.GONE
-                menuTvFollowing.visibility = View.GONE
-            }
+            onLogout()
         } else {
+            onLogin()
+        }
 
-            val jsonUser = getSharedPreferences?.getString(USER_DATA, null)
-            val user = gson.fromJson(jsonUser, DataUserLogin::class.java)
+    }
 
-            mainMenuBinding.apply {
-                menulogout.text = getString(R.string.txt_log_out)
-                menuTvSettting.visibility = View.VISIBLE
-                layoutUserInfo.constraintLayout.visibility = View.VISIBLE
-                menuTvFollowing.visibility = View.VISIBLE
-                layoutUserInfo.txtUsernameNavbar.text = user?.username
-                if (user.img != null) {
-                    Glide.with(this@MainMenuActivity).load(user.img)
-                        .into(mainMenuBinding.layoutUserInfo.imgMenuUserAvatar)
-                } else {
-                    mainMenuBinding.layoutUserInfo.imgMenuUserAvatar.setImageResource(R.drawable.avatar)
-                }
+    private fun onLogin() {
+        val jsonUser = getSharedPreferences?.getString(USER_DATA, null)
+        val user = gson.fromJson(jsonUser, DataUser::class.java)
+
+        mainMenuBinding.apply {
+            menulogout.text = getString(R.string.txt_log_out)
+            menuTvSettting.visibility = View.VISIBLE
+            layoutUserInfo.constraintLayout.visibility = View.VISIBLE
+            menuTvFollowing.visibility = View.VISIBLE
+            layoutUserInfo.txtUsernameNavbar.text = user?.username
+
+            if (user.img != null) {
+                Glide.with(this@MainMenuActivity).load(user.img)
+                    .into(mainMenuBinding.layoutUserInfo.imgMenuUserAvatar)
+            } else {
+                mainMenuBinding.layoutUserInfo.imgMenuUserAvatar.setImageResource(R.drawable.avatar)
             }
+
+            mainMenuBinding.layoutUserInfo.imgBlueTickNavbar.isVisible = user?.kol != 0
+
         }
     }
 
-    //Check Device On Connection Internet or Not
-    fun isDeviceOnline(context: Context): Boolean {
-        val connMgr = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = connMgr.activeNetworkInfo
-        val isOnline = networkInfo != null && networkInfo.isConnected
-        if (!isOnline) Toast.makeText(context, " No internet Connection ", Toast.LENGTH_SHORT)
-            .show()
-        return isOnline
+    private fun onLogout() {
+        mainMenuBinding.apply {
+            menulogout.text = getString(R.string.txt_log_in)
+            menuTvSettting.visibility = View.GONE
+            layoutUserInfo.constraintLayout.visibility = View.GONE
+            menuTvFollowing.visibility = View.GONE
+        }
+    }
+
+    private fun onReload() {
+        //Reload Current Screen
+
+        when (val currentFragment =
+            supportFragmentManager.findFragmentById(R.id.content_frame_main)) {
+            is HomeFragment -> {
+                currentFragment.onResume()
+            }
+            is FAQFragment -> {
+                //Refresh Data FAQ when Logout
+            }
+            is ProfileFragment -> {
+                if (tokenUser == null) {
+                    supportFragmentManager.beginTransaction()
+                        .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
+                } else {
+                    currentFragment.onResume()
+                }
+
+            }
+        }
     }
 
 
@@ -164,17 +180,11 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             if (!isImageChanged && mainMenuBinding.groupItemChild.visibility == View.VISIBLE) {
                 mainMenuBinding.groupItemChild.visibility = View.GONE
                 mainMenuBinding.imgdown.setImageDrawable(originalImage)
-                isImageChanged = true
             } else {
                 mainMenuBinding.imgdown.setImageDrawable(newImage)
-                isImageChanged = false
                 mainMenuBinding.groupItemChild.visibility = View.VISIBLE
             }
         }
-
-//        mainMenuBinding.menuTvFollowing.setOnClickListener {
-//            recreate()
-//        }
 
         val imgViewClose: ImageView = findViewById(R.id.imgclose)
         imgViewClose.setOnClickListener {
@@ -230,14 +240,11 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
                     loginDialog.show(supportFragmentManager, "login Dialog")
                 } else {
                     mainMenuBinding.drawerLayout.closeDrawer(GravityCompat.START)
-
-                    tokenUser?.let { token -> presenter?.logoutRequest(token) }
-
-                    mainMenuBinding.apply {
-                        menulogout.text = getString(R.string.txt_log_in)
-                        menuTvSettting.visibility = View.GONE
-                        layoutUserInfo.constraintLayout.visibility = View.GONE
-                        menuTvFollowing.visibility = View.GONE
+                    if (!isDeviceOnline(this@MainMenuActivity)) {
+                        onShowProgressDialog()
+                    } else {
+                        tokenUser?.let { token -> presenter?.logoutRequest(token) }
+                        onLogout()
                     }
                 }
             }
@@ -294,13 +301,14 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         fragmentLogin = fragment
     }
 
-    override fun onSuccessGetToken(loginResponse: LoginResponse) {
-        fragmentLogin?.dismiss()
-        tokenResponse = loginResponse
-        tokenUser = tokenResponse?.token
-        dataUserLogin = tokenResponse?.dataUserLogin
+    override fun onSuccessGetToken(loginResponse: ObjectResponse<DataUser>) {
 
-        Toast.makeText(this, loginResponse.message.toString(), Toast.LENGTH_SHORT).show()
+        fragmentLogin?.dismiss()
+
+        Toast.makeText(this, loginResponse.message, Toast.LENGTH_SHORT).show()
+
+        tokenUser = loginResponse.token
+        dataUserLogin = loginResponse.data
 
         //Set Data to Preferences
         val sharedPreferences = getSharedPreferences(TOKEN_USER_PREFERENCE, MODE_PRIVATE)
@@ -313,67 +321,18 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
             apply()
         }
 
-
-        //Change menu bar
-        mainMenuBinding.apply {
-            menulogout.text = getString(R.string.txt_log_out)
-            menuTvSettting.visibility = View.VISIBLE
-            menuTvFollowing.visibility = View.VISIBLE
-            layoutUserInfo.constraintLayout.visibility = View.VISIBLE
-
-            //Set User Information To Menu
-            layoutUserInfo.txtUsernameNavbar.text = dataUserLogin?.username.toString()
-            if (dataUserLogin?.img != null) {
-                Glide.with(this@MainMenuActivity).load(dataUserLogin?.img)
-                    .into(mainMenuBinding.layoutUserInfo.imgMenuUserAvatar)
-            } else {
-                mainMenuBinding.layoutUserInfo.imgMenuUserAvatar.setImageResource(R.drawable.avatar)
-            }
-
-            if (dataUserLogin?.kol == 0) {
-                mainMenuBinding.layoutUserInfo.imgBlueTickNavbar.isVisible = false
-            }
-        }
-
-        //Reload Current Screen
-        val currentFragment: Fragment? =
-            supportFragmentManager.findFragmentById(R.id.content_frame_main)
-
-        when (currentFragment) {
-            is HomeFragment -> currentFragment.onResume()
-            is FAQFragment -> {
-                //Refresh Data FAQ when Logout
-            }
-            is ProfileFragment -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
-            }
-        }
+        onLogin()
+        onReload()
 
     }
 
-    override fun onSuccessLogout(logoutResponse: LogoutResponse) {
+    override fun onSuccessLogout(logoutResponse: ObjectResponse<DataUser>) {
         Toast.makeText(this, logoutResponse.message ?: "", Toast.LENGTH_SHORT).show()
         //clear token when logout
-        val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
-        settings.edit().clear().apply()
-        tokenUser = null
-        tokenResponse = null
+        onClearPreferences()
 
         //Reload Current Screen
-        val currentFragment: Fragment? =
-            supportFragmentManager.findFragmentById(R.id.content_frame_main)
-
-        when (currentFragment) {
-            is HomeFragment -> currentFragment.onResume()
-            is FAQFragment -> {
-                //Refresh Data FAQ when Logout
-            }
-            is ProfileFragment -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(mainMenuBinding.contentFrameMain.id, HomeFragment()).commit()
-            }
-        }
+        onReload()
     }
 
     override fun onError(error: String?) {
@@ -382,26 +341,63 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View,
         fragmentLogin?.view?.visibility = View.VISIBLE
         fragmentLogin?.view?.findViewById<RelativeLayout>(R.id.layout_error_message)?.visibility =
             View.VISIBLE
+
+        mainMenuBinding.progressMainLayout.visibility = View.GONE
+
+    }
+
+    override fun onShowDisconnectDialog() {
+        if (disconnectDialog?.isShowing == null || disconnectDialog?.isShowing == false) {
+            onShowProgressDialog()
+        } else {
+            Log.d("KKK", disconnectDialog?.isShowing.toString())
+        }
+    }
+
+    override fun isDeviceOnlineCheck(): Boolean {
+        return isDeviceOnline(this)
+    }
+
+    override fun onReloadUserInfoMenu() {
+        onLogin()
+    }
+
+    override fun onShowProgressBar() {
+        mainMenuBinding.progressMainLayout.visibility = View.VISIBLE
+    }
+
+    override fun onHideProgressBar() {
+        mainMenuBinding.progressMainLayout.visibility = View.GONE
     }
 
 
     private fun onShowProgressDialog() {
 
-        progressDialog = Dialog(this)
-
-        progressDialog?.setContentView(R.layout.progress_dialog)
-        progressDialog?.setCanceledOnTouchOutside(false)
-        progressDialog?.window?.apply {
-            setLayout(
-                WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT
-            )
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        disconnectDialog = Dialog(this)
+        disconnectDialog?.apply {
+            setContentView(R.layout.progress_dialog)
+            setCanceledOnTouchOutside(false)
+            window?.apply {
+                setLayout(
+                    WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT
+                )
+                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            }
+            show()
         }
-        progressDialog?.show()
+
+        disconnectDialog?.findViewById<AppCompatTextView>(R.id.txt_try_again)?.setOnClickListener {
+            disconnectDialog?.dismiss()
+            onReload()
+        }
+
     }
 
-    fun onHideProgressDialog() {
-        progressDialog?.dismiss()
+    private fun onClearPreferences() {
+        val settings = getSharedPreferences(TOKEN_USER_PREFERENCE, Context.MODE_PRIVATE)
+        settings.edit().clear().apply()
+        tokenUser = null
+        tokenResponse = null
     }
 
 

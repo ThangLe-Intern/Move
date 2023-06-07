@@ -20,6 +20,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.madison.move.R
 import com.madison.move.databinding.FragmentLoginDialogBinding
+import com.madison.move.ui.menu.MainInterface
 
 
 class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : DialogFragment(),
@@ -27,7 +28,6 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
     private lateinit var binding: FragmentLoginDialogBinding
     private lateinit var presenter: LoginPresenter
     var progressBar: RelativeLayout? = null
-    var progressDialog: Dialog? = null
 
     companion object {
         const val EMAIL_INVALID = "EMAIL_INVALID"
@@ -37,6 +37,21 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
         const val PASSWORD_NULL = "PASSWORD_NULL"
         const val EMAIL_NULL = "EMAIL_NULL"
         const val PASSWORD_EMAIL_NULL = "PASSWORD_EMAIL_NULL"
+    }
+
+
+    var mListener: MainInterface? = null
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        // Initialize the interface variable
+        if (activity != null){
+            mListener = activity as MainInterface
+        }
+
+        if (mListener == null) {
+            throw ClassCastException("$activity must implement MainInterface")
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -181,14 +196,17 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
 
     override fun onSendDataToActivity(email: String, password: String) {
 
-        mOnInputListener?.sendData(email, password, this)
-
-        this.view?.visibility = View.INVISIBLE
-        progressBar = activity?.findViewById(R.id.progress_main_layout)
-        progressBar?.visibility = View.VISIBLE
+        if (mListener?.isDeviceOnlineCheck() == false){
+            dismiss()
+            mListener?.onShowDisconnectDialog()
+        }else{
+            mOnInputListener?.sendData(email, password, this)
+            this.view?.visibility = View.INVISIBLE
+            progressBar = activity?.findViewById(R.id.progress_main_layout)
+            progressBar?.visibility = View.VISIBLE
+        }
 
     }
-
 
 
     override fun onResponseError(errorType: String) {

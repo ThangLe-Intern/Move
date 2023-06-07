@@ -1,12 +1,5 @@
 package com.madison.move.ui.login
 
-import android.util.Log
-import com.madison.move.data.DataManager
-import com.madison.move.data.model.login.LoginResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-
 class LoginPresenter(
     override var view: LoginContract.LoginView?
 ) : LoginContract.Presenter {

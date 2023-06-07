@@ -1,4 +1,4 @@
-package com.madison.move.data.model.category
+package com.madison.move.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
