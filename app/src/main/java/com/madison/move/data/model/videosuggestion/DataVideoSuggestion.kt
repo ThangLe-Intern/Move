@@ -43,4 +43,5 @@ data class DataVideoSuggestion(
     @Expose
     @SerializedName("username")
     val username: String?
+
 )

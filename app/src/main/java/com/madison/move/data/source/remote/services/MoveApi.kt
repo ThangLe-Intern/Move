@@ -10,6 +10,11 @@ import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import com.madison.move.data.source.remote.model.MoveResponse
 import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 import retrofit2.http.*
 
 interface MoveApi {
@@ -24,6 +29,15 @@ interface MoveApi {
 
     @GET("videos-you-may-like")
     fun getVideoSuggestion(): Call<ObjectResponse<VideoSuggestion>>
+
+    @GET("videos/{id}")
+    fun getDetailVideoSuggestion(
+        @Header("Authorization") authorization : String,
+        @Path("id") videoId :Int
+    ): Call<VideoDetailResponse>
+
+
+
 
     @GET("videos-you-may-like")
     fun getVideoSuggestionForUser(@Header("Authorization") authorization: String): Call<ObjectResponse<VideoSuggestion>>

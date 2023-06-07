@@ -38,7 +38,6 @@ import com.madison.move.ui.faq.FAQFragment
 import com.madison.move.ui.guidelines.GuidelinesFragment
 import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.login.LoginDialogFragment
-import com.madison.move.ui.offlinechannel.CommentFragment
 import com.madison.move.ui.profile.ProfileFragment
 
 

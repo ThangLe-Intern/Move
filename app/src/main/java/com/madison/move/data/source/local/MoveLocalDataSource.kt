@@ -60,6 +60,10 @@ class MoveLocalDataSource private constructor(
         return null
     }
 
+    override fun getVideoDetail(authorization: String, id: Int): Call<VideoDetailResponse>? {
+        return null
+    }
+
     override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>>? {
         return null
     }

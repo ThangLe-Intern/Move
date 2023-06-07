@@ -58,6 +58,11 @@ class MoveRepository private constructor(
     }
 
     override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>>? {
+    override fun getVideoDetail(authorization:String,id: Int): Call<VideoDetailResponse>? {
+        return moveRemote.getVideoDetail(authorization,id)
+    }
+
+    override fun getTokenLogin(email: String, password: String): Call<LoginResponse>? {
         return moveRemote.getTokenLogin(email, password)
     }
 

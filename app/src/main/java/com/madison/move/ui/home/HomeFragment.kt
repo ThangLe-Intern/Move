@@ -8,6 +8,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,8 +24,8 @@ import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.home.adapter.CarouselViewPagerAdapter
 import com.madison.move.ui.home.adapter.CategoryAdapter
 import com.madison.move.ui.home.adapter.VideoSuggestionAdapter
+import com.madison.move.ui.offlinechannel.CommentFragment
 import kotlin.math.abs
-
 
 class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
@@ -50,6 +51,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         const val TOKEN = "token"
     }
 
+
     override fun createPresenter(): HomePresenter = HomePresenter(this)
 
     override fun onCreateView(
@@ -60,8 +62,12 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         //Disable nested scroll of recyclerview
         binding.listVideoSuggestion.isNestedScrollingEnabled = false
 
-        return binding.root
+        presenter?.apply {
+            getFeaturedVideoData()
+            getCategoryData()
+        }
 
+        return binding.root
     }
 
     override fun onPause() {
@@ -72,11 +78,9 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     override fun onResume() {
         super.onResume()
         onRefreshData()
-
         //Slider for carousel
         handler.postDelayed(runnable, 3000)
     }
-
 
     private fun onRefreshData() {
 
@@ -155,7 +159,6 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         presenter?.onShowVideoSuggestionPresenter(videoList)
     }
 
-
     override fun onErrorMoveData(error: String) {
         mListener?.onShowDisconnectDialog()
     }
@@ -169,7 +172,6 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         featuredFragmentList: ArrayList<FeaturedFragment>,
         videoCarouselData: ArrayList<DataVideoSuggestion>
     ) {
-
         handler = Handler(Looper.myLooper()!!)
         carouselViewPagerAdapter = CarouselViewPagerAdapter(
             this@HomeFragment, featuredFragmentList, videoCarouselData, binding.viewPager
@@ -195,6 +197,18 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
                 handler.postDelayed(runnable, 3000)
             }
         })
+
+        carouselViewPagerAdapter.onClickVideoCarousel = object  : CarouselViewPagerAdapter.setListenerCarouselVideo{
+            override fun onClickVideoCarousel(dataVideoCarousel: DataVideoSuggestion) {
+                val activity = requireActivity() as AppCompatActivity
+                val commentFragment = CommentFragment(dataVideoCarousel,null)
+                activity.supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.content_frame_main, commentFragment)
+                    .commit()
+            }
+
+        }
 
 
     }
@@ -233,6 +247,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     //Show list of Video Suggestion
     override fun onShowListVideoSuggestion(listVideoSuggestion: ArrayList<DataVideoSuggestion>) {
+
         videoSuggestionAdapter = VideoSuggestionAdapter(this, listVideoSuggestion)
         binding.listVideoSuggestion.apply {
             layoutManager = LinearLayoutManager(context)
@@ -244,6 +259,14 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         }
 
     }
+        videoSuggestionAdapter.onClickVideo = object : VideoSuggestionAdapter.setListenerVideoSuggestion{
+            override fun onClickVideoSuggest(dataVideoSuggestion: DataVideoSuggestion) {
+                val activity = requireActivity() as AppCompatActivity
+                val commentFragment = CommentFragment(dataVideoSuggestion,null)
+                activity.supportFragmentManager.beginTransaction().replace(R.id.content_frame_main,commentFragment).commit()
+            }
 
+        }
+    }
 
 }
