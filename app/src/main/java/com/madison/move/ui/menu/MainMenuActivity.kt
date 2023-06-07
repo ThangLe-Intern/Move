@@ -121,7 +121,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
 
     private fun onReload() {
         //Reload Current Screen
-
+        onHideProgressBar()
         when (val currentFragment =
             supportFragmentManager.findFragmentById(R.id.content_frame_main)) {
             is HomeFragment -> {

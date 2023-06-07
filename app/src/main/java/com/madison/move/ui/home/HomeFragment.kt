@@ -63,11 +63,6 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         //Disable nested scroll of recyclerview
         binding.listVideoSuggestion.isNestedScrollingEnabled = false
 
-        presenter?.apply {
-            getFeaturedVideoData()
-            getCategoryData()
-        }
-
         return binding.root
     }
 
