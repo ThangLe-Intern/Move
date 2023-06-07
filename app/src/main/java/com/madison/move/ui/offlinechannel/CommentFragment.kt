@@ -387,7 +387,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                             Log.d("DUNG", i.content)
                         }
 
-                        var adapterReply = ListReplyAdapter(listCommentReply)
+                        var adapterReply = ListReplyAdapter(listCommentReply,requireContext())
                         list.apply {
                             layoutManager = LinearLayoutManager(context)
                             adapter = adapterReply
