@@ -92,7 +92,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     override fun onResume() {
         super.onResume()
-        if (!isOpenGallery){
+        if (!isOpenGallery) {
             mListener?.onShowProgressBar()
             onHandleLogic()
         }
@@ -288,7 +288,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 isOpenGallery = true
                 val uri = it.data?.data!!
                 mProfileUri = uri
-                Log.d("ZEZE",uri.toString())
+                Log.d("ZEZE", uri.toString())
                 binding.imgProfileUser.setLocalImage(uri, false)
             } else {
                 parseError(it)
@@ -478,7 +478,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 //        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
         mListener?.onShowDisconnectDialog()
     }
-
 
 
     override fun onShowError(errorType: String) {
