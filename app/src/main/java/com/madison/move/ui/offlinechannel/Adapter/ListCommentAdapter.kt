@@ -50,11 +50,11 @@ class ListCommentAdapter(
                 username.text = comment.user?.name
                 commentTime.text = comment.timeOfComment
                 commentContent.text = comment.content
-                listReply.visibility = View.VISIBLE
+                listReply.visibility = View.GONE
             }
             binding.apply {
                 layoutShow.setOnClickListener {
-                    listReply.visibility = if (listReply.isVisible) View.GONE else View.VISIBLE
+                    listReply.visibility = if (listReply.isGone) View.VISIBLE else View.GONE
                     imgArrowDownGreen.setImageResource(
                         if (listReply.isVisible) R.drawable.ic_ic_arrow_up_green
                         else R.drawable.ic_arrow_down_green
