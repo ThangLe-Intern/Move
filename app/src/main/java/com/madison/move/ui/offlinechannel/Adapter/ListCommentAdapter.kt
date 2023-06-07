@@ -1,10 +1,10 @@
 package com.madison.move.ui.offlinechannel.Adapter
 
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.PopupWindow
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.isGone
@@ -33,10 +33,12 @@ class ListCommentAdapter(
 
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("ClickableViewAccessibility")
         fun onBind(comment: Comment) {
 
             val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
 
+            adapterReply = ListReplyAdapter(comment.listChild, context)
             val adapterReply = comment.listChild?.let { ListReplyAdapter(it) } ?: ListReplyAdapter(
                 listComment
             )
@@ -51,8 +53,8 @@ class ListCommentAdapter(
                 commentContent.text = comment.content
                 listReply.visibility = View.VISIBLE
             }
-            binding.layoutShow.setOnClickListener {
-                binding.apply {
+            binding.apply {
+                layoutShow.setOnClickListener {
                     listReply.visibility =
                         if (listReply.isVisible) View.GONE else View.VISIBLE
                     imgArrowDownGreen.setImageResource(
@@ -72,19 +74,28 @@ class ListCommentAdapter(
             }
 
             binding.apply {
+                var currentNumber : Int? = 0
                 btnLikeTick.visibility = View.GONE
                 btnLike.setOnClickListener {
                     if (btnLikeTick.isGone) {
                         btnLikeTick.visibility = View.VISIBLE
+                        currentNumber = currentNumber?.plus(1) ?: 1
+                        numberLike.text = currentNumber.toString()
                         btnDisLiketike.visibility = View.GONE
-                    } else if (binding.btnLikeTick.isVisible) {
+                    } else if (btnLikeTick.isVisible) {
                         btnLikeTick.visibility = View.GONE
+                        currentNumber = currentNumber?.minus(1) ?: 0
+                        numberLike.text = currentNumber.toString()
                     }
                 }
 
                 btnDisLiketike.visibility = View.GONE
                 btnDisLike.setOnClickListener {
                     if (btnDisLiketike.isGone) {
+                        if (btnLikeTick.isVisible) {
+                            currentNumber = currentNumber?.minus(1) ?: 0
+                            numberLike.text = currentNumber.toString()
+                        }
                         btnLikeTick.visibility = View.GONE
                         btnDisLiketike.visibility = View.VISIBLE
                     } else if (btnDisLiketike.isVisible) {
@@ -95,27 +106,43 @@ class ListCommentAdapter(
                 if (comment.user?.isTicked == true) {
                     bluetick.visibility = View.GONE
                 }
-
-                var isReportVisible = false
-                cardViewReport.visibility = View.GONE
                 btnReport.setOnClickListener {
+                    val inflater = LayoutInflater.from(context)
+                    val dialogView = inflater.inflate(R.layout.dialog_report, null)
 
-                    isReportVisible = !isReportVisible
-                    cardViewReport.visibility = if (isReportVisible) View.VISIBLE else View.GONE
-                }
+                    val popupWindow = PopupWindow(
+                        dialogView,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        true
+                    )
 
+                    val location = IntArray(2)
+                    btnReport.getLocationInWindow(location)
 
+                    val x = location[0] - dialogView.width - 1
+                    val y = location[1] - dialogView.height
 
-              rootView.setOnClickListener {
-                    if (isReportVisible) {
-                        isReportVisible = false
-                        cardViewReport.visibility = View.GONE
+                    popupWindow.showAtLocation(btnReport, Gravity.NO_GRAVITY, x, y)
+
+                    dialogView.viewTreeObserver.addOnGlobalLayoutListener(object :
+                        ViewTreeObserver.OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            dialogView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                            val popupX = x - (dialogView.width - btnReport.width) / 2
+                            val popupY = y - dialogView.height
+
+                            popupWindow.update(popupX, popupY, -1, -1, true)
+                        }
+                    })
+
+                    dialogView.setOnTouchListener { _, _ ->
+                        popupWindow.dismiss()
+                        true
                     }
                 }
 
-                cardViewReport.setOnClickListener {
-                    cardViewReport.visibility = View.GONE
-                }
                 sendButtonReply.setOnClickListener {
                     notifyDataSetChanged()
                 }
@@ -123,7 +150,7 @@ class ListCommentAdapter(
 
             binding.apply {
                 layoutUserReply.visibility = View.GONE
-               btnReply.setOnClickListener {
+                btnReply.setOnClickListener {
                     if (layoutUserReply.isGone) {
                         layoutUserReply.visibility = View.VISIBLE
 
@@ -155,9 +182,7 @@ class ListCommentAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as ViewHolder).onBind(listComment[position])
-        if (holder is ViewHolder) {
-            holder.onBind(listComment[position])
-        }
+
     }
 
     override fun getItemCount(): Int {

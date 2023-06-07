@@ -1,6 +1,8 @@
 package com.madison.move.ui.base
 
 import android.R
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.NonNull
@@ -35,13 +37,19 @@ abstract class BaseActivity<Presenter : Any> : AppCompatActivity(), BaseView {
             window.decorView.findViewById(R.id.content)
         ).let { controller ->
             controller.hide(WindowInsetsCompat.Type.systemBars())
-
-
             controller.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
 
     }
+
+    //Check Device On Connection Internet or Not
+     open fun isDeviceOnline(context: Context): Boolean {
+        val connMgr = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connMgr.activeNetworkInfo
+        return networkInfo != null && networkInfo.isConnected
+    }
+
 
 
     override fun onDestroy() {

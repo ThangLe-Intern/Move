@@ -1,5 +1,6 @@
 package com.madison.move.ui.login
 
+import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -13,21 +14,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.RelativeLayout
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import com.madison.move.R
-import com.madison.move.data.model.User
-import com.madison.move.data.model.login.LoginResponse
 import com.madison.move.databinding.FragmentLoginDialogBinding
+import com.madison.move.ui.menu.MainInterface
 
 
 class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : DialogFragment(),
     LoginContract.LoginView {
     private lateinit var binding: FragmentLoginDialogBinding
     private lateinit var presenter: LoginPresenter
+    var progressBar: RelativeLayout? = null
 
     companion object {
         const val EMAIL_INVALID = "EMAIL_INVALID"
@@ -39,13 +39,27 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
         const val PASSWORD_EMAIL_NULL = "PASSWORD_EMAIL_NULL"
     }
 
+
+    var mListener: MainInterface? = null
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        // Initialize the interface variable
+        if (activity != null){
+            mListener = activity as MainInterface
+        }
+
+        if (mListener == null) {
+            throw ClassCastException("$activity must implement MainInterface")
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         dialog?.window?.apply {
             setLayout(
                 WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT
             )
-
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
         }
 
@@ -181,8 +195,19 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
 
 
     override fun onSendDataToActivity(email: String, password: String) {
-        mOnInputListener?.sendData(email,password,this)
+
+        if (mListener?.isDeviceOnlineCheck() == false){
+            dismiss()
+            mListener?.onShowDisconnectDialog()
+        }else{
+            mOnInputListener?.sendData(email, password, this)
+            this.view?.visibility = View.INVISIBLE
+            progressBar = activity?.findViewById(R.id.progress_main_layout)
+            progressBar?.visibility = View.VISIBLE
+        }
+
     }
+
 
     override fun onResponseError(errorType: String) {
         Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
@@ -190,10 +215,12 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
 
     //Send user token from Fragment To Activity
     interface OnInputListener {
-        fun sendData(email: String, password: String,fragment: DialogFragment)
+        fun sendData(email: String, password: String, fragment: DialogFragment)
     }
 
     override fun onBottomNavigateSystemUI() {
 
     }
+
+
 }

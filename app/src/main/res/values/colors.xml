@@ -13,8 +13,7 @@
     <color name="error_red">#FF647A</color>
     <color name="error_fill">#FFEFF1</color>
     <color name="light_gray">#F4F4F4</color>
-
-
     <color name="silverSand">#Bcbfc1</color>
+    <color name="transparent_background">#40000000</color>
 
 </resources>

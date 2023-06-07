@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.madison.move.R
-import com.madison.move.data.model.carousel.DataVideoCarousel
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentFeaturedBinding
 import com.madison.move.ui.home.FeaturedFragment
@@ -24,47 +23,45 @@ class CarouselViewPagerAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var onClickVideoCarousel : setListenerCarouselVideo ?= null
-
-    fun onClick(onClickCarousel: setListenerCarouselVideo){
-        this.onClickVideoCarousel = onClickCarousel
-    }
-
     inner class ViewHolder(val binding: FragmentFeaturedBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(fragment: FeaturedFragment, videoCarousel: DataVideoSuggestion) {
             binding.apply {
-                layoutFeatureFragment.setOnClickListener {
-                    onClickVideoCarousel?.onClickVideoCarousel(videoCarousel)
-                }
+                txtFeatureUsername.text = videoCarousel.username ?: ""
+                txtFeatureVideoTitle.text = videoCarousel.title ?: ""
 
-                txtFeatureUsername.text = videoCarousel.username
-                txtFeatureVideoTitle.text = videoCarousel.title
-                txtViewCount.text = videoCarousel.countView.toString()
-                txtFeatureVideoCategory.text = videoCarousel.categoryName
+                val viewCount = videoCarousel.countView ?: 0
+                txtViewCount.text = viewCount.toString()
+
+                txtFeatureVideoCategory.text = videoCarousel.categoryName ?: ""
             }
 
             if (videoCarousel.categoryName != null && videoCarousel.categoryName == "Just Move") {
                 binding.cardViewVideoFeaturedDuration.visibility = View.INVISIBLE
                 binding.cardViewLevelOfUser.visibility = View.INVISIBLE
-            }else{
+            } else {
                 binding.cardViewVideoFeaturedDuration.visibility = View.VISIBLE
                 binding.cardViewLevelOfUser.visibility = View.VISIBLE
 
-                when(videoCarousel.level){
-                    1 -> binding.txtLevelOfUser.text = activity.getString(R.string.txt_level_beginner)
+                when (videoCarousel.level) {
+                    1 -> binding.txtLevelOfUser.text =
+                        activity.getString(R.string.txt_level_beginner)
                     2 -> binding.txtLevelOfUser.text = activity.getString(R.string.txt_level_inter)
-                    3 -> binding.txtLevelOfUser.text = activity.getString(R.string.txt_level_advanced)
+                    3 -> binding.txtLevelOfUser.text =
+                        activity.getString(R.string.txt_level_advanced)
                 }
 
-                when(videoCarousel.duration){
-                    1 -> binding.txtVideoFeaturedDuration.text = activity.getString(R.string.timeOfCategory)
-                    2 -> binding.txtVideoFeaturedDuration.text = activity.getString(R.string.duration_second)
-                    3 -> binding.txtVideoFeaturedDuration.text = activity.getString(R.string.duration_third)
+                when (videoCarousel.duration) {
+                    1 -> binding.txtVideoFeaturedDuration.text =
+                        activity.getString(R.string.timeOfCategory)
+                    2 -> binding.txtVideoFeaturedDuration.text =
+                        activity.getString(R.string.duration_second)
+                    3 -> binding.txtVideoFeaturedDuration.text =
+                        activity.getString(R.string.duration_third)
                 }
             }
 
-            val roundOff = (videoCarousel.rating?.times(100.0))?.roundToInt()?.div(100.0)
+            val roundOff = (videoCarousel.rating?.times(100.0))?.roundToInt()?.div(100.0) ?: 0
             binding.txtFeaturedRateNumber.text = roundOff.toString()
 
             if (videoCarousel.thumbnail != null) {
@@ -81,15 +78,12 @@ class CarouselViewPagerAdapter(
                 binding.imgFeaturedUserAvatar.setImageResource(R.drawable.avatar)
             }
 
-
-
-
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ViewHolder(
-            FragmentFeaturedBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+            FragmentFeaturedBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -106,15 +100,16 @@ class CarouselViewPagerAdapter(
 
     }
 
+    fun onClearCarousel() {
+        var size = listFragment.size
+        listFragment.clear();
+        notifyItemRangeRemoved(0, size);
+    }
 
     private val runnable = Runnable {
 //        viewPager2.currentItem = 0
         listFragment.addAll(listFragment)
         videoCarouselData.addAll(videoCarouselData)
         notifyDataSetChanged()
-    }
-
-    interface setListenerCarouselVideo{
-        fun onClickVideoCarousel(dataVideoCarousel: DataVideoSuggestion)
     }
 }

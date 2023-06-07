@@ -26,26 +26,19 @@ class VideoSuggestionAdapter(
         fun onBind(video: DataVideoSuggestion) {
 
             binding.apply {
-                layoutVideoSuggestion.setOnClickListener {
-                    onClickVideo?.onClickVideoSuggest(video)
-                }
-                txtVideoSuggestionUsername.text = video.username
-                txtVideoSuggestionCategory.text = activity.getString(
-                    R.string.video_post_time,
-                    video.categoryName.toString(),
-                    video.postedDayAgo.toString()
+                txtVideoSuggestionUsername.text = video.username ?: ""
+                txtVideoSuggestionUploadTime.text = activity.getString(
+                    R.string.video_post_time, video.postedDayAgo.toString()
                 )
-                txtTitleOfVideoSuggestion.text = video.title
-                txtVideoSuggestionView.text = video.totalView.toString()
+                txtVideoSuggestionCategory.text = video.categoryName ?: ""
+                txtTitleOfVideoSuggestion.text = video.title ?: ""
+
+                val viewCount = video.countView ?: 0
+                txtVideoSuggestionView.text = viewCount.toString()
             }
 
-
-            if (video.rating == null) {
-                binding.txtVideoSuggestionRateNumber.text = 0.toString()
-            } else {
-                val roundOff = (video.rating?.times(100.0))?.roundToInt()?.div(100.0)
-                binding.txtVideoSuggestionRateNumber.text = roundOff.toString()
-            }
+            val roundOff = (video.rating?.times(100.0))?.roundToInt()?.div(100.0) ?: 0
+            binding.txtVideoSuggestionRateNumber.text = roundOff.toString()
 
             if (video.thumbnail != null) {
                 Glide.with(activity).load(video.thumbnail)
@@ -60,8 +53,8 @@ class VideoSuggestionAdapter(
 
 
             if (video.categoryName != null && video.categoryName == "Just Move") {
-                binding.cardViewVideoSuggestionDuration.visibility = View.INVISIBLE
-                binding.cardViewVideoSuggestionUserLevel.visibility = View.INVISIBLE
+                binding.cardViewVideoSuggestionDuration.visibility = View.GONE
+                binding.cardViewVideoSuggestionUserLevel.visibility = View.GONE
             } else {
                 binding.cardViewVideoSuggestionDuration.visibility = View.VISIBLE
                 binding.cardViewVideoSuggestionUserLevel.visibility = View.VISIBLE
@@ -84,12 +77,6 @@ class VideoSuggestionAdapter(
                         activity.getString(R.string.duration_third)
                 }
             }
-
-//            binding.layoutVideoSuggestion.setOnClickListener {
-//                val activity: AppCompatActivity = it.context as AppCompatActivity
-//                val commentFragment = CommentFragment(null)
-//                activity.supportFragmentManager.beginTransaction().replace(R.id.content_frame_main,commentFragment).commit()
-//            }
 
         }
     }

@@ -16,12 +16,10 @@ import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.madison.move.R
-import com.madison.move.data.model.carousel.CarouselResponse
-import com.madison.move.data.model.carousel.DataVideoCarousel
-import com.madison.move.data.model.category.CategoryResponse
-import com.madison.move.data.model.category.DataCategory
+import com.madison.move.data.model.ObjectResponse
+import com.madison.move.data.model.DataCategory
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
-import com.madison.move.data.model.videosuggestion.VideoSuggestionResponse
+import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import com.madison.move.databinding.FragmentHomeBinding
 import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.home.adapter.CarouselViewPagerAdapter
@@ -38,14 +36,18 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     private lateinit var videoSuggestionAdapter: VideoSuggestionAdapter
     private var handler: Handler = Handler(Looper.getMainLooper())
 
-    var videoCarouselData: ArrayList<DataVideoSuggestion> = arrayListOf()
     private var getSharedPreferences: SharedPreferences? = null
-    var featuredList: ArrayList<FeaturedFragment> = arrayListOf()
-    var categoryList: ArrayList<DataCategory> = arrayListOf()
-    var videoList: ArrayList<DataVideoSuggestion> = arrayListOf()
+    var videoCarouselData = ArrayList<DataVideoSuggestion>()
+    var featuredList = ArrayList<FeaturedFragment>()
+    var categoryList = ArrayList<DataCategory>()
+    var videoList = ArrayList<DataVideoSuggestion>()
     private var tokenUser: String? = null
 
-    companion object{
+    private var isGetCarouselSuccess = false
+    private var isGetCategorySuccess = false
+    private var isGetVideoSuggestionSuccess = false
+
+    companion object {
         const val TOKEN_USER_PREFERENCE = "tokenUser"
         const val TOKEN = "token"
     }
@@ -82,6 +84,26 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     }
 
     private fun onRefreshData() {
+
+        mListener?.onShowProgressBar()
+
+        if (this::carouselViewPagerAdapter.isInitialized) {
+            // Clear the data in the adapter
+            carouselViewPagerAdapter.onClearCarousel()
+            // Notify the adapter of the data change
+            carouselViewPagerAdapter.notifyDataSetChanged();
+            // Reset the ViewPager to the first item
+            binding.viewPager.currentItem = 0
+        }
+
+
+        presenter?.apply {
+            getFeaturedVideoData()
+            getCategoryData()
+        }
+
+
+
         getSharedPreferences = requireContext().getSharedPreferences(
             TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
         )
@@ -95,7 +117,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         }
 
         if (tokenUser != null) {
-            presenter?.getVideoSuggestionForUserData(tokenUser?: "")
+            presenter?.getVideoSuggestionForUserData(tokenUser ?: "")
         } else {
             presenter?.getVideoSuggestionData()
         }
@@ -103,35 +125,43 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     }
 
 
-    override fun onSuccessCarouselData(response: CarouselResponse) {
+    override fun onSuccessCarouselData(response: ObjectResponse<List<DataVideoSuggestion>>) {
+
+        isGetCarouselSuccess = true
 
         val listFragmentSize = response.data?.size
-        videoCarouselData = response.data as ArrayList
+        videoCarouselData.addAll(response.data ?: emptyList())
 
-        for (i in 0 until listFragmentSize!!) {
-            featuredList.add(FeaturedFragment())
+
+        if (listFragmentSize != null) {
+            for (i in 0 until listFragmentSize) {
+                featuredList.add(FeaturedFragment())
+            }
+
         }
-
         presenter?.onShowFeaturedCarouselPresenter(featuredList, videoCarouselData)
     }
 
-    override fun onSuccessCategoryData(categoryResponse: CategoryResponse) {
-        categoryList = categoryResponse.data as ArrayList<DataCategory>
+    override fun onSuccessCategoryData(objectResponse: ObjectResponse<List<DataCategory>>) {
+        isGetCategorySuccess = true
+        categoryList.addAll(objectResponse.data ?: emptyList())
         presenter?.onShowCategoryPresenter(categoryList)
     }
 
-    override fun onSuccessVideoSuggestionData(videoSuggestionResponse: VideoSuggestionResponse) {
-        videoList = videoSuggestionResponse.videoSuggestion.data as ArrayList<DataVideoSuggestion>
+    override fun onSuccessVideoSuggestionData(videoSuggestionResponse: ObjectResponse<VideoSuggestion>) {
+        isGetVideoSuggestionSuccess = true
+        videoList.addAll(videoSuggestionResponse.data?.data ?: emptyList())
         presenter?.onShowVideoSuggestionPresenter(videoList)
     }
 
-    override fun onSuccessVideoSuggestionForUser(videoSuggestionResponse: VideoSuggestionResponse) {
-        videoList = videoSuggestionResponse.videoSuggestion.data as ArrayList<DataVideoSuggestion>
+    override fun onSuccessVideoSuggestionForUser(videoSuggestionResponse: ObjectResponse<VideoSuggestion>) {
+        isGetVideoSuggestionSuccess = true
+        videoList.addAll(videoSuggestionResponse.data?.data ?: emptyList())
         presenter?.onShowVideoSuggestionPresenter(videoList)
     }
 
     override fun onErrorMoveData(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+        mListener?.onShowDisconnectDialog()
     }
 
     private val runnable = Runnable {
@@ -148,23 +178,8 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             this@HomeFragment, featuredFragmentList, videoCarouselData, binding.viewPager
         )
 
-        binding.viewPager.apply {
-            adapter = carouselViewPagerAdapter
-            offscreenPageLimit = 3
-            clipToPadding = false
-            clipChildren = false
-            getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-        }
 
-        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                handler.removeCallbacks(runnable)
-                handler.postDelayed(runnable, 3000)
-            }
-        })
-
-        carouselViewPagerAdapter.onClickVideoCarousel = object  : CarouselViewPagerAdapter.setListenerCarouselVideo{
+/*        carouselViewPagerAdapter.onClickVideoCarousel = object  : CarouselViewPagerAdapter.setListenerCarouselVideo{
             override fun onClickVideoCarousel(dataVideoCarousel: DataVideoSuggestion) {
                 val activity = requireActivity() as AppCompatActivity
                 val commentFragment = CommentFragment(dataVideoCarousel,null)
@@ -174,8 +189,28 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
                     .commit()
             }
 
+        }*/
+
+        binding.viewPager.apply {
+            adapter = carouselViewPagerAdapter
+            offscreenPageLimit = 3
+            clipToPadding = false
+            clipChildren = false
+            getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
 
+
+        if (isGetCarouselSuccess && isGetCategorySuccess && isGetVideoSuggestionSuccess) {
+            mListener?.onHideProgressBar()
+        }
+
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                handler.removeCallbacks(runnable)
+                handler.postDelayed(runnable, 3000)
+            }
+        })
 
     }
 
@@ -204,6 +239,11 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = categoryAdapter
         }
+
+        if (isGetCarouselSuccess && isGetCategorySuccess && isGetVideoSuggestionSuccess) {
+            mListener?.onHideProgressBar()
+        }
+
     }
 
     //Show list of Video Suggestion
@@ -214,6 +254,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             layoutManager = LinearLayoutManager(context)
             adapter = videoSuggestionAdapter
         }
+
         videoSuggestionAdapter.onClickVideo = object : VideoSuggestionAdapter.setListenerVideoSuggestion{
             override fun onClickVideoSuggest(dataVideoSuggestion: DataVideoSuggestion) {
                 val activity = requireActivity() as AppCompatActivity
@@ -222,6 +263,11 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
             }
 
         }
+
+        if (isGetCarouselSuccess && isGetCategorySuccess && isGetVideoSuggestionSuccess) {
+            mListener?.onHideProgressBar()
+        }
+
     }
 
 }
