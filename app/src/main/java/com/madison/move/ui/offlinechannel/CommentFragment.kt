@@ -38,7 +38,14 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
     private lateinit var handler: Handler
     override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
 
-    var page = 1
+
+    override fun onResume() {
+        super.onResume()
+        //Check Internet Connection
+        if (mListener?.isDeviceOnlineCheck() == false) {
+            mListener?.onShowDisconnectDialog()
+        }
+    }
 
     private var isLoading = false
     override fun onCreateView(

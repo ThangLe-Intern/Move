@@ -38,6 +38,7 @@ import com.madison.move.ui.faq.FAQFragment
 import com.madison.move.ui.guidelines.GuidelinesFragment
 import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.login.LoginDialogFragment
+import com.madison.move.ui.offlinechannel.CommentFragment
 import com.madison.move.ui.profile.ProfileFragment
 
 
@@ -127,7 +128,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
                 currentFragment.onResume()
             }
             is FAQFragment -> {
-                //Refresh Data FAQ when Logout
+                currentFragment.onResume()
+            }
+            is GuidelinesFragment ->{
+                currentFragment.onResume()
             }
             is ProfileFragment -> {
                 if (tokenUser == null) {
@@ -137,6 +141,9 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
                     currentFragment.onResume()
                 }
 
+            }
+            is CommentFragment ->{
+                currentFragment.onResume()
             }
         }
     }
