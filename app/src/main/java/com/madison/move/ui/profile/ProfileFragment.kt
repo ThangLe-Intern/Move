@@ -51,6 +51,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     private var getSharedPreferences: SharedPreferences? = null
     private var tokenUser: String? = null
+    private var isOpenGallery = false
 
     private lateinit var binding: FragmentProfileBinding
     private var newFullName = ""
@@ -79,6 +80,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
 
+
         //Get Token From Preferences
         getSharedPreferences = requireContext().getSharedPreferences(
             TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
@@ -90,8 +92,11 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     override fun onResume() {
         super.onResume()
-        mListener?.onShowProgressBar()
-        onHandleLogic()
+        if (!isOpenGallery){
+            mListener?.onShowProgressBar()
+            onHandleLogic()
+        }
+
     }
 
     private fun onHandleLogic() {
@@ -107,6 +112,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
 
         binding.saveSettingBtn.setOnClickListener {
+            isOpenGallery = false
             if (mListener?.isDeviceOnlineCheck() == false) {
                 mListener?.onShowDisconnectDialog()
             } else {
@@ -279,8 +285,10 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
+                isOpenGallery = true
                 val uri = it.data?.data!!
                 mProfileUri = uri
+                Log.d("ZEZE",uri.toString())
                 binding.imgProfileUser.setLocalImage(uri, false)
             } else {
                 parseError(it)
@@ -470,6 +478,8 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 //        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
         mListener?.onShowDisconnectDialog()
     }
+
+
 
     override fun onShowError(errorType: String) {
         when (errorType) {
