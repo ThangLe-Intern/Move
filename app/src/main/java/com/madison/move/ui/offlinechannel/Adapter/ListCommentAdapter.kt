@@ -37,7 +37,9 @@ class ListCommentAdapter(
 
             val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
 
-            adapterReply = comment.listChild?.let { ListReplyAdapter(it)} !!
+            val adapterReply = comment.listChild?.let { ListReplyAdapter(it) } ?: ListReplyAdapter(
+                listComment
+            )
             itemView.findViewById<RecyclerView>(R.id.listReply).apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterReply
@@ -125,14 +127,16 @@ class ListCommentAdapter(
                     if (layoutUserReply.isGone) {
                         layoutUserReply.visibility = View.VISIBLE
 
-                        replyListener.userComment(
-                            cancelReplyButton,
-                            sendButtonReply,
-                            edtUserCommentReply,
-                            comment.listChild!!,
-                            listReply,
-                            user4
-                        )
+                        comment.listChild?.let { it1 ->
+                            replyListener.userComment(
+                                cancelReplyButton,
+                                sendButtonReply,
+                                edtUserCommentReply,
+                                it1,
+                                listReply,
+                                user4
+                            )
+                        }
                     } else {
                         layoutUserReply.visibility = View.GONE
                     }
