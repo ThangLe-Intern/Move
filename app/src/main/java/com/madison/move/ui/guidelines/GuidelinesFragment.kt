@@ -7,13 +7,17 @@ import android.text.style.LeadingMarginSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.madison.move.R
 import com.madison.move.databinding.FragmentGuidelineBinding
+import com.madison.move.ui.menu.MainInterface
 
 class GuidelinesFragment :Fragment() {
     private lateinit var binding: FragmentGuidelineBinding
+    var mListener: MainInterface? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,5 +50,13 @@ class GuidelinesFragment :Fragment() {
 
         return binding.root
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //Check Internet Connection
+        if (mListener?.isDeviceOnlineCheck() == false) {
+            mListener?.onShowDisconnectDialog()
+        }
     }
 }

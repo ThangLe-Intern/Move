@@ -12,12 +12,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.madison.move.R
 import com.madison.move.databinding.FragmentFaqBinding
+import com.madison.move.ui.menu.MainInterface
 
 
 /**
  * Create by SonLe on 04/05/2023
  */
 class FAQFragment : Fragment() {
+    var mListener: MainInterface? = null
 
     private lateinit var binding: FragmentFaqBinding
     override fun onCreateView(
@@ -34,6 +36,13 @@ class FAQFragment : Fragment() {
         )
         return binding.root
 
+    }
+    override fun onResume() {
+        super.onResume()
+        //Check Internet Connection
+        if (mListener?.isDeviceOnlineCheck() == false) {
+            mListener?.onShowDisconnectDialog()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
