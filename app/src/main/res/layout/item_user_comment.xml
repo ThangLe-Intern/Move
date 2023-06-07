@@ -245,7 +245,7 @@
             android:id="@+id/img_arrow_down_green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_ic_arrow_up_green" />
+            android:src="@drawable/ic_arrow_down_green" />
 
         <TextView
             android:id="@+id/txt_show"
@@ -253,7 +253,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_10sdp"
             android:fontFamily="@font/montserrat_bold"
-            android:text="@string/Hide"
+            android:text="@string/Show"
             android:textColor="@color/move_green"
             android:textSize="@dimen/_13sdp" />
     </LinearLayout>
@@ -263,7 +263,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginStart="5dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/line2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
