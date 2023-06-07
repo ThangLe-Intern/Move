@@ -349,8 +349,6 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     override fun onShowDisconnectDialog() {
         if (disconnectDialog?.isShowing == null || disconnectDialog?.isShowing == false) {
             onShowProgressDialog()
-        } else {
-            Log.d("KKK", disconnectDialog?.isShowing.toString())
         }
     }
 
