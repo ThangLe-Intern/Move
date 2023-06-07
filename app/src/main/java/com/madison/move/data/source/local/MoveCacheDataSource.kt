@@ -55,7 +55,7 @@ class MoveCacheDataSource : MoveDataSource {
         return null
     }
 
-    override fun getVideoDetail(authorization: String, id: Int): Call<VideoDetailResponse>? {
+    override fun getVideoDetail(id: Int): Call<VideoDetailResponse>? {
         return null
     }
 

@@ -26,11 +26,11 @@ class ListReplyAdapter(
             binding.apply {
                 line2.visibility = View.GONE
                 layoutShow.visibility = View.GONE
-                avatar.setImageResource(comment.user.avt)
-                username.text = comment.user.name
+                comment.user?.avt?.let { avatar.setImageResource(it) }
+                username.text = comment.user?.name
                 commentTime.text = comment.timeOfComment
                 commentContent.text = comment.content
-                if (!comment.user.isTicked) {
+                if (comment.user?.isTicked == true) {
                     bluetick
                         .visibility = View.GONE
                 }

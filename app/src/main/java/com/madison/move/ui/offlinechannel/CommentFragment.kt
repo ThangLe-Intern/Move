@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +38,9 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
     private lateinit var handler: Handler
     override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
 
+    var page = 1
+
+    private var isLoading = false
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,13 +50,15 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         binding = FragmentCommentBinding.inflate(inflater, container, false)
 
         val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
-        userComment(
-            binding.cancelButton,
-            binding.sendButton,
-            binding.edtUserComment,
-            listComment,
-            user4
-        )
+        listComment?.let {
+            userComment(
+                binding.cancelButton,
+                binding.sendButton,
+                binding.edtUserComment,
+                it,
+                user4
+            )
+        }
         handler = Handler(Looper.getMainLooper())
 
         currentFragment = this
@@ -147,7 +153,6 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
 
         presenter?.apply {
             getVideoDetail(
-                "Bearer 738|lIWZa37uiaezo9V3GubQHPCIzbp7ygRRyk63ZIS4",
                 dataVideoSuggestion?.id ?: 0
             )
         }
@@ -162,7 +167,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
 
     override fun onSuccessGetVideoSuggestion(videoDetailsSuggestionResponse: VideoDetailResponse) {
         val iframeContent =
-            "<html><body style=\"margin:0; padding:0\"><iframe src=\"https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\" width=\"100%\" height=\"100%\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>" // Lấy nội dung iframe từ API
+            "<html><body style=\"margin:0; padding:0\"><iframe src=\"https://player.vimeo.com/videos/828977401\" width=\"100%\" height=\"100%\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>" // Lấy nội dung iframe từ API
 
         binding.webView.getSettings().setJavaScriptEnabled(true)
 
@@ -176,6 +181,12 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
 
     override fun onError(errorMessage: String) {
 
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initScrollListener()
     }
 
     override fun onBackPressed() {
@@ -384,7 +395,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                         )
 
                         for (i in listCommentReply) {
-                            Log.d("DUNG", i.content)
+                            i.content?.let { it1 -> Log.d("DUNG", it1) }
                         }
 
                         var adapterReply = ListReplyAdapter(listCommentReply,requireContext())
@@ -434,7 +445,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
 
 
-        listComment.add(
+        listComment?.add(
             Comment(
                 1, "DSMLMFLSKEMFKLM", "Just now",
                 mutableListOf(
@@ -446,52 +457,64 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
             )
         )
 
-        listComment.add(Comment(2, "ALO SONDASDK", "Just now", mutableListOf(), user2))
-        listComment.add(Comment(
-            1, "DSMLMFLSKEMFKLM", "Just now",
-            mutableListOf(
-                Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
-                Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
-                Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
-                Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
-            ), user1
-        ))
-        listComment.add(Comment(4, "SDASDESADASD", "Just now", mutableListOf(), user4))
-        listComment.add(
-            Comment(
-                1, "DSMLMFLSKEMFKLM", "Just now",
-                mutableListOf(
-                    Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
-                    Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
-                    Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
-                    Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
-                ), user1
-            )
-        )
+        listComment?.add(Comment(2, "ALO SONDASDK", "Just now", mutableListOf(), user2))
+        listComment?.add(Comment(3, "KAMAVINGAR HALANDES", "Just now", mutableListOf(), user3))
+        listComment?.add(Comment(4, "SDASDESADASD", "Just now", mutableListOf(), user4))
 
-        listComment.add(Comment(
-            1, "DSMLMFLSKEMFKLM", "Just now",
-            mutableListOf(
-                Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
-                Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
-                Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
-                Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
-            ), user1
-        ))
-        listComment.add(Comment(3, "KAMAVINGAR HALANDES", "Just now", mutableListOf(), user3))
-        listComment.add(Comment(
-            1, "DSMLMFLSKEMFKLM", "Just now",
-            mutableListOf(
-                Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
-                Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
-                Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
-                Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
-            ), user1
-        ))
 
+    }
+
+    private fun initScrollListener() {
+        binding.listComment.isNestedScrollingEnabled = false
+
+
+        binding.nestedComment.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            if (v.getChildAt(v.childCount - 1) != null) {
+                if (scrollY > oldScrollY) {
+                    if (scrollY >= v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight) {
+                        isLoading = true
+                        loadMore()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun loadMore() {
+        val user1 = DataModelComment(R.drawable.avatar, "Vu Dung", false)
+        binding.progressBar.visibility = View.VISIBLE
+        val handler = Handler()
+        handler.postDelayed({
+            listComment.removeAt(listComment.size - 1)
+            val scrollPosition: Int = listComment.size
+            adapterComment.notifyItemRemoved(scrollPosition)
+            var currentSize = scrollPosition
+            val nextLimit = currentSize + 10
+            while (currentSize - 1 < nextLimit) {
+                listComment.add(
+                    Comment(
+                        1, "$currentSize", "Just now",
+                        mutableListOf(
+                            Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1)
+                        ), user1
+                    )
+                )
+                currentSize++
+            }
+            adapterComment.notifyDataSetChanged()
+            isLoading = false
+            binding.progressBar.visibility = View.VISIBLE
+        }, 3000)
 
 
     }
 
 
 }
+
+
+
+
+
+
+

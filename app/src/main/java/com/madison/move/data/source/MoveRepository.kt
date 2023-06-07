@@ -58,12 +58,12 @@ class MoveRepository private constructor(
         return moveRemote.getVideoSuggestionForUser(token)
     }
 
+    override fun getVideoDetail(id: Int): Call<VideoDetailResponse>? {
+        return moveRemote.getVideoDetail(id)
+    }
+
     override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>>? {
         return moveRemote.getTokenLogin(email,password)
-
-    }
-    override fun getVideoDetail(authorization:String,id: Int): Call<VideoDetailResponse>? {
-        return moveRemote.getVideoDetail(authorization,id)
     }
 
     override fun logOutUser(token: String): Call<ObjectResponse<DataUser>>? {

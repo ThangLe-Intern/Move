@@ -13,7 +13,7 @@ interface CommentContract {
     }
     interface CommentPresenter : BasePresenter<CommentContract>{
 
-        fun getVideoDetail(authorization: String,id: Int)
+        fun getVideoDetail(id: Int)
 
     }
 

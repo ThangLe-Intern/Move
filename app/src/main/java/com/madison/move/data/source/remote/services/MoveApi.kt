@@ -33,7 +33,6 @@ interface MoveApi {
 
     @GET("videos/{id}")
     fun getDetailVideoSuggestion(
-        @Header("Authorization") authorization : String,
         @Path("id") videoId :Int
     ): Call<VideoDetailResponse>
 

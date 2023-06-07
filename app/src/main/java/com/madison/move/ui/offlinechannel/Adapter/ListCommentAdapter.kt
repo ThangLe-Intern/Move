@@ -20,11 +20,15 @@ class ListCommentAdapter(
     private var context: Context,
     var listComment: MutableList<Comment>,
     val replyListener: ReplyListener,
-
-
     ) :
+
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     lateinit var adapterReply: ListReplyAdapter
+
+    companion object{
+        private const val VIEW_TYPE_ITEM = 0
+        private const val VIEW_TYPE_LOADING = 1
+    }
 
 
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
@@ -35,13 +39,16 @@ class ListCommentAdapter(
             val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
 
             adapterReply = ListReplyAdapter(comment.listChild, context)
+            val adapterReply = comment.listChild?.let { ListReplyAdapter(it) } ?: ListReplyAdapter(
+                listComment
+            )
             itemView.findViewById<RecyclerView>(R.id.listReply).apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterReply
             }
             binding.apply {
-                avatar.setImageResource(comment.user.avt)
-                username.text = comment.user.name
+                comment.user?.avt?.let { avatar.setImageResource(it) }
+                username.text = comment.user?.name
                 commentTime.text = comment.timeOfComment
                 commentContent.text = comment.content
                 listReply.visibility = View.VISIBLE
@@ -60,7 +67,7 @@ class ListCommentAdapter(
                     )
                 }
             }
-            if (comment.listChild.isNotEmpty()) {
+            if (comment.listChild?.isNotEmpty() == true) {
                 binding.layoutShow.visibility = View.VISIBLE
             } else {
                 binding.layoutShow.visibility = View.GONE
@@ -96,7 +103,7 @@ class ListCommentAdapter(
                     }
                 }
 
-                if (!comment.user.isTicked) {
+                if (comment.user?.isTicked == true) {
                     bluetick.visibility = View.GONE
                 }
                 btnReport.setOnClickListener {
@@ -147,14 +154,16 @@ class ListCommentAdapter(
                     if (layoutUserReply.isGone) {
                         layoutUserReply.visibility = View.VISIBLE
 
-                        replyListener.userComment(
-                            cancelReplyButton,
-                            sendButtonReply,
-                            edtUserCommentReply,
-                            comment.listChild,
-                            listReply,
-                            user4
-                        )
+                        comment.listChild?.let { it1 ->
+                            replyListener.userComment(
+                                cancelReplyButton,
+                                sendButtonReply,
+                                edtUserCommentReply,
+                                it1,
+                                listReply,
+                                user4
+                            )
+                        }
                     } else {
                         layoutUserReply.visibility = View.GONE
                     }
@@ -164,11 +173,11 @@ class ListCommentAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return ViewHolder(
-            ItemUserCommentBinding.inflate(
-                LayoutInflater.from(parent.context), parent, false
-            )
-        )
+        return if (viewType == VIEW_TYPE_ITEM) {
+            ViewHolder(ItemUserCommentBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        } else {
+            ViewHolder(ItemUserCommentBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -177,7 +186,11 @@ class ListCommentAdapter(
     }
 
     override fun getItemCount(): Int {
-        return listComment.size
+        return if (listComment == null) 0 else listComment.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (listComment.get(position) == null) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
     }
 
     interface ReplyListener {
