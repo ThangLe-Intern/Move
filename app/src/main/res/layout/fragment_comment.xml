@@ -17,13 +17,14 @@
         <com.ct7ct7ct7.androidvimeoplayer.view.VimeoPlayerView
             android:id="@+id/vimeoPlayerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             app:autoPlay="true"
             app:loop="true"
             app:muted="false"
             app:showFullscreenOption="true"
-            app:showMenuOption="false"
-            app:showOriginalControls="false"
+            app:showMenuOption="true"
+            app:showOriginalControls="true"
+            app:showTitle="false"
             app:topicColor="#FFFF00"
             app:aspectRatio="1.778"
             app:backgroundColor="#00FFFF"
@@ -51,7 +52,7 @@
                     android:id="@+id/contraint_profile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_10"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
                     app:layout_constraintBottom_toTopOf="@+id/line"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -60,7 +61,7 @@
                         android:id="@+id/avart_profile"
                         android:layout_width="@dimen/dp_50"
                         android:layout_height="@dimen/dp_50"
-                        android:layout_marginTop="@dimen/dp_17"
+                        android:layout_marginTop="@dimen/_10sdp"
                         android:src="@drawable/avatar1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -176,6 +177,15 @@
                             android:textColor="@color/black"
                             android:textSize="@dimen/_9ssp" />
                     </androidx.cardview.widget.CardView>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/btn_fullscreen"
+                        android:text="fullScreen"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

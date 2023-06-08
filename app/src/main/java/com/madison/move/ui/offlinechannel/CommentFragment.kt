@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.widget.NestedScrollView
@@ -33,9 +34,10 @@ import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
 import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
 import kotlin.math.roundToInt
 
-open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?,
-                            private val dataVideoCarousel: DataVideoSuggestion?) :
-    BaseFragment<CommentPresenter>(), CommentListener, CommentContract.CommentContract {
+open class CommentFragment(
+    private val dataVideoSuggestion: DataVideoSuggestion?,
+    private val dataVideoCarousel: DataVideoSuggestion?
+) : BaseFragment<CommentPresenter>(), CommentListener, CommentContract.CommentContract {
     private lateinit var binding: FragmentCommentBinding
     lateinit var adapterComment: ListCommentAdapter
     private var listComment: MutableList<Comment> = mutableListOf()
@@ -54,9 +56,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
 
     private var isLoading = false
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
 
         binding = FragmentCommentBinding.inflate(inflater, container, false)
@@ -64,11 +64,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
         listComment?.let {
             userComment(
-                binding.cancelButton,
-                binding.sendButton,
-                binding.edtUserComment,
-                it,
-                user4
+                binding.cancelButton, binding.sendButton, binding.edtUserComment, it, user4
             )
         }
         handler = Handler(Looper.getMainLooper())
@@ -78,7 +74,8 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         binding.apply {
 
             nameUserProflie.text = dataVideoCarousel?.username.toString()
-            tvJust.text = getString(R.string.video_category, dataVideoCarousel?.categoryName.toString())
+            tvJust.text =
+                getString(R.string.video_category, dataVideoCarousel?.categoryName.toString())
             tvrateNumber.text = dataVideoCarousel?.rating.toString()
 
             if (dataVideoCarousel?.img != null) {
@@ -103,27 +100,22 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                 cardviewBeginner.visibility = View.VISIBLE
 
                 when (dataVideoCarousel?.level) {
-                    1 -> txtBeginner.text =
-                        activity?.getString(R.string.txt_level_beginner)
-                    2 -> txtBeginner.text =
-                        activity?.getString(R.string.txt_level_inter)
-                    3 -> txtBeginner.text =
-                        activity?.getString(R.string.txt_level_advanced)
+                    1 -> txtBeginner.text = activity?.getString(R.string.txt_level_beginner)
+                    2 -> txtBeginner.text = activity?.getString(R.string.txt_level_inter)
+                    3 -> txtBeginner.text = activity?.getString(R.string.txt_level_advanced)
                 }
 
                 when (dataVideoCarousel?.duration) {
-                    1 -> txtTimeLine.text =
-                        activity?.getString(R.string.timeOfCategory)
-                    2 -> txtTimeLine.text =
-                        activity?.getString(R.string.duration_second)
-                    3 -> txtTimeLine.text =
-                        activity?.getString(R.string.duration_third)
+                    1 -> txtTimeLine.text = activity?.getString(R.string.timeOfCategory)
+                    2 -> txtTimeLine.text = activity?.getString(R.string.duration_second)
+                    3 -> txtTimeLine.text = activity?.getString(R.string.duration_third)
                 }
             }
 
 
             nameUserProflie.text = dataVideoSuggestion?.username.toString()
-            tvJust.text = getString(R.string.video_category, dataVideoSuggestion?.categoryName.toString())
+            tvJust.text =
+                getString(R.string.video_category, dataVideoSuggestion?.categoryName.toString())
             tvrateNumber.text = dataVideoSuggestion?.rating.toString()
 
             if (dataVideoSuggestion?.img != null) {
@@ -146,21 +138,15 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                 cardviewBeginner.visibility = View.VISIBLE
 
                 when (dataVideoSuggestion?.level) {
-                    1 -> txtBeginner.text =
-                        activity?.getString(R.string.txt_level_beginner)
-                    2 -> txtBeginner.text =
-                        activity?.getString(R.string.txt_level_inter)
-                    3 -> txtBeginner.text =
-                        activity?.getString(R.string.txt_level_advanced)
+                    1 -> txtBeginner.text = activity?.getString(R.string.txt_level_beginner)
+                    2 -> txtBeginner.text = activity?.getString(R.string.txt_level_inter)
+                    3 -> txtBeginner.text = activity?.getString(R.string.txt_level_advanced)
                 }
 
                 when (dataVideoSuggestion?.duration) {
-                    1 -> txtTimeLine.text =
-                        activity?.getString(R.string.timeOfCategory)
-                    2 -> txtTimeLine.text =
-                        activity?.getString(R.string.duration_second)
-                    3 -> txtTimeLine.text =
-                        activity?.getString(R.string.duration_third)
+                    1 -> txtTimeLine.text = activity?.getString(R.string.timeOfCategory)
+                    2 -> txtTimeLine.text = activity?.getString(R.string.duration_second)
+                    3 -> txtTimeLine.text = activity?.getString(R.string.duration_third)
                 }
             }
         }
@@ -192,35 +178,56 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         super.initView()
 
         lifecycle.addObserver(binding.vimeoPlayerView)
-        binding.vimeoPlayerView.initialize(true, 831735794)
+        binding.vimeoPlayerView.clearCache()
+        binding.vimeoPlayerView.initialize(true, 251250546)
+//        binding.vimeoPlayerView.initialize(true, 180891891)
+
+
+        binding.vimeoPlayerView.setFullscreenVisibility(true)
+        binding.vimeoPlayerView.setMenuVisibility(true)
+
+
+        binding.btnFullscreen.setOnClickListener {
+            //define the orientation
+            var requestOrientation = VimeoPlayerActivity.REQUEST_ORIENTATION_LANDSCAPE
+            startActivityForResult(
+                VimeoPlayerActivity.createIntent(
+                    requireContext(), requestOrientation, binding.vimeoPlayerView
+                ), 1234
+            )
+        }
 
         binding.vimeoPlayerView.setFullscreenClickListener {
             //define the orientation
-            var requestOrientation = VimeoPlayerActivity.REQUEST_ORIENTATION_AUTO
-            startActivityForResult(VimeoPlayerActivity.createIntent(requireContext(), requestOrientation, binding.vimeoPlayerView), 1234)
-
+            var requestOrientation = VimeoPlayerActivity.REQUEST_ORIENTATION_LANDSCAPE
+            startActivityForResult(
+                VimeoPlayerActivity.createIntent(
+                    requireContext(), requestOrientation, binding.vimeoPlayerView
+                ), 1234
+            )
         }
-
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK && requestCode == 1234) {
-            var playAt = data!!.getFloatExtra(VimeoPlayerActivity.RESULT_STATE_VIDEO_PLAY_AT, 0f)
-            binding.vimeoPlayerView.seekTo(playAt)
+            if (data != null) {
+                var playAt = data.getFloatExtra(VimeoPlayerActivity.RESULT_STATE_VIDEO_PLAY_AT, 0f)
+                binding.vimeoPlayerView.seekTo(playAt)
 
-            var playerState =
-                data!!.getStringExtra(VimeoPlayerActivity.RESULT_STATE_PLAYER_STATE)
+                var playerState = data.getStringExtra(VimeoPlayerActivity.RESULT_STATE_PLAYER_STATE)
                     ?.let { PlayerState.valueOf(it) }
-            when (playerState) {
-                PlayerState.PLAYING -> binding.vimeoPlayerView.play()
-                PlayerState.PAUSED -> binding.vimeoPlayerView.pause()
-                else -> {}
+                when (playerState) {
+                    PlayerState.PLAYING -> binding.vimeoPlayerView.play()
+                    PlayerState.PAUSED -> binding.vimeoPlayerView.play()
+                    else -> {
+
+                    }
+                }
+            } else {
+                Toast.makeText(activity, "Null Video Data", Toast.LENGTH_SHORT).show()
             }
-
-
         }
     }
 
@@ -265,18 +272,13 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
     }
 
     override fun onWriteCommentListener(
-        editText: AppCompatEditText,
-        cancelButton: AppCompatButton,
-        sendButton: AppCompatButton
+        editText: AppCompatEditText, cancelButton: AppCompatButton, sendButton: AppCompatButton
     ) {
 
         editText.apply {
             addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
+                    s: CharSequence?, start: Int, count: Int, after: Int
                 ) {
                 }
 
@@ -293,12 +295,11 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                 override fun afterTextChanged(s: Editable?) {
                 }
             })
-            onFocusChangeListener =
-                View.OnFocusChangeListener { v, hasFocus ->
-                    if (!hasFocus) {
-                        v?.let { hideKeyboard(it) }
-                    }
+            onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+                if (!hasFocus) {
+                    v?.let { hideKeyboard(it) }
                 }
+            }
         }
     }
 
@@ -323,8 +324,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
     ) {
         sendButton.setOnClickListener {
             listComment.add(
-                0,
-                Comment(4, editText.text.toString().trim(), "Just now", mutableListOf(), user)
+                0, Comment(4, editText.text.toString().trim(), "Just now", mutableListOf(), user)
             )
             binding.listComment.apply {
                 layoutManager = LinearLayoutManager(requireContext())
@@ -341,15 +341,13 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         val imm =
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(
-            cancelButton.windowToken,
-            InputMethodManager.RESULT_UNCHANGED_SHOWN
+            cancelButton.windowToken, InputMethodManager.RESULT_UNCHANGED_SHOWN
         )
     }
 
     override fun onLoadComment(listComment: MutableList<Comment>) {
         getData()
-        adapterComment = ListCommentAdapter(
-            requireContext(),
+        adapterComment = ListCommentAdapter(requireContext(),
             listComment,
             object : ListCommentAdapter.ReplyListener {
                 override fun userComment(
@@ -366,12 +364,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                     onWriteCommentListener(editText, cancelButton, sendButton)
                     onCancelUserComment(cancelButton, editText)
                     onSendUserReply(
-                        sendButton,
-                        list,
-                        listCommentReply,
-                        editText,
-                        cancelButton,
-                        user
+                        sendButton, list, listCommentReply, editText, cancelButton, user
                     )
                 }
 
@@ -383,18 +376,12 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                     editText.apply {
                         addTextChangedListener(object : TextWatcher {
                             override fun beforeTextChanged(
-                                s: CharSequence?,
-                                start: Int,
-                                count: Int,
-                                after: Int
+                                s: CharSequence?, start: Int, count: Int, after: Int
                             ) {
                             }
 
                             override fun onTextChanged(
-                                s: CharSequence?,
-                                start: Int,
-                                before: Int,
-                                count: Int
+                                s: CharSequence?, start: Int, before: Int, count: Int
                             ) {
                                 if (!s.isNullOrEmpty()) {
                                     cancelButton.visibility = View.VISIBLE
@@ -409,19 +396,17 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                             }
 
                         })
-                        onFocusChangeListener =
-                            View.OnFocusChangeListener { v, hasFocus ->
-                                if (!hasFocus) {
-                                    v?.let { hideKeyboard(it) }
-                                }
+                        onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+                            if (!hasFocus) {
+                                v?.let { hideKeyboard(it) }
                             }
+                        }
                     }
 
                 }
 
                 override fun onCancelUserComment(
-                    cancelButton: AppCompatButton,
-                    editText: AppCompatEditText
+                    cancelButton: AppCompatButton, editText: AppCompatEditText
                 ) {
                     cancelButton.setOnClickListener {
                         clearEdittext(editText, cancelButton)
@@ -438,8 +423,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                 ) {
                     sendButton.setOnClickListener {
                         listCommentReply.add(
-                            0,
-                            Comment(
+                            0, Comment(
                                 5,
                                 editText.text.toString().trim(),
                                 "Just now",
@@ -453,7 +437,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                             i.content?.let { it1 -> Log.d("DUNG", it1) }
                         }
 
-                        var adapterReply = ListReplyAdapter(listCommentReply,requireContext())
+                        var adapterReply = ListReplyAdapter(listCommentReply, requireContext())
                         list.apply {
                             layoutManager = LinearLayoutManager(context)
                             adapter = adapterReply
@@ -463,8 +447,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                 }
 
                 override fun clearEdittext(
-                    editText: AppCompatEditText,
-                    cancelButton: AppCompatButton
+                    editText: AppCompatEditText, cancelButton: AppCompatButton
                 ) {
                     editText.text = null
                     editText.clearFocus()
@@ -472,8 +455,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                     val imm =
                         requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(
-                        cancelButton.windowToken,
-                        InputMethodManager.RESULT_UNCHANGED_SHOWN
+                        cancelButton.windowToken, InputMethodManager.RESULT_UNCHANGED_SHOWN
                     )
                 }
 
@@ -502,8 +484,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
 
         listComment?.add(
             Comment(
-                1, "DSMLMFLSKEMFKLM", "Just now",
-                mutableListOf(
+                1, "DSMLMFLSKEMFKLM", "Just now", mutableListOf(
                     Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
                     Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
                     Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
@@ -548,8 +529,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
             while (currentSize - 1 < nextLimit) {
                 listComment.add(
                     Comment(
-                        1, "$currentSize", "Just now",
-                        mutableListOf(
+                        1, "$currentSize", "Just now", mutableListOf(
                             Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1)
                         ), user1
                     )
