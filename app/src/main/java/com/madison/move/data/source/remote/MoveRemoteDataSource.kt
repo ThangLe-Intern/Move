@@ -1,12 +1,6 @@
 package com.madison.move.data.source.remote
 
-import com.madison.move.data.model.ObjectResponse
-import com.madison.move.data.model.Video
-import com.madison.move.data.model.DataCategory
-import com.madison.move.data.model.DataCountry
-import com.madison.move.data.model.DataState
-import com.madison.move.data.model.ProfileRequest
-import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.*
 import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
@@ -59,6 +53,10 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
 
     override fun getVideoDetail(id: Int): Call<VideoDetailResponse>? {
         return moveApi.getDetailVideoSuggestion(id)
+    }
+
+    override fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>? {
+        return moveApi.getFaq()
     }
 
     override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>> {

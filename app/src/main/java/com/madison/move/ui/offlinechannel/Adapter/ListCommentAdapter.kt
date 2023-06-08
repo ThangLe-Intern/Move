@@ -3,6 +3,7 @@ package com.madison.move.ui.offlinechannel.Adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.provider.MediaStore.Video
 import android.view.*
 import android.widget.PopupWindow
 import androidx.appcompat.widget.AppCompatButton
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.madison.move.R
 import com.madison.move.databinding.ItemUserCommentBinding
+import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.offlinechannel.Comment
 import com.madison.move.ui.offlinechannel.DataModelComment
 
@@ -24,6 +26,7 @@ class ListCommentAdapter(
 
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     lateinit var adapterReply: ListReplyAdapter
+    private var tokenUser: String? = null
 
     companion object {
         private const val VIEW_TYPE_ITEM = 0
@@ -72,6 +75,13 @@ class ListCommentAdapter(
             }
 
             binding.apply {
+
+                if (tokenUser == null){
+                    btnReply.visibility = View.GONE
+                }else{
+                    btnReply.visibility = View.VISIBLE
+                }
+
                 var currentNumber: Int? = 0
                 btnLikeTick.visibility = View.GONE
                 btnLike.setOnClickListener {

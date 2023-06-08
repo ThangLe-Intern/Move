@@ -36,6 +36,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
     private var listComment: MutableList<Comment> = mutableListOf()
     private var currentFragment: Fragment? = null
     private lateinit var handler: Handler
+    private var tokenUser: String? = null
     override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
 
 
@@ -71,6 +72,12 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         currentFragment = this
 
         binding.apply {
+
+            if (tokenUser == null){
+                layoutUserComment.visibility = View.GONE
+            }else{
+                layoutUserComment.visibility = View.VISIBLE
+            }
 
             nameUserProflie.text = dataVideoCarousel?.username.toString()
             tvJust.text = getString(R.string.video_category, dataVideoCarousel?.categoryName.toString())
@@ -163,6 +170,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                 dataVideoSuggestion?.id ?: 0
             )
         }
+
 
         return binding.root
     }

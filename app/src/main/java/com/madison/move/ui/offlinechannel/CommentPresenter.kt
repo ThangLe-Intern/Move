@@ -2,6 +2,8 @@ package com.madison.move.ui.offlinechannel
 
 import android.util.Log
 import com.madison.move.data.DataManager
+import com.madison.move.data.model.DataCategory
+import com.madison.move.data.model.DataFAQ
 import com.madison.move.data.model.videodetail.VideoDetailResponse
 import retrofit2.Call
 import retrofit2.Callback

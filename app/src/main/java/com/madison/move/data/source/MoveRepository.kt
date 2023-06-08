@@ -1,12 +1,6 @@
 package com.madison.move.data.source
 
-import com.madison.move.data.model.ObjectResponse
-import com.madison.move.data.model.Video
-import com.madison.move.data.model.DataCategory
-import com.madison.move.data.model.DataCountry
-import com.madison.move.data.model.DataState
-import com.madison.move.data.model.ProfileRequest
-import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.*
 import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
@@ -60,6 +54,10 @@ class MoveRepository private constructor(
 
     override fun getVideoDetail(id: Int): Call<VideoDetailResponse>? {
         return moveRemote.getVideoDetail(id)
+    }
+
+    override fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>? {
+        return moveRemote.getFaq()
     }
 
     override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>>? {
