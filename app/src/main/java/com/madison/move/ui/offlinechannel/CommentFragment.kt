@@ -2,6 +2,7 @@ package com.madison.move.ui.offlinechannel
 
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.widget.NestedScrollView
@@ -24,6 +26,7 @@ import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentCommentBinding
 import com.madison.move.ui.base.BaseFragment
+import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
 import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
 import kotlin.math.roundToInt
@@ -37,6 +40,11 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
     private var currentFragment: Fragment? = null
     private lateinit var handler: Handler
     private var tokenUser: String? = null
+    private var getSharedPreferences: SharedPreferences? = null
+    companion object {
+        const val TOKEN_USER_PREFERENCE = "tokenUser"
+        const val TOKEN = "token"
+    }
     override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
 
 
@@ -46,6 +54,8 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         if (mListener?.isDeviceOnlineCheck() == false) {
             mListener?.onShowDisconnectDialog()
         }
+        adapterComment.notifyDataSetChanged()
+
     }
 
     private var isLoading = false
@@ -72,6 +82,11 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         currentFragment = this
 
         binding.apply {
+
+            getSharedPreferences = requireContext().getSharedPreferences(
+             TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
+            )
+            tokenUser = getSharedPreferences?.getString(TOKEN, null)
 
             if (tokenUser == null){
                 layoutUserComment.visibility = View.GONE
@@ -174,6 +189,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
 
         return binding.root
     }
+
 
 
     override fun onBottomNavigateSystemUI() {

@@ -3,11 +3,14 @@ package com.madison.move.ui.offlinechannel.Adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.provider.MediaStore.Video
 import android.view.*
 import android.widget.PopupWindow
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +18,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.madison.move.R
 import com.madison.move.databinding.ItemUserCommentBinding
 import com.madison.move.ui.base.BaseFragment
+import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.offlinechannel.Comment
+import com.madison.move.ui.offlinechannel.CommentFragment
 import com.madison.move.ui.offlinechannel.DataModelComment
 
 class ListCommentAdapter(
@@ -31,7 +36,10 @@ class ListCommentAdapter(
     companion object {
         private const val VIEW_TYPE_ITEM = 0
         private const val VIEW_TYPE_LOADING = 1
+        const val TOKEN_USER_PREFERENCE = "tokenUser"
+        const val TOKEN = "token"
     }
+    private var getSharedPreferences: SharedPreferences? = null
 
 
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
@@ -74,12 +82,17 @@ class ListCommentAdapter(
                 binding.layoutShow.visibility = View.GONE
             }
 
-            binding.apply {
 
+            binding.apply {
+                getSharedPreferences = context.getSharedPreferences(
+                   TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
+                )
+                tokenUser = getSharedPreferences?.getString(TOKEN, null)
                 if (tokenUser == null){
                     btnReply.visibility = View.GONE
                 }else{
                     btnReply.visibility = View.VISIBLE
+
                 }
 
                 var currentNumber: Int? = 0
