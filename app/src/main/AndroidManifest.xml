@@ -18,6 +18,7 @@
         android:theme="@style/Theme.Move"
         tools:targetApi="31">
 
+
         <activity
             android:name=".ui.guidelines.GuidelinesActivity"
             android:exported="false" />

@@ -20,6 +20,8 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.canhub.cropper.CropImage
+import com.canhub.cropper.CropImageContract
 import com.github.drjacky.imagepicker.ImagePicker
 import com.github.drjacky.imagepicker.constant.ImageProvider
 import com.google.firebase.storage.FirebaseStorage
@@ -355,43 +357,15 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     private fun handlePickerImage() {
         binding.txtProfileUpdatePicture.setOnClickListener {
-           /* activity?.let { it1 ->
+            activity?.let { it1 ->
                 ImagePicker.with(it1).crop().cropOval().maxResultSize(1000, 1000, true)
                     .provider(ImageProvider.BOTH) // Or bothCameraGallery()
                     .setDismissListener {
                         Log.d("ImagePicker", "onDismiss")
                     }.createIntentFromDialog { launcher.launch(it) }
-            }*/
-
-            openGallery()
-
+            }
         }
     }
-    private fun openGallery() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(intent, REQUEST_SELECT_IMAGE)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-/*        if (requestCode == REQUEST_SELECT_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-            val imageUri: Uri = data.data ?: return
-            cropImage(imageUri)
-        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
-            val result: CropImage.ActivityResult = CropImage.getActivityResult(data)
-            val croppedUri: Uri = result.uri
-
-            binding.imgProfileUser.setImageURI(croppedUri)
-        }*/
-    }
-
-/*    private fun cropImage(imageUri: Uri) {
-        CropImage.activity(imageUri)
-            .setGuidelines(CropImageView.Guidelines.ON)
-            .setAspectRatio(1, 1)
-            .setCropShape(CropImageView.CropShape.OVAL)
-            .start(this)
-    }*/
 
 
     private fun parseError(activityResult: ActivityResult) {
@@ -434,6 +408,11 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 binding.radioMale.isChecked = false
                 binding.radioFemale.isChecked = false
                 binding.radioRatherNotSay.isChecked = true
+            }
+            else -> {
+                binding.radioMale.isChecked = true
+                binding.radioFemale.isChecked = false
+                binding.radioRatherNotSay.isChecked = false
             }
         }
 
@@ -563,7 +542,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     }
 
     override fun onErrorGetProfile(errorType: String) {
-//        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
         mListener?.onShowDisconnectDialog()
     }
 
