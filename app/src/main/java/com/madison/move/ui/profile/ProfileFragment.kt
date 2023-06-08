@@ -2,12 +2,9 @@ package com.madison.move.ui.profile
 
 
 import android.app.Activity
-import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -15,35 +12,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.RadioButton
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.canhub.cropper.CropImage
-import com.canhub.cropper.CropImageContract
 import com.github.drjacky.imagepicker.ImagePicker
 import com.github.drjacky.imagepicker.constant.ImageProvider
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import com.madison.move.R
-import com.madison.move.data.model.ObjectResponse
-import com.madison.move.data.model.DataCountry
-import com.madison.move.data.model.DataState
-import com.madison.move.data.model.ProfileRequest
-import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.*
 import com.madison.move.databinding.FragmentProfileBinding
 import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.menu.MainMenuActivity
-import com.yalantis.ucrop.view.CropImageView
-import retrofit2.http.Url
-import java.io.File
 import java.text.SimpleDateFormat
 import java.time.Year
 import java.util.*
-import java.util.logging.SimpleFormatter
-import kotlin.collections.ArrayList
 
 
 class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.ProfileView {
@@ -61,8 +49,8 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         const val TOKEN_USER_PREFERENCE = "tokenUser"
         const val TOKEN = "token"
         const val USER_DATA = "user"
-        private const val REQUEST_SELECT_IMAGE = 100
-
+        const val FULL_NAME_LENGTH = "FN_LTH"
+        const val FULL_NAME_FORMAT = "FN_FM"
     }
 
     private var getSharedPreferences: SharedPreferences? = null
@@ -145,7 +133,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
                 if (mProfileUri != null) {
                     uploadImageToFireBase()
-                }else{
+                } else {
                     tokenUser?.let { token ->
                         presenter?.onSaveProfileClickPresenter(
                             token, getNewProfile()
@@ -177,7 +165,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                     imgRef.downloadUrl.addOnSuccessListener {
                         if (it != null) {
                             avatarUrl = it.toString()
-                            Log.d("HEHE",avatarUrl.toString())
+                            Log.d("HEHE", avatarUrl.toString())
 
                             //Call Update Profile
                             tokenUser?.let { token ->
@@ -552,7 +540,29 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             FULL_NAME_AT_LEAST_4_CHARS -> {
                 binding.txtErrorFullName.apply {
                     visibility = View.VISIBLE
-                    text = context.getString(R.string.error_fullname_chars)
+                    text = context.getString(R.string.error_user_name)
+                }
+                binding.editProfileFullName.apply {
+                    requestFocus()
+                    setBackgroundResource(R.drawable.custom_edittext_error)
+                }
+            }
+
+            FULL_NAME_LENGTH -> {
+                binding.txtErrorFullName.apply {
+                    visibility = View.VISIBLE
+                    text = context.getString(R.string.txt_error_max_char)
+                }
+                binding.editProfileFullName.apply {
+                    requestFocus()
+                    setBackgroundResource(R.drawable.custom_edittext_error)
+                }
+            }
+
+            FULL_NAME_FORMAT -> {
+                binding.txtErrorFullName.apply {
+                    visibility = View.VISIBLE
+                    text = context.getString(R.string.txt_error_fn_format)
                 }
                 binding.editProfileFullName.apply {
                     requestFocus()
