@@ -2,6 +2,7 @@ package com.madison.move.ui.offlinechannel
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,6 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.widget.NestedScrollView
@@ -19,6 +22,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.ct7ct7ct7.androidvimeoplayer.model.PlayerState
+import com.ct7ct7ct7.androidvimeoplayer.view.VimeoPlayerActivity
 import com.madison.move.R
 import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
@@ -165,8 +170,58 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                 dataVideoSuggestion?.id ?: 0
             )
         }
+/*
+        val html = "<html><body><iframe src=\"https://player.vimeo.com/video/831735794?h=e178d25d05&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture\" allowfullscreen style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Move Video\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js%22%3E</script></body></html>"
+        binding.webView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null)
+
+        // Set a WebViewClient to handle the page navigation
+        binding.webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                if (url != null) {
+                    view?.loadUrl(url)
+                }
+                return true
+            }
+        }*/
+
 
         return binding.root
+    }
+
+    override fun initView() {
+        super.initView()
+
+        lifecycle.addObserver(binding.vimeoPlayerView)
+        binding.vimeoPlayerView.initialize(true, 831735794)
+
+        binding.vimeoPlayerView.setFullscreenClickListener {
+            //define the orientation
+            var requestOrientation = VimeoPlayerActivity.REQUEST_ORIENTATION_AUTO
+            startActivityForResult(VimeoPlayerActivity.createIntent(requireContext(), requestOrientation, binding.vimeoPlayerView), 1234)
+
+        }
+
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK && requestCode == 1234) {
+            var playAt = data!!.getFloatExtra(VimeoPlayerActivity.RESULT_STATE_VIDEO_PLAY_AT, 0f)
+            binding.vimeoPlayerView.seekTo(playAt)
+
+            var playerState =
+                data!!.getStringExtra(VimeoPlayerActivity.RESULT_STATE_PLAYER_STATE)
+                    ?.let { PlayerState.valueOf(it) }
+            when (playerState) {
+                PlayerState.PLAYING -> binding.vimeoPlayerView.play()
+                PlayerState.PAUSED -> binding.vimeoPlayerView.pause()
+                else -> {}
+            }
+
+
+        }
     }
 
 
@@ -175,16 +230,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
     }
 
     override fun onSuccessGetVideoSuggestion(videoDetailsSuggestionResponse: VideoDetailResponse) {
-        val iframeContent =
-            "<html><body style=\"margin:0; padding:0\"><iframe src=\"https://player.vimeo.com/videos/828977401\" width=\"100%\" height=\"100%\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>" // Lấy nội dung iframe từ API
 
-        binding.webView.getSettings().setJavaScriptEnabled(true)
-
-        binding.webView.loadData(
-            iframeContent,
-            "text/html",
-            "utf-8"
-        )
 
     }
 

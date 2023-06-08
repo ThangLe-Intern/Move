@@ -14,13 +14,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <WebView
-            android:id="@+id/web_view"
+        <com.ct7ct7ct7.androidvimeoplayer.view.VimeoPlayerView
+            android:id="@+id/vimeoPlayerView"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_234"
-            android:background="#000000">
-
-        </WebView>
+            android:layout_height="wrap_content"
+            app:autoPlay="true"
+            app:loop="true"
+            app:muted="false"
+            app:showFullscreenOption="true"
+            app:showMenuOption="false"
+            app:showOriginalControls="false"
+            app:topicColor="#FFFF00"
+            app:aspectRatio="1.778"
+            app:backgroundColor="#00FFFF"
+            />
 
     </RelativeLayout>
 
