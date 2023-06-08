@@ -82,6 +82,8 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
                 avartProfile.setImageResource(R.drawable.avatar)
             }
 
+            userAvatar.setImageResource(R.drawable.avatar)
+
             if (dataVideoCarousel?.rating == null) {
                 tvrateNumber.text = 0.toString()
             } else {

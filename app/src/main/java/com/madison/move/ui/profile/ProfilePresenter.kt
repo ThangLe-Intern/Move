@@ -17,6 +17,8 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
     private val dataManager: DataManager = DataManager.instance
 
     companion object {
+        const val FULL_NAME_LENGTH = "FN_LTH"
+        const val FULL_NAME_FORMAT = "FN_FM"
         const val FULL_NAME_AT_LEAST_4_CHARS = "FN_4_CH"
         const val USER_NAME_AT_LEAST_4_CHARS = "US_4_CH"
         const val USER_NAME_LENGTH = "US_LTH"
@@ -36,9 +38,24 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
     override fun onSaveProfileClickPresenter(token: String, profileRequest: ProfileRequest) {
         val listAcceptChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
 
-        if (profileRequest.fullname?.length!! < 4 || profileRequest.fullname.length > 100) {
+        if (profileRequest.fullname?.length!! < 4 ) {
             return onShowErrorPresenter(FULL_NAME_AT_LEAST_4_CHARS)
         }
+
+        if (profileRequest.fullname.length > 100){
+            return onShowErrorPresenter(FULL_NAME_LENGTH)
+        }
+
+        for (s in profileRequest.fullname.toString()) {
+            if (s !in listAcceptChar) {
+                return onShowErrorPresenter(FULL_NAME_FORMAT)
+            }
+        }
+
+        if (hasNumber(profileRequest.fullname.toString())){
+            return onShowErrorPresenter(FULL_NAME_FORMAT)
+        }
+
 
         if (profileRequest.username?.length!! < 4) {
             return onShowErrorPresenter(USER_NAME_AT_LEAST_4_CHARS)

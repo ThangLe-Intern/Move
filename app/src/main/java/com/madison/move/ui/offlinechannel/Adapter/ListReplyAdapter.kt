@@ -24,6 +24,9 @@ class ListReplyAdapter(
         @SuppressLint("ClickableViewAccessibility")
         fun onBind(comment: Comment) {
             binding.apply {
+
+                userAvatarReply.setImageResource(R.drawable.avatar)
+
                 line2.visibility = View.GONE
                 layoutShow.visibility = View.GONE
                 comment.user?.avt?.let { avatar.setImageResource(it) }
