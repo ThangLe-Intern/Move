@@ -28,4 +28,5 @@ interface MoveDataSource {
     fun updateProfileUser(token: String, profileRequest: ProfileRequest): Call<ObjectResponse<DataUser>>?
     fun getVideoDetail(id : Int):Call<VideoDetailResponse>?
     fun getFaq():Call<ObjectResponse<List<DataFAQ>>>?
+    fun getGuidelines():Call<ObjectResponse<List<DataGuidelines>>>?
 }

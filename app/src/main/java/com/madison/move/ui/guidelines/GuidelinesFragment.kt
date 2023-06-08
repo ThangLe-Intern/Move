@@ -10,13 +10,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.madison.move.R
+import com.madison.move.data.model.DataGuidelines
+import com.madison.move.data.model.ObjectResponse
 import com.madison.move.databinding.FragmentGuidelineBinding
+import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.menu.MainInterface
 
-class GuidelinesFragment :Fragment() {
+class GuidelinesFragment : BaseFragment<GuidelinePresenter>(),GuidelineContract.GuidelineView {
     private lateinit var binding: FragmentGuidelineBinding
-    var mListener: MainInterface? = null
+    private lateinit var adapterGuidelines: GuidelinesAdapter
+    var dataGuidelines = ArrayList<DataGuidelines>()
+    private var isGetGuidelineData = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,38 +31,39 @@ class GuidelinesFragment :Fragment() {
     ): View? {
         binding = FragmentGuidelineBinding.inflate(inflater,container,false)
 
-//
-//
-//            val htmlString = getString(R.string.tv2)
-//
-//            // Chuyển đổi HTML thành định dạng Spanned
-//            val spannedText = HtmlCompat.fromHtml(htmlString, HtmlCompat.FROM_HTML_MODE_LEGACY)
-//
-//        // Tạo một đối tượng SpannableStringBuilder
-//        val spannableBuilder = SpannableStringBuilder(spannedText)
-//
-//        // Thiết lập khoảng cách đầu dòng cho mỗi dấu chấm của danh sách không có thứ tự
-//        val indentWidth = 10 // Khoảng cách giữa dấu chấm và văn bản (đơn vị px)
-//        val bulletGapWidth = 20 // Khoảng cách giữa các dấu chấm (đơn vị px)
-//        spannableBuilder.setSpan(
-//            LeadingMarginSpan.Standard(indentWidth, bulletGapWidth),
-//            0,
-//            spannableBuilder.length,
-//            0
-//        )
-//
-//        // Đặt văn bản đã định dạng trên TextView
-//        binding.tv2.text = spannableBuilder
-
+        presenter?.getGuidelinesData()
         return binding.root
 
     }
+
+    override fun createPresenter(): GuidelinePresenter = GuidelinePresenter(this)
 
     override fun onResume() {
         super.onResume()
         //Check Internet Connection
         if (mListener?.isDeviceOnlineCheck() == false) {
             mListener?.onShowDisconnectDialog()
+        }
+    }
+
+    override fun onSuccessGuidelineData(dataGuidelineResponse: ObjectResponse<List<DataGuidelines>>) {
+       isGetGuidelineData = true
+        dataGuidelines.addAll(dataGuidelineResponse.data ?: emptyList())
+        presenter?.onShowListGuidelinePresenter(dataGuidelines)
+    }
+
+    override fun onError(errorMessage: String) {
+        mListener?.onShowDisconnectDialog()
+    }
+
+    override fun onShowListGuideline(dataGuideline: ArrayList<DataGuidelines>) {
+        adapterGuidelines = GuidelinesAdapter(this,dataGuideline)
+        binding.recyclerviewCAndG.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = adapterGuidelines
+        }
+        if (isGetGuidelineData){
+            mListener?.onHideProgressBar()
         }
     }
 }

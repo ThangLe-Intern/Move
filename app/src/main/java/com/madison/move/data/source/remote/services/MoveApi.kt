@@ -25,7 +25,8 @@ interface MoveApi {
     fun getCategory(): Call<ObjectResponse<List<DataCategory>>>
     @GET("faqs")
     fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>
-
+    @GET("community-guidelines")
+    fun getGuidelines(): Call<ObjectResponse<List<DataGuidelines>>>
 
     @GET("videos-you-may-like")
     fun getVideoSuggestion(): Call<ObjectResponse<VideoSuggestion>>

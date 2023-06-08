@@ -90,81 +90,8 @@ class FAQFragment : BaseFragment<FAQPresenter>(), FAQContract.FAQView {
         this.setText(spannableString, TextView.BufferType.SPANNABLE)
     }
 
-//    private fun initAdapter() {
-//        val newList = ArrayList<FAQDataModel>()
-//        newList.add(
-//            FAQDataModel(
-//                title = getString(R.string.itemFAq),
-//                plus = R.drawable.ic_plus,
-//                minus = getString(R.string.itemMinus),
-//            )
-//        )
-//        newList.add(
-//            FAQDataModel(
-//                title = getString(R.string.itemFAq),
-//                plus = R.drawable.ic_plus,
-//                minus = getString(R.string.itemMinus),
-//            )
-//        )
-//        newList.add(
-//            FAQDataModel(
-//                title = getString(R.string.itemFAq),
-//                plus = R.drawable.ic_plus,
-//                minus = getString(R.string.itemMinus),
-//            )
-//        )
-//        newList.add(
-//            FAQDataModel(
-//                title = getString(R.string.itemFAq),
-//                plus = R.drawable.ic_plus,
-//                minus = getString(R.string.itemMinus),
-//            )
-//        )
-//        newList.add(
-//            FAQDataModel(
-//                title = getString(R.string.itemFAq),
-//                plus = R.drawable.ic_plus,
-//                minus = getString(R.string.itemMinus),
-//            )
-//        )
-//        newList.add(
-//            FAQDataModel(
-//                title = getString(R.string.itemFAq),
-//                plus = R.drawable.ic_plus,
-//                minus = getString(R.string.itemMinus),
-//            )
-//        )
-//        newList.add(
-//            FAQDataModel(
-//                title = getString(R.string.itemFAq),
-//                plus = R.drawable.ic_plus,
-//                minus = getString(R.string.itemMinus),
-//            )
-//        )
-//        newList.add(
-//            FAQDataModel(
-//                title = getString(R.string.itemFAq),
-//                plus = R.drawable.ic_plus,
-//                minus = getString(R.string.itemMinus),
-//            )
-//        )
-
-//        val newRecyclerView = view?.findViewById<RecyclerView>(R.id.recyclerviewFaq)
-//        val adapter = FAQAdapter(tdataFAQ)
-//        newRecyclerView?.layoutManager = LinearLayoutManager(requireContext())
-//        newRecyclerView?.setHasFixedSize(true) //giữ kích thước cố định cho RecyclerView
-//        newRecyclerView?.adapter = adapter
-//        adapter.notifyDataSetChanged()
-
-
-//    }
-
-
     override fun onSuccessFaqData(dataFaqResponse: ObjectResponse<List<DataFAQ>>) {
         isGetFqaData = true
-
-        Log.d("EE","true")
-
         dataFAQ.addAll(dataFaqResponse.data ?: emptyList())
         presenter?.onShowListFaqPresenter(dataFAQ)
 

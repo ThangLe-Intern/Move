@@ -59,6 +59,10 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
         return moveApi.getFaq()
     }
 
+    override fun getGuidelines(): Call<ObjectResponse<List<DataGuidelines>>>? {
+        return moveApi.getGuidelines()
+    }
+
     override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>> {
         return moveApi.loginApi(email,password)
     }
