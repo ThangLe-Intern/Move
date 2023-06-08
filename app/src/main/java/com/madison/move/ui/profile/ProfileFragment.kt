@@ -2,9 +2,12 @@ package com.madison.move.ui.profile
 
 
 import android.app.Activity
+import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -19,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.github.drjacky.imagepicker.ImagePicker
 import com.github.drjacky.imagepicker.constant.ImageProvider
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import com.madison.move.R
 import com.madison.move.data.model.ObjectResponse
@@ -29,7 +34,14 @@ import com.madison.move.data.model.DataUser
 import com.madison.move.databinding.FragmentProfileBinding
 import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.menu.MainMenuActivity
+import com.yalantis.ucrop.view.CropImageView
+import retrofit2.http.Url
+import java.io.File
+import java.text.SimpleDateFormat
 import java.time.Year
+import java.util.*
+import java.util.logging.SimpleFormatter
+import kotlin.collections.ArrayList
 
 
 class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.ProfileView {
@@ -47,11 +59,14 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         const val TOKEN_USER_PREFERENCE = "tokenUser"
         const val TOKEN = "token"
         const val USER_DATA = "user"
+        private const val REQUEST_SELECT_IMAGE = 100
+
     }
 
     private var getSharedPreferences: SharedPreferences? = null
     private var tokenUser: String? = null
     private var isOpenGallery = false
+    private var mProfileUri: Uri? = null
 
     private lateinit var binding: FragmentProfileBinding
     private var newFullName = ""
@@ -61,7 +76,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     private var newCountry = ""
     private var newState = ""
     private var newCity = ""
-
+    private var avatarUrl: String? = null
     private var listDataCountry: ArrayList<DataCountry>? = null
     private var listDataState: ArrayList<DataState>? = null
     private var userData: DataUser? = null
@@ -73,12 +88,19 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     private val currentYear = Year.now().value
     private val years = (1900..currentYear).map { it.toString() }.toMutableList()
 
+    //Firebase
+    var storage: FirebaseStorage? = null
+    var storageReference: StorageReference? = null
+
     override fun createPresenter(): ProfilePresenter = ProfilePresenter(this)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+
+        storage = FirebaseStorage.getInstance()
+        storageReference = storage?.reference
 
 
         //Get Token From Preferences
@@ -96,6 +118,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             mListener?.onShowProgressBar()
             onHandleLogic()
         }
+
 
     }
 
@@ -117,10 +140,15 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 mListener?.onShowDisconnectDialog()
             } else {
                 mListener?.onShowProgressBar()
-                tokenUser?.let { token ->
-                    presenter?.onSaveProfileClickPresenter(
-                        token, getNewProfile()
-                    )
+
+                if (mProfileUri != null) {
+                    uploadImageToFireBase()
+                }else{
+                    tokenUser?.let { token ->
+                        presenter?.onSaveProfileClickPresenter(
+                            token, getNewProfile()
+                        )
+                    }
                 }
             }
         }
@@ -133,15 +161,49 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         handlePickerImage()
     }
 
+    private fun uploadImageToFireBase() {
+
+        //Make Image Name Base On Date
+        val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.CHINA)
+        val dateNow = Date()
+        val filename = formatter.format(dateNow)
+
+        val imgRef = storageReference?.child("images/${filename}.jpg")
+        mProfileUri?.let { uri ->
+            imgRef?.putFile(uri)
+                ?.addOnSuccessListener { taskSnapshot ->
+                    imgRef.downloadUrl.addOnSuccessListener {
+                        if (it != null) {
+                            avatarUrl = it.toString()
+                            Log.d("HEHE",avatarUrl.toString())
+
+                            //Call Update Profile
+                            tokenUser?.let { token ->
+                                presenter?.onSaveProfileClickPresenter(
+                                    token, getNewProfile()
+                                )
+                            }
+                        } else {
+                            mListener?.onHideProgressBar()
+                            Toast.makeText(activity, "Get URL Failed", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+                }
+                ?.addOnFailureListener { exception ->
+                    mListener?.onHideProgressBar()
+                    Toast.makeText(activity, "Upload Image Failed", Toast.LENGTH_SHORT).show()
+                }
+        }
+
+    }
+
     private fun getNewProfile(): ProfileRequest {
         val newUserName = binding.editUsername.text.toString().trim()
         val newFullName = binding.editProfileFullName.text.toString().trim()
         val newCountry = binding.dropdownCountryText.text.toString().trim()
         val newState = binding.dropdownStateText.text.toString().trim()
         val newCity = binding.editProfileCity.text.toString().trim()
-
-
-//        val newAvatar = binding.imgProfileUser.tag.toString()
 
         //Get Gender
         val newGender: Int = if (binding.radioMale.isChecked) {
@@ -152,21 +214,20 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             3
         }
 
-        val newMonth: String
-        when (binding.dropdownMonthText.text.toString()) {
-            months[0] -> newMonth = "01"
-            months[1] -> newMonth = "02"
-            months[2] -> newMonth = "03"
-            months[3] -> newMonth = "04"
-            months[4] -> newMonth = "05"
-            months[5] -> newMonth = "06"
-            months[6] -> newMonth = "07"
-            months[7] -> newMonth = "08"
-            months[8] -> newMonth = "09"
-            months[9] -> newMonth = "10"
-            months[10] -> newMonth = "11"
-            months[11] -> newMonth = "12"
-            else -> newMonth = "01"
+        val newMonth: String = when (binding.dropdownMonthText.text.toString()) {
+            months[0] -> "01"
+            months[1] -> "02"
+            months[2] -> "03"
+            months[3] -> "04"
+            months[4] -> "05"
+            months[5] -> "06"
+            months[6] -> "07"
+            months[7] -> "08"
+            months[8] -> "09"
+            months[9] -> "10"
+            months[10] -> "11"
+            months[11] -> "12"
+            else -> "01"
         }
 
         //Get DOB
@@ -185,7 +246,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             countryID,
             newFullName,
             newGender,
-            "",
+            avatarUrl,
             stateId,
             newUserName,
         )
@@ -261,15 +322,12 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                         return binding.editProfileCity.setText(cityText.dropLast(1))
                     }
                 }
-
                 //Handle Enable Save Setting Button
                 binding.saveSettingBtn.isEnabled = isAllFieldsNotNull()
 
             }
 
             override fun afterTextChanged(s: Editable?) {
-
-
                 binding.editProfileFullName.setSelection(binding.editProfileFullName.length())
                 binding.editProfileCity.setSelection(binding.editProfileCity.length())
             }
@@ -281,19 +339,60 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         binding.editProfileCity.addTextChangedListener(textWatcher)
     }
 
-    private var mProfileUri: Uri? = null
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
                 isOpenGallery = true
-                val uri = it.data?.data!!
+                val uri = it.data?.data
                 mProfileUri = uri
-                Log.d("ZEZE", uri.toString())
-                binding.imgProfileUser.setLocalImage(uri, false)
+                if (uri != null) {
+                    binding.imgProfileUser.setLocalImage(uri, false)
+                }
             } else {
                 parseError(it)
             }
         }
+
+    private fun handlePickerImage() {
+        binding.txtProfileUpdatePicture.setOnClickListener {
+           /* activity?.let { it1 ->
+                ImagePicker.with(it1).crop().cropOval().maxResultSize(1000, 1000, true)
+                    .provider(ImageProvider.BOTH) // Or bothCameraGallery()
+                    .setDismissListener {
+                        Log.d("ImagePicker", "onDismiss")
+                    }.createIntentFromDialog { launcher.launch(it) }
+            }*/
+
+            openGallery()
+
+        }
+    }
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(intent, REQUEST_SELECT_IMAGE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+/*        if (requestCode == REQUEST_SELECT_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
+            val imageUri: Uri = data.data ?: return
+            cropImage(imageUri)
+        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            val result: CropImage.ActivityResult = CropImage.getActivityResult(data)
+            val croppedUri: Uri = result.uri
+
+            binding.imgProfileUser.setImageURI(croppedUri)
+        }*/
+    }
+
+/*    private fun cropImage(imageUri: Uri) {
+        CropImage.activity(imageUri)
+            .setGuidelines(CropImageView.Guidelines.ON)
+            .setAspectRatio(1, 1)
+            .setCropShape(CropImageView.CropShape.OVAL)
+            .start(this)
+    }*/
+
 
     private fun parseError(activityResult: ActivityResult) {
         if (activityResult.resultCode == ImagePicker.RESULT_ERROR) {
@@ -301,18 +400,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
                 .show()
         } else {
             Toast.makeText(activity, "Task Cancelled", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun handlePickerImage() {
-        binding.txtProfileUpdatePicture.setOnClickListener {
-            activity?.let { it1 ->
-                ImagePicker.with(it1).crop().cropOval().maxResultSize(1000, 1000, false)
-                    .provider(ImageProvider.BOTH) // Or bothCameraGallery()
-                    .setDismissListener {
-                        Log.d("ImagePicker", "onDismiss")
-                    }.createIntentFromDialog { launcher.launch(it) }
-            }
         }
     }
 
@@ -381,7 +468,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             if (it.id == user.countryId) {
                 binding.dropdownCountryText.setText(it.name)
 
-                //Add data again
+                //Add data againr
                 if (listDataCountry != null) {
                     handleDropDownCountry(listDataCountry!!)
                 }
@@ -462,6 +549,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     }
 
     override fun onSuccessUpdateProfile(updateProfileResponse: ObjectResponse<DataUser>) {
+        avatarUrl = null
         binding.txtErrorFullName.visibility = View.GONE
         binding.txtErrorFullName.focusable = View.FOCUSABLE
         onResume()
