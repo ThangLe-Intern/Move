@@ -56,7 +56,7 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
             mListener?.onShowDisconnectDialog()
         }
         adapterComment.notifyDataSetChanged()
-
+        updateUI()
     }
 
     private var isLoading = false
@@ -83,17 +83,6 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         currentFragment = this
 
         binding.apply {
-
-            getSharedPreferences = requireContext().getSharedPreferences(
-             TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
-            )
-            tokenUser = getSharedPreferences?.getString(TOKEN, null)
-
-            if (tokenUser == null){
-                layoutUserComment.visibility = View.GONE
-            }else{
-                layoutUserComment.visibility = View.VISIBLE
-            }
 
             nameUserProflie.text = dataVideoCarousel?.username.toString()
             tvJust.text = getString(R.string.video_category, dataVideoCarousel?.categoryName.toString())
@@ -191,6 +180,19 @@ open class CommentFragment(private val dataVideoSuggestion: DataVideoSuggestion?
         return binding.root
     }
 
+    private fun updateUI(){
+        getSharedPreferences = requireContext().getSharedPreferences(
+            TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
+        )
+        tokenUser = getSharedPreferences?.getString(TOKEN, null)
+
+        if (tokenUser == null){
+            binding.layoutUserComment.visibility = View.GONE
+        }else{
+            binding.layoutUserComment.visibility = View.VISIBLE
+        }
+
+    }
 
 
     override fun onBottomNavigateSystemUI() {
