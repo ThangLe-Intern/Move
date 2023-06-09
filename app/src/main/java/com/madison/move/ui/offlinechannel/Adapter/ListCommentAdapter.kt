@@ -90,9 +90,10 @@ class ListCommentAdapter(
                 tokenUser = getSharedPreferences?.getString(TOKEN, null)
                 if (tokenUser == null){
                     btnReply.visibility = View.GONE
+                    btnReport.visibility = View.GONE
                 }else{
                     btnReply.visibility = View.VISIBLE
-
+                    btnReport.visibility = View.VISIBLE
                 }
 
                 var currentNumber: Int? = 0
