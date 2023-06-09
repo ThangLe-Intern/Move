@@ -165,6 +165,10 @@ open class CommentFragment(
     override fun initView() {
         super.initView()
 
+        playVideo()
+    }
+
+    private fun playVideo(){
         lifecycle.addObserver(binding.vimeoPlayerView)
         binding.vimeoPlayerView.clearCache()
         binding.vimeoPlayerView.initialize(true, 337510595)
