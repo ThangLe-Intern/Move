@@ -13,9 +13,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.widget.NestedScrollView
@@ -45,7 +47,6 @@ open class CommentFragment(
     private lateinit var handler: Handler
     override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
 
-
     override fun onResume() {
         super.onResume()
         //Check Internet Connection
@@ -62,7 +63,7 @@ open class CommentFragment(
         binding = FragmentCommentBinding.inflate(inflater, container, false)
 
         val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
-        listComment?.let {
+        listComment.let {
             userComment(
                 binding.cancelButton, binding.sendButton, binding.edtUserComment, it, user4
             )
@@ -89,7 +90,7 @@ open class CommentFragment(
             if (dataVideoCarousel?.rating == null) {
                 tvrateNumber.text = 0.toString()
             } else {
-                val roundOff = (dataVideoCarousel.rating?.times(100.0))?.roundToInt()?.div(100.0)
+                val roundOff = (dataVideoCarousel.rating.times(100.0)).roundToInt()?.div(100.0)
                 tvrateNumber.text = roundOff.toString()
             }
             if (dataVideoCarousel?.categoryName != null && dataVideoCarousel.categoryName == "Just Move") {
@@ -127,7 +128,7 @@ open class CommentFragment(
             if (dataVideoSuggestion?.rating == null) {
                 tvrateNumber.text = 0.toString()
             } else {
-                val roundOff = (dataVideoSuggestion.rating?.times(100.0))?.roundToInt()?.div(100.0)
+                val roundOff = (dataVideoSuggestion.rating.times(100.0))?.roundToInt()?.div(100.0)
                 tvrateNumber.text = roundOff.toString()
             }
             if (dataVideoSuggestion?.categoryName != null && dataVideoSuggestion.categoryName == "Just Move") {
@@ -156,71 +157,42 @@ open class CommentFragment(
                 dataVideoSuggestion?.id ?: 0
             )
         }
-/*
-        val html = "<html><body><iframe src=\"https://player.vimeo.com/video/831735794?h=e178d25d05&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture\" allowfullscreen style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"Move Video\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js%22%3E</script></body></html>"
-        binding.webView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null)
-
-        // Set a WebViewClient to handle the page navigation
-        binding.webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                if (url != null) {
-                    view?.loadUrl(url)
-                }
-                return true
-            }
-        }*/
-
 
         return binding.root
     }
+
 
     override fun initView() {
         super.initView()
 
         lifecycle.addObserver(binding.vimeoPlayerView)
         binding.vimeoPlayerView.clearCache()
-        binding.vimeoPlayerView.initialize(true, 251250546)
-//        binding.vimeoPlayerView.initialize(true, 180891891)
-
-
+        binding.vimeoPlayerView.initialize(true, 337510595)
         binding.vimeoPlayerView.setFullscreenVisibility(true)
         binding.vimeoPlayerView.setMenuVisibility(true)
 
-
-        binding.btnFullscreen.setOnClickListener {
-            //define the orientation
-            var requestOrientation = VimeoPlayerActivity.REQUEST_ORIENTATION_LANDSCAPE
-            startActivityForResult(
-                VimeoPlayerActivity.createIntent(
-                    requireContext(), requestOrientation, binding.vimeoPlayerView
-                ), 1234
-            )
-        }
-
         binding.vimeoPlayerView.setFullscreenClickListener {
             //define the orientation
-            var requestOrientation = VimeoPlayerActivity.REQUEST_ORIENTATION_LANDSCAPE
-            startActivityForResult(
-                VimeoPlayerActivity.createIntent(
-                    requireContext(), requestOrientation, binding.vimeoPlayerView
-                ), 1234
-            )
+            val requestOrientation = VimeoPlayerActivity.REQUEST_ORIENTATION_LANDSCAPE
+            playerFullScreenResultLauncher.launch(VimeoPlayerActivity.createIntent(
+                requireContext(), requestOrientation, binding.vimeoPlayerView
+            ))
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode == Activity.RESULT_OK && requestCode == 1234) {
-            if (data != null) {
-                var playAt = data.getFloatExtra(VimeoPlayerActivity.RESULT_STATE_VIDEO_PLAY_AT, 0f)
+    var playerFullScreenResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            if (it.data != null) {
+                val playAt = it.data!!.getFloatExtra(VimeoPlayerActivity.RESULT_STATE_VIDEO_PLAY_AT, 0f)
                 binding.vimeoPlayerView.seekTo(playAt)
 
-                var playerState = data.getStringExtra(VimeoPlayerActivity.RESULT_STATE_PLAYER_STATE)
+                val playerState = it.data!!.getStringExtra(VimeoPlayerActivity.RESULT_STATE_PLAYER_STATE)
                     ?.let { PlayerState.valueOf(it) }
                 when (playerState) {
                     PlayerState.PLAYING -> binding.vimeoPlayerView.play()
-                    PlayerState.PAUSED -> binding.vimeoPlayerView.play()
+                    PlayerState.PAUSED -> binding.vimeoPlayerView.pause()
                     else -> {
 
                     }
@@ -482,7 +454,7 @@ open class CommentFragment(
         val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
 
 
-        listComment?.add(
+        listComment.add(
             Comment(
                 1, "DSMLMFLSKEMFKLM", "Just now", mutableListOf(
                     Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
@@ -493,9 +465,9 @@ open class CommentFragment(
             )
         )
 
-        listComment?.add(Comment(2, "ALO SONDASDK", "Just now", mutableListOf(), user2))
-        listComment?.add(Comment(3, "KAMAVINGAR HALANDES", "Just now", mutableListOf(), user3))
-        listComment?.add(Comment(4, "SDASDESADASD", "Just now", mutableListOf(), user4))
+        listComment.add(Comment(2, "ALO SONDASDK", "Just now", mutableListOf(), user2))
+        listComment.add(Comment(3, "KAMAVINGAR HALANDES", "Just now", mutableListOf(), user3))
+        listComment.add(Comment(4, "SDASDESADASD", "Just now", mutableListOf(), user4))
 
 
     }
