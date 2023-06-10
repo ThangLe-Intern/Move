@@ -2,7 +2,6 @@ package com.madison.move.data.source
 
 import com.madison.move.data.model.*
 import com.madison.move.data.model.videodetail.DataVideoDetail
-import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import retrofit2.Call
@@ -31,7 +30,7 @@ interface MoveDataSource {
     ): Call<ObjectResponse<DataUser>>?
 
     fun getVideoDetail(id: Int): Call<ObjectResponse<DataVideoDetail>>?
-    fun getCommentVideo(id: Int): Call<ObjectResponse<List<DataComment>>>?
+    fun getCommentVideo(token:String, id: Int): Call<ObjectResponse<List<DataComment>>>?
 
 
 

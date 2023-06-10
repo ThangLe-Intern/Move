@@ -7,14 +7,15 @@ import android.widget.PopupWindow
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.madison.move.R
 import com.madison.move.data.model.DataComment
 import com.madison.move.databinding.ItemUserCommentBinding
 import com.madison.move.ui.offlinechannel.Comment
 
 class ListReplyAdapter(
-    var listReply: MutableList<DataComment>,
     private var context: Context,
+    var listReply: MutableList<DataComment>,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -23,7 +24,7 @@ class ListReplyAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("ClickableViewAccessibility")
-        fun onBind(comment: DataComment) {
+        fun onBind(dataComment: DataComment) {
             binding.apply {
 
                 userAvatarReply.setImageResource(R.drawable.avatar)
@@ -79,7 +80,6 @@ class ListReplyAdapter(
                 }
 
                 layoutUserReply.visibility = View.GONE
-
                 btnLikeTick.visibility = View.GONE
                 btnDisLiketike.visibility = View.GONE
 
@@ -113,6 +113,58 @@ class ListReplyAdapter(
                     }
                 }
             }
+
+            //Set User Reply Info
+            //Set User Comment Info
+            binding.apply {
+
+                //Set Avatar
+                if (dataComment.user?.img != null) {
+                    Glide.with(context).load(dataComment.user.img).into(binding.avatar)
+                } else {
+                    binding.avatar.setImageResource(R.drawable.avatar)
+                }
+
+                //Set Username
+                username.text =
+                    dataComment.user?.username ?: context.getString(R.string.txt_no_us_name)
+
+                //Set Role
+                if (dataComment.user?.role == 0) {
+                    bluetick.visibility = View.GONE
+                } else {
+                    bluetick.visibility = View.VISIBLE
+                }
+
+                //Set Comment Time
+                commentTime.text = dataComment.createdTime ?: ""
+
+                //Set Content Comment
+                commentContent.text = dataComment.content ?: ""
+
+                //Set User Like or Dislike Comment
+                if (dataComment.isLiked == true) {
+                    btnLikeTick.visibility = View.VISIBLE
+                    btnLike.visibility = View.GONE
+                    btnDisLiketike.visibility = View.GONE
+                }
+
+                if (dataComment.isDisliked == true) {
+                    btnLikeTick.visibility = View.GONE
+                    btnDisLike.visibility = View.GONE
+                    btnDisLiketike.visibility = View.VISIBLE
+                }
+
+                if (dataComment.likeCount != null && dataComment.likeCount > 0) {
+                    numberLike.visibility = View.VISIBLE
+                    numberLike.text = dataComment.likeCount.toString()
+                } else {
+                    numberLike.visibility = View.GONE
+                }
+            }
+
+
+
         }
     }
 

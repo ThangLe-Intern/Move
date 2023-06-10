@@ -29,7 +29,7 @@ interface MoveApi {
 
     @GET("videos/{id}")
     fun getDetailVideoSuggestion(
-        @Path("id") videoId :Int
+        @Path("id") videoId: Int
     ): Call<VideoDetailResponse>
 
 
@@ -45,7 +45,7 @@ interface MoveApi {
     ): Call<ObjectResponse<DataUser>>
 
     @POST("logout")
-    fun logoutRequest(@Header("Authorization") authorization: String):Call<ObjectResponse<DataUser>>
+    fun logoutRequest(@Header("Authorization") authorization: String): Call<ObjectResponse<DataUser>>
 
     @GET("users/information")
     fun getUserProfile(@Header("Authorization") authorization: String): Call<ObjectResponse<DataUser>>
@@ -65,6 +65,15 @@ interface MoveApi {
     @GET("showVideos/{id}")
     fun showVideoDetail(@Path("id") videoId: Int): Call<ObjectResponse<DataVideoDetail>>
 
+/*
     @GET("comments/{id}")
     fun getCommentVideo(@Path("id") videoId: Int): Call<ObjectResponse<List<DataComment>>>
+*/
+
+    @GET("comments/{id}")
+    fun getCommentVideo(
+        @Header("Authorization") authorization: String,
+        @Path("id") videoId: Int
+    ): Call<ObjectResponse<List<DataComment>>>
+
 }

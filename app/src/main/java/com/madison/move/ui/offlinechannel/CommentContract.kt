@@ -1,6 +1,5 @@
 package com.madison.move.ui.offlinechannel
 
-import com.madison.move.data.model.DataCategory
 import com.madison.move.data.model.DataComment
 import com.madison.move.data.model.ObjectResponse
 import com.madison.move.data.model.videodetail.DataVideoDetail
@@ -19,7 +18,7 @@ interface CommentContract {
     interface CommentPresenter : BasePresenter<CommentContract>{
 
         fun getVideoDetail(id: Int)
-        fun getCommentVideo(id: Int)
+        fun getCommentVideo(token:String,id: Int)
 
     }
 

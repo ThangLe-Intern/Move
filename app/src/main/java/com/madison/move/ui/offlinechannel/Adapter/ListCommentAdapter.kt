@@ -38,14 +38,6 @@ class ListCommentAdapter(
         fun onBind(dataComment: DataComment) {
 
             val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
-/*
-            val adapterReply = comment.listChild?.let { ListReplyAdapter(it,context) } ?: ListReplyAdapter(
-                listComment, context
-            )*/
-            binding.listReply.apply {
-                layoutManager = LinearLayoutManager(context)
-                adapter = adapterReply
-            }
 
 /*            binding.apply {
                 comment.user?.avt?.let { avatar.setImageResource(it) }
@@ -55,26 +47,36 @@ class ListCommentAdapter(
                 listReply.visibility = View.GONE
             }*/
 
-            //Handle Show/Hide Reply
-            binding.apply {
-                layoutShow.setOnClickListener {
-                    listReply.visibility = if (listReply.isGone) View.VISIBLE else View.GONE
-                    imgArrowDownGreen.setImageResource(
-                        if (listReply.isVisible) R.drawable.ic_ic_arrow_up_green
-                        else R.drawable.ic_arrow_down_green
-                    )
-                    txtShow.text = context.getString(
-                        if (listReply.isVisible) R.string.Hide
-                        else R.string.Show
-                    )
-                }
+            val adapterReply = ListReplyAdapter(
+                context, dataComment.replies as MutableList<DataComment>
+            )
+
+            //Add Reply Data
+            binding.listReply.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = adapterReply
             }
 
-/*            if (comment.listChild?.isNotEmpty() == true) {
-                binding.layoutShow.visibility = View.VISIBLE
-            } else {
-                binding.layoutShow.visibility = View.GONE
-            }*/
+            //Handle Show/Hide Reply
+            binding.apply {
+                if (dataComment.replies.isEmpty()) {
+                    layoutShow.visibility = View.GONE
+                } else {
+                    layoutShow.visibility = View.VISIBLE
+
+                    layoutShow.setOnClickListener {
+                        listReply.visibility = if (listReply.isGone) View.VISIBLE else View.GONE
+                        imgArrowDownGreen.setImageResource(
+                            if (listReply.isVisible) R.drawable.ic_ic_arrow_up_green
+                            else R.drawable.ic_arrow_down_green
+                        )
+                        txtShow.text = context.getString(
+                            if (listReply.isVisible) R.string.Hide
+                            else R.string.Show
+                        )
+                    }
+                }
+            }
 
             //Handle Btn Report
             binding.apply {
@@ -126,37 +128,12 @@ class ListCommentAdapter(
                 }
             }
 
-/*
-            binding.apply {
-                layoutUserReply.visibility = View.GONE
-                btnReply.setOnClickListener {
-                    if (layoutUserReply.isGone) {
-                        layoutUserReply.visibility = View.VISIBLE
-
-                        comment.listChild?.let { it1 ->
-                            replyListener.userComment(
-                                cancelReplyButton,
-                                sendButtonReply,
-                                edtUserCommentReply,
-                                it1,
-                                listReply,
-                                user4
-                            )
-                        }
-                    } else {
-                        layoutUserReply.visibility = View.GONE
-                    }
-                }
-            }*/
-
             //Set User Comment Info
             binding.apply {
 
                 //Set Avatar
                 if (dataComment.user?.img != null) {
-                    Glide.with(context)
-                        .load(dataComment.user.img)
-                        .into(binding.avatar)
+                    Glide.with(context).load(dataComment.user.img).into(binding.avatar)
                 } else {
                     binding.avatar.setImageResource(R.drawable.avatar)
                 }
@@ -191,10 +168,10 @@ class ListCommentAdapter(
                     btnDisLiketike.visibility = View.VISIBLE
                 }
 
-                if (dataComment.likeCount != null && dataComment.likeCount > 0){
+                if (dataComment.likeCount != null && dataComment.likeCount > 0) {
                     numberLike.visibility = View.VISIBLE
                     numberLike.text = dataComment.likeCount.toString()
-                }else{
+                } else {
                     numberLike.visibility = View.GONE
                 }
             }
@@ -232,6 +209,26 @@ class ListCommentAdapter(
                 }
             }
 
+            //Handle Show/Hide Reyly Button
+            binding.apply {
+                layoutUserReply.visibility = View.GONE
+                btnReply.setOnClickListener {
+                    if (layoutUserReply.isGone) {
+                        layoutUserReply.visibility = View.VISIBLE
+                        replyListener.userComment(
+                            cancelReplyButton,
+                            sendButtonReply,
+                            edtUserCommentReply,
+                            dataComment.replies,
+                            listReply,
+                            user4
+                        )
+                    } else {
+                        layoutUserReply.visibility = View.GONE
+                    }
+                }
+            }
+
         }
     }
 
@@ -261,8 +258,8 @@ class ListCommentAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return VIEW_TYPE_ITEM
-//        return if (listComment.get(position) == null) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
+//        return VIEW_TYPE_ITEM
+        return if (listComment.get(position) == null) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
     }
 
     interface ReplyListener {

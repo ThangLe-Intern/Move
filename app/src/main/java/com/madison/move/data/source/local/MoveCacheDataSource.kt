@@ -3,7 +3,6 @@ package com.madison.move.data.source.local
 import android.util.SparseArray
 import com.madison.move.data.model.*
 import com.madison.move.data.model.videodetail.DataVideoDetail
-import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import com.madison.move.data.source.MoveDataSource
@@ -54,7 +53,7 @@ class MoveCacheDataSource : MoveDataSource {
         return null
     }
 
-    override fun getCommentVideo(id: Int): Call<ObjectResponse<List<DataComment>>>? {
+    override fun getCommentVideo(token: String,id: Int): Call<ObjectResponse<List<DataComment>>>? {
         return null
     }
 

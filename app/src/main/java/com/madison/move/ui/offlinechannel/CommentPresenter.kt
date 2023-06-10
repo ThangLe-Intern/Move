@@ -5,8 +5,6 @@ import com.madison.move.data.DataManager
 import com.madison.move.data.model.DataComment
 import com.madison.move.data.model.ObjectResponse
 import com.madison.move.data.model.videodetail.DataVideoDetail
-import com.madison.move.data.model.videodetail.VideoDetailResponse
-import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -39,9 +37,9 @@ class CommentPresenter(
         })
     }
 
-    override fun getCommentVideo(id: Int) {
+    override fun getCommentVideo(token:String, id: Int) {
 
-        dataManager.movieRepository.getCommentVideo(id)?.enqueue(object :
+        dataManager.movieRepository.getCommentVideo(token,id)?.enqueue(object :
             Callback<ObjectResponse<List<DataComment>>> {
             override fun onResponse(
                 call: Call<ObjectResponse<List<DataComment>>>,

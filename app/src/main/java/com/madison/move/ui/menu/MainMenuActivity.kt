@@ -79,8 +79,6 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         getSharedPreferences = getSharedPreferences(TOKEN_USER_PREFERENCE, MODE_PRIVATE)
         tokenUser = getSharedPreferences?.getString(TOKEN, null)
 
-
-
         if (tokenUser == null) {
             onLogout()
         } else {

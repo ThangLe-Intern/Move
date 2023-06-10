@@ -5,13 +5,37 @@ import com.google.gson.annotations.SerializedName
 import com.google.gson.annotations.Expose
 
 data class DataVideoDetail(
-    @SerializedName("averageRating")
+    @SerializedName("category_name")
     @Expose
-    val averageRating: String?,
-    @SerializedName("video")
+    val categoryName: String?,
+    @SerializedName("commentable")
     @Expose
-    val video: Video?,
-    @SerializedName("viewsCount")
+    val commentable: Int?,
+    @SerializedName("duration")
     @Expose
-    val viewsCount: Int?
+    val duration: Int?,
+    @SerializedName("id")
+    @Expose
+    val id: Int?,
+    @SerializedName("level")
+    @Expose
+    val level: Int?,
+    @SerializedName("ratings")
+    @Expose
+    val ratings: Double?,
+    @SerializedName("thumbnail")
+    @Expose
+    val thumbnail: String?,
+    @SerializedName("title")
+    @Expose
+    val title: String?,
+    @SerializedName("url_video")
+    @Expose
+    val urlVideo: Int?,
+    @SerializedName("user_id")
+    @Expose
+    val userId: Int?,
+    @SerializedName("views")
+    @Expose
+    val views: Long?
 )
