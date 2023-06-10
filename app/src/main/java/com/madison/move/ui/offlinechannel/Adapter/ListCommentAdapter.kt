@@ -3,32 +3,41 @@ package com.madison.move.ui.offlinechannel.Adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.view.*
 import android.widget.PopupWindow
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.madison.move.R
 import com.madison.move.data.model.DataComment
+import com.madison.move.data.model.DataUser
 import com.madison.move.databinding.ItemUserCommentBinding
+import com.madison.move.ui.offlinechannel.CommentFragment
 import com.madison.move.ui.offlinechannel.DataModelComment
 
 class ListCommentAdapter(
     private var context: Context,
     var listComment: MutableList<DataComment>,
     val replyListener: ReplyListener,
-) :
-
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var adapterReply: ListReplyAdapter? = null
+    private var getSharedPreferences: SharedPreferences? = null
+    private var userData: DataUser? = null
+
 
     companion object {
         private const val VIEW_TYPE_ITEM = 0
         private const val VIEW_TYPE_LOADING = 1
+        const val USER_DATA = "user"
+
     }
 
 
@@ -37,7 +46,13 @@ class ListCommentAdapter(
         @SuppressLint("ClickableViewAccessibility")
         fun onBind(dataComment: DataComment) {
 
-            val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
+            getSharedPreferences = context.getSharedPreferences(
+                CommentFragment.TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
+            )
+
+            val jsonUser = getSharedPreferences?.getString(USER_DATA, null)
+            userData = Gson().fromJson(jsonUser, DataUser::class.java)
+
 
 /*            binding.apply {
                 comment.user?.avt?.let { avatar.setImageResource(it) }
@@ -63,6 +78,8 @@ class ListCommentAdapter(
                     layoutShow.visibility = View.GONE
                 } else {
                     layoutShow.visibility = View.VISIBLE
+                    txtShow.text =
+                        context.getString(R.string.Show, dataComment.replies.size.toString() ?: "")
 
                     layoutShow.setOnClickListener {
                         listReply.visibility = if (listReply.isGone) View.VISIBLE else View.GONE
@@ -70,10 +87,17 @@ class ListCommentAdapter(
                             if (listReply.isVisible) R.drawable.ic_ic_arrow_up_green
                             else R.drawable.ic_arrow_down_green
                         )
-                        txtShow.text = context.getString(
-                            if (listReply.isVisible) R.string.Hide
-                            else R.string.Show
-                        )
+
+                        if (listReply.isVisible) {
+                            txtShow.text = context.getString(
+                                R.string.Hide, dataComment.replies.size.toString() ?: ""
+                            )
+                        } else {
+                            txtShow.text = context.getString(
+                                R.string.Show, dataComment.replies.size.toString() ?: ""
+                            )
+                        }
+
                     }
                 }
             }
@@ -117,11 +141,6 @@ class ListCommentAdapter(
                         true
                     }
                 }
-
-                binding.apply {
-
-                }
-
 
                 sendButtonReply.setOnClickListener {
                     notifyDataSetChanged()
@@ -209,24 +228,35 @@ class ListCommentAdapter(
                 }
             }
 
-            //Handle Show/Hide Reyly Button
+            //Handle Show/Hide Reply Button
             binding.apply {
                 layoutUserReply.visibility = View.GONE
-                btnReply.setOnClickListener {
-                    if (layoutUserReply.isGone) {
-                        layoutUserReply.visibility = View.VISIBLE
-                        replyListener.userComment(
-                            cancelReplyButton,
-                            sendButtonReply,
-                            edtUserCommentReply,
-                            dataComment.replies,
-                            listReply,
-                            user4
-                        )
+
+                if (userData != null) {
+                    if (userData?.img != null) {
+                        Glide.with(context).load(userData?.img).into(userAvatarReply)
                     } else {
-                        layoutUserReply.visibility = View.GONE
+                        userAvatarReply.setImageResource(R.drawable.avatar)
                     }
+                    btnReply.setOnClickListener {
+                        if (layoutUserReply.isGone) {
+                            layoutUserReply.visibility = View.VISIBLE
+                            replyListener.userComment(
+                                cancelReplyButton,
+                                sendButtonReply,
+                                edtUserCommentReply,
+                                dataComment.replies,
+                                listReply
+                            )
+
+                        } else {
+                            layoutUserReply.visibility = View.GONE
+                        }
+                    }
+                }else{
+                    btnReply.visibility = View.GONE
                 }
+
             }
 
         }
@@ -269,7 +299,6 @@ class ListCommentAdapter(
             editText: AppCompatEditText,
             listComment: MutableList<DataComment>,
             list: RecyclerView,
-            user: DataModelComment
         )
 
         fun onWriteCommentListener(
@@ -283,7 +312,6 @@ class ListCommentAdapter(
             listComment: MutableList<DataComment>,
             editText: AppCompatEditText,
             cancelButton: AppCompatButton,
-            user: DataModelComment
         )
 
         fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton)

@@ -37,7 +37,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
 
     override fun onSaveProfileClickPresenter(token: String, profileRequest: ProfileRequest) {
         val listAcceptChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
-
+        val listSpecialCharacter = "!@#$%^&*()_-+={}][|<>,?/.®©€¥£¢1234567890"
         if (profileRequest.fullname?.length!! < 4 ) {
             return onShowErrorPresenter(FULL_NAME_AT_LEAST_4_CHARS)
         }
@@ -47,13 +47,9 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
         }
 
         for (s in profileRequest.fullname.toString()) {
-            if (s !in listAcceptChar) {
+            if (s in listSpecialCharacter) {
                 return onShowErrorPresenter(FULL_NAME_FORMAT)
             }
-        }
-
-        if (hasNumber(profileRequest.fullname.toString())){
-            return onShowErrorPresenter(FULL_NAME_FORMAT)
         }
 
 

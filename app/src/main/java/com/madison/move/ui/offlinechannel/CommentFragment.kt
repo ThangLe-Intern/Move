@@ -37,7 +37,6 @@ import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentCommentBinding
 import com.madison.move.ui.base.BaseFragment
-import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.menu.MainMenuActivity
 import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
 import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
@@ -78,6 +77,76 @@ open class CommentFragment(
 
         currentFragment = this
 
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //Check Internet Connection
+        if (mListener?.isDeviceOnlineCheck() == false) {
+            mListener?.onShowDisconnectDialog()
+        }
+
+        onRefreshData()
+
+    }
+
+    private fun onRefreshData() {
+
+//        mListener?.onShowProgressBar()
+        getSharedPreferences = requireContext().getSharedPreferences(
+            TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
+        )
+        //Get Token From Preferences
+        tokenUser = getSharedPreferences?.getString(TOKEN, null)
+
+        //Get UserData From Preferences
+        val jsonUser = getSharedPreferences?.getString(USER_DATA, null)
+        userData = Gson().fromJson(jsonUser, DataUser::class.java)
+
+        //Check If User login or not
+        if (userData != null) {
+            //Set Current User Data
+            binding.apply {
+                layoutUserComment.visibility = View.VISIBLE
+
+                //Set User Avatar
+                if (userData?.img != null) {
+                    Glide.with(requireContext()).load(userData?.img).into(binding.userAvatar)
+                } else {
+                    binding.userAvatar.setImageResource(R.drawable.avatar)
+                }
+            }
+        } else {
+            //Do This When User Not Login
+            binding.apply {
+                layoutUserComment.visibility = View.GONE
+            }
+        }
+
+        //Clear List When Reload
+        listALLComment.clear()
+        listComment.clear()
+
+        presenter?.apply {
+
+/*            getVideoDetail(
+                dataVideoSuggestion?.id ?: 0
+            )
+            getCommentVideo(dataVideoSuggestion?.id ?: 0)*/
+
+            getVideoDetail(1)
+            if (tokenUser != null) {
+                getCommentVideo(("Bearer $tokenUser"), 1)
+            } else {
+                getCommentVideo("", 1)
+            }
+        }
+    }
+
+
+    override fun initView() {
+        super.initView()
         binding.apply {
 
             if (dataVideoCarousel?.rating == null) {
@@ -87,8 +156,8 @@ open class CommentFragment(
                 tvrateNumber.text = roundOff.toString()
             }
             if (dataVideoCarousel?.categoryName != null && dataVideoCarousel.categoryName == "Just Move") {
-                cardviewTimeLine.visibility = View.INVISIBLE
-                cardviewBeginner.visibility = View.INVISIBLE
+                cardviewTimeLine.visibility = View.GONE
+                cardviewBeginner.visibility = View.GONE
             } else {
                 cardviewTimeLine.visibility = View.VISIBLE
                 cardviewBeginner.visibility = View.VISIBLE
@@ -145,77 +214,6 @@ open class CommentFragment(
             }
         }
 
-
-        return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-        //Check Internet Connection
-        if (mListener?.isDeviceOnlineCheck() == false) {
-            mListener?.onShowDisconnectDialog()
-        }
-
-        onRefreshData()
-
-    }
-
-    private fun onRefreshData() {
-
-//        mListener?.onShowProgressBar()
-        getSharedPreferences = requireContext().getSharedPreferences(
-            TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
-        )
-        //Get Token From Preferences
-        tokenUser = getSharedPreferences?.getString(TOKEN, null)
-
-        //Get UserData From Preferences
-        val jsonUser = getSharedPreferences?.getString(MainMenuActivity.USER_DATA, null)
-        userData = Gson().fromJson(jsonUser, DataUser::class.java)
-
-        //Check If User login or not
-        if (userData != null) {
-            //Set Current User Data
-            binding.apply {
-                layoutUserComment.visibility = View.VISIBLE
-
-                //Set User Avatar
-                if (userData?.img != null) {
-                    Glide.with(requireContext()).load(userData?.img).into(binding.userAvatar)
-                } else {
-                    binding.userAvatar.setImageResource(R.drawable.avatar)
-                }
-            }
-        } else {
-            //Do This When User Not Login
-            binding.apply {
-                layoutUserComment.visibility = View.GONE
-            }
-        }
-
-        //Clear List When Reload
-        listALLComment.clear()
-        listComment.clear()
-
-        presenter?.apply {
-
-/*            getVideoDetail(
-                dataVideoSuggestion?.id ?: 0
-            )
-            getCommentVideo(dataVideoSuggestion?.id ?: 0)*/
-
-            getVideoDetail(1)
-            if (tokenUser != null) {
-                getCommentVideo(("Bearer $tokenUser"), 1)
-            } else {
-                getCommentVideo("", 1)
-            }
-        }
-    }
-
-
-    override fun initView() {
-        super.initView()
         initScrollListener()
     }
 
@@ -407,16 +405,16 @@ open class CommentFragment(
                     sendButton: AppCompatButton,
                     editText: AppCompatEditText,
                     listCommentReply: MutableList<DataComment>,
-                    list: RecyclerView,
-                    user: DataModelComment
+                    list: RecyclerView
                 ) {
 
                     cancelButton.visibility = View.GONE
                     sendButton.visibility = View.GONE
+
                     onWriteCommentListener(editText, cancelButton, sendButton)
                     onCancelUserComment(cancelButton, editText)
                     onSendUserReply(
-                        sendButton, list, listCommentReply, editText, cancelButton, user
+                        sendButton, list, listCommentReply, editText, cancelButton
                     )
                 }
 
@@ -471,7 +469,6 @@ open class CommentFragment(
                     listCommentReply: MutableList<DataComment>,
                     editText: AppCompatEditText,
                     cancelButton: AppCompatButton,
-                    user: DataModelComment
                 ) {
                     sendButton.setOnClickListener {
 /*                        listCommentReply.add(
@@ -561,26 +558,15 @@ open class CommentFragment(
     }
 
     private fun loadMore() {
-        val user1 = DataModelComment(R.drawable.avatar, "Vu Dung", false)
-
         binding.progressBar.visibility = View.VISIBLE
         val handler = Handler()
         handler.postDelayed({
 
-            listComment.removeAt(listComment.size - 1)
-            val scrollPosition: Int = listComment.size
-            adapterComment.notifyItemRemoved(scrollPosition)
-            var currentSize = scrollPosition
-            val nextLimit = currentSize + 10
             addComment()
-            Log.d("KKE",listComment.size.toString())
-/*            while (currentSize - 1 < nextLimit) {
-                currentSize++
-                addComment()
-            }*/
+
             adapterComment.notifyDataSetChanged()
             isLoading = false
-            binding.progressBar.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.GONE
         }, 3000)
 
     }
