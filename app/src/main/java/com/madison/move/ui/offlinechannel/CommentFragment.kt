@@ -216,7 +216,7 @@ open class CommentFragment(
 
     override fun initView() {
         super.initView()
-
+        initScrollListener()
     }
 
     private fun playVideo(videoID: Int) {
@@ -537,11 +537,9 @@ open class CommentFragment(
                 listComment.add(listALLComment[i])
             }
             listALLComment.subList(0, 10).clear()
-
-            initScrollListener()
-
         } else {
             listComment.addAll(listALLComment)
+            listALLComment.clear()
         }
     }
 
@@ -549,11 +547,13 @@ open class CommentFragment(
         binding.listComment.isNestedScrollingEnabled = false
 
         binding.nestedComment.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-            if (v.getChildAt(v.childCount - 1) != null) {
-                if (scrollY > oldScrollY) {
-                    if (scrollY >= v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight) {
-                        isLoading = true
-                        loadMore()
+            if (listALLComment.isNotEmpty()) {
+                if (v.getChildAt(v.childCount - 1) != null) {
+                    if (scrollY > oldScrollY) {
+                        if (scrollY >= v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight) {
+                            isLoading = true
+                            loadMore()
+                        }
                     }
                 }
             }
@@ -566,20 +566,22 @@ open class CommentFragment(
         binding.progressBar.visibility = View.VISIBLE
         val handler = Handler()
         handler.postDelayed({
+
             listComment.removeAt(listComment.size - 1)
             val scrollPosition: Int = listComment.size
             adapterComment.notifyItemRemoved(scrollPosition)
             var currentSize = scrollPosition
             val nextLimit = currentSize + 10
-            while (currentSize - 1 < nextLimit) {
-
+            addComment()
+            Log.d("KKE",listComment.size.toString())
+/*            while (currentSize - 1 < nextLimit) {
                 currentSize++
-            }
+                addComment()
+            }*/
             adapterComment.notifyDataSetChanged()
             isLoading = false
             binding.progressBar.visibility = View.VISIBLE
         }, 3000)
-
 
     }
 
