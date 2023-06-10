@@ -11,19 +11,20 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.madison.move.R
+import com.madison.move.data.model.DataComment
 import com.madison.move.databinding.ItemUserCommentBinding
-import com.madison.move.ui.offlinechannel.Comment
 import com.madison.move.ui.offlinechannel.DataModelComment
 
 class ListCommentAdapter(
     private var context: Context,
-    var listComment: MutableList<Comment>,
+    var listComment: MutableList<DataComment>,
     val replyListener: ReplyListener,
 ) :
 
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    lateinit var adapterReply: ListReplyAdapter
+    var adapterReply: ListReplyAdapter? = null
 
     companion object {
         private const val VIEW_TYPE_ITEM = 0
@@ -34,24 +35,27 @@ class ListCommentAdapter(
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("ClickableViewAccessibility")
-        fun onBind(comment: Comment) {
+        fun onBind(dataComment: DataComment) {
 
             val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
-
+/*
             val adapterReply = comment.listChild?.let { ListReplyAdapter(it,context) } ?: ListReplyAdapter(
                 listComment, context
-            )
-            itemView.findViewById<RecyclerView>(R.id.listReply).apply {
+            )*/
+            binding.listReply.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterReply
             }
-            binding.apply {
+
+/*            binding.apply {
                 comment.user?.avt?.let { avatar.setImageResource(it) }
                 username.text = comment.user?.name
                 commentTime.text = comment.timeOfComment
                 commentContent.text = comment.content
                 listReply.visibility = View.GONE
-            }
+            }*/
+
+            //Handle Show/Hide Reply
             binding.apply {
                 layoutShow.setOnClickListener {
                     listReply.visibility = if (listReply.isGone) View.VISIBLE else View.GONE
@@ -65,45 +69,16 @@ class ListCommentAdapter(
                     )
                 }
             }
-            if (comment.listChild?.isNotEmpty() == true) {
+
+/*            if (comment.listChild?.isNotEmpty() == true) {
                 binding.layoutShow.visibility = View.VISIBLE
             } else {
                 binding.layoutShow.visibility = View.GONE
-            }
+            }*/
 
+            //Handle Btn Report
             binding.apply {
-                var currentNumber: Int? = 0
-                btnLikeTick.visibility = View.GONE
-                btnLike.setOnClickListener {
-                    if (btnLikeTick.isGone) {
-                        btnLikeTick.visibility = View.VISIBLE
-                        currentNumber = currentNumber?.plus(1) ?: 1
-                        numberLike.text = currentNumber.toString()
-                        btnDisLiketike.visibility = View.GONE
-                    } else if (btnLikeTick.isVisible) {
-                        btnLikeTick.visibility = View.GONE
-                        currentNumber = currentNumber?.minus(1) ?: 0
-                        numberLike.text = currentNumber.toString()
-                    }
-                }
-
-                btnDisLiketike.visibility = View.GONE
-                btnDisLike.setOnClickListener {
-                    if (btnDisLiketike.isGone) {
-                        if (btnLikeTick.isVisible) {
-                            currentNumber = currentNumber?.minus(1) ?: 0
-                            numberLike.text = currentNumber.toString()
-                        }
-                        btnLikeTick.visibility = View.GONE
-                        btnDisLiketike.visibility = View.VISIBLE
-                    } else if (btnDisLiketike.isVisible) {
-                        btnDisLiketike.visibility = View.GONE
-                    }
-                }
-
-                if (comment.user?.isTicked == true) {
-                    bluetick.visibility = View.GONE
-                }
+                //Handle Button Report
                 btnReport.setOnClickListener {
                     val inflater = LayoutInflater.from(context)
                     val dialogView = inflater.inflate(R.layout.dialog_report, null)
@@ -141,11 +116,17 @@ class ListCommentAdapter(
                     }
                 }
 
+                binding.apply {
+
+                }
+
+
                 sendButtonReply.setOnClickListener {
                     notifyDataSetChanged()
                 }
             }
 
+/*
             binding.apply {
                 layoutUserReply.visibility = View.GONE
                 btnReply.setOnClickListener {
@@ -166,7 +147,91 @@ class ListCommentAdapter(
                         layoutUserReply.visibility = View.GONE
                     }
                 }
+            }*/
+
+            //Set User Comment Info
+            binding.apply {
+
+                //Set Avatar
+                if (dataComment.user?.img != null) {
+                    Glide.with(context)
+                        .load(dataComment.user.img)
+                        .into(binding.avatar)
+                } else {
+                    binding.avatar.setImageResource(R.drawable.avatar)
+                }
+
+                //Set Username
+                username.text =
+                    dataComment.user?.username ?: context.getString(R.string.txt_no_us_name)
+
+                //Set Role
+                if (dataComment.user?.role == 0) {
+                    bluetick.visibility = View.GONE
+                } else {
+                    bluetick.visibility = View.VISIBLE
+                }
+
+                //Set Comment Time
+                commentTime.text = dataComment.createdTime ?: ""
+
+                //Set Content Comment
+                commentContent.text = dataComment.content ?: ""
+
+                //Set User Like or Dislike Comment
+                if (dataComment.isLiked == true) {
+                    btnLikeTick.visibility = View.VISIBLE
+                    btnLike.visibility = View.GONE
+                    btnDisLiketike.visibility = View.GONE
+                }
+
+                if (dataComment.isDisliked == true) {
+                    btnLikeTick.visibility = View.GONE
+                    btnDisLike.visibility = View.GONE
+                    btnDisLiketike.visibility = View.VISIBLE
+                }
+
+                if (dataComment.likeCount != null && dataComment.likeCount > 0){
+                    numberLike.visibility = View.VISIBLE
+                    numberLike.text = dataComment.likeCount.toString()
+                }else{
+                    numberLike.visibility = View.GONE
+                }
             }
+
+            //Handle Like-Dislike
+            binding.apply {
+                var currentNumber: Int? = 0
+                btnLikeTick.visibility = View.GONE
+                btnLike.setOnClickListener {
+                    if (btnLikeTick.isGone) {
+                        btnLikeTick.visibility = View.VISIBLE
+                        currentNumber = currentNumber?.plus(1) ?: 1
+                        numberLike.text = currentNumber.toString()
+                        btnDisLiketike.visibility = View.GONE
+                    } else if (btnLikeTick.isVisible) {
+                        btnLikeTick.visibility = View.GONE
+                        currentNumber = currentNumber?.minus(1) ?: 0
+                        numberLike.text = currentNumber.toString()
+                    }
+                }
+
+                //Handle Dislike Button
+                btnDisLiketike.visibility = View.GONE
+                btnDisLike.setOnClickListener {
+                    if (btnDisLiketike.isGone) {
+                        if (btnLikeTick.isVisible) {
+                            currentNumber = currentNumber?.minus(1) ?: 0
+                            numberLike.text = currentNumber.toString()
+                        }
+                        btnLikeTick.visibility = View.GONE
+                        btnDisLiketike.visibility = View.VISIBLE
+                    } else if (btnDisLiketike.isVisible) {
+                        btnDisLiketike.visibility = View.GONE
+                    }
+                }
+            }
+
         }
     }
 
@@ -196,7 +261,8 @@ class ListCommentAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (listComment.get(position) == null) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
+        return VIEW_TYPE_ITEM
+//        return if (listComment.get(position) == null) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
     }
 
     interface ReplyListener {
@@ -204,7 +270,7 @@ class ListCommentAdapter(
             cancelButton: AppCompatButton,
             sendButton: AppCompatButton,
             editText: AppCompatEditText,
-            listComment: MutableList<Comment>,
+            listComment: MutableList<DataComment>,
             list: RecyclerView,
             user: DataModelComment
         )
@@ -217,7 +283,7 @@ class ListCommentAdapter(
         fun onSendUserReply(
             sendButton: AppCompatButton,
             list: RecyclerView,
-            listComment: MutableList<Comment>,
+            listComment: MutableList<DataComment>,
             editText: AppCompatEditText,
             cancelButton: AppCompatButton,
             user: DataModelComment

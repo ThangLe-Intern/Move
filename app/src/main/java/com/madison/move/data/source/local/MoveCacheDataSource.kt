@@ -1,13 +1,8 @@
 package com.madison.move.data.source.local
 
 import android.util.SparseArray
-import com.madison.move.data.model.ObjectResponse
-import com.madison.move.data.model.Video
-import com.madison.move.data.model.DataCategory
-import com.madison.move.data.model.DataCountry
-import com.madison.move.data.model.DataState
-import com.madison.move.data.model.ProfileRequest
-import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.*
+import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
@@ -55,7 +50,11 @@ class MoveCacheDataSource : MoveDataSource {
         return null
     }
 
-    override fun getVideoDetail(id: Int): Call<VideoDetailResponse>? {
+    override fun getVideoDetail(id: Int): Call<ObjectResponse<DataVideoDetail>>? {
+        return null
+    }
+
+    override fun getCommentVideo(id: Int): Call<ObjectResponse<List<DataComment>>>? {
         return null
     }
 
@@ -85,8 +84,7 @@ class MoveCacheDataSource : MoveDataSource {
     }
 
     override fun updateProfileUser(
-        token: String,
-        profileRequest: ProfileRequest
+        token: String, profileRequest: ProfileRequest
     ): Call<ObjectResponse<DataUser>>? {
         return null
     }

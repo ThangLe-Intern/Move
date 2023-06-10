@@ -8,11 +8,12 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.madison.move.R
+import com.madison.move.data.model.DataComment
 import com.madison.move.databinding.ItemUserCommentBinding
 import com.madison.move.ui.offlinechannel.Comment
 
 class ListReplyAdapter(
-    var listReply: MutableList<Comment>,
+    var listReply: MutableList<DataComment>,
     private var context: Context,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -22,14 +23,15 @@ class ListReplyAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("ClickableViewAccessibility")
-        fun onBind(comment: Comment) {
+        fun onBind(comment: DataComment) {
             binding.apply {
 
                 userAvatarReply.setImageResource(R.drawable.avatar)
 
                 line2.visibility = View.GONE
                 layoutShow.visibility = View.GONE
-                comment.user?.avt?.let { avatar.setImageResource(it) }
+
+         /*       comment.user?.avt?.let { avatar.setImageResource(it) }
                 username.text = comment.user?.name
                 commentTime.text = comment.timeOfComment
                 commentContent.text = comment.content
@@ -37,7 +39,7 @@ class ListReplyAdapter(
                     bluetick
                         .visibility = View.GONE
                 }
-                btnReply.visibility = View.INVISIBLE
+        */        btnReply.visibility = View.INVISIBLE
 
                 btnReport.setOnClickListener {
                     val inflater = LayoutInflater.from(context)

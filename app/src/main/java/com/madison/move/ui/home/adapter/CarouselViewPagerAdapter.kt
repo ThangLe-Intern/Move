@@ -88,7 +88,6 @@ class CarouselViewPagerAdapter(
             } else {
                 binding.imgFeaturedUserAvatar.setImageResource(R.drawable.avatar)
             }
-
         }
     }
 

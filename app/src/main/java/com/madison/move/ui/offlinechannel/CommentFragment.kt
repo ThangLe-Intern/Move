@@ -14,8 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatButton
@@ -28,6 +26,9 @@ import com.bumptech.glide.Glide
 import com.ct7ct7ct7.androidvimeoplayer.model.PlayerState
 import com.ct7ct7ct7.androidvimeoplayer.view.VimeoPlayerActivity
 import com.madison.move.R
+import com.madison.move.data.model.DataComment
+import com.madison.move.data.model.ObjectResponse
+import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentCommentBinding
@@ -42,9 +43,11 @@ open class CommentFragment(
 ) : BaseFragment<CommentPresenter>(), CommentListener, CommentContract.CommentContract {
     private lateinit var binding: FragmentCommentBinding
     lateinit var adapterComment: ListCommentAdapter
-    private var listComment: MutableList<Comment> = mutableListOf()
+    private var listComment: MutableList<DataComment> = mutableListOf()
     private var currentFragment: Fragment? = null
     private lateinit var handler: Handler
+
+    private var dataComment: ObjectResponse<List<DataComment>>? = null
     override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
 
     override fun onResume() {
@@ -62,12 +65,16 @@ open class CommentFragment(
 
         binding = FragmentCommentBinding.inflate(inflater, container, false)
 
-        val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
-        listComment.let {
-            userComment(
-                binding.cancelButton, binding.sendButton, binding.edtUserComment, it, user4
+
+        presenter?.apply {
+/*            getVideoDetail(
+                dataVideoSuggestion?.id ?: 0
             )
+            getCommentVideo(dataVideoSuggestion?.id ?: 0)*/
+            getVideoDetail(1)
+            getCommentVideo(1)
         }
+
         handler = Handler(Looper.getMainLooper())
 
         currentFragment = this
@@ -152,11 +159,6 @@ open class CommentFragment(
             }
         }
 
-        presenter?.apply {
-            getVideoDetail(
-                dataVideoSuggestion?.id ?: 0
-            )
-        }
 
         return binding.root
     }
@@ -165,22 +167,24 @@ open class CommentFragment(
     override fun initView() {
         super.initView()
 
-        playVideo()
     }
 
-    private fun playVideo(){
+    private fun playVideo(videoID: Int) {
         lifecycle.addObserver(binding.vimeoPlayerView)
         binding.vimeoPlayerView.clearCache()
-        binding.vimeoPlayerView.initialize(true, 337510595)
+//        binding.vimeoPlayerView.initialize(true, videoID)
+        binding.vimeoPlayerView.initialize(true, 832119390)
         binding.vimeoPlayerView.setFullscreenVisibility(true)
         binding.vimeoPlayerView.setMenuVisibility(true)
 
         binding.vimeoPlayerView.setFullscreenClickListener {
             //define the orientation
             val requestOrientation = VimeoPlayerActivity.REQUEST_ORIENTATION_LANDSCAPE
-            playerFullScreenResultLauncher.launch(VimeoPlayerActivity.createIntent(
-                requireContext(), requestOrientation, binding.vimeoPlayerView
-            ))
+            playerFullScreenResultLauncher.launch(
+                VimeoPlayerActivity.createIntent(
+                    requireContext(), requestOrientation, binding.vimeoPlayerView
+                )
+            )
         }
     }
 
@@ -189,11 +193,13 @@ open class CommentFragment(
     ) {
         if (it.resultCode == Activity.RESULT_OK) {
             if (it.data != null) {
-                val playAt = it.data!!.getFloatExtra(VimeoPlayerActivity.RESULT_STATE_VIDEO_PLAY_AT, 0f)
+                val playAt =
+                    it.data!!.getFloatExtra(VimeoPlayerActivity.RESULT_STATE_VIDEO_PLAY_AT, 0f)
                 binding.vimeoPlayerView.seekTo(playAt)
 
-                val playerState = it.data!!.getStringExtra(VimeoPlayerActivity.RESULT_STATE_PLAYER_STATE)
-                    ?.let { PlayerState.valueOf(it) }
+                val playerState =
+                    it.data!!.getStringExtra(VimeoPlayerActivity.RESULT_STATE_PLAYER_STATE)
+                        ?.let { PlayerState.valueOf(it) }
                 when (playerState) {
                     PlayerState.PLAYING -> binding.vimeoPlayerView.play()
                     PlayerState.PAUSED -> binding.vimeoPlayerView.pause()
@@ -214,17 +220,32 @@ open class CommentFragment(
 
     override fun onSuccessGetVideoSuggestion(videoDetailsSuggestionResponse: VideoDetailResponse) {
 
+    }
+
+    override fun onSuccessGetVideoDetail(objectResponse: ObjectResponse<DataVideoDetail>) {
+        objectResponse.data?.video?.urlVideo?.let { playVideo(it) }
+
+    }
+
+    override fun onSuccessGetCommentVideo(objectResponse: ObjectResponse<List<DataComment>>) {
+        dataComment = objectResponse
+
+        val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
+
+        userComment(
+            binding.cancelButton, binding.sendButton, binding.edtUserComment, listComment, user4
+        )
 
     }
 
     override fun onError(errorMessage: String) {
-
+        Toast.makeText(activity, "Failed", Toast.LENGTH_SHORT).show()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initScrollListener()
+//        initScrollListener()
     }
 
     override fun onBackPressed() {
@@ -235,7 +256,7 @@ open class CommentFragment(
         cancelButton: AppCompatButton,
         sendButton: AppCompatButton,
         editText: AppCompatEditText,
-        listComment: MutableList<Comment>,
+        listComment: MutableList<DataComment>,
         user: DataModelComment
     ) {
         cancelButton.visibility = View.GONE
@@ -293,15 +314,16 @@ open class CommentFragment(
 
     override fun onSendUserComment(
         sendButton: AppCompatButton,
-        listComment: MutableList<Comment>,
+        listComment: MutableList<DataComment>,
         editText: AppCompatEditText,
         cancelButton: AppCompatButton,
         user: DataModelComment
     ) {
         sendButton.setOnClickListener {
-            listComment.add(
+/*            listComment.add(
                 0, Comment(4, editText.text.toString().trim(), "Just now", mutableListOf(), user)
-            )
+            )*/
+
             binding.listComment.apply {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = adapterComment
@@ -321,8 +343,10 @@ open class CommentFragment(
         )
     }
 
-    override fun onLoadComment(listComment: MutableList<Comment>) {
+    override fun onLoadComment(listComment: MutableList<DataComment>) {
+
         getData()
+
         adapterComment = ListCommentAdapter(requireContext(),
             listComment,
             object : ListCommentAdapter.ReplyListener {
@@ -330,7 +354,7 @@ open class CommentFragment(
                     cancelButton: AppCompatButton,
                     sendButton: AppCompatButton,
                     editText: AppCompatEditText,
-                    listCommentReply: MutableList<Comment>,
+                    listCommentReply: MutableList<DataComment>,
                     list: RecyclerView,
                     user: DataModelComment
                 ) {
@@ -392,13 +416,13 @@ open class CommentFragment(
                 override fun onSendUserReply(
                     sendButton: AppCompatButton,
                     list: RecyclerView,
-                    listCommentReply: MutableList<Comment>,
+                    listCommentReply: MutableList<DataComment>,
                     editText: AppCompatEditText,
                     cancelButton: AppCompatButton,
                     user: DataModelComment
                 ) {
                     sendButton.setOnClickListener {
-                        listCommentReply.add(
+/*                        listCommentReply.add(
                             0, Comment(
                                 5,
                                 editText.text.toString().trim(),
@@ -407,7 +431,7 @@ open class CommentFragment(
                                 user,
                                 true
                             )
-                        )
+                        )*/
 
                         for (i in listCommentReply) {
                             i.content?.let { it1 -> Log.d("DUNG", it1) }
@@ -451,34 +475,13 @@ open class CommentFragment(
     }
 
     private fun getData() {
+        Log.d("KKE", dataComment?.data.toString() + "Get Data")
 
-        val user1 = DataModelComment(R.drawable.avatar, "Vu Dung", false)
-        val user2 = DataModelComment(R.drawable.avatar, "Taylor Swift", true)
-        val user3 = DataModelComment(R.drawable.avatar, "Justin Bieber", false)
-        val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
-
-
-        listComment.add(
-            Comment(
-                1, "DSMLMFLSKEMFKLM", "Just now", mutableListOf(
-                    Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
-                    Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
-                    Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
-                    Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
-                ), user1
-            )
-        )
-
-        listComment.add(Comment(2, "ALO SONDASDK", "Just now", mutableListOf(), user2))
-        listComment.add(Comment(3, "KAMAVINGAR HALANDES", "Just now", mutableListOf(), user3))
-        listComment.add(Comment(4, "SDASDESADASD", "Just now", mutableListOf(), user4))
-
-
+        dataComment?.data?.let { listComment.addAll(it) }
     }
 
     private fun initScrollListener() {
         binding.listComment.isNestedScrollingEnabled = false
-
 
         binding.nestedComment.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
             if (v.getChildAt(v.childCount - 1) != null) {
@@ -503,13 +506,13 @@ open class CommentFragment(
             var currentSize = scrollPosition
             val nextLimit = currentSize + 10
             while (currentSize - 1 < nextLimit) {
-                listComment.add(
+/*                listComment.add(
                     Comment(
                         1, "$currentSize", "Just now", mutableListOf(
                             Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1)
                         ), user1
                     )
-                )
+                )*/
                 currentSize++
             }
             adapterComment.notifyDataSetChanged()

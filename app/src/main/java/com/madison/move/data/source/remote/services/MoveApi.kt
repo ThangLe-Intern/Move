@@ -1,11 +1,7 @@
 package com.madison.move.data.source.remote.services
 
-import com.madison.move.data.model.ObjectResponse
-import com.madison.move.data.model.DataCategory
-import com.madison.move.data.model.DataCountry
-import com.madison.move.data.model.DataState
-import com.madison.move.data.model.ProfileRequest
-import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.*
+import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.videodetail.VideoDetailResponse
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
@@ -65,4 +61,10 @@ interface MoveApi {
         @Header("Authorization") authorization: String,
         @Body requestBody: ProfileRequest
     ): Call<ObjectResponse<DataUser>>
+
+    @GET("showVideos/{id}")
+    fun showVideoDetail(@Path("id") videoId: Int): Call<ObjectResponse<DataVideoDetail>>
+
+    @GET("comments/{id}")
+    fun getCommentVideo(@Path("id") videoId: Int): Call<ObjectResponse<List<DataComment>>>
 }
