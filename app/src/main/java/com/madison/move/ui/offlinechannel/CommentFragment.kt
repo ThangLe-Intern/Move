@@ -237,7 +237,7 @@ open class CommentFragment(
         }
     }
 
-    var playerFullScreenResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+    private var playerFullScreenResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == Activity.RESULT_OK) {

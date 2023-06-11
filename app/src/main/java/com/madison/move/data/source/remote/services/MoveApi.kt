@@ -65,15 +65,22 @@ interface MoveApi {
     @GET("showVideos/{id}")
     fun showVideoDetail(@Path("id") videoId: Int): Call<ObjectResponse<DataVideoDetail>>
 
-/*
-    @GET("comments/{id}")
-    fun getCommentVideo(@Path("id") videoId: Int): Call<ObjectResponse<List<DataComment>>>
-*/
-
     @GET("comments/{id}")
     fun getCommentVideo(
         @Header("Authorization") authorization: String,
         @Path("id") videoId: Int
     ): Call<ObjectResponse<List<DataComment>>>
 
+
+    @POST("videos/{id}/comments")
+    fun sendComment(
+        @Header("Authorization") authorization: String,
+        @Path("id") videoId: Int
+    ): Call<ObjectResponse<PostComment>>
+
+    @POST("comments/{id}/reply")
+    fun sendReply(
+        @Header("Authorization") authorization: String,
+        @Path("id") commentId: Int
+    ): Call<ObjectResponse<PostComment>>
 }

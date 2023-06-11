@@ -32,6 +32,10 @@ interface MoveDataSource {
     fun getVideoDetail(id: Int): Call<ObjectResponse<DataVideoDetail>>?
     fun getCommentVideo(token:String, id: Int): Call<ObjectResponse<List<DataComment>>>?
 
+    fun sendComment(token: String, videoId: Int) : Call<ObjectResponse<PostComment>>?
+    fun sendReply(token: String, commentId: Int) : Call<ObjectResponse<PostComment>>?
+
+
 
 
 }
