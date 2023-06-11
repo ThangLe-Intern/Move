@@ -144,6 +144,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
             }
             is CommentFragment ->{
                 currentFragment.onResume()
+
             }
         }
     }

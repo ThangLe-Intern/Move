@@ -1,4 +1,4 @@
-package com.madison.move.data.model
+package com.madison.move.data.model.comment
 
 
 import com.google.gson.annotations.SerializedName

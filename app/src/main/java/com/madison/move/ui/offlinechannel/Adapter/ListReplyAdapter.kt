@@ -9,9 +9,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.madison.move.R
-import com.madison.move.data.model.DataComment
+import com.madison.move.data.model.comment.DataComment
 import com.madison.move.databinding.ItemUserCommentBinding
-import com.madison.move.ui.offlinechannel.Comment
 
 class ListReplyAdapter(
     private var context: Context,

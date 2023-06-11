@@ -3,7 +3,8 @@ package com.madison.move.ui.offlinechannel
 import android.view.View
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
-import com.madison.move.data.model.DataComment
+import com.madison.move.data.model.comment.DataComment
+import com.madison.move.data.model.DataUser
 
 interface CommentListener {
     fun onBackPressed()
@@ -12,8 +13,6 @@ interface CommentListener {
         cancelButton: AppCompatButton,
         sendButton: AppCompatButton,
         editText: AppCompatEditText,
-        listComment: MutableList<DataComment>,
-        user: DataModelComment
     )
 
     fun onWriteCommentListener(
@@ -25,10 +24,9 @@ interface CommentListener {
     fun onCancelUserComment(cancelButton: AppCompatButton, editText: AppCompatEditText)
     fun onSendUserComment(
         sendButton: AppCompatButton,
-        listComment: MutableList<DataComment>,
         editText: AppCompatEditText,
         cancelButton: AppCompatButton,
-        user: DataModelComment
+        user: DataUser
     )
 
     fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton)

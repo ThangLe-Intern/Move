@@ -2,6 +2,9 @@ package com.madison.move.data.source.local
 
 import com.madison.move.data.model.*
 import com.madison.move.data.model.videodetail.DataVideoDetail
+import com.madison.move.data.model.comment.CommentResponse
+import com.madison.move.data.model.comment.DataComment
+import com.madison.move.data.model.comment.SendComment
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import com.madison.move.data.source.MoveDataSource
@@ -60,6 +63,14 @@ class MoveLocalDataSource private constructor(
     }
 
     override fun getCommentVideo(token: String, id: Int): Call<ObjectResponse<List<DataComment>>>? {
+        return null
+    }
+
+    override fun sendComment(token: String, videoId: Int, content: SendComment): Call<ObjectResponse<CommentResponse>>? {
+        return null
+    }
+
+    override fun sendReply(token: String, commentId: Int, content: SendComment): Call<ObjectResponse<CommentResponse>>? {
         return null
     }
 
