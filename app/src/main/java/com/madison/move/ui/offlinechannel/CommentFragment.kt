@@ -132,9 +132,9 @@ open class CommentFragment(
 
         presenter?.apply {
             if (tokenUser != null) {
-                getCommentVideo(("Bearer $tokenUser"), 1)
+                getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
             } else {
-                getCommentVideo("", 1)
+                getCommentVideo("", dataVideoSuggestion?.id ?: 0)
             }
         }
     }
@@ -293,7 +293,7 @@ open class CommentFragment(
         Toast.makeText(activity, "Send Comment Success!", Toast.LENGTH_SHORT).show()
 
         //Get Data Again
-        presenter?.getCommentVideo(("Bearer $tokenUser"), 1)
+        presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
 
     }
 
@@ -377,21 +377,13 @@ open class CommentFragment(
             if (tokenUser != null && dataVideoSuggestion?.id != null) {
                 presenter?.sendCommentVideo(
                     ("Bearer $tokenUser"),
-                    1,
+                    dataVideoSuggestion?.id ?: 0,
                     SendComment(editText.text.toString().trim())
                 )
             } else {
                 Toast.makeText(activity, "Cannot send comment!", Toast.LENGTH_SHORT).show()
             }
 
-/*            listComment.add(
-                0, Comment(4, editText.text.toString().trim(), "Just now", mutableListOf(), user)
-            )*/
-
-/*            binding.listComment.apply {
-                layoutManager = LinearLayoutManager(requireContext())
-                adapter = adapterComment
-            }*/
             clearEdittext(editText, cancelButton)
         }
     }
