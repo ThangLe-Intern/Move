@@ -55,6 +55,7 @@ open class CommentFragment(
     private var tokenUser: String? = null
     private var getSharedPreferences: SharedPreferences? = null
     private var userData: DataUser? = null
+    private var isShowAllComment = false
 
     private var dataComment: ObjectResponse<List<DataComment>>? = null
     override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
@@ -546,12 +547,8 @@ open class CommentFragment(
     }
 
     private fun addComment() {
-        Log.d("KKE","1")
-
         if (listALLComment.isNotEmpty() && listALLComment != listComment) {
-            Log.d("KKE","2")
             if (oldALLComment.isNotEmpty()) {
-                Log.d("KKE","$oldALLComment")
 
                 listComment = listALLComment.subtract(oldALLComment.toSet()).toMutableList()
                 adapterComment.notifyDataSetChanged()
@@ -560,17 +557,21 @@ open class CommentFragment(
                 listALLComment.addAll(oldALLComment)
                 oldALLComment.clear()
             } else {
-                Log.d("KKE","4")
+
+                if (isShowAllComment){
+                    listComment.clear()
+                    listComment.addAll(listALLComment)
+                    listALLComment.clear()
+                }
                 if (listALLComment.size >= 11) {
-                    Log.d("KKE","5")
                     (0..9).forEach { i ->
                         listComment.add(listALLComment[i])
                     }
                     listALLComment.subList(0, 10).clear()
                 } else {
-                    Log.d("KKE","6")
                     listComment.addAll(listALLComment)
                     listALLComment.clear()
+                    isShowAllComment = true
                 }
             }
         }else{
