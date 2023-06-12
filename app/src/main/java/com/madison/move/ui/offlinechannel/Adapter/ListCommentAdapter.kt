@@ -51,15 +51,6 @@ class ListCommentAdapter(
             val jsonUser = getSharedPreferences?.getString(USER_DATA, null)
             userData = Gson().fromJson(jsonUser, DataUser::class.java)
 
-
-/*            binding.apply {
-                comment.user?.avt?.let { avatar.setImageResource(it) }
-                username.text = comment.user?.name
-                commentTime.text = comment.timeOfComment
-                commentContent.text = comment.content
-                listReply.visibility = View.GONE
-            }*/
-
             val adapterReply = ListReplyAdapter(
                 context, dataComment.replies as MutableList<DataComment>
             )
@@ -239,24 +230,22 @@ class ListCommentAdapter(
                     btnReply.setOnClickListener {
                         if (layoutUserReply.isGone) {
                             layoutUserReply.visibility = View.VISIBLE
+
                             replyListener.userComment(
                                 cancelReplyButton,
                                 sendButtonReply,
                                 edtUserCommentReply,
-                                dataComment.replies,
-                                listReply
+                                dataComment.id ?: 0
                             )
 
                         } else {
                             layoutUserReply.visibility = View.GONE
                         }
                     }
-                }else{
+                } else {
                     btnReply.visibility = View.GONE
                 }
-
             }
-
         }
     }
 
@@ -295,8 +284,7 @@ class ListCommentAdapter(
             cancelButton: AppCompatButton,
             sendButton: AppCompatButton,
             editText: AppCompatEditText,
-            listComment: MutableList<DataComment>,
-            list: RecyclerView,
+            parentCommentId: Int
         )
 
         fun onWriteCommentListener(
@@ -306,10 +294,9 @@ class ListCommentAdapter(
         fun onCancelUserComment(cancelButton: AppCompatButton, editText: AppCompatEditText)
         fun onSendUserReply(
             sendButton: AppCompatButton,
-            list: RecyclerView,
-            listComment: MutableList<DataComment>,
+            parentCommentId: Int,
             editText: AppCompatEditText,
-            cancelButton: AppCompatButton,
+            cancelButton: AppCompatButton
         )
 
         fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton)
