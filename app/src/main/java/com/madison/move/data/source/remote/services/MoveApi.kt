@@ -2,9 +2,9 @@ package com.madison.move.data.source.remote.services
 
 import com.madison.move.data.model.*
 import com.madison.move.data.model.comment.CommentResponse
+import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.videodetail.VideoDetailResponse
-import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.comment.SendComment
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
@@ -77,7 +77,7 @@ interface MoveApi {
     fun getCommentVideo(
         @Header("Authorization") authorization: String,
         @Path("id") videoId: Int
-    ): Call<ObjectResponse<Map<String, DataComment?>>>
+    ): Call<ObjectResponse<List<DataComment>>>
 
     @POST("videos/{id}/comments")
     fun sendComment(

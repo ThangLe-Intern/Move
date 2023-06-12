@@ -26,6 +26,7 @@ class ListCommentAdapter(
     private var context: Context,
     var listComment: MutableList<DataComment>,
     val replyListener: ReplyListener,
+    var replyParentId : Int
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var adapterReply: ListReplyAdapter? = null
     private var getSharedPreferences: SharedPreferences? = null
@@ -73,6 +74,10 @@ class ListCommentAdapter(
                     layoutShow.visibility = View.VISIBLE
                     txtShow.text =
                         context.getString(R.string.Show, dataComment.replies.size.toString() ?: "")
+
+                    if (replyParentId != 0){
+                        listReply.visibility = View.VISIBLE
+                    }
 
                     layoutShow.setOnClickListener {
                         listReply.visibility = if (listReply.isGone) View.VISIBLE else View.GONE

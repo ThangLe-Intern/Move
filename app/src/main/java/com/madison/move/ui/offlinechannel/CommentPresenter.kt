@@ -2,9 +2,9 @@ package com.madison.move.ui.offlinechannel
 
 import android.util.Log
 import com.madison.move.data.DataManager
-import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.ObjectResponse
 import com.madison.move.data.model.comment.CommentResponse
+import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.comment.SendComment
 import com.madison.move.data.model.videodetail.DataVideoDetail
 import retrofit2.Call
@@ -42,10 +42,10 @@ class CommentPresenter(
     override fun getCommentVideo(token: String, id: Int) {
 
         dataManager.movieRepository.getCommentVideo(token, id)?.enqueue(object :
-            Callback<ObjectResponse<Map<String, DataComment?>>> {
+            Callback<ObjectResponse<List<DataComment>>> {
             override fun onResponse(
-                call: Call<ObjectResponse<Map<String, DataComment?>>>,
-                response: Response<ObjectResponse<Map<String, DataComment?>>>
+                call: Call<ObjectResponse<List<DataComment>>>,
+                response: Response<ObjectResponse<List<DataComment>>>
             ) {
                 if (response.body() != null) {
                     view?.onSuccessGetCommentVideo(response.body()!!)
@@ -54,7 +54,7 @@ class CommentPresenter(
                 }
             }
 
-            override fun onFailure(call: Call<ObjectResponse<Map<String, DataComment?>>>, t: Throwable) {
+            override fun onFailure(call: Call<ObjectResponse<List<DataComment>>>, t: Throwable) {
                 Log.e("ERROR", t.message.toString())
                 view?.onError(t.message.toString())
             }
