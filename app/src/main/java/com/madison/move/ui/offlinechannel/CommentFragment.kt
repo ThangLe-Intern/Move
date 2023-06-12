@@ -558,11 +558,12 @@ open class CommentFragment(
                 oldALLComment.clear()
             } else {
 
-                if (isShowAllComment){
+                if (isShowAllComment) {
                     listComment.clear()
                     listComment.addAll(listALLComment)
                     listALLComment.clear()
                 }
+
                 if (listALLComment.size >= 11) {
                     (0..9).forEach { i ->
                         listComment.add(listALLComment[i])
@@ -574,7 +575,7 @@ open class CommentFragment(
                     isShowAllComment = true
                 }
             }
-        }else{
+        } else {
             listALLComment.clear()
         }
     }
