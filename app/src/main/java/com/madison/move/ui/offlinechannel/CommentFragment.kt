@@ -373,7 +373,6 @@ open class CommentFragment(
         user: DataUser
     ) {
         sendButton.setOnClickListener {
-            Log.d("KKE", "OnClick")
             if (tokenUser != null && dataVideoSuggestion?.id != null) {
                 presenter?.sendCommentVideo(
                     ("Bearer $tokenUser"),
@@ -550,12 +549,16 @@ open class CommentFragment(
                 oldALLComment.clear()
             } else {
 
+                //If load all comment - replace all new data with all old data
                 if (isShowAllComment) {
                     listComment.clear()
                     listComment.addAll(listALLComment)
                     listALLComment.clear()
                 }
 
+                Log.d("KKE",listALLComment.toString())
+
+                //Handle Add Data when Loadmore
                 if (listALLComment.size >= 11) {
                     (0..9).forEach { i ->
                         listComment.add(listALLComment[i])
@@ -595,8 +598,10 @@ open class CommentFragment(
         handler.postDelayed({
 
             addComment()
+            Log.d("KKE","Call Load More")
 
             adapterComment.notifyDataSetChanged()
+
             isLoading = false
             binding.progressBar.visibility = View.GONE
         }, 3000)
