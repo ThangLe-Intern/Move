@@ -9,7 +9,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,8 +53,8 @@ open class CommentFragment(
     private var getSharedPreferences: SharedPreferences? = null
     private var userData: DataUser? = null
     private var isShowAllComment = false
-
-    private var dataComment: List<DataComment>? = null
+    private var replyParentId = 0
+    private var dataComment: ObjectResponse<List<DataComment>>? = null
     override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
 
     companion object {
@@ -265,19 +264,13 @@ open class CommentFragment(
         playVideo(objectResponse.data?.urlVideo ?: 0)
     }
 
-    override fun onSuccessGetCommentVideo(objectResponse: ObjectResponse<Map<String, DataComment?>>) {
-//        val mapType: Type = object : TypeToken<Map<String?, DataComment?>?>() {}.type
-//        val son: Map<String, Array<String>> = Gson().fromJson(objectResponse.data, mapType)
-        println("son")
-        objectResponse.data?.map {
-            it.value
-        }
-
-
-
-        dataComment = objectResponse.data?.map {
+    override fun onSuccessGetCommentVideo(objectResponse: ObjectResponse<List<DataComment>>) {
+/*        dataComment = objectResponse.data?.map {
             it.value!!
-        }
+        }*/
+
+        dataComment = objectResponse
+
         //Get List Comment
         getData()
 
@@ -307,14 +300,10 @@ open class CommentFragment(
     }
 
     override fun onSuccessSendReplyComment(objectResponse: ObjectResponse<CommentResponse>) {
-        Toast.makeText(activity, "Send Reply Success!", Toast.LENGTH_SHORT).show()
-
-        Log.d("KKE", objectResponse.data?.times.toString())
-        Log.d("KKE", objectResponse.data?.content.toString())
-        Log.d("KKE", objectResponse.success.toString())
 
         //Get Data Again
         presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
+        replyParentId = 0
     }
 
 
@@ -495,7 +484,7 @@ open class CommentFragment(
                                 parentCommentId,
                                 SendComment(editText.text.toString().trim())
                             )
-                            Log.d("KKE", parentCommentId.toString())
+                            replyParentId = parentCommentId
                         } else {
                             Toast.makeText(activity, "Cannot send comment!", Toast.LENGTH_SHORT)
                                 .show()
@@ -523,7 +512,8 @@ open class CommentFragment(
                         requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
                 }
-            })
+            }, replyParentId
+        )
 
         binding.listComment.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -538,9 +528,8 @@ open class CommentFragment(
             oldALLComment.addAll(listALLComment)
         }
 
-        dataComment?.let { listALLComment.addAll(it) }
+        dataComment?.data?.let { listALLComment.addAll(it) }
 //        listALLComment.reverse()
-
         addComment()
     }
 
