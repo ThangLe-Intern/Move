@@ -1,8 +1,8 @@
 package com.madison.move.data.source
 
 import com.madison.move.data.model.*
-import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.comment.CommentResponse
+import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.comment.SendComment
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
@@ -59,7 +59,7 @@ class MoveRepository private constructor(
         return moveRemote.getVideoDetail(id)
     }
 
-    override fun getCommentVideo(token:String,id: Int): Call<ObjectResponse<List<DataComment>>>? {
+    override fun getCommentVideo(token:String,id: Int): Call<ObjectResponse<Map<String, DataComment?>>>? {
         return moveRemote.getCommentVideo(token,id)
     }
 
