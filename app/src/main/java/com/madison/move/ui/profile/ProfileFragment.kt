@@ -678,6 +678,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     }
 
     private fun onMonthSelected() {
+
+
+
         binding.dropdownMonthText.setOnItemClickListener { parent, _, position, _ ->
             val yearSelected = binding.dropDownProfileYear.editText?.text.toString()
             val monthSelected: String = parent.getItemAtPosition(position).toString()

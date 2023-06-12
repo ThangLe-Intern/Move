@@ -18,31 +18,27 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ct7ct7ct7.androidvimeoplayer.model.PlayerState
 import com.ct7ct7ct7.androidvimeoplayer.view.VimeoPlayerActivity
 import com.google.gson.Gson
 import com.madison.move.R
-import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.DataUser
 import com.madison.move.data.model.ObjectResponse
 import com.madison.move.data.model.comment.CommentResponse
+import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.comment.DataLikeComment
 import com.madison.move.data.model.comment.SendComment
 import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentCommentBinding
 import com.madison.move.ui.base.BaseFragment
-import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
-import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
 import kotlin.math.roundToInt
 
 open class CommentFragment(
@@ -60,7 +56,7 @@ open class CommentFragment(
     private var userData: DataUser? = null
     private var isShowAllComment = false
 
-    private var dataComment: ObjectResponse<List<DataComment>>? = null
+    private var dataComment: List<DataComment>? = null
     override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
 
     companion object {
@@ -270,12 +266,23 @@ open class CommentFragment(
         playVideo(objectResponse.data?.urlVideo ?: 0)
     }
 
-    override fun onSuccessGetCommentVideo(objectResponse: ObjectResponse<List<DataComment>>) {
-        dataComment = objectResponse
+    override fun onSuccessGetCommentVideo(objectResponse: ObjectResponse<Map<String, DataComment?>>) {
+//        val mapType: Type = object : TypeToken<Map<String?, DataComment?>?>() {}.type
+//        val son: Map<String, Array<String>> = Gson().fromJson(objectResponse.data, mapType)
+        println("son")
+        objectResponse.data?.map {
+            it.value
+        }
+
+
+
+        dataComment = objectResponse.data?.map {
+            it.value!!
+        }
         //Get List Comment
         getData()
 
-        //Handle display view when login
+//        Handle display view when login
         if (tokenUser != null) {
             userComment(
                 binding.cancelButton,
@@ -301,24 +308,21 @@ open class CommentFragment(
     }
 
     override fun onSuccessSendReplyComment(objectResponse: ObjectResponse<CommentResponse>) {
-        TODO("Not yet implemented")
+        Toast.makeText(activity, "Send Reply Success!", Toast.LENGTH_SHORT).show()
+
+        Log.d("KKE", objectResponse.data?.times.toString())
+        Log.d("KKE", objectResponse.data?.content.toString())
+        Log.d("KKE", objectResponse.success.toString())
+
+        //Get Data Again
+        presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
     }
 
     override fun onSuccessCallLikeComment(objectResponse: ObjectResponse<CommentResponse>) {
-        presenter?.callLikeComment(("Bearer $tokenUser"), id)
+        presenter?.callLikeComment(("Bearer $tokenUser"), idComment = id)
         Toast.makeText(activity, "Like Comment Success!", Toast.LENGTH_SHORT).show()
     }
-    private fun onClickLikeComment(){
-        adapterComment.onClickListComment = object : ListCommentAdapter.setListenerListComment{
-            override fun onClickListComment(dataLikeComment: DataLikeComment?) {
-                if (userData != null){
-                    presenter?.callLikeComment(("Bearer $tokenUser"), id)
-                    Toast.makeText(activity, "Like Comment Success!", Toast.LENGTH_SHORT).show()
-                }
-            }
 
-        }
-    }
 
 
     override fun onBackPressed() {
@@ -426,8 +430,7 @@ open class CommentFragment(
                     cancelButton: AppCompatButton,
                     sendButton: AppCompatButton,
                     editText: AppCompatEditText,
-                    listCommentReply: MutableList<DataComment>,
-                    list: RecyclerView
+                    parentCommentId: Int
                 ) {
 
                     cancelButton.visibility = View.GONE
@@ -436,7 +439,7 @@ open class CommentFragment(
                     onWriteCommentListener(editText, cancelButton, sendButton)
                     onCancelUserComment(cancelButton, editText)
                     onSendUserReply(
-                        sendButton, list, listCommentReply, editText, cancelButton
+                        sendButton, parentCommentId, editText, cancelButton
                     )
                 }
 
@@ -487,21 +490,24 @@ open class CommentFragment(
 
                 override fun onSendUserReply(
                     sendButton: AppCompatButton,
-                    list: RecyclerView,
-                    listCommentReply: MutableList<DataComment>,
+                    parentCommentId: Int,
                     editText: AppCompatEditText,
-                    cancelButton: AppCompatButton,
+                    cancelButton: AppCompatButton
                 ) {
+
                     sendButton.setOnClickListener {
-                        for (i in listCommentReply) {
-                            i.content?.let { it1 -> Log.d("DUNG", it1) }
+                        if (tokenUser != null) {
+                            presenter?.sendReplyComment(
+                                ("Bearer $tokenUser"),
+                                parentCommentId,
+                                SendComment(editText.text.toString().trim())
+                            )
+                            Log.d("KKE", parentCommentId.toString())
+                        } else {
+                            Toast.makeText(activity, "Cannot send comment!", Toast.LENGTH_SHORT)
+                                .show()
                         }
 
-                        var adapterReply = ListReplyAdapter(requireContext(), listCommentReply)
-                        list.apply {
-                            layoutManager = LinearLayoutManager(context)
-                            adapter = adapterReply
-                        }
                         clearEdittext(editText, cancelButton)
                     }
                 }
@@ -539,8 +545,8 @@ open class CommentFragment(
             oldALLComment.addAll(listALLComment)
         }
 
-        dataComment?.data?.let { listALLComment.addAll(it) }
-        listALLComment.reverse()
+        dataComment?.let { listALLComment.addAll(it) }
+//        listALLComment.reverse()
 
         addComment()
     }
@@ -563,8 +569,6 @@ open class CommentFragment(
                     listComment.addAll(listALLComment)
                     listALLComment.clear()
                 }
-
-                Log.d("KKE", listALLComment.toString())
 
                 //Handle Add Data when Loadmore
                 if (listALLComment.size >= 11) {
@@ -591,7 +595,6 @@ open class CommentFragment(
                 if (v.getChildAt(v.childCount - 1) != null) {
                     if (scrollY > oldScrollY) {
                         if (scrollY >= v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight && !isLoading) {
-                            Log.d("KKE", "Call Load More 1")
                             isLoading = true
                             loadMore()
                         }
@@ -606,8 +609,6 @@ open class CommentFragment(
         val handler = Handler()
         handler.postDelayed({
 
-            Log.d("KKE", "Call Load More 2")
-//            listComment.removeAt(listComment.size - 1)
             val scrollPosition: Int = listComment.size
             adapterComment.notifyItemRemoved(scrollPosition)
             addComment()

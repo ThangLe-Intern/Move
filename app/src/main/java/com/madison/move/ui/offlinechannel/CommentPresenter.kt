@@ -42,10 +42,10 @@ class CommentPresenter(
     override fun getCommentVideo(token: String, id: Int) {
 
         dataManager.movieRepository.getCommentVideo(token, id)?.enqueue(object :
-            Callback<ObjectResponse<List<DataComment>>> {
+            Callback<ObjectResponse<Map<String, DataComment?>>> {
             override fun onResponse(
-                call: Call<ObjectResponse<List<DataComment>>>,
-                response: Response<ObjectResponse<List<DataComment>>>
+                call: Call<ObjectResponse<Map<String, DataComment?>>>,
+                response: Response<ObjectResponse<Map<String, DataComment?>>>
             ) {
                 if (response.body() != null) {
                     view?.onSuccessGetCommentVideo(response.body()!!)
@@ -54,7 +54,7 @@ class CommentPresenter(
                 }
             }
 
-            override fun onFailure(call: Call<ObjectResponse<List<DataComment>>>, t: Throwable) {
+            override fun onFailure(call: Call<ObjectResponse<Map<String, DataComment?>>>, t: Throwable) {
                 Log.e("ERROR", t.message.toString())
                 view?.onError(t.message.toString())
             }
@@ -87,7 +87,7 @@ class CommentPresenter(
     }
 
     override fun sendReplyComment(token: String, idComment: Int, content: SendComment) {
-        dataManager.movieRepository.sendComment(token, idComment, content)?.enqueue(object :
+        dataManager.movieRepository.sendReply(token, idComment, content)?.enqueue(object :
             Callback<ObjectResponse<CommentResponse>> {
             override fun onResponse(
                 call: Call<ObjectResponse<CommentResponse>>,

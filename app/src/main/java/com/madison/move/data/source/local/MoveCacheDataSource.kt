@@ -2,8 +2,8 @@ package com.madison.move.data.source.local
 
 import android.util.SparseArray
 import com.madison.move.data.model.*
-import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.comment.CommentResponse
+import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.comment.SendComment
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
@@ -56,7 +56,7 @@ class MoveCacheDataSource : MoveDataSource {
         return null
     }
 
-    override fun getCommentVideo(token: String,id: Int): Call<ObjectResponse<List<DataComment>>>? {
+    override fun getCommentVideo(token: String,id: Int): Call<ObjectResponse<Map<String, DataComment?>>>? {
         return null
     }
 
@@ -68,7 +68,7 @@ class MoveCacheDataSource : MoveDataSource {
         return null
     }
 
-    override fun callLieComment(
+    override fun callLikeComment(
         token: String,
         commentId: Int
     ): Call<ObjectResponse<CommentResponse>>? {

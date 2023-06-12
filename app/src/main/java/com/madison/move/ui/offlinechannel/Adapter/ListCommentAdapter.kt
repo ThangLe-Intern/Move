@@ -40,7 +40,7 @@ class ListCommentAdapter(
     }
     var onClickListComment : setListenerListComment ?= null
     interface setListenerListComment{
-        fun onClickListComment(dataLikeComment: DataLikeComment?)
+        fun onClickListComment()
     }
 
 
@@ -192,7 +192,7 @@ class ListCommentAdapter(
             binding.apply {
                 btnLikeTick.visibility = View.GONE
                 btnLike.setOnClickListener {
-                    onClickListComment?.onClickListComment(dataLikeComment = null)
+                    onClickListComment?.onClickListComment()
                     if (btnLikeTick.isGone && userData != null) {
                         btnLikeTick.visibility = View.VISIBLE
                         btnDisLiketike.visibility = View.GONE
@@ -225,12 +225,12 @@ class ListCommentAdapter(
                     btnReply.setOnClickListener {
                         if (layoutUserReply.isGone) {
                             layoutUserReply.visibility = View.VISIBLE
+
                             replyListener.userComment(
                                 cancelReplyButton,
                                 sendButtonReply,
                                 edtUserCommentReply,
-                                dataComment.replies,
-                                listReply
+                                dataComment.id ?: 0
                             )
 
                         } else {
@@ -241,9 +241,7 @@ class ListCommentAdapter(
                     btnReport.visibility = View.GONE
                     btnReply.visibility = View.GONE
                 }
-
             }
-
         }
     }
 
@@ -282,8 +280,7 @@ class ListCommentAdapter(
             cancelButton: AppCompatButton,
             sendButton: AppCompatButton,
             editText: AppCompatEditText,
-            listComment: MutableList<DataComment>,
-            list: RecyclerView,
+            parentCommentId: Int
         )
 
         fun onWriteCommentListener(
@@ -293,10 +290,9 @@ class ListCommentAdapter(
         fun onCancelUserComment(cancelButton: AppCompatButton, editText: AppCompatEditText)
         fun onSendUserReply(
             sendButton: AppCompatButton,
-            list: RecyclerView,
-            listComment: MutableList<DataComment>,
+            parentCommentId: Int,
             editText: AppCompatEditText,
-            cancelButton: AppCompatButton,
+            cancelButton: AppCompatButton
         )
 
         fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton)
