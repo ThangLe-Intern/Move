@@ -1,7 +1,10 @@
 package com.madison.move.data.source.remote
 
 import com.madison.move.data.model.*
-import com.madison.move.data.model.videodetail.VideoDetailResponse
+import com.madison.move.data.model.videodetail.DataVideoDetail
+import com.madison.move.data.model.comment.CommentResponse
+import com.madison.move.data.model.comment.DataComment
+import com.madison.move.data.model.comment.SendComment
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import com.madison.move.data.source.MoveDataSource
@@ -51,8 +54,17 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
         return moveApi.getVideoSuggestionForUser(token)
     }
 
-    override fun getVideoDetail(id: Int): Call<VideoDetailResponse>? {
-        return moveApi.getDetailVideoSuggestion(id)
+    override fun getCommentVideo(token: String, id: Int): Call<ObjectResponse<List<DataComment>>>? {
+        return moveApi.getCommentVideo(token, id)
+    }
+
+    override fun sendComment(token: String, videoId: Int, content: SendComment): Call<ObjectResponse<CommentResponse>>? {
+        return moveApi.sendComment(token, videoId, content)
+
+    }
+
+    override fun sendReply(token: String, commentId: Int, content: SendComment): Call<ObjectResponse<CommentResponse>>? {
+        return moveApi.sendReply(token, commentId, content)
     }
 
     override fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>? {
@@ -89,6 +101,10 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
         profileRequest: ProfileRequest
     ): Call<ObjectResponse<DataUser>>? {
         return moveApi.updateProfile(token, profileRequest)
+    }
+
+    override fun getVideoDetail(id: Int): Call<ObjectResponse<DataVideoDetail>>? {
+        return moveApi.showVideoDetail(id)
     }
 
     override fun saveVideos(videos: List<Video?>?) {

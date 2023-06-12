@@ -69,8 +69,8 @@
     <string name="dob_month">Jan</string>
     <string name="txt_log_in">Login</string>
     <string name="txt_log_out">Logout</string>
-    <string name="Hide">Hide replies</string>
-    <string name="Show">Show replies</string>
+    <string name="Hide">Hide %s replies</string>
+    <string name="Show">Show %s replies</string>
     <string name="Report">Report comment</string>
     <string name="name_user_comment">LeDinhThang</string>
 
@@ -142,6 +142,9 @@
     <string name="txt_try_again">Try Later</string>
     <string name="txt_error_us_25_char">Maximum 25 characters required.</string>
     <string name="txt_no_internet">No Internet Connection</string>
+    <string name="txt_error_max_char">Maximum 100 characters required.</string>
+    <string name="txt_error_fn_format">Full name format is incorrect.</string>
+    <string name="txt_no_us_name">No UserName</string>
 
 
 </resources>

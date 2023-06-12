@@ -1,12 +1,7 @@
 package com.madison.move.ui.profile
 
-import android.util.Log
 import com.madison.move.data.DataManager
-import com.madison.move.data.model.ObjectResponse
-import com.madison.move.data.model.DataCountry
-import com.madison.move.data.model.DataState
-import com.madison.move.data.model.ProfileRequest
-import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,6 +12,8 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
     private val dataManager: DataManager = DataManager.instance
 
     companion object {
+        const val FULL_NAME_LENGTH = "FN_LTH"
+        const val FULL_NAME_FORMAT = "FN_FM"
         const val FULL_NAME_AT_LEAST_4_CHARS = "FN_4_CH"
         const val USER_NAME_AT_LEAST_4_CHARS = "US_4_CH"
         const val USER_NAME_LENGTH = "US_LTH"
@@ -35,10 +32,21 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
 
     override fun onSaveProfileClickPresenter(token: String, profileRequest: ProfileRequest) {
         val listAcceptChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
-
-        if (profileRequest.fullname?.length!! < 4 || profileRequest.fullname.length > 100) {
+        val listSpecialCharacter = "!@#$%^&*()_-+={}][|<>,?/.®©€¥£¢1234567890"
+        if (profileRequest.fullname?.length!! < 4 ) {
             return onShowErrorPresenter(FULL_NAME_AT_LEAST_4_CHARS)
         }
+
+        if (profileRequest.fullname.length > 100){
+            return onShowErrorPresenter(FULL_NAME_LENGTH)
+        }
+
+        for (s in profileRequest.fullname.toString()) {
+            if (s in listSpecialCharacter) {
+                return onShowErrorPresenter(FULL_NAME_FORMAT)
+            }
+        }
+
 
         if (profileRequest.username?.length!! < 4) {
             return onShowErrorPresenter(USER_NAME_AT_LEAST_4_CHARS)
