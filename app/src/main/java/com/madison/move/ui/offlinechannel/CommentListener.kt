@@ -3,8 +3,8 @@ package com.madison.move.ui.offlinechannel
 import android.view.View
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
-import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.comment.DataComment
 
 interface CommentListener {
     fun onBackPressed()

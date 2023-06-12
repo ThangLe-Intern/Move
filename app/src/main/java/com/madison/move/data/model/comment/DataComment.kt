@@ -26,13 +26,10 @@ data class DataComment(
     val id: Int?,
     @SerializedName("is_disliked")
     @Expose
-    val isDisliked: Boolean?,
+    val isDisliked: Int?,
     @SerializedName("is_liked")
     @Expose
-    val isLiked: Boolean?,
-    @SerializedName("like_comments")
-    @Expose
-    val likeComments: List<DataLikeComment>?,
+    val isLiked: Int?,
     @SerializedName("like_count")
     @Expose
     val likeCount: Int?,

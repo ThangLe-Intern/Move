@@ -31,15 +31,7 @@ class ListReplyAdapter(
                 line2.visibility = View.GONE
                 layoutShow.visibility = View.GONE
 
-         /*       comment.user?.avt?.let { avatar.setImageResource(it) }
-                username.text = comment.user?.name
-                commentTime.text = comment.timeOfComment
-                commentContent.text = comment.content
-                if (comment.user?.isTicked == true) {
-                    bluetick
-                        .visibility = View.GONE
-                }
-        */        btnReply.visibility = View.INVISIBLE
+                btnReply.visibility = View.INVISIBLE
 
                 btnReport.setOnClickListener {
                     val inflater = LayoutInflater.from(context)
@@ -142,13 +134,13 @@ class ListReplyAdapter(
                 commentContent.text = dataComment.content ?: ""
 
                 //Set User Like or Dislike Comment
-                if (dataComment.isLiked == true) {
+                if (dataComment.isLiked == 0) {
                     btnLikeTick.visibility = View.VISIBLE
                     btnLike.visibility = View.GONE
                     btnDisLiketike.visibility = View.GONE
                 }
 
-                if (dataComment.isDisliked == true) {
+                if (dataComment.isDisliked == 1) {
                     btnLikeTick.visibility = View.GONE
                     btnDisLike.visibility = View.GONE
                     btnDisLiketike.visibility = View.VISIBLE
