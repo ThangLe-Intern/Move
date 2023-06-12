@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:argType="http://schemas.android.com/tools"
     android:id="@+id/content_frame_comment"
@@ -14,13 +13,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <WebView
-            android:id="@+id/web_view"
+        <com.ct7ct7ct7.androidvimeoplayer.view.VimeoPlayerView
+            android:id="@+id/vimeoPlayerView"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_234"
-            android:background="#000000">
-
-        </WebView>
+            android:layout_height="wrap_content"
+            app:aspectRatio="1.778"
+            app:autoPlay="true"
+            app:backgroundColor="@color/black"
+            app:loop="true"
+            app:showOriginalControls="false"
+            app:topicColor="#FFFF00" />
 
     </RelativeLayout>
 
@@ -33,246 +35,247 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contrain_video">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_infor_and_coment"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/contrain_video">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_infor_and_coment"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contrain_video">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/contraint_profile"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/contraint_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                app:layout_constraintBottom_toTopOf="@+id/line"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/avart_profile"
+                    android:layout_width="@dimen/dp_50"
+                    android:layout_height="@dimen/dp_50"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:src="@drawable/avatar1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/name_user_proflie"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="@string/nameProfile"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toEndOf="@+id/avart_profile"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_just"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="@string/video_category"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toEndOf="@+id/avart_profile"
+                    app:layout_constraintTop_toBottomOf="@+id/name_user_proflie" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardview_beginner"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="@dimen/dp_10"
+                    app:cardBackgroundColor="@color/gray"
+                    app:cardCornerRadius="@dimen/dp_15"
+                    app:cardElevation="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/avart_profile"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_just">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txt_beginner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/montserrat_semi_bold"
+                        android:text="@string/typeOfUser"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_9ssp" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/img_tick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_15"
+                    android:layout_marginTop="@dimen/dp_4"
+                    android:src="@drawable/ic_tick"
+                    app:layout_constraintBottom_toBottomOf="@id/name_user_proflie"
+                    app:layout_constraintStart_toEndOf="@+id/name_user_proflie"
+                    app:layout_constraintTop_toTopOf="@+id/name_user_proflie" />
+
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/img_star"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:src="@drawable/rate"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_just"
+                    app:layout_constraintEnd_toStartOf="@id/tvrateNumber"
+                    app:layout_constraintStart_toEndOf="@id/tv_just"
+                    app:layout_constraintTop_toTopOf="@id/tv_just" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvrateNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_6"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="@string/video_rateNumber"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@id/img_star"
+                    app:layout_constraintStart_toEndOf="@id/img_star"
+                    app:layout_constraintTop_toTopOf="@id/img_star"
+
+                    />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardview_time_line"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_marginStart="13dp"
+                    app:cardBackgroundColor="@color/gray"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/cardview_beginner"
+                    app:layout_constraintStart_toEndOf="@+id/cardview_beginner"
+                    app:layout_constraintTop_toTopOf="@+id/cardview_beginner">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txt_time_line"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/montserrat_semi_bold"
+                        android:text="@string/timeOfCategory"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_9ssp" />
+                </androidx.cardview.widget.CardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <RelativeLayout
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_20"
+                android:background="@color/silverSand"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/contraint_profile" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bodyLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_20"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line">
+
+                <RelativeLayout
+                    android:id="@+id/layout_userComment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_10"
-                    app:layout_constraintBottom_toTopOf="@+id/line"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/avart_profile"
-                        android:layout_width="@dimen/dp_50"
-                        android:layout_height="@dimen/dp_50"
-                        android:layout_marginTop="@dimen/dp_17"
-                        android:src="@drawable/avatar1"
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardView_User"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="@dimen/dp_40"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/name_user_proflie"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_10"
-                        android:layout_marginTop="@dimen/dp_10"
-                        android:fontFamily="@font/montserrat_regular"
-                        android:text="@string/nameProfile"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        app:layout_constraintStart_toEndOf="@+id/avart_profile"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        >
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_just"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_10"
-                        android:layout_marginTop="@dimen/dp_2"
-                        android:fontFamily="@font/montserrat_regular"
-                        android:text="@string/video_category"
-                        android:textSize="16sp"
-                        app:layout_constraintStart_toEndOf="@+id/avart_profile"
-                        app:layout_constraintTop_toBottomOf="@+id/name_user_proflie" />
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/userAvatar"
+                            android:layout_width="@dimen/dp_50"
+                            android:layout_height="@dimen/dp_50"
+                            app:srcCompat="@drawable/avatar" />
 
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/cardview_beginner"
-                        android:layout_width="@dimen/dp_74"
-                        android:layout_height="@dimen/dp_24"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="@dimen/dp_10"
-                        app:cardBackgroundColor="@color/gray"
-                        app:cardCornerRadius="@dimen/dp_15"
-                        app:cardElevation="0dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/avart_profile"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_just">
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/txt_beginner"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/montserrat_semi_bold"
-                            android:layout_gravity="center"
-                            android:text="@string/typeOfUser"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/_9ssp" />
                     </androidx.cardview.widget.CardView>
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/img_tick"
-                        android:layout_width="wrap_content"
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/edt_userComment"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_15"
-                        android:layout_marginTop="@dimen/dp_4"
-                        android:src="@drawable/ic_tick"
-                        app:layout_constraintStart_toEndOf="@+id/name_user_proflie"
-                        app:layout_constraintTop_toTopOf="@+id/name_user_proflie"
-                        app:layout_constraintBottom_toBottomOf="@id/name_user_proflie"/>
+                        android:layout_marginStart="@dimen/dp_5"
+                        android:layout_toEndOf="@+id/cardView_User"
+                        android:backgroundTint="@color/silverSand"
+                        android:fontFamily="@font/montserrat_regular"
+                        android:hint="@string/write_a_comment" />
 
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/cancel_button"
+                        android:layout_width="@dimen/dp_108"
+                        android:layout_height="@dimen/dp_48"
+                        android:layout_below="@+id/edt_userComment"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:visibility="gone"
+                        android:layout_toLeftOf="@id/send_button"
+                        android:background="@drawable/rounded_button_white"
+                        android:fontFamily="@font/montserrat_regular"
+                        android:stateListAnimator="@null"
+                        android:text="Cancel"
+                        android:textAllCaps="false"
+                        android:textColor="@color/move_green" />
 
-
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/img_star"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_12"
-                        android:src="@drawable/rate"
-                       app:layout_constraintStart_toEndOf="@id/tv_just"
-                        app:layout_constraintTop_toTopOf="@id/tv_just"
-                        app:layout_constraintBottom_toBottomOf="@id/tv_just"
-                        app:layout_constraintEnd_toStartOf="@id/tvrateNumber"/>
-
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/send_button"
+                        android:layout_width="@dimen/dp_108"
+                        android:layout_height="@dimen/dp_48"
+                        android:layout_below="@+id/edt_userComment"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:visibility="gone"
+                        android:background="@drawable/rounded_button_blue"
                         android:fontFamily="@font/montserrat_bold"
-                        android:textColor="@color/black"
-                        android:id="@+id/tvrateNumber"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_6"
-                        android:text="@string/video_rateNumber"
-                        android:textSize="16sp"
-                        app:layout_constraintStart_toEndOf="@id/img_star"
-                        app:layout_constraintTop_toTopOf="@id/img_star"
-                        app:layout_constraintBottom_toBottomOf="@id/img_star"
+                        android:text="Send"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white" />
+                </RelativeLayout>
 
-                         />
-
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/cardview_time_line"
-                        android:layout_width="@dimen/dp_74"
-                        android:layout_height="@dimen/dp_24"
-                        android:layout_marginStart="13dp"
-                        app:cardBackgroundColor="@color/gray"
-                        app:cardCornerRadius="15dp"
-                        app:cardElevation="0dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/cardview_beginner"
-                        app:layout_constraintStart_toEndOf="@+id/cardview_beginner"
-                        app:layout_constraintTop_toTopOf="@+id/cardview_beginner">
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/txt_time_line"
-                            android:layout_gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/montserrat_semi_bold"
-                            android:text="@string/timeOfCategory"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/_9ssp" />
-                    </androidx.cardview.widget.CardView>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <RelativeLayout
-                    android:id="@+id/line"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:layout_marginTop="@dimen/dp_20"
-                    android:background="@color/silverSand"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/contraint_profile" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/bodyLayout"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/listComment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/dp_10"
-                    android:layout_marginTop="@dimen/dp_20"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layoutManager="LinearLayoutManager"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/line">
+                    app:layout_constraintTop_toBottomOf="@id/layout_userComment" />
 
-                    <RelativeLayout
-                        android:id="@+id/layout_userComment"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                <ProgressBar
+                    android:visibility="gone"
+                    android:id="@+id/progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@id/listComment"
+                    app:layout_constraintStart_toStartOf="@id/listComment"
+                    app:layout_constraintTop_toBottomOf="@id/listComment" />
 
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/cardView_User"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:cardCornerRadius="@dimen/dp_40"
-                            app:layout_constraintStart_toStartOf="parent"
-
-                            >
-
-                            <de.hdodenhof.circleimageview.CircleImageView
-                                android:id="@+id/userAvatar"
-                                android:layout_width="@dimen/dp_50"
-                                android:layout_height="@dimen/dp_50"
-                                app:srcCompat="@drawable/avatar" />
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.appcompat.widget.AppCompatEditText
-                            android:fontFamily="@font/montserrat_regular"
-                            android:id="@+id/edt_userComment"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/dp_5"
-                            android:layout_toEndOf="@+id/cardView_User"
-                            android:backgroundTint="@color/silverSand"
-                            android:hint="@string/write_a_comment" />
-
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/cancel_button"
-                            android:layout_width="@dimen/dp_108"
-                            android:layout_height="@dimen/dp_48"
-                            android:layout_below="@+id/edt_userComment"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_toLeftOf="@id/send_button"
-                            android:background="@drawable/rounded_button_white"
-                            android:fontFamily="@font/montserrat_regular"
-                            android:stateListAnimator="@null"
-                            android:text="Cancel"
-                            android:textAllCaps="false"
-                            android:textColor="@color/move_green" />
-
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/send_button"
-                            android:layout_width="@dimen/dp_108"
-                            android:layout_height="@dimen/dp_48"
-                            android:layout_below="@+id/edt_userComment"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginTop="@dimen/dp_10"
-                            android:background="@drawable/rounded_button_blue"
-                            android:fontFamily="@font/montserrat_bold"
-                            android:text="Send"
-                            android:textAllCaps="false"
-                            android:textColor="@color/white" />
-                    </RelativeLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/listComment"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layoutManager="LinearLayoutManager"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/layout_userComment" />
-                    <ProgressBar
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/progress_bar"
-                        app:layout_constraintTop_toBottomOf="@id/listComment"
-                        app:layout_constraintStart_toStartOf="@id/listComment"
-                        app:layout_constraintEnd_toEndOf="@id/listComment"/>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

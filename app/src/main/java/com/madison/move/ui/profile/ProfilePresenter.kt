@@ -1,12 +1,7 @@
 package com.madison.move.ui.profile
 
-import android.util.Log
 import com.madison.move.data.DataManager
-import com.madison.move.data.model.ObjectResponse
-import com.madison.move.data.model.DataCountry
-import com.madison.move.data.model.DataState
-import com.madison.move.data.model.ProfileRequest
-import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,7 +32,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
 
     override fun onSaveProfileClickPresenter(token: String, profileRequest: ProfileRequest) {
         val listAcceptChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
-
+        val listSpecialCharacter = "!@#$%^&*()_-+={}][|<>,?/.®©€¥£¢1234567890"
         if (profileRequest.fullname?.length!! < 4 ) {
             return onShowErrorPresenter(FULL_NAME_AT_LEAST_4_CHARS)
         }
@@ -47,13 +42,9 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
         }
 
         for (s in profileRequest.fullname.toString()) {
-            if (s !in listAcceptChar) {
+            if (s in listSpecialCharacter) {
                 return onShowErrorPresenter(FULL_NAME_FORMAT)
             }
-        }
-
-        if (hasNumber(profileRequest.fullname.toString())){
-            return onShowErrorPresenter(FULL_NAME_FORMAT)
         }
 
 

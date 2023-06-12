@@ -1,13 +1,10 @@
 package com.madison.move.data.source.local
 
-import com.madison.move.data.model.ObjectResponse
-import com.madison.move.data.model.Video
-import com.madison.move.data.model.DataCategory
-import com.madison.move.data.model.DataCountry
-import com.madison.move.data.model.DataState
-import com.madison.move.data.model.ProfileRequest
-import com.madison.move.data.model.DataUser
-import com.madison.move.data.model.videodetail.VideoDetailResponse
+import com.madison.move.data.model.*
+import com.madison.move.data.model.videodetail.DataVideoDetail
+import com.madison.move.data.model.comment.CommentResponse
+import com.madison.move.data.model.comment.DataComment
+import com.madison.move.data.model.comment.SendComment
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
 import com.madison.move.data.source.MoveDataSource
@@ -61,7 +58,19 @@ class MoveLocalDataSource private constructor(
         return null
     }
 
-    override fun getVideoDetail(id: Int): Call<VideoDetailResponse>? {
+    override fun getVideoDetail(id: Int): Call<ObjectResponse<DataVideoDetail>>? {
+        return null
+    }
+
+    override fun getCommentVideo(token: String, id: Int): Call<ObjectResponse<List<DataComment>>>? {
+        return null
+    }
+
+    override fun sendComment(token: String, videoId: Int, content: SendComment): Call<ObjectResponse<CommentResponse>>? {
+        return null
+    }
+
+    override fun sendReply(token: String, commentId: Int, content: SendComment): Call<ObjectResponse<CommentResponse>>? {
         return null
     }
 

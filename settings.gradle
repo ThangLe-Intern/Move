@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Move"
 include ':app'
+include ':library'
