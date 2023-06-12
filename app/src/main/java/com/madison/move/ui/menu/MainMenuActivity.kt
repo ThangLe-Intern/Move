@@ -165,7 +165,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         )
 
         toggle.isDrawerIndicatorEnabled = false
-        toggle.setHomeAsUpIndicator(R.drawable.ic_menu)
+        toggle.setHomeAsUpIndicator(R.drawable.menu_icon)
 
         mainMenuBinding.groupItemChild.visibility = View.GONE
         toggle.setToolbarNavigationClickListener { view ->
