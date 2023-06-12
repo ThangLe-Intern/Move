@@ -9,7 +9,6 @@ import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,11 +16,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.madison.move.R
-import com.madison.move.data.model.DataComment
+import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.DataUser
 import com.madison.move.databinding.ItemUserCommentBinding
 import com.madison.move.ui.offlinechannel.CommentFragment
-import com.madison.move.ui.offlinechannel.DataModelComment
 
 class ListCommentAdapter(
     private var context: Context,

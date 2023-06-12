@@ -1,8 +1,9 @@
-package com.madison.move.data.model
+package com.madison.move.data.model.comment
 
 
 import com.google.gson.annotations.SerializedName
 import com.google.gson.annotations.Expose
+import com.madison.move.data.model.DataUser
 
 data class DataComment(
     @SerializedName("comment_id")
