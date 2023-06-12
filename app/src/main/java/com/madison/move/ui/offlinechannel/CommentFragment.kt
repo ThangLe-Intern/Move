@@ -3,6 +3,7 @@ package com.madison.move.ui.offlinechannel
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,10 +15,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.widget.NestedScrollView
@@ -27,8 +27,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ct7ct7ct7.androidvimeoplayer.model.PlayerState
 import com.ct7ct7ct7.androidvimeoplayer.view.VimeoPlayerActivity
+import com.google.gson.Gson
 import com.madison.move.R
-import com.madison.move.data.model.videodetail.VideoDetailResponse
+import com.madison.move.data.model.comment.DataComment
+import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.ObjectResponse
+import com.madison.move.data.model.comment.CommentResponse
+import com.madison.move.data.model.comment.SendComment
+import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentCommentBinding
 import com.madison.move.ui.base.BaseFragment
@@ -42,18 +48,24 @@ open class CommentFragment(
 ) : BaseFragment<CommentPresenter>(), CommentListener, CommentContract.CommentContract {
     private lateinit var binding: FragmentCommentBinding
     lateinit var adapterComment: ListCommentAdapter
-    private var listComment: MutableList<Comment> = mutableListOf()
+    private var listComment: MutableList<DataComment> = mutableListOf()
+    private var listALLComment: MutableList<DataComment> = mutableListOf()
     private var currentFragment: Fragment? = null
     private lateinit var handler: Handler
+    private var tokenUser: String? = null
+    private var getSharedPreferences: SharedPreferences? = null
+    private var userData: DataUser? = null
+    private var isShowAllComment = false
+
+    private var dataComment: ObjectResponse<List<DataComment>>? = null
     override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
 
-    override fun onResume() {
-        super.onResume()
-        //Check Internet Connection
-        if (mListener?.isDeviceOnlineCheck() == false) {
-            mListener?.onShowDisconnectDialog()
-        }
+    companion object {
+        const val TOKEN_USER_PREFERENCE = "tokenUser"
+        const val TOKEN = "token"
+        const val USER_DATA = "user"
     }
+
 
     private var isLoading = false
     override fun onCreateView(
@@ -62,30 +74,80 @@ open class CommentFragment(
 
         binding = FragmentCommentBinding.inflate(inflater, container, false)
 
-        val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
-        listComment.let {
-            userComment(
-                binding.cancelButton, binding.sendButton, binding.edtUserComment, it, user4
-            )
-        }
         handler = Handler(Looper.getMainLooper())
 
         currentFragment = this
 
-        binding.apply {
+        return binding.root
+    }
 
-            nameUserProflie.text = dataVideoCarousel?.username.toString()
-            tvJust.text =
-                getString(R.string.video_category, dataVideoCarousel?.categoryName.toString())
-            tvrateNumber.text = dataVideoCarousel?.rating.toString()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.listComment.isNestedScrollingEnabled = false
+    }
 
-            if (dataVideoCarousel?.img != null) {
-                activity?.let { Glide.with(it).load(dataVideoCarousel.img).into(avartProfile) }
-            } else {
-                avartProfile.setImageResource(R.drawable.avatar)
+    override fun onResume() {
+        super.onResume()
+        //Check Internet Connection
+        if (mListener?.isDeviceOnlineCheck() == false) {
+            mListener?.onShowDisconnectDialog()
+        }
+
+        onRefreshData()
+
+    }
+
+    open fun onRefreshData() {
+
+//        mListener?.onShowProgressBar()
+        getSharedPreferences = requireContext().getSharedPreferences(
+            TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
+        )
+        //Get Token From Preferences
+        tokenUser = getSharedPreferences?.getString(TOKEN, null)
+
+        //Get UserData From Preferences
+        val jsonUser = getSharedPreferences?.getString(USER_DATA, null)
+        userData = Gson().fromJson(jsonUser, DataUser::class.java)
+
+        //Check If User login or not
+        if (userData != null) {
+            //Set Current User Data
+            binding.apply {
+                layoutUserComment.visibility = View.VISIBLE
+
+                //Set User Avatar
+                if (userData?.img != null) {
+                    Glide.with(requireContext()).load(userData?.img).into(binding.userAvatar)
+                } else {
+                    binding.userAvatar.setImageResource(R.drawable.avatar)
+                }
             }
+        } else {
+            //Do This When User Not Login
+            binding.apply {
+                layoutUserComment.visibility = View.GONE
+            }
+        }
 
-            userAvatar.setImageResource(R.drawable.avatar)
+        presenter?.apply {
+            if (tokenUser != null) {
+                getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
+            } else {
+                getCommentVideo("", dataVideoSuggestion?.id ?: 0)
+            }
+        }
+    }
+
+
+    override fun initView() {
+        super.initView()
+
+        //Get Video
+        presenter?.getVideoDetail(1)
+
+
+        binding.apply {
 
             if (dataVideoCarousel?.rating == null) {
                 tvrateNumber.text = 0.toString()
@@ -94,8 +156,8 @@ open class CommentFragment(
                 tvrateNumber.text = roundOff.toString()
             }
             if (dataVideoCarousel?.categoryName != null && dataVideoCarousel.categoryName == "Just Move") {
-                cardviewTimeLine.visibility = View.INVISIBLE
-                cardviewBeginner.visibility = View.INVISIBLE
+                cardviewTimeLine.visibility = View.GONE
+                cardviewBeginner.visibility = View.GONE
             } else {
                 cardviewTimeLine.visibility = View.VISIBLE
                 cardviewBeginner.visibility = View.VISIBLE
@@ -152,80 +214,93 @@ open class CommentFragment(
             }
         }
 
-        presenter?.apply {
-            getVideoDetail(
-                dataVideoSuggestion?.id ?: 0
-            )
-        }
-
-        return binding.root
+        initScrollListener()
     }
 
-
-    override fun initView() {
-        super.initView()
-
-        playVideo()
-    }
-
-    private fun playVideo(){
+    private fun playVideo(videoID: Int) {
         lifecycle.addObserver(binding.vimeoPlayerView)
+
         binding.vimeoPlayerView.clearCache()
         binding.vimeoPlayerView.initialize(true, 337510595)
+        //        binding.vimeoPlayerView.initialize(true, videoID)
         binding.vimeoPlayerView.setFullscreenVisibility(true)
         binding.vimeoPlayerView.setMenuVisibility(true)
 
         binding.vimeoPlayerView.setFullscreenClickListener {
             //define the orientation
             val requestOrientation = VimeoPlayerActivity.REQUEST_ORIENTATION_LANDSCAPE
-            playerFullScreenResultLauncher.launch(VimeoPlayerActivity.createIntent(
-                requireContext(), requestOrientation, binding.vimeoPlayerView
-            ))
+            playerFullScreenResultLauncher.launch(
+                VimeoPlayerActivity.createIntent(
+                    requireContext(), requestOrientation, binding.vimeoPlayerView
+                )
+            )
         }
     }
 
-    var playerFullScreenResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            if (it.data != null) {
-                val playAt = it.data!!.getFloatExtra(VimeoPlayerActivity.RESULT_STATE_VIDEO_PLAY_AT, 0f)
-                binding.vimeoPlayerView.seekTo(playAt)
+    private var playerFullScreenResultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                if (it.data != null) {
+                    val playAt =
+                        it.data!!.getFloatExtra(VimeoPlayerActivity.RESULT_STATE_VIDEO_PLAY_AT, 0f)
+                    binding.vimeoPlayerView.seekTo(playAt)
 
-                val playerState = it.data!!.getStringExtra(VimeoPlayerActivity.RESULT_STATE_PLAYER_STATE)
-                    ?.let { PlayerState.valueOf(it) }
-                when (playerState) {
-                    PlayerState.PLAYING -> binding.vimeoPlayerView.play()
-                    PlayerState.PAUSED -> binding.vimeoPlayerView.pause()
-                    else -> {
+                    val playerState =
+                        it.data!!.getStringExtra(VimeoPlayerActivity.RESULT_STATE_PLAYER_STATE)
+                            ?.let { PlayerState.valueOf(it) }
+                    when (playerState) {
+                        PlayerState.PLAYING -> binding.vimeoPlayerView.play()
+                        PlayerState.PAUSED -> binding.vimeoPlayerView.pause()
+                        else -> {
 
+                        }
                     }
+                } else {
+                    Toast.makeText(activity, "Null Video Data", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(activity, "Null Video Data", Toast.LENGTH_SHORT).show()
             }
         }
+
+    override fun onSuccessGetVideoDetail(objectResponse: ObjectResponse<DataVideoDetail>) {
+        playVideo(objectResponse.data?.urlVideo ?: 0)
     }
 
+    override fun onSuccessGetCommentVideo(objectResponse: ObjectResponse<List<DataComment>>) {
+        dataComment = objectResponse
+        //Get List Comment
+        getData()
 
-    override fun onBottomNavigateSystemUI() {
+        //Handle display view when login
+        if (tokenUser != null) {
+            userComment(
+                binding.cancelButton,
+                binding.sendButton,
+                binding.edtUserComment
+            )
+        }
 
-    }
-
-    override fun onSuccessGetVideoSuggestion(videoDetailsSuggestionResponse: VideoDetailResponse) {
-
+        onLoadComment(listComment)
 
     }
 
     override fun onError(errorMessage: String) {
+        Toast.makeText(activity, "Failed", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onSuccessSendCommentVideo(objectResponse: ObjectResponse<CommentResponse>) {
+        Toast.makeText(activity, "Send Comment Success!", Toast.LENGTH_SHORT).show()
+
+        //Get Data Again
+        presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
 
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        initScrollListener()
+    override fun onSuccessSendReplyComment(objectResponse: ObjectResponse<CommentResponse>) {
+        TODO("Not yet implemented")
     }
+
 
     override fun onBackPressed() {
 
@@ -234,16 +309,16 @@ open class CommentFragment(
     override fun userComment(
         cancelButton: AppCompatButton,
         sendButton: AppCompatButton,
-        editText: AppCompatEditText,
-        listComment: MutableList<Comment>,
-        user: DataModelComment
+        editText: AppCompatEditText
     ) {
         cancelButton.visibility = View.GONE
         sendButton.visibility = View.GONE
         onWriteCommentListener(editText, cancelButton, sendButton)
         onCancelUserComment(cancelButton, editText)
-        onSendUserComment(sendButton, listComment, editText, cancelButton, user)
-        onLoadComment(listComment)
+
+        if (userData != null) {
+            onSendUserComment(sendButton, editText, cancelButton, userData!!)
+        }
 
     }
 
@@ -259,7 +334,7 @@ open class CommentFragment(
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (!s.isNullOrEmpty()) {
+                    if (!s.isNullOrEmpty() && editText.text?.trim().toString() != "") {
                         cancelButton.visibility = View.VISIBLE
                         sendButton.visibility = View.VISIBLE
                     } else {
@@ -293,19 +368,21 @@ open class CommentFragment(
 
     override fun onSendUserComment(
         sendButton: AppCompatButton,
-        listComment: MutableList<Comment>,
         editText: AppCompatEditText,
         cancelButton: AppCompatButton,
-        user: DataModelComment
+        user: DataUser
     ) {
         sendButton.setOnClickListener {
-            listComment.add(
-                0, Comment(4, editText.text.toString().trim(), "Just now", mutableListOf(), user)
-            )
-            binding.listComment.apply {
-                layoutManager = LinearLayoutManager(requireContext())
-                adapter = adapterComment
+            if (tokenUser != null && dataVideoSuggestion?.id != null) {
+                presenter?.sendCommentVideo(
+                    ("Bearer $tokenUser"),
+                    dataVideoSuggestion?.id ?: 0,
+                    SendComment(editText.text.toString().trim())
+                )
+            } else {
+                Toast.makeText(activity, "Cannot send comment!", Toast.LENGTH_SHORT).show()
             }
+
             clearEdittext(editText, cancelButton)
         }
     }
@@ -321,8 +398,8 @@ open class CommentFragment(
         )
     }
 
-    override fun onLoadComment(listComment: MutableList<Comment>) {
-        getData()
+    override fun onLoadComment(listComment: MutableList<DataComment>) {
+
         adapterComment = ListCommentAdapter(requireContext(),
             listComment,
             object : ListCommentAdapter.ReplyListener {
@@ -330,17 +407,17 @@ open class CommentFragment(
                     cancelButton: AppCompatButton,
                     sendButton: AppCompatButton,
                     editText: AppCompatEditText,
-                    listCommentReply: MutableList<Comment>,
-                    list: RecyclerView,
-                    user: DataModelComment
+                    listCommentReply: MutableList<DataComment>,
+                    list: RecyclerView
                 ) {
 
                     cancelButton.visibility = View.GONE
                     sendButton.visibility = View.GONE
+
                     onWriteCommentListener(editText, cancelButton, sendButton)
                     onCancelUserComment(cancelButton, editText)
                     onSendUserReply(
-                        sendButton, list, listCommentReply, editText, cancelButton, user
+                        sendButton, list, listCommentReply, editText, cancelButton
                     )
                 }
 
@@ -359,7 +436,7 @@ open class CommentFragment(
                             override fun onTextChanged(
                                 s: CharSequence?, start: Int, before: Int, count: Int
                             ) {
-                                if (!s.isNullOrEmpty()) {
+                                if (!s.isNullOrEmpty() && editText.text?.trim().toString() != "") {
                                     cancelButton.visibility = View.VISIBLE
                                     sendButton.visibility = View.VISIBLE
                                 } else {
@@ -392,13 +469,12 @@ open class CommentFragment(
                 override fun onSendUserReply(
                     sendButton: AppCompatButton,
                     list: RecyclerView,
-                    listCommentReply: MutableList<Comment>,
+                    listCommentReply: MutableList<DataComment>,
                     editText: AppCompatEditText,
                     cancelButton: AppCompatButton,
-                    user: DataModelComment
                 ) {
                     sendButton.setOnClickListener {
-                        listCommentReply.add(
+/*                        listCommentReply.add(
                             0, Comment(
                                 5,
                                 editText.text.toString().trim(),
@@ -407,13 +483,13 @@ open class CommentFragment(
                                 user,
                                 true
                             )
-                        )
+                        )*/
 
                         for (i in listCommentReply) {
                             i.content?.let { it1 -> Log.d("DUNG", it1) }
                         }
 
-                        var adapterReply = ListReplyAdapter(listCommentReply, requireContext())
+                        var adapterReply = ListReplyAdapter(requireContext(), listCommentReply)
                         list.apply {
                             layoutManager = LinearLayoutManager(context)
                             adapter = adapterReply
@@ -440,8 +516,6 @@ open class CommentFragment(
                         requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
                 }
-
-
             })
 
         binding.listComment.apply {
@@ -450,42 +524,69 @@ open class CommentFragment(
         }
     }
 
+    private var oldALLComment: MutableList<DataComment> = mutableListOf()
     private fun getData() {
 
-        val user1 = DataModelComment(R.drawable.avatar, "Vu Dung", false)
-        val user2 = DataModelComment(R.drawable.avatar, "Taylor Swift", true)
-        val user3 = DataModelComment(R.drawable.avatar, "Justin Bieber", false)
-        val user4 = DataModelComment(R.drawable.avatar, "Nguyen Vu Dung", true)
+        if (listALLComment.isNotEmpty()) {
+            oldALLComment.addAll(listALLComment)
+        }
 
+        dataComment?.data?.let { listALLComment.addAll(it) }
+        listALLComment.reverse()
 
-        listComment.add(
-            Comment(
-                1, "DSMLMFLSKEMFKLM", "Just now", mutableListOf(
-                    Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1),
-                    Comment(2, "ASDASDASDASSD", "Just now", mutableListOf(), user2),
-                    Comment(3, "BDSDBADASB", "Just now", mutableListOf(), user1),
-                    Comment(4, "WEREWREWREWREW", "Just now", mutableListOf(), user2),
-                ), user1
-            )
-        )
+        addComment()
+    }
 
-        listComment.add(Comment(2, "ALO SONDASDK", "Just now", mutableListOf(), user2))
-        listComment.add(Comment(3, "KAMAVINGAR HALANDES", "Just now", mutableListOf(), user3))
-        listComment.add(Comment(4, "SDASDESADASD", "Just now", mutableListOf(), user4))
+    private fun addComment() {
+        if (listALLComment.isNotEmpty() && listALLComment != listComment) {
+            if (oldALLComment.isNotEmpty()) {
 
+                listComment = listALLComment.subtract(oldALLComment.toSet()).toMutableList()
+                adapterComment.notifyDataSetChanged()
 
+                listALLComment.clear()
+                listALLComment.addAll(oldALLComment)
+                oldALLComment.clear()
+            } else {
+
+                //If load all comment - replace all new data with all old data
+                if (isShowAllComment) {
+                    listComment.clear()
+                    listComment.addAll(listALLComment)
+                    listALLComment.clear()
+                }
+
+                Log.d("KKE",listALLComment.toString())
+
+                //Handle Add Data when Loadmore
+                if (listALLComment.size >= 11) {
+                    (0..9).forEach { i ->
+                        listComment.add(listALLComment[i])
+                    }
+                    listALLComment.subList(0, 10).clear()
+                } else {
+                    listComment.addAll(listALLComment)
+                    listALLComment.clear()
+                    isShowAllComment = true
+                }
+            }
+        } else {
+            listALLComment.clear()
+        }
     }
 
     private fun initScrollListener() {
         binding.listComment.isNestedScrollingEnabled = false
 
-
         binding.nestedComment.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-            if (v.getChildAt(v.childCount - 1) != null) {
-                if (scrollY > oldScrollY) {
-                    if (scrollY >= v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight) {
-                        isLoading = true
-                        loadMore()
+            if (listALLComment.isNotEmpty()) {
+                if (v.getChildAt(v.childCount - 1) != null) {
+                    if (scrollY > oldScrollY) {
+                        if (scrollY >= v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight && !isLoading) {
+                            Log.d("KKE","Call Load More 1")
+                            isLoading = true
+                            loadMore()
+                        }
                     }
                 }
             }
@@ -493,30 +594,21 @@ open class CommentFragment(
     }
 
     private fun loadMore() {
-        val user1 = DataModelComment(R.drawable.avatar, "Vu Dung", false)
         binding.progressBar.visibility = View.VISIBLE
         val handler = Handler()
         handler.postDelayed({
-            listComment.removeAt(listComment.size - 1)
+
+            Log.d("KKE","Call Load More 2")
+//            listComment.removeAt(listComment.size - 1)
             val scrollPosition: Int = listComment.size
             adapterComment.notifyItemRemoved(scrollPosition)
-            var currentSize = scrollPosition
-            val nextLimit = currentSize + 10
-            while (currentSize - 1 < nextLimit) {
-                listComment.add(
-                    Comment(
-                        1, "$currentSize", "Just now", mutableListOf(
-                            Comment(1, "HIHIHAHAHAH", "Just now", mutableListOf(), user1)
-                        ), user1
-                    )
-                )
-                currentSize++
-            }
-            adapterComment.notifyDataSetChanged()
-            isLoading = false
-            binding.progressBar.visibility = View.VISIBLE
-        }, 3000)
+            addComment()
 
+            adapterComment.notifyDataSetChanged()
+
+            isLoading = false
+            binding.progressBar.visibility = View.GONE
+        }, 3000)
 
     }
 

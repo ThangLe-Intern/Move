@@ -195,7 +195,6 @@
                     android:id="@+id/layout_userComment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -234,6 +233,7 @@
                         android:layout_below="@+id/edt_userComment"
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="10dp"
+                        android:visibility="gone"
                         android:layout_toLeftOf="@id/send_button"
                         android:background="@drawable/rounded_button_white"
                         android:fontFamily="@font/montserrat_regular"
@@ -249,6 +249,7 @@
                         android:layout_below="@+id/edt_userComment"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="@dimen/dp_10"
+                        android:visibility="gone"
                         android:background="@drawable/rounded_button_blue"
                         android:fontFamily="@font/montserrat_bold"
                         android:text="Send"
@@ -265,6 +266,7 @@
                     app:layout_constraintTop_toBottomOf="@id/layout_userComment" />
 
                 <ProgressBar
+                    android:visibility="gone"
                     android:id="@+id/progress_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

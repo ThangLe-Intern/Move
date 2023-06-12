@@ -108,8 +108,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             mListener?.onShowProgressBar()
             onHandleLogic()
         }
-
-
     }
 
     private fun onHandleLogic() {
