@@ -14,7 +14,8 @@ import com.madison.move.ui.offlinechannel.CommentFragment
 import kotlin.math.roundToInt
 
 class VideoSuggestionAdapter(
-    var activity: HomeFragment, var listVideo: ArrayList<DataVideoSuggestion>
+    var activity: HomeFragment,
+    var listVideo: ArrayList<DataVideoSuggestion>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var onClickVideo: setListenerVideoSuggestion ?= null
     fun onClick(onClick: setListenerVideoSuggestion){

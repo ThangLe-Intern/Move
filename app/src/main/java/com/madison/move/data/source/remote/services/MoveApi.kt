@@ -58,6 +58,11 @@ interface MoveApi {
 
     @GET("countries/{id}/states")
     fun getStates(@Path("id") countryId: Int): Call<ObjectResponse<List<DataState>>>
+    @GET("faqs")
+    fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>
+
+    @GET("community-guidelines")
+    fun getGuidelines(): Call<ObjectResponse<List<DataGuidelines>>>
 
     @PUT("users/update-profile")
     fun updateProfile(
@@ -73,7 +78,8 @@ interface MoveApi {
         @Header("Authorization") authorization: String,
         @Path("id") videoId: Int
     ): Call<ObjectResponse<List<DataComment>>>
-
+    @GET("showVideos/{id}")
+    fun getFaq(@Path("id") videoId: Int): Call<ObjectResponse<DataVideoDetail>>
 
     @POST("videos/{id}/comments")
     fun sendComment(

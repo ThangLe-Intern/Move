@@ -68,6 +68,14 @@ class MoveCacheDataSource : MoveDataSource {
         return null
     }
 
+    override fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>? {
+        return null
+    }
+
+    override fun getGuidelines(): Call<ObjectResponse<List<DataGuidelines>>>? {
+        return null
+    }
+
     override fun getVideoSuggestionForUser(token: String): Call<ObjectResponse<VideoSuggestion>>? {
         return null
     }

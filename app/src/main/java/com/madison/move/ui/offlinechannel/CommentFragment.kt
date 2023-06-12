@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.widget.NestedScrollView
@@ -38,6 +39,7 @@ import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentCommentBinding
 import com.madison.move.ui.base.BaseFragment
+import com.madison.move.ui.home.HomeFragment
 import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
 import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
 import kotlin.math.roundToInt

@@ -71,6 +71,14 @@ class MoveRepository private constructor(
         return moveRemote.sendReply(token,commentId,content)
     }
 
+    override fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>? {
+        return moveRemote.getFaq()
+    }
+
+    override fun getGuidelines(): Call<ObjectResponse<List<DataGuidelines>>>? {
+        return moveRemote.getGuidelines()
+    }
+
     override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>>? {
         return moveRemote.getTokenLogin(email,password)
     }
