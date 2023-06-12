@@ -2,8 +2,8 @@ package com.madison.move.data.source.remote
 
 import com.madison.move.data.model.*
 import com.madison.move.data.model.comment.CommentResponse
-import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.comment.DataComment
+import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.comment.SendComment
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
@@ -54,7 +54,7 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
         return moveApi.getVideoSuggestionForUser(token)
     }
 
-    override fun getCommentVideo(token: String, id: Int): Call<ObjectResponse<Map<String, DataComment?>>>? {
+    override fun getCommentVideo(token: String, id: Int): Call<ObjectResponse<List<DataComment>>>? {
         return moveApi.getCommentVideo(token, id)
     }
 

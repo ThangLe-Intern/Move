@@ -2,8 +2,8 @@ package com.madison.move.data.source
 
 import com.madison.move.data.model.*
 import com.madison.move.data.model.comment.CommentResponse
-import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.comment.DataComment
+import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.comment.SendComment
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.data.model.videosuggestion.VideoSuggestion
@@ -33,7 +33,7 @@ interface MoveDataSource {
     ): Call<ObjectResponse<DataUser>>?
 
     fun getVideoDetail(id: Int): Call<ObjectResponse<DataVideoDetail>>?
-    fun getCommentVideo(token: String, id: Int): Call<ObjectResponse<Map<String, DataComment?>>>?
+    fun getCommentVideo(token: String, id: Int): Call<ObjectResponse<List<DataComment>>>?
 
     fun sendComment(
         token: String, videoId: Int, content: SendComment
