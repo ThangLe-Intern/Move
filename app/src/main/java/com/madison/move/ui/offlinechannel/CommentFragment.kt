@@ -582,7 +582,8 @@ open class CommentFragment(
             if (listALLComment.isNotEmpty()) {
                 if (v.getChildAt(v.childCount - 1) != null) {
                     if (scrollY > oldScrollY) {
-                        if (scrollY >= v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight) {
+                        if (scrollY >= v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight && !isLoading) {
+                            Log.d("KKE","Call Load More 1")
                             isLoading = true
                             loadMore()
                         }
@@ -597,8 +598,11 @@ open class CommentFragment(
         val handler = Handler()
         handler.postDelayed({
 
+            Log.d("KKE","Call Load More 2")
+//            listComment.removeAt(listComment.size - 1)
+            val scrollPosition: Int = listComment.size
+            adapterComment.notifyItemRemoved(scrollPosition)
             addComment()
-            Log.d("KKE","Call Load More")
 
             adapterComment.notifyDataSetChanged()
 
