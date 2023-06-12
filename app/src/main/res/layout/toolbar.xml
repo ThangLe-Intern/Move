@@ -13,12 +13,12 @@
    >
 
 
-<!--            <ImageView-->
-<!--                android:id="@+id/icMenu"-->
-<!--                android:layout_gravity="start"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:src="@drawable/ic_menu" />-->
+            <ImageView
+                android:id="@+id/icMenu"
+                android:layout_gravity="start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_menu" />
 
     <ImageView
         android:id="@+id/imv_logo"

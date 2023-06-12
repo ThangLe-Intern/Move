@@ -107,5 +107,25 @@ class CommentPresenter(
         })
     }
 
+    override fun callLikeComment(token: String, idComment: Int) {
+        dataManager.movieRepository.callLieComment(token,idComment)?.enqueue(object : Callback<ObjectResponse<CommentResponse>>{
+            override fun onResponse(
+                call: Call<ObjectResponse<CommentResponse>>,
+                response: Response<ObjectResponse<CommentResponse>>
+            ) {
+                if (response.body() != null) {
+                    view?.onSuccessCallLikeComment(response.body()!!)
+                }
+                if (response.errorBody() != null) {
+                }
+            }
+
+            override fun onFailure(call: Call<ObjectResponse<CommentResponse>>, t: Throwable) {
+                view?.onError(t.message.toString())
+            }
+
+        })
+    }
+
 
 }

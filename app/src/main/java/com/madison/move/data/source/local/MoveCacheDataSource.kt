@@ -68,6 +68,13 @@ class MoveCacheDataSource : MoveDataSource {
         return null
     }
 
+    override fun callLieComment(
+        token: String,
+        commentId: Int
+    ): Call<ObjectResponse<CommentResponse>>? {
+        return null
+    }
+
     override fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>? {
         return null
     }

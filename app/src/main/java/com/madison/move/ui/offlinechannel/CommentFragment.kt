@@ -34,6 +34,7 @@ import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.DataUser
 import com.madison.move.data.model.ObjectResponse
 import com.madison.move.data.model.comment.CommentResponse
+import com.madison.move.data.model.comment.DataLikeComment
 import com.madison.move.data.model.comment.SendComment
 import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
@@ -303,6 +304,22 @@ open class CommentFragment(
         TODO("Not yet implemented")
     }
 
+    override fun onSuccessCallLikeComment(objectResponse: ObjectResponse<CommentResponse>) {
+        presenter?.callLikeComment(("Bearer $tokenUser"), id)
+        Toast.makeText(activity, "Like Comment Success!", Toast.LENGTH_SHORT).show()
+    }
+    private fun onClickLikeComment(){
+        adapterComment.onClickListComment = object : ListCommentAdapter.setListenerListComment{
+            override fun onClickListComment(dataLikeComment: DataLikeComment?) {
+                if (userData != null){
+                    presenter?.callLikeComment(("Bearer $tokenUser"), id)
+                    Toast.makeText(activity, "Like Comment Success!", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        }
+    }
+
 
     override fun onBackPressed() {
 
@@ -476,17 +493,6 @@ open class CommentFragment(
                     cancelButton: AppCompatButton,
                 ) {
                     sendButton.setOnClickListener {
-/*                        listCommentReply.add(
-                            0, Comment(
-                                5,
-                                editText.text.toString().trim(),
-                                "Just now",
-                                mutableListOf(),
-                                user,
-                                true
-                            )
-                        )*/
-
                         for (i in listCommentReply) {
                             i.content?.let { it1 -> Log.d("DUNG", it1) }
                         }
@@ -558,7 +564,7 @@ open class CommentFragment(
                     listALLComment.clear()
                 }
 
-                Log.d("KKE",listALLComment.toString())
+                Log.d("KKE", listALLComment.toString())
 
                 //Handle Add Data when Loadmore
                 if (listALLComment.size >= 11) {
@@ -585,7 +591,7 @@ open class CommentFragment(
                 if (v.getChildAt(v.childCount - 1) != null) {
                     if (scrollY > oldScrollY) {
                         if (scrollY >= v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight && !isLoading) {
-                            Log.d("KKE","Call Load More 1")
+                            Log.d("KKE", "Call Load More 1")
                             isLoading = true
                             loadMore()
                         }
@@ -600,7 +606,7 @@ open class CommentFragment(
         val handler = Handler()
         handler.postDelayed({
 
-            Log.d("KKE","Call Load More 2")
+            Log.d("KKE", "Call Load More 2")
 //            listComment.removeAt(listComment.size - 1)
             val scrollPosition: Int = listComment.size
             adapterComment.notifyItemRemoved(scrollPosition)

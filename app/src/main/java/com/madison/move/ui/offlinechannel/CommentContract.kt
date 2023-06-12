@@ -18,6 +18,8 @@ interface CommentContract {
         fun onSuccessSendCommentVideo(objectResponse: ObjectResponse<CommentResponse>)
         fun onSuccessSendReplyComment(objectResponse: ObjectResponse<CommentResponse>)
 
+        fun onSuccessCallLikeComment(objectResponse: ObjectResponse<CommentResponse>)
+
     }
 
     interface CommentPresenter : BasePresenter<CommentContract> {
@@ -26,6 +28,8 @@ interface CommentContract {
         fun getCommentVideo(token: String, id: Int)
         fun sendCommentVideo(token: String, idVideo: Int, content: SendComment)
         fun sendReplyComment(token: String, idComment: Int, content: SendComment)
+
+        fun callLikeComment(token: String,idComment: Int)
 
 
     }

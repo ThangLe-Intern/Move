@@ -40,6 +40,7 @@ interface MoveDataSource {
     ): Call<ObjectResponse<CommentResponse>>?
 
     fun sendReply(token: String, commentId: Int, content: SendComment): Call<ObjectResponse<CommentResponse>>?
+    fun callLieComment(token: String, commentId: Int): Call<ObjectResponse<CommentResponse>>?
 
     fun getFaq():Call<ObjectResponse<List<DataFAQ>>>?
     fun getGuidelines():Call<ObjectResponse<List<DataGuidelines>>>?

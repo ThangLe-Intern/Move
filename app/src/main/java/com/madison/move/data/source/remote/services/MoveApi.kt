@@ -96,4 +96,12 @@ interface MoveApi {
         @Body
         content: SendComment
     ): Call<ObjectResponse<CommentResponse>>
+
+    @POST("comments/{id}/like")
+    fun callLikeComment(
+        @Header("Authorization") authorization: String,
+        @Path("id") commentId: Int,
+
+    ): Call<ObjectResponse<CommentResponse>>
+
 }

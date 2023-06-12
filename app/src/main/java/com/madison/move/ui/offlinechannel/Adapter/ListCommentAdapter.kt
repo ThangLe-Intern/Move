@@ -18,6 +18,7 @@ import com.google.gson.Gson
 import com.madison.move.R
 import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.comment.DataLikeComment
 import com.madison.move.databinding.ItemUserCommentBinding
 import com.madison.move.ui.offlinechannel.CommentFragment
 
@@ -37,28 +38,22 @@ class ListCommentAdapter(
         const val USER_DATA = "user"
 
     }
+    var onClickListComment : setListenerListComment ?= null
+    interface setListenerListComment{
+        fun onClickListComment(dataLikeComment: DataLikeComment?)
+    }
 
 
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("ClickableViewAccessibility")
         fun onBind(dataComment: DataComment) {
-
             getSharedPreferences = context.getSharedPreferences(
                 CommentFragment.TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
             )
 
             val jsonUser = getSharedPreferences?.getString(USER_DATA, null)
             userData = Gson().fromJson(jsonUser, DataUser::class.java)
-
-
-/*            binding.apply {
-                comment.user?.avt?.let { avatar.setImageResource(it) }
-                username.text = comment.user?.name
-                commentTime.text = comment.timeOfComment
-                commentContent.text = comment.content
-                listReply.visibility = View.GONE
-            }*/
 
             val adapterReply = ListReplyAdapter(
                 context, dataComment.replies as MutableList<DataComment>
@@ -195,29 +190,21 @@ class ListCommentAdapter(
 
             //Handle Like-Dislike
             binding.apply {
-                var currentNumber: Int? = 0
                 btnLikeTick.visibility = View.GONE
                 btnLike.setOnClickListener {
-                    if (btnLikeTick.isGone) {
+                    onClickListComment?.onClickListComment(dataLikeComment = null)
+                    if (btnLikeTick.isGone && userData != null) {
                         btnLikeTick.visibility = View.VISIBLE
-                        currentNumber = currentNumber?.plus(1) ?: 1
-                        numberLike.text = currentNumber.toString()
                         btnDisLiketike.visibility = View.GONE
                     } else if (btnLikeTick.isVisible) {
                         btnLikeTick.visibility = View.GONE
-                        currentNumber = currentNumber?.minus(1) ?: 0
-                        numberLike.text = currentNumber.toString()
                     }
                 }
 
                 //Handle Dislike Button
                 btnDisLiketike.visibility = View.GONE
                 btnDisLike.setOnClickListener {
-                    if (btnDisLiketike.isGone) {
-                        if (btnLikeTick.isVisible) {
-                            currentNumber = currentNumber?.minus(1) ?: 0
-                            numberLike.text = currentNumber.toString()
-                        }
+                    if (btnDisLiketike.isGone && userData != null) {
                         btnLikeTick.visibility = View.GONE
                         btnDisLiketike.visibility = View.VISIBLE
                     } else if (btnDisLiketike.isVisible) {
@@ -229,7 +216,6 @@ class ListCommentAdapter(
             //Handle Show/Hide Reply Button
             binding.apply {
                 layoutUserReply.visibility = View.GONE
-
                 if (userData != null) {
                     if (userData?.img != null) {
                         Glide.with(context).load(userData?.img).into(userAvatarReply)
@@ -251,7 +237,8 @@ class ListCommentAdapter(
                             layoutUserReply.visibility = View.GONE
                         }
                     }
-                }else{
+                } else {
+                    btnReport.visibility = View.GONE
                     btnReply.visibility = View.GONE
                 }
 

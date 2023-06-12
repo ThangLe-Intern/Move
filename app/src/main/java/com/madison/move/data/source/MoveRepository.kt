@@ -71,6 +71,13 @@ class MoveRepository private constructor(
         return moveRemote.sendReply(token,commentId,content)
     }
 
+    override fun callLieComment(
+        token: String,
+        commentId: Int
+    ): Call<ObjectResponse<CommentResponse>>? {
+        return moveRemote.callLieComment(token,commentId)
+    }
+
     override fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>? {
         return moveRemote.getFaq()
     }
