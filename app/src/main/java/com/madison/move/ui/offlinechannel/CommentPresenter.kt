@@ -42,7 +42,6 @@ class CommentPresenter(
     }
 
     override fun getCommentVideo(token: String, id: Int) {
-
         dataManager.movieRepository.getCommentVideo(token, id)?.enqueue(object :
             Callback<ObjectResponse<List<DataComment>>> {
             override fun onResponse(
