@@ -218,7 +218,8 @@ open class CommentFragment(
         lifecycle.addObserver(binding.vimeoPlayerView)
 
         binding.vimeoPlayerView.clearCache()
-        binding.vimeoPlayerView.initialize(true, 337510595)
+//        binding.vimeoPlayerView.initialize(true, 337510595)
+        binding.vimeoPlayerView.initialize(true, 834424858)
         //        binding.vimeoPlayerView.initialize(true, videoID)
         binding.vimeoPlayerView.setFullscreenVisibility(true)
         binding.vimeoPlayerView.setMenuVisibility(true)
@@ -288,7 +289,7 @@ open class CommentFragment(
     }
 
     override fun onError(errorMessage: String) {
-        Toast.makeText(activity, "Failed", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, getString(R.string.txt_timeout), Toast.LENGTH_SHORT).show()
     }
 
     override fun onSuccessSendCommentVideo(objectResponse: ObjectResponse<CommentResponse>) {

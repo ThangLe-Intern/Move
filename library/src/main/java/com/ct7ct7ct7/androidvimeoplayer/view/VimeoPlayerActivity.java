@@ -90,7 +90,9 @@ public class VimeoPlayerActivity extends AppCompatActivity {
             @Override
             public void onReady(String title, float duration, TextTrack[] textTrackArray) {
                 endAt = duration;
+                vimeoPlayerView.play();
                 vimeoPlayerView.seekTo(startAt);
+
                 vimeoPlayerView.playTwoStage();
             }
 
@@ -99,11 +101,13 @@ public class VimeoPlayerActivity extends AppCompatActivity {
 
             }
         });
+
         vimeoPlayerView.addTimeListener(second -> {
             if (second >= endAt) {
                 vimeoPlayerView.pause();
             }
         });
+
         vimeoPlayerView.setFullscreenClickListener(v -> onBackPressed());
     }
 
@@ -121,7 +125,7 @@ public class VimeoPlayerActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (REQUEST_ORIENTATION_AUTO.equals(orientation)) {
-            vimeoPlayerView.reset();
+            vimeoPlayerView.play();
         }
     }
 }
