@@ -303,7 +303,6 @@ open class CommentFragment(
 
         //Get Data Again
         presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
-        replyParentId = 0
     }
 
 

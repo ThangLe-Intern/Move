@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.madison.move.R
-import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.comment.DataComment
 import com.madison.move.databinding.ItemUserCommentBinding
 import com.madison.move.ui.offlinechannel.CommentFragment
 
@@ -71,7 +71,7 @@ class ListCommentAdapter(
                     txtShow.text =
                         context.getString(R.string.Show, dataComment.replies.size.toString() ?: "")
 
-                    if (replyParentId != 0){
+                    if (replyParentId != 0 && replyParentId == dataComment.id){
                         listReply.visibility = View.VISIBLE
                     }
 
@@ -169,13 +169,13 @@ class ListCommentAdapter(
                 commentContent.text = dataComment.content ?: ""
 
                 //Set User Like or Dislike Comment
-                if (dataComment.isLiked == true) {
+                if (dataComment.isLiked == 0) {
                     btnLikeTick.visibility = View.VISIBLE
                     btnLike.visibility = View.GONE
                     btnDisLiketike.visibility = View.GONE
                 }
 
-                if (dataComment.isDisliked == true) {
+                if (dataComment.isDisliked == 1) {
                     btnLikeTick.visibility = View.GONE
                     btnDisLike.visibility = View.GONE
                     btnDisLiketike.visibility = View.VISIBLE
