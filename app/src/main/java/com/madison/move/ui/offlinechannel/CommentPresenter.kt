@@ -123,7 +123,7 @@ class CommentPresenter(
             }
 
             override fun onFailure(call: Call<LikeResponse>, t: Throwable) {
-                view?.onError(t.message.toString())
+                view?.onError(t.message ?: "")
             }
 
         })
@@ -143,7 +143,7 @@ class CommentPresenter(
             }
 
             override fun onFailure(call: Call<DiskLikeResponse>, t: Throwable) {
-                view?.onError(t.message.toString())
+                view?.onError(t.message ?: "")
             }
 
         })

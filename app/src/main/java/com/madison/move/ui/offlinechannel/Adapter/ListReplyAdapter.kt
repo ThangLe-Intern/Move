@@ -2,23 +2,28 @@ package com.madison.move.ui.offlinechannel.Adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
+import android.util.Log
 import android.view.*
 import android.widget.PopupWindow
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.madison.move.R
+import com.madison.move.data.model.DataUser
 import com.madison.move.data.model.comment.DataComment
 import com.madison.move.databinding.ItemUserCommentBinding
+import com.madison.move.ui.offlinechannel.CommentFragment
 
 class ListReplyAdapter(
     private var context: Context,
     var listReply: MutableList<DataComment>,
+    var onClickListReplyComment : ListCommentAdapter.ReplyListener?,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    var onClickListReplyComment: ListCommentAdapter.ReplyListener? = null
-    var onClickDisLikeReplyComment: ListCommentAdapter.ReplyListener? = null
-
+    private var getSharedPreferences: SharedPreferences? = null
+    private var userData: DataUser? = null
 
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -26,6 +31,27 @@ class ListReplyAdapter(
         @SuppressLint("ClickableViewAccessibility")
         fun onBind(dataComment: DataComment) {
             binding.apply {
+
+                getSharedPreferences = context.getSharedPreferences(
+                    CommentFragment.TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
+                )
+                val jsonUser = getSharedPreferences?.getString(ListCommentAdapter.USER_DATA, null)
+
+                userData = Gson().fromJson(jsonUser, DataUser::class.java)
+
+                if (userData != null){
+                    btnReport.visibility= View.VISIBLE
+                }else{
+                    btnReport.visibility = View.GONE
+                }
+                btnLike.setOnClickListener {
+                    Log.d("123123", (dataComment.id ?:0).toString())
+                    dataComment.id?.let { id ->
+                        onClickListReplyComment?.onClickListReplyComment(id) }
+                }
+                btnDisLike.setOnClickListener{
+                    dataComment.id?.let { id -> onClickListReplyComment?.onClickDisLikeReplyComment(id) }
+                }
 
                 userAvatarReply.setImageResource(R.drawable.avatar)
 
@@ -74,28 +100,14 @@ class ListReplyAdapter(
 
                 layoutUserReply.visibility = View.GONE
 
-
-                //Set User Reply Info
-                //Set User Comment Info
                 if (dataComment.isLiked == true) {
                     btnLike.setImageResource(R.drawable.ic_lickticked)
-//                    btnDisLike.setImageResource(R.drawable.ic_disklikenottick)
                 }
 
                 if (dataComment.isDisliked == true) {
                     btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
-//                    btnLike.setImageResource(R.drawable.ic_likenottick)
                 }
-                btnLike.setOnClickListener {
-                    dataComment.id?.let { id -> onClickListReplyComment?.onClickListReplyComment(id) }
-                }
-                btnDisLike.setOnClickListener {
-                    dataComment.id?.let { id ->
-                        onClickDisLikeReplyComment?.onClickDisLikeReplyComment(
-                            id
-                        )
-                    }
-                }
+
 
                 //Set Avatar
                 if (dataComment.user?.img != null) {
@@ -103,6 +115,7 @@ class ListReplyAdapter(
                 } else {
                     avatar.setImageResource(R.drawable.avatar)
                 }
+
 
                 //Set Username
                 username.text =
@@ -122,7 +135,6 @@ class ListReplyAdapter(
                 commentContent.text = dataComment.content ?: ""
 
                 //Set User Like or Dislike Comment
-
 
                 if (dataComment.likeCount != null && dataComment.likeCount > 0) {
                     numberLike.visibility = View.VISIBLE

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#33000000" /> <!-- Màu sắc và độ mờ của đỗ bóng -->
+    <corners android:radius="@dimen/dp_10" /> <!-- Bo góc cho đỗ bóng, sử dụng giá trị tương ứng với cardCornerRadius -->
+</shape>

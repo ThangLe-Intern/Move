@@ -39,7 +39,6 @@ import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentCommentBinding
 import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
-import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
 import kotlin.math.roundToInt
 
 open class CommentFragment(
@@ -85,6 +84,7 @@ open class CommentFragment(
         super.onViewCreated(view, savedInstanceState)
         binding.listComment.isNestedScrollingEnabled = false
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -288,6 +288,7 @@ open class CommentFragment(
 
         onLoadComment(listComment)
 
+
     }
 
     override fun onError(errorMessage: String) {
@@ -417,7 +418,6 @@ open class CommentFragment(
     }
 
     override fun onLoadComment(listComment: MutableList<DataComment>) {
-
         adapterComment = ListCommentAdapter(
             requireContext(),
             listComment,
@@ -528,13 +528,12 @@ open class CommentFragment(
                 }
 
                 override fun onClickListReplyComment(commentId: Int) {
-                    presenter?.callLikeComment("Bearer $tokenUser", commentId)
+                    presenter?.callLikeComment("Bearer $tokenUser,", commentId)
                 }
 
                 override fun onClickDisLikeReplyComment(commentId: Int) {
                     presenter?.callDiskLikeComment("Bearer $tokenUser", commentId)
                 }
-
             }, replyParentId
         )
 
@@ -542,7 +541,6 @@ open class CommentFragment(
             override fun onClickListComment(commentId: Int) {
                 presenter?.callLikeComment("Bearer $tokenUser", commentId)
             }
-
         }
         adapterComment.onClickDisLikeComment = object : ListCommentAdapter.setListenerDisLikeComment {
                 override fun onClickDisLikeComment(commentId: Int) {

@@ -43,6 +43,7 @@ class ListCommentAdapter(
     var onClickListComment: setListenerListComment? = null
     var onClickDisLikeComment: setListenerDisLikeComment? = null
 
+
     interface setListenerListComment {
         fun onClickListComment(commentId: Int)
     }
@@ -50,6 +51,7 @@ class ListCommentAdapter(
     interface setListenerDisLikeComment {
         fun onClickDisLikeComment(commentId: Int)
     }
+
 
 
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
@@ -63,8 +65,9 @@ class ListCommentAdapter(
             val jsonUser = getSharedPreferences?.getString(USER_DATA, null)
             userData = Gson().fromJson(jsonUser, DataUser::class.java)
 
-            val adapterReply = ListReplyAdapter(
-                context, dataComment.replies as MutableList<DataComment>
+            var adapterReply = ListReplyAdapter(
+                context, dataComment.replies as MutableList<DataComment>,
+                replyListener
             )
 
             //Add Reply Data
@@ -120,6 +123,8 @@ class ListCommentAdapter(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         true
                     )
+                    popupWindow.setBackgroundDrawable(context.resources.getDrawable(R.drawable.popup_shadow))
+
 
                     val location = IntArray(2)
                     btnReport.getLocationInWindow(location)
@@ -183,12 +188,10 @@ class ListCommentAdapter(
                 //Set User Like or Dislike Comment
                 if (dataComment.isLiked == true) {
                     btnLike.setImageResource(R.drawable.ic_lickticked)
-//                    btnDisLike.setImageResource(R.drawable.ic_disklikenottick)
                 }
 
                 if (dataComment.isDisliked == true) {
                     btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
-//                    btnLike.setImageResource(R.drawable.ic_likenottick)
                 }
 
                 if (dataComment.likeCount != null && dataComment.likeCount > 0) {
@@ -209,13 +212,6 @@ class ListCommentAdapter(
                     dataComment.id?.let { id -> onClickDisLikeComment?.onClickDisLikeComment(id) }
                 }
 
-//                btnLike.setOnClickListener {
-//                    dataComment.id?.let { id -> onClickListReplyComment?.onClickListReplyComment(id) }
-//                }
-//                btnDisLike.setOnClickListener {
-//                    dataComment.id?.let { id -> onClickDisLikeReplyComment?.onClickDisLikeReplyComment(id) }
-//                }
-                //Handle Like-Dislike
 
                 //Handle Show/Hide Reply Button
                 layoutUserReply.visibility = View.GONE
@@ -303,6 +299,7 @@ class ListCommentAdapter(
 
         fun onClickListReplyComment(commentId: Int)
         fun onClickDisLikeReplyComment(commentId: Int)
+
 
     }
 }
