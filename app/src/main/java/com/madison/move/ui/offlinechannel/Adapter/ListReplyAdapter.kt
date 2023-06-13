@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.*
 import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
@@ -62,6 +63,7 @@ class ListReplyAdapter(
                 btnReply.visibility = View.INVISIBLE
 
                 btnReport.setOnClickListener {
+
                     val inflater = LayoutInflater.from(context)
                     val dialogView = inflater.inflate(R.layout.dialog_report, null)
 
@@ -71,11 +73,17 @@ class ListReplyAdapter(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         true
                     )
+                    fun Context.dpToPx(dp: Float): Int {
+                        val scale = resources.displayMetrics.density
+                        return (dp * scale + 0.5f).toInt()
+                    }
+                    popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.popup_shadow))
+                    popupWindow.elevation = context.dpToPx(8f).toFloat()
 
                     val location = IntArray(2)
                     btnReport.getLocationInWindow(location)
 
-                    val x = location[0] - dialogView.width - 1 // Dịch dialog sang bên trái 1 đơn vị
+                    val x = location[0] - dialogView.width - 1
                     val y = location[1] - dialogView.height
 
                     popupWindow.showAtLocation(btnReport, Gravity.NO_GRAVITY, x, y)
@@ -97,6 +105,8 @@ class ListReplyAdapter(
                         true
                     }
                 }
+
+
 
                 layoutUserReply.visibility = View.GONE
 
