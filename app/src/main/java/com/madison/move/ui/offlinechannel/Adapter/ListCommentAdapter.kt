@@ -19,7 +19,6 @@ import com.google.gson.Gson
 import com.madison.move.R
 import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.DataUser
-import com.madison.move.data.model.comment.DataLikeComment
 import com.madison.move.databinding.ItemUserCommentBinding
 import com.madison.move.ui.offlinechannel.CommentFragment
 
@@ -42,9 +41,14 @@ class ListCommentAdapter(
     }
 
     var onClickListComment: setListenerListComment? = null
+    var onClickDisLikeComment: setListenerDisLikeComment? = null
 
     interface setListenerListComment {
         fun onClickListComment(commentId: Int)
+    }
+
+    interface setListenerDisLikeComment {
+        fun onClickDisLikeComment(commentId: Int)
     }
 
 
@@ -175,19 +179,17 @@ class ListCommentAdapter(
                 //Set Content Comment
                 commentContent.text = dataComment.content ?: ""
 
+
                 //Set User Like or Dislike Comment
                 if (dataComment.isLiked == true) {
                     btnLike.setImageResource(R.drawable.ic_lickticked)
-                    btnDisLike.setImageResource(R.drawable.ic_disklikenottick)
-                }else{
-                    btnLike.setImageResource(R.drawable.ic_likenottick)
+//                    btnDisLike.setImageResource(R.drawable.ic_disklikenottick)
                 }
 
-//                if (dataComment.isDisliked == true) {
-//                    btnLikeTick.visibility = View.GONE
-//                    btnDisLike.visibility = View.GONE
-//                    btnDisLiketike.visibility = View.VISIBLE
-//                }
+                if (dataComment.isDisliked == true) {
+                    btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
+//                    btnLike.setImageResource(R.drawable.ic_likenottick)
+                }
 
                 if (dataComment.likeCount != null && dataComment.likeCount > 0) {
                     numberLike.visibility = View.VISIBLE
@@ -195,35 +197,27 @@ class ListCommentAdapter(
                 } else {
                     numberLike.visibility = View.GONE
                 }
-            }
 
-            //Handle Like-Dislike
-            binding.apply {
-//                btnLikeTick.visibility = View.GONE
-                btnLike.setOnClickListener {
-                    dataComment.id?.let { id -> onClickListComment?.onClickListComment(id) }
-/*                    if (btnLikeTick.isGone && userData != null) {
-                        btnLikeTick.visibility = View.VISIBLE
-                        btnDisLiketike.visibility = View.GONE
-                    } else if (btnLikeTick.isVisible) {
-                        btnLikeTick.visibility = View.GONE
-                    }*/
+                if (dataComment.dislikeCount != null && dataComment.dislikeCount > 0) {
+                    numberDislike.text = dataComment.dislikeCount.toString()
                 }
 
-                //Handle Dislike Button
-//                btnDisLiketike.visibility = View.GONE
-//                btnDisLike.setOnClickListener {
-//                    if (btnDisLiketike.isGone && userData != null) {
-////                        btnLikeTick.visibility = View.GONE
-//                        btnDisLiketike.visibility = View.VISIBLE
-//                    } else if (btnDisLiketike.isVisible) {
-//                        btnDisLiketike.visibility = View.GONE
-//                    }
-//                }
-            }
+                btnLike.setOnClickListener {
+                    dataComment.id?.let { id -> onClickListComment?.onClickListComment(id) }
+                }
+                btnDisLike.setOnClickListener {
+                    dataComment.id?.let { id -> onClickDisLikeComment?.onClickDisLikeComment(id) }
+                }
 
-            //Handle Show/Hide Reply Button
-            binding.apply {
+//                btnLike.setOnClickListener {
+//                    dataComment.id?.let { id -> onClickListReplyComment?.onClickListReplyComment(id) }
+//                }
+//                btnDisLike.setOnClickListener {
+//                    dataComment.id?.let { id -> onClickDisLikeReplyComment?.onClickDisLikeReplyComment(id) }
+//                }
+                //Handle Like-Dislike
+
+                //Handle Show/Hide Reply Button
                 layoutUserReply.visibility = View.GONE
                 if (userData != null) {
                     if (userData?.img != null) {
@@ -272,7 +266,6 @@ class ListCommentAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as ViewHolder).onBind(listComment[position])
-
     }
 
     override fun getItemCount(): Int {
@@ -304,7 +297,12 @@ class ListCommentAdapter(
             cancelButton: AppCompatButton
         )
 
+
         fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton)
         fun hideKeyboard(view: View)
+
+        fun onClickListReplyComment(commentId: Int)
+        fun onClickDisLikeReplyComment(commentId: Int)
+
     }
 }

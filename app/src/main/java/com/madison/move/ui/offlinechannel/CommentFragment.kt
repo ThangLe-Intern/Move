@@ -28,6 +28,7 @@ import com.ct7ct7ct7.androidvimeoplayer.view.VimeoPlayerActivity
 import com.google.gson.Gson
 import com.madison.move.R
 import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.DiskLikeResponse
 import com.madison.move.data.model.LikeResponse
 import com.madison.move.data.model.ObjectResponse
 import com.madison.move.data.model.comment.CommentResponse
@@ -38,6 +39,7 @@ import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
 import com.madison.move.databinding.FragmentCommentBinding
 import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.offlinechannel.Adapter.ListCommentAdapter
+import com.madison.move.ui.offlinechannel.Adapter.ListReplyAdapter
 import kotlin.math.roundToInt
 
 open class CommentFragment(
@@ -312,6 +314,10 @@ open class CommentFragment(
         presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
     }
 
+    override fun onSuccessCallDiskLikeComment(objectResponse: DiskLikeResponse) {
+        Toast.makeText(activity, objectResponse.success, Toast.LENGTH_SHORT).show()
+        presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
+    }
 
 
     override fun onBackPressed() {
@@ -412,7 +418,8 @@ open class CommentFragment(
 
     override fun onLoadComment(listComment: MutableList<DataComment>) {
 
-        adapterComment = ListCommentAdapter(requireContext(),
+        adapterComment = ListCommentAdapter(
+            requireContext(),
             listComment,
             object : ListCommentAdapter.ReplyListener {
                 override fun userComment(
@@ -519,15 +526,28 @@ open class CommentFragment(
                         requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
                 }
+
+                override fun onClickListReplyComment(commentId: Int) {
+                    presenter?.callLikeComment("Bearer $tokenUser", commentId)
+                }
+
+                override fun onClickDisLikeReplyComment(commentId: Int) {
+                    presenter?.callDiskLikeComment("Bearer $tokenUser", commentId)
+                }
+
             }, replyParentId
         )
 
-        adapterComment.onClickListComment = object  : ListCommentAdapter.setListenerListComment{
-            override fun onClickListComment(commentId : Int) {
-                presenter?.callLikeComment("Bearer $tokenUser" ?: "", commentId)
+        adapterComment.onClickListComment = object : ListCommentAdapter.setListenerListComment {
+            override fun onClickListComment(commentId: Int) {
+                presenter?.callLikeComment("Bearer $tokenUser", commentId)
             }
 
-
+        }
+        adapterComment.onClickDisLikeComment = object : ListCommentAdapter.setListenerDisLikeComment {
+                override fun onClickDisLikeComment(commentId: Int) {
+                    presenter?.callDiskLikeComment("Bearer $tokenUser", commentId)
+                }
         }
 
         binding.listComment.apply {

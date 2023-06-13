@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.*
 import android.widget.PopupWindow
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.madison.move.R
@@ -17,6 +15,9 @@ class ListReplyAdapter(
     var listReply: MutableList<DataComment>,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    var onClickListReplyComment: ListCommentAdapter.ReplyListener? = null
+    var onClickDisLikeReplyComment: ListCommentAdapter.ReplyListener? = null
 
 
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
@@ -31,15 +32,8 @@ class ListReplyAdapter(
                 line2.visibility = View.GONE
                 layoutShow.visibility = View.GONE
 
-         /*       comment.user?.avt?.let { avatar.setImageResource(it) }
-                username.text = comment.user?.name
-                commentTime.text = comment.timeOfComment
-                commentContent.text = comment.content
-                if (comment.user?.isTicked == true) {
-                    bluetick
-                        .visibility = View.GONE
-                }
-        */        btnReply.visibility = View.INVISIBLE
+
+                btnReply.visibility = View.INVISIBLE
 
                 btnReport.setOnClickListener {
                     val inflater = LayoutInflater.from(context)
@@ -79,49 +73,35 @@ class ListReplyAdapter(
                 }
 
                 layoutUserReply.visibility = View.GONE
-//                btnLikeTick.visibility = View.GONE
-//                btnDisLiketike.visibility = View.GONE
-//
-//
-//                var currentNumber = 0
-//                btnLikeTick.visibility = View.GONE
-//                btnLike.setOnClickListener {
-//                    if (btnLikeTick.isGone) {
-//                        btnLikeTick.visibility = View.VISIBLE
-//                        currentNumber++
-//                        numberLike.text = currentNumber.toString()
-//                        btnDisLiketike.visibility = View.GONE
-//                    } else if (btnLikeTick.isVisible) {
-//                        btnLikeTick.visibility = View.GONE
-//                        currentNumber--
-//                        numberLike.text = currentNumber.toString()
-//                    }
-//                }
-//
-//                btnDisLiketike.visibility = View.GONE
-//                btnDisLike.setOnClickListener {
-//                    if (btnDisLiketike.isGone) {
-//                        if (btnLikeTick.isVisible) {
-//                            currentNumber--
-//                            numberLike.text = currentNumber.toString()
-//                        }
-//                        btnLikeTick.visibility = View.GONE
-//                        btnDisLiketike.visibility = View.VISIBLE
-//                    } else if (btnDisLiketike.isVisible) {
-//                        btnDisLiketike.visibility = View.GONE
-//                    }
-//                }
-            }
 
-            //Set User Reply Info
-            //Set User Comment Info
-            binding.apply {
+
+                //Set User Reply Info
+                //Set User Comment Info
+                if (dataComment.isLiked == true) {
+                    btnLike.setImageResource(R.drawable.ic_lickticked)
+//                    btnDisLike.setImageResource(R.drawable.ic_disklikenottick)
+                }
+
+                if (dataComment.isDisliked == true) {
+                    btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
+//                    btnLike.setImageResource(R.drawable.ic_likenottick)
+                }
+                btnLike.setOnClickListener {
+                    dataComment.id?.let { id -> onClickListReplyComment?.onClickListReplyComment(id) }
+                }
+                btnDisLike.setOnClickListener {
+                    dataComment.id?.let { id ->
+                        onClickDisLikeReplyComment?.onClickDisLikeReplyComment(
+                            id
+                        )
+                    }
+                }
 
                 //Set Avatar
                 if (dataComment.user?.img != null) {
-                    Glide.with(context).load(dataComment.user.img).into(binding.avatar)
+                    Glide.with(context).load(dataComment.user.img).into(avatar)
                 } else {
-                    binding.avatar.setImageResource(R.drawable.avatar)
+                    avatar.setImageResource(R.drawable.avatar)
                 }
 
                 //Set Username
@@ -142,17 +122,7 @@ class ListReplyAdapter(
                 commentContent.text = dataComment.content ?: ""
 
                 //Set User Like or Dislike Comment
-//                if (dataComment.isLiked == true) {
-//                    btnLikeTick.visibility = View.VISIBLE
-//                    btnLike.visibility = View.GONE
-//                    btnDisLiketike.visibility = View.GONE
-//                }
-//
-//                if (dataComment.isDisliked == true) {
-//                    btnLikeTick.visibility = View.GONE
-//                    btnDisLike.visibility = View.GONE
-//                    btnDisLiketike.visibility = View.VISIBLE
-//                }
+
 
                 if (dataComment.likeCount != null && dataComment.likeCount > 0) {
                     numberLike.visibility = View.VISIBLE
@@ -160,10 +130,9 @@ class ListReplyAdapter(
                 } else {
                     numberLike.visibility = View.GONE
                 }
+
+
             }
-
-
-
         }
     }
 
