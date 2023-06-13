@@ -67,13 +67,19 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
         return moveApi.sendReply(token, commentId, content)
     }
 
-    override fun callLieComment(
+    override fun callLikeComment(
         token: String,
         commentId: Int
-    ): Call<ObjectResponse<CommentResponse>>? {
+    ): Call<LikeResponse>? {
         return moveApi.callLikeComment(token,commentId)
     }
 
+    override fun callDiskLikeComment(
+        token: String,
+        commentId: Int
+    ): Call<DiskLikeResponse>? {
+        return moveApi.callDiskLikeComment(token,commentId)
+    }
     override fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>? {
         return moveApi.getFaq()
     }

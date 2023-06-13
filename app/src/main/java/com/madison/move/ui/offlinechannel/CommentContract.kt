@@ -1,5 +1,6 @@
 package com.madison.move.ui.offlinechannel
 
+import com.madison.move.data.model.LikeResponse
 import com.madison.move.data.model.ObjectResponse
 import com.madison.move.data.model.comment.CommentResponse
 import com.madison.move.data.model.comment.DataComment
@@ -17,7 +18,7 @@ interface CommentContract {
         fun onSuccessSendCommentVideo(objectResponse: ObjectResponse<CommentResponse>)
         fun onSuccessSendReplyComment(objectResponse: ObjectResponse<CommentResponse>)
 
-        fun onSuccessCallLikeComment(objectResponse: ObjectResponse<CommentResponse>)
+        fun onSuccessCallLikeComment(objectResponse: LikeResponse)
 
     }
 

@@ -4,6 +4,7 @@ package com.madison.move.ui.offlinechannel.Adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import android.view.*
 import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
@@ -26,7 +27,7 @@ class ListCommentAdapter(
     private var context: Context,
     var listComment: MutableList<DataComment>,
     val replyListener: ReplyListener,
-    var replyParentId : Int
+    var replyParentId: Int
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var adapterReply: ListReplyAdapter? = null
     private var getSharedPreferences: SharedPreferences? = null
@@ -39,9 +40,11 @@ class ListCommentAdapter(
         const val USER_DATA = "user"
 
     }
-    var onClickListComment : setListenerListComment ?= null
-    interface setListenerListComment{
-        fun onClickListComment()
+
+    var onClickListComment: setListenerListComment? = null
+
+    interface setListenerListComment {
+        fun onClickListComment(commentId: Int)
     }
 
 
@@ -75,7 +78,7 @@ class ListCommentAdapter(
                     txtShow.text =
                         context.getString(R.string.Show, dataComment.replies.size.toString() ?: "")
 
-                    if (replyParentId != 0){
+                    if (replyParentId != 0) {
                         listReply.visibility = View.VISIBLE
                     }
 
@@ -147,7 +150,7 @@ class ListCommentAdapter(
 
             //Set User Comment Info
             binding.apply {
-
+                Log.d("KKE", dataComment.isLiked.toString())
                 //Set Avatar
                 if (dataComment.user?.img != null) {
                     Glide.with(context).load(dataComment.user.img).into(binding.avatar)
@@ -174,16 +177,17 @@ class ListCommentAdapter(
 
                 //Set User Like or Dislike Comment
                 if (dataComment.isLiked == true) {
-                    btnLikeTick.visibility = View.VISIBLE
-                    btnLike.visibility = View.GONE
-                    btnDisLiketike.visibility = View.GONE
+                    btnLike.setImageResource(R.drawable.ic_lickticked)
+                    btnDisLike.setImageResource(R.drawable.ic_disklikenottick)
+                }else{
+                    btnLike.setImageResource(R.drawable.ic_likenottick)
                 }
 
-                if (dataComment.isDisliked == true) {
-                    btnLikeTick.visibility = View.GONE
-                    btnDisLike.visibility = View.GONE
-                    btnDisLiketike.visibility = View.VISIBLE
-                }
+//                if (dataComment.isDisliked == true) {
+//                    btnLikeTick.visibility = View.GONE
+//                    btnDisLike.visibility = View.GONE
+//                    btnDisLiketike.visibility = View.VISIBLE
+//                }
 
                 if (dataComment.likeCount != null && dataComment.likeCount > 0) {
                     numberLike.visibility = View.VISIBLE
@@ -195,27 +199,27 @@ class ListCommentAdapter(
 
             //Handle Like-Dislike
             binding.apply {
-                btnLikeTick.visibility = View.GONE
+//                btnLikeTick.visibility = View.GONE
                 btnLike.setOnClickListener {
-                    onClickListComment?.onClickListComment()
-                    if (btnLikeTick.isGone && userData != null) {
+                    dataComment.id?.let { id -> onClickListComment?.onClickListComment(id) }
+/*                    if (btnLikeTick.isGone && userData != null) {
                         btnLikeTick.visibility = View.VISIBLE
                         btnDisLiketike.visibility = View.GONE
                     } else if (btnLikeTick.isVisible) {
                         btnLikeTick.visibility = View.GONE
-                    }
+                    }*/
                 }
 
                 //Handle Dislike Button
-                btnDisLiketike.visibility = View.GONE
-                btnDisLike.setOnClickListener {
-                    if (btnDisLiketike.isGone && userData != null) {
-                        btnLikeTick.visibility = View.GONE
-                        btnDisLiketike.visibility = View.VISIBLE
-                    } else if (btnDisLiketike.isVisible) {
-                        btnDisLiketike.visibility = View.GONE
-                    }
-                }
+//                btnDisLiketike.visibility = View.GONE
+//                btnDisLike.setOnClickListener {
+//                    if (btnDisLiketike.isGone && userData != null) {
+////                        btnLikeTick.visibility = View.GONE
+//                        btnDisLiketike.visibility = View.VISIBLE
+//                    } else if (btnDisLiketike.isVisible) {
+//                        btnDisLiketike.visibility = View.GONE
+//                    }
+//                }
             }
 
             //Handle Show/Hide Reply Button

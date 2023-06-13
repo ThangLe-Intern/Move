@@ -2,6 +2,7 @@ package com.madison.move.ui.offlinechannel
 
 import android.util.Log
 import com.madison.move.data.DataManager
+import com.madison.move.data.model.LikeResponse
 import com.madison.move.data.model.ObjectResponse
 import com.madison.move.data.model.comment.CommentResponse
 import com.madison.move.data.model.comment.DataComment
@@ -108,10 +109,10 @@ class CommentPresenter(
     }
 
     override fun callLikeComment(token: String, idComment: Int) {
-        dataManager.movieRepository.callLieComment(token,idComment)?.enqueue(object : Callback<ObjectResponse<CommentResponse>>{
+        dataManager.movieRepository.callLikeComment(token, idComment)?.enqueue(object : Callback<LikeResponse>{
             override fun onResponse(
-                call: Call<ObjectResponse<CommentResponse>>,
-                response: Response<ObjectResponse<CommentResponse>>
+                call: Call<LikeResponse>,
+                response: Response<LikeResponse>
             ) {
                 if (response.body() != null) {
                     view?.onSuccessCallLikeComment(response.body()!!)
@@ -120,7 +121,7 @@ class CommentPresenter(
                 }
             }
 
-            override fun onFailure(call: Call<ObjectResponse<CommentResponse>>, t: Throwable) {
+            override fun onFailure(call: Call<LikeResponse>, t: Throwable) {
                 view?.onError(t.message.toString())
             }
 

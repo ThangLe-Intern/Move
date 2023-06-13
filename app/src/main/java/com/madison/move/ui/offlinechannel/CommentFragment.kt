@@ -28,10 +28,10 @@ import com.ct7ct7ct7.androidvimeoplayer.view.VimeoPlayerActivity
 import com.google.gson.Gson
 import com.madison.move.R
 import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.LikeResponse
 import com.madison.move.data.model.ObjectResponse
 import com.madison.move.data.model.comment.CommentResponse
 import com.madison.move.data.model.comment.DataComment
-import com.madison.move.data.model.comment.DataLikeComment
 import com.madison.move.data.model.comment.SendComment
 import com.madison.move.data.model.videodetail.DataVideoDetail
 import com.madison.move.data.model.videosuggestion.DataVideoSuggestion
@@ -307,9 +307,9 @@ open class CommentFragment(
         replyParentId = 0
     }
 
-    override fun onSuccessCallLikeComment(objectResponse: ObjectResponse<CommentResponse>) {
-        presenter?.callLikeComment(("Bearer $tokenUser"), idComment = id)
-        Toast.makeText(activity, "Like Comment Success!", Toast.LENGTH_SHORT).show()
+    override fun onSuccessCallLikeComment(objectResponse: LikeResponse) {
+        Toast.makeText(activity, objectResponse.success, Toast.LENGTH_SHORT).show()
+        presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
     }
 
 
@@ -521,6 +521,14 @@ open class CommentFragment(
                 }
             }, replyParentId
         )
+
+        adapterComment.onClickListComment = object  : ListCommentAdapter.setListenerListComment{
+            override fun onClickListComment(commentId : Int) {
+                presenter?.callLikeComment("Bearer $tokenUser" ?: "", commentId)
+            }
+
+
+        }
 
         binding.listComment.apply {
             layoutManager = LinearLayoutManager(requireContext())

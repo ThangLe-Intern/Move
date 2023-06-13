@@ -79,38 +79,38 @@ class ListReplyAdapter(
                 }
 
                 layoutUserReply.visibility = View.GONE
-                btnLikeTick.visibility = View.GONE
-                btnDisLiketike.visibility = View.GONE
-
-
-                var currentNumber = 0
-                btnLikeTick.visibility = View.GONE
-                btnLike.setOnClickListener {
-                    if (btnLikeTick.isGone) {
-                        btnLikeTick.visibility = View.VISIBLE
-                        currentNumber++
-                        numberLike.text = currentNumber.toString()
-                        btnDisLiketike.visibility = View.GONE
-                    } else if (btnLikeTick.isVisible) {
-                        btnLikeTick.visibility = View.GONE
-                        currentNumber--
-                        numberLike.text = currentNumber.toString()
-                    }
-                }
-
-                btnDisLiketike.visibility = View.GONE
-                btnDisLike.setOnClickListener {
-                    if (btnDisLiketike.isGone) {
-                        if (btnLikeTick.isVisible) {
-                            currentNumber--
-                            numberLike.text = currentNumber.toString()
-                        }
-                        btnLikeTick.visibility = View.GONE
-                        btnDisLiketike.visibility = View.VISIBLE
-                    } else if (btnDisLiketike.isVisible) {
-                        btnDisLiketike.visibility = View.GONE
-                    }
-                }
+//                btnLikeTick.visibility = View.GONE
+//                btnDisLiketike.visibility = View.GONE
+//
+//
+//                var currentNumber = 0
+//                btnLikeTick.visibility = View.GONE
+//                btnLike.setOnClickListener {
+//                    if (btnLikeTick.isGone) {
+//                        btnLikeTick.visibility = View.VISIBLE
+//                        currentNumber++
+//                        numberLike.text = currentNumber.toString()
+//                        btnDisLiketike.visibility = View.GONE
+//                    } else if (btnLikeTick.isVisible) {
+//                        btnLikeTick.visibility = View.GONE
+//                        currentNumber--
+//                        numberLike.text = currentNumber.toString()
+//                    }
+//                }
+//
+//                btnDisLiketike.visibility = View.GONE
+//                btnDisLike.setOnClickListener {
+//                    if (btnDisLiketike.isGone) {
+//                        if (btnLikeTick.isVisible) {
+//                            currentNumber--
+//                            numberLike.text = currentNumber.toString()
+//                        }
+//                        btnLikeTick.visibility = View.GONE
+//                        btnDisLiketike.visibility = View.VISIBLE
+//                    } else if (btnDisLiketike.isVisible) {
+//                        btnDisLiketike.visibility = View.GONE
+//                    }
+//                }
             }
 
             //Set User Reply Info
@@ -142,17 +142,17 @@ class ListReplyAdapter(
                 commentContent.text = dataComment.content ?: ""
 
                 //Set User Like or Dislike Comment
-                if (dataComment.isLiked == true) {
-                    btnLikeTick.visibility = View.VISIBLE
-                    btnLike.visibility = View.GONE
-                    btnDisLiketike.visibility = View.GONE
-                }
-
-                if (dataComment.isDisliked == true) {
-                    btnLikeTick.visibility = View.GONE
-                    btnDisLike.visibility = View.GONE
-                    btnDisLiketike.visibility = View.VISIBLE
-                }
+//                if (dataComment.isLiked == true) {
+//                    btnLikeTick.visibility = View.VISIBLE
+//                    btnLike.visibility = View.GONE
+//                    btnDisLiketike.visibility = View.GONE
+//                }
+//
+//                if (dataComment.isDisliked == true) {
+//                    btnLikeTick.visibility = View.GONE
+//                    btnDisLike.visibility = View.GONE
+//                    btnDisLiketike.visibility = View.VISIBLE
+//                }
 
                 if (dataComment.likeCount != null && dataComment.likeCount > 0) {
                     numberLike.visibility = View.VISIBLE

@@ -99,6 +99,11 @@ interface MoveApi {
     fun callLikeComment(
         @Header("Authorization") authorization: String,
         @Path("id") commentId: Int,
-    ): Call<ObjectResponse<CommentResponse>>
+    ): Call<LikeResponse>
+    @POST("comments/{id}/dislike")
+    fun callDiskLikeComment(
+        @Header("Authorization") authorization: String,
+        @Path("id") commentId: Int,
+    ): Call<DiskLikeResponse>
 
 }
