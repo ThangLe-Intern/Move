@@ -3,6 +3,7 @@ package com.madison.move.ui.offlinechannel
 import android.util.Log
 import com.madison.move.data.DataManager
 import com.madison.move.data.model.ObjectResponse
+import com.madison.move.data.model.PostViewResponse
 import com.madison.move.data.model.comment.CommentResponse
 import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.comment.SendComment
@@ -32,8 +33,7 @@ class CommentPresenter(
             }
 
             override fun onFailure(call: Call<ObjectResponse<DataVideoDetail>>, t: Throwable) {
-                Log.e("ERROR", t.message.toString())
-                view?.onError(t.message.toString())
+                view?.onError(t.message ?: "")
             }
 
         })
@@ -54,8 +54,7 @@ class CommentPresenter(
             }
 
             override fun onFailure(call: Call<ObjectResponse<List<DataComment>>>, t: Throwable) {
-                Log.e("ERROR", t.message.toString())
-                view?.onError(t.message.toString())
+                view?.onError(t.message ?: "")
             }
 
         })
@@ -73,13 +72,12 @@ class CommentPresenter(
                     view?.onSuccessSendCommentVideo(response.body()!!)
                 }
                 if (response.errorBody() != null) {
-                    Log.e("KKE", response.errorBody().toString())
+                    view?.onError(response.message())
                 }
             }
 
             override fun onFailure(call: Call<ObjectResponse<CommentResponse>>, t: Throwable) {
-                Log.e("ERROR", t.message.toString())
-                view?.onError(t.message.toString())
+                view?.onError(t.message ?: "")
             }
 
         })
@@ -96,11 +94,34 @@ class CommentPresenter(
                     view?.onSuccessSendReplyComment(response.body()!!)
                 }
                 if (response.errorBody() != null) {
+                    view?.onError(response.message())
                 }
             }
 
             override fun onFailure(call: Call<ObjectResponse<CommentResponse>>, t: Throwable) {
-                view?.onError(t.message.toString())
+                view?.onError(t.message ?: "")
+            }
+
+        })
+    }
+
+    override fun postView(token: String, idVideo: Int) {
+        dataManager.movieRepository.postView(token, idVideo)?.enqueue(object :
+            Callback<ObjectResponse<PostViewResponse>> {
+            override fun onResponse(
+                call: Call<ObjectResponse<PostViewResponse>>,
+                response: Response<ObjectResponse<PostViewResponse>>
+            ) {
+                if (response.body() != null) {
+                    view?.onSuccessPostView(response.body()!!)
+                }
+                if (response.errorBody() != null) {
+                    view?.onError(response.message())
+                }
+            }
+
+            override fun onFailure(call: Call<ObjectResponse<PostViewResponse>>, t: Throwable) {
+                view?.onError(t.message ?: "")
             }
 
         })

@@ -529,6 +529,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     override fun onErrorGetProfile(errorType: String) {
         mListener?.onShowDisconnectDialog()
+        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
     }
 
 
@@ -633,6 +634,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
             USER_NAME_CONTAINS_WHITE_SPACE -> {
 
+            }
+            else -> {
+                Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
             }
         }
         mListener?.onHideProgressBar()

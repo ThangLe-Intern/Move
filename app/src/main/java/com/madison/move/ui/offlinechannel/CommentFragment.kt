@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,12 +24,16 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.ct7ct7ct7.androidvimeoplayer.listeners.VimeoPlayerReadyListener
+import com.ct7ct7ct7.androidvimeoplayer.listeners.VimeoPlayerStateListener
 import com.ct7ct7ct7.androidvimeoplayer.model.PlayerState
+import com.ct7ct7ct7.androidvimeoplayer.model.TextTrack
 import com.ct7ct7ct7.androidvimeoplayer.view.VimeoPlayerActivity
 import com.google.gson.Gson
 import com.madison.move.R
 import com.madison.move.data.model.DataUser
 import com.madison.move.data.model.ObjectResponse
+import com.madison.move.data.model.PostViewResponse
 import com.madison.move.data.model.comment.CommentResponse
 import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.comment.SendComment
@@ -42,7 +47,7 @@ import kotlin.math.roundToInt
 open class CommentFragment(
     private val dataVideoSuggestion: DataVideoSuggestion?,
     private val dataVideoCarousel: DataVideoSuggestion?
-) : BaseFragment<CommentPresenter>(), CommentListener, CommentContract.CommentContract {
+) : BaseFragment<CommentPresenter>(), CommentListener, CommentContract.CommentContract, DataCallback{
     private lateinit var binding: FragmentCommentBinding
     lateinit var adapterComment: ListCommentAdapter
     private var listComment: MutableList<DataComment> = mutableListOf()
@@ -55,6 +60,8 @@ open class CommentFragment(
     private var isShowAllComment = false
     private var replyParentId = 0
     private var dataComment: ObjectResponse<List<DataComment>>? = null
+    private var isPostView = false
+
     override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
 
     companion object {
@@ -214,22 +221,61 @@ open class CommentFragment(
         initScrollListener()
     }
 
+
     private fun playVideo(videoID: Int) {
         lifecycle.addObserver(binding.vimeoPlayerView)
 
         binding.vimeoPlayerView.clearCache()
-//        binding.vimeoPlayerView.initialize(true, 337510595)
-        binding.vimeoPlayerView.initialize(true, 834424858)
-        //        binding.vimeoPlayerView.initialize(true, videoID)
+        binding.vimeoPlayerView.initialize(true, 835832587)
+        //binding.vimeoPlayerView.initialize(true, videoID)
         binding.vimeoPlayerView.setFullscreenVisibility(true)
         binding.vimeoPlayerView.setMenuVisibility(true)
+
+
+        binding.vimeoPlayerView.addReadyListener(object : VimeoPlayerReadyListener {
+            override fun onReady(
+                title: String?,
+                duration: Float,
+                textTrackArray: Array<out TextTrack>?
+            ) {
+                Log.d("KKE", "On Ready")
+                TimeCounter.resetTimer()
+                TimeCounter.initialize()
+                TimeCounter.setCallback(this@CommentFragment)
+            }
+
+            override fun onInitFailed() {
+
+            }
+
+        })
+
+        binding.vimeoPlayerView.addStateListener(object : VimeoPlayerStateListener {
+            override fun onPlaying(duration: Float) {
+                if (!isPostView){
+                    TimeCounter.startTimer()
+                }
+            }
+
+            override fun onPaused(seconds: Float) {
+                TimeCounter.pauseTimer()
+            }
+
+            override fun onEnded(duration: Float) {
+                TimeCounter.resetTimer()
+            }
+
+        })
 
         binding.vimeoPlayerView.setFullscreenClickListener {
             //define the orientation
             val requestOrientation = VimeoPlayerActivity.REQUEST_ORIENTATION_LANDSCAPE
             playerFullScreenResultLauncher.launch(
                 VimeoPlayerActivity.createIntent(
-                    requireContext(), requestOrientation, binding.vimeoPlayerView
+                    requireContext(),
+                    requestOrientation,
+                    binding.vimeoPlayerView,
+                    TimeCounter.getTimeInSeconds()
                 )
             )
         }
@@ -244,6 +290,8 @@ open class CommentFragment(
                     val playAt =
                         it.data!!.getFloatExtra(VimeoPlayerActivity.RESULT_STATE_VIDEO_PLAY_AT, 0f)
                     binding.vimeoPlayerView.seekTo(playAt)
+
+                    TimeCounter.setTimeInSeconds(it.data!!.getIntExtra(VimeoPlayerActivity.TIME_COUNTER, 0))
 
                     val playerState =
                         it.data!!.getStringExtra(VimeoPlayerActivity.RESULT_STATE_PLAYER_STATE)
@@ -260,6 +308,16 @@ open class CommentFragment(
                 }
             }
         }
+    override fun onDataReceived(value: Int) {
+        if (!isPostView){
+            if (tokenUser != null){
+                presenter?.postView(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
+            }else{
+                presenter?.postView("", dataVideoSuggestion?.id ?: 0)
+            }
+        }
+    }
+
 
     override fun onSuccessGetVideoDetail(objectResponse: ObjectResponse<DataVideoDetail>) {
         playVideo(objectResponse.data?.urlVideo ?: 0)
@@ -289,7 +347,7 @@ open class CommentFragment(
     }
 
     override fun onError(errorMessage: String) {
-        Toast.makeText(activity, getString(R.string.txt_timeout), Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show()
     }
 
     override fun onSuccessSendCommentVideo(objectResponse: ObjectResponse<CommentResponse>) {
@@ -304,6 +362,11 @@ open class CommentFragment(
 
         //Get Data Again
         presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
+    }
+
+    override fun onSuccessPostView(objectResponse: ObjectResponse<PostViewResponse>) {
+        Toast.makeText(activity, "Post View Success", Toast.LENGTH_SHORT).show()
+        isPostView = true
     }
 
 
@@ -405,7 +468,8 @@ open class CommentFragment(
 
     override fun onLoadComment(listComment: MutableList<DataComment>) {
 
-        adapterComment = ListCommentAdapter(requireContext(),
+        adapterComment = ListCommentAdapter(
+            requireContext(),
             listComment,
             object : ListCommentAdapter.ReplyListener {
                 override fun userComment(
@@ -602,6 +666,7 @@ open class CommentFragment(
         }, 3000)
 
     }
+
 
 
 }

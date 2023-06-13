@@ -43,4 +43,7 @@ interface MoveDataSource {
 
     fun getFaq():Call<ObjectResponse<List<DataFAQ>>>?
     fun getGuidelines():Call<ObjectResponse<List<DataGuidelines>>>?
+
+    fun postView(token: String, videoId: Int):Call<ObjectResponse<PostViewResponse>>?
+
 }
