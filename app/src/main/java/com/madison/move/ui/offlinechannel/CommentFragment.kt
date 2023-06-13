@@ -238,7 +238,6 @@ open class CommentFragment(
                 duration: Float,
                 textTrackArray: Array<out TextTrack>?
             ) {
-                Log.d("KKE", "On Ready")
                 TimeCounter.resetTimer()
                 TimeCounter.initialize()
                 TimeCounter.setCallback(this@CommentFragment)
@@ -351,7 +350,7 @@ open class CommentFragment(
     }
 
     override fun onSuccessSendCommentVideo(objectResponse: ObjectResponse<CommentResponse>) {
-        Toast.makeText(activity, "Send Comment Success!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, getString(R.string.send_comment), Toast.LENGTH_SHORT).show()
 
         //Get Data Again
         presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
@@ -365,7 +364,7 @@ open class CommentFragment(
     }
 
     override fun onSuccessPostView(objectResponse: ObjectResponse<PostViewResponse>) {
-        Toast.makeText(activity, "Post View Success", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, getString(R.string.post_view), Toast.LENGTH_SHORT).show()
         isPostView = true
     }
 
@@ -448,7 +447,7 @@ open class CommentFragment(
                     SendComment(editText.text.toString().trim())
                 )
             } else {
-                Toast.makeText(activity, "Cannot send comment!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, getString(R.string.cannot_send_comment), Toast.LENGTH_SHORT).show()
             }
 
             clearEdittext(editText, cancelButton)
@@ -550,7 +549,7 @@ open class CommentFragment(
                             )
                             replyParentId = parentCommentId
                         } else {
-                            Toast.makeText(activity, "Cannot send comment!", Toast.LENGTH_SHORT)
+                            Toast.makeText(activity, getString(R.string.cannot_send_reply), Toast.LENGTH_SHORT)
                                 .show()
                         }
 
