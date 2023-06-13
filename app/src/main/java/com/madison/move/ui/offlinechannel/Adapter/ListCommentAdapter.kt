@@ -10,6 +10,7 @@ import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -114,6 +115,7 @@ class ListCommentAdapter(
             binding.apply {
                 //Handle Button Report
                 btnReport.setOnClickListener {
+
                     val inflater = LayoutInflater.from(context)
                     val dialogView = inflater.inflate(R.layout.dialog_report, null)
 
@@ -123,8 +125,12 @@ class ListCommentAdapter(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         true
                     )
-                    popupWindow.setBackgroundDrawable(context.resources.getDrawable(R.drawable.popup_shadow))
-
+                    fun Context.dpToPx(dp: Float): Int {
+                        val scale = resources.displayMetrics.density
+                        return (dp * scale + 0.5f).toInt()
+                    }
+                    popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.popup_shadow))
+                    popupWindow.elevation = context.dpToPx(8f).toFloat()
 
                     val location = IntArray(2)
                     btnReport.getLocationInWindow(location)
