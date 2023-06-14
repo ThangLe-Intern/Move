@@ -715,13 +715,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
         } else {
             days = (1..31).map { it.toString() }.toMutableList()
-//
-//                .isNotEmpty() || binding.dropdownYearText.text.toString().isNotEmpty()
-//            ) {
-//                (1..31).map { it.toString() }.toMutableList()
-//            } else {
-//                (1..31).map { it.toString() }.toMutableList()
-//            }
         }
 
         val dayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, days)
