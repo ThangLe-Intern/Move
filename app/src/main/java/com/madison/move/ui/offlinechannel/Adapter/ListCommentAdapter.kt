@@ -42,14 +42,11 @@ class ListCommentAdapter(
     }
 
     var onClickListComment: setListenerListComment? = null
-    var onClickDisLikeComment: setListenerDisLikeComment? = null
+
 
 
     interface setListenerListComment {
         fun onClickListComment(commentId: Int)
-    }
-
-    interface setListenerDisLikeComment {
         fun onClickDisLikeComment(commentId: Int)
     }
 
@@ -165,7 +162,6 @@ class ListCommentAdapter(
 
             //Set User Comment Info
             binding.apply {
-                Log.d("KKE", dataComment.isLiked.toString())
                 //Set Avatar
                 if (dataComment.user?.img != null) {
                     Glide.with(context).load(dataComment.user.img).into(binding.avatar)
@@ -215,7 +211,7 @@ class ListCommentAdapter(
                     dataComment.id?.let { id -> onClickListComment?.onClickListComment(id) }
                 }
                 btnDisLike.setOnClickListener {
-                    dataComment.id?.let { id -> onClickDisLikeComment?.onClickDisLikeComment(id) }
+                    dataComment.id?.let { id -> onClickListComment?.onClickDisLikeComment(id) }
                 }
 
 

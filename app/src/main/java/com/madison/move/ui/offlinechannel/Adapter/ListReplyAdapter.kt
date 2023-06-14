@@ -41,12 +41,11 @@ class ListReplyAdapter(
                 userData = Gson().fromJson(jsonUser, DataUser::class.java)
 
                 if (userData != null){
-                    btnReport.visibility= View.VISIBLE
+                    btnReport.visibility= View.GONE
                 }else{
                     btnReport.visibility = View.GONE
                 }
                 btnLike.setOnClickListener {
-                    Log.d("123123", (dataComment.id ?:0).toString())
                     dataComment.id?.let { id ->
                         onClickListReplyComment?.onClickListReplyComment(id) }
                 }
@@ -117,7 +116,6 @@ class ListReplyAdapter(
                 if (dataComment.isDisliked == true) {
                     btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
                 }
-
 
                 //Set Avatar
                 if (dataComment.user?.img != null) {

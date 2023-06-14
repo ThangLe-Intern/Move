@@ -56,6 +56,7 @@ open class CommentFragment(
     private var userData: DataUser? = null
     private var isShowAllComment = false
     private var replyParentId = 0
+
     private var dataComment: ObjectResponse<List<DataComment>>? = null
     override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
 
@@ -310,12 +311,10 @@ open class CommentFragment(
     }
 
     override fun onSuccessCallLikeComment(objectResponse: LikeResponse) {
-        Toast.makeText(activity, objectResponse.success, Toast.LENGTH_SHORT).show()
         presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
     }
 
     override fun onSuccessCallDiskLikeComment(objectResponse: DiskLikeResponse) {
-        Toast.makeText(activity, objectResponse.success, Toast.LENGTH_SHORT).show()
         presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
     }
 
@@ -528,10 +527,12 @@ open class CommentFragment(
 
                 override fun onClickListReplyComment(commentId: Int) {
                     presenter?.callLikeComment("Bearer $tokenUser,", commentId)
+                    replyParentId = commentId
                 }
 
                 override fun onClickDisLikeReplyComment(commentId: Int) {
                     presenter?.callDiskLikeComment("Bearer $tokenUser", commentId)
+                    replyParentId = commentId
                 }
             }, replyParentId
         )
@@ -539,12 +540,13 @@ open class CommentFragment(
         adapterComment.onClickListComment = object : ListCommentAdapter.setListenerListComment {
             override fun onClickListComment(commentId: Int) {
                 presenter?.callLikeComment("Bearer $tokenUser", commentId)
+                replyParentId = commentId
             }
-        }
-        adapterComment.onClickDisLikeComment = object : ListCommentAdapter.setListenerDisLikeComment {
-                override fun onClickDisLikeComment(commentId: Int) {
-                    presenter?.callDiskLikeComment("Bearer $tokenUser", commentId)
-                }
+
+            override fun onClickDisLikeComment(commentId: Int) {
+                presenter?.callDiskLikeComment("Bearer $tokenUser", commentId)
+                replyParentId = commentId
+            }
         }
 
         binding.listComment.apply {
