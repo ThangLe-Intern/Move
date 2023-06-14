@@ -89,6 +89,10 @@ class MoveCacheDataSource : MoveDataSource {
         return null
     }
 
+    override fun postView(token: String, videoId: Int): Call<ObjectResponse<PostViewResponse>>? {
+        return null
+    }
+
     override fun getVideoSuggestionForUser(token: String): Call<ObjectResponse<VideoSuggestion>>? {
         return null
     }

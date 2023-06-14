@@ -18,8 +18,7 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
     override fun getVideos(callback: MoveDataSource.LoadVideosCallback?) {
         moveApi.getMovies()?.enqueue(object : Callback<MoveResponse?> {
             override fun onResponse(
-                call: Call<MoveResponse?>,
-                response: Response<MoveResponse?>
+                call: Call<MoveResponse?>, response: Response<MoveResponse?>
             ) {
                 val movies: List<Video?>? =
                     if (response.body() != null) response.body()!!.videos else null
@@ -58,12 +57,16 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
         return moveApi.getCommentVideo(token, id)
     }
 
-    override fun sendComment(token: String, videoId: Int, content: SendComment): Call<ObjectResponse<CommentResponse>>? {
+    override fun sendComment(
+        token: String, videoId: Int, content: SendComment
+    ): Call<ObjectResponse<CommentResponse>>? {
         return moveApi.sendComment(token, videoId, content)
 
     }
 
-    override fun sendReply(token: String, commentId: Int, content: SendComment): Call<ObjectResponse<CommentResponse>>? {
+    override fun sendReply(
+        token: String, commentId: Int, content: SendComment
+    ): Call<ObjectResponse<CommentResponse>>? {
         return moveApi.sendReply(token, commentId, content)
     }
 
@@ -88,8 +91,13 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
         return moveApi.getGuidelines()
     }
 
+    override fun postView(token: String, videoId: Int): Call<ObjectResponse<PostViewResponse>>? {
+        return moveApi.postViewVideo(token, videoId)
+    }
+
+
     override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>> {
-        return moveApi.loginApi(email,password)
+        return moveApi.loginApi(email, password)
     }
 
     override fun logOutUser(token: String): Call<ObjectResponse<DataUser>> {
@@ -110,8 +118,7 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
 
 
     override fun updateProfileUser(
-        token: String,
-        profileRequest: ProfileRequest
+        token: String, profileRequest: ProfileRequest
     ): Call<ObjectResponse<DataUser>>? {
         return moveApi.updateProfile(token, profileRequest)
     }

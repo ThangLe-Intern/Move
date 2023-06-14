@@ -145,6 +145,11 @@
     <string name="txt_error_max_char">Maximum 100 characters required.</string>
     <string name="txt_error_fn_format">Full name format is incorrect.</string>
     <string name="txt_no_us_name">No UserName</string>
+    <string name="txt_timeout">Timeout Get Data</string>
+    <string name="send_comment">Send Comment Success!</string>
+    <string name="post_view">Post View Success</string>
+    <string name="cannot_send_comment">Cannot send comment!</string>
+    <string name="cannot_send_reply">Cannot send reply!</string>
 
 
 </resources>

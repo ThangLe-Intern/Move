@@ -88,7 +88,7 @@
         </androidx.cardview.widget.CardView>
 
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/img_video_suggestion_user_avatar"
             android:layout_width="@dimen/_25sdp"
             android:layout_height="@dimen/_25sdp"

@@ -54,7 +54,6 @@ public class VimeoPlayer extends WebView {
 
     public void playTwoStage() {
         evaluateJavascript("javascript:playTwoStage()", value -> {
-            System.out.println("playTwoStage");
         });
     }
 

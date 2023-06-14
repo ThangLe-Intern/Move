@@ -6,7 +6,7 @@ public class VimeoOptions {
     public boolean autoPlay = false;
     public boolean loop = false;
     public boolean muted = false;
-    public boolean originalControls = false;
+    public boolean originalControls = true;
     public boolean title = false;
     public String quality = "Auto";
     public int color = Color.rgb(0, 172, 240);

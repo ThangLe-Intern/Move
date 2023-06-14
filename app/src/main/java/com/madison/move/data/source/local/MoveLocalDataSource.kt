@@ -103,6 +103,11 @@ class MoveLocalDataSource private constructor(
         return null
     }
 
+    override fun postView(token: String, videoId: Int): Call<ObjectResponse<PostViewResponse>>? {
+        return null
+    }
+
+
     override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>>? {
         return null
     }
