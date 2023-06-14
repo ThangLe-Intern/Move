@@ -59,16 +59,24 @@ class MoveRepository private constructor(
         return moveRemote.getVideoDetail(id)
     }
 
-    override fun getCommentVideo(token:String, id: Int): Call<ObjectResponse<List<DataComment>>>? {
-        return moveRemote.getCommentVideo(token,id)
+    override fun getCommentVideo(token: String, id: Int): Call<ObjectResponse<List<DataComment>>>? {
+        return moveRemote.getCommentVideo(token, id)
     }
 
-    override fun sendComment(token: String, videoId: Int, content: SendComment): Call<ObjectResponse<CommentResponse>>? {
-        return moveRemote.sendComment(token,videoId,content)
+    override fun sendComment(
+        token: String,
+        videoId: Int,
+        content: SendComment
+    ): Call<ObjectResponse<CommentResponse>>? {
+        return moveRemote.sendComment(token, videoId, content)
     }
 
-    override fun sendReply(token: String, commentId: Int, content: SendComment): Call<ObjectResponse<CommentResponse>>? {
-        return moveRemote.sendReply(token,commentId,content)
+    override fun sendReply(
+        token: String,
+        commentId: Int,
+        content: SendComment
+    ): Call<ObjectResponse<CommentResponse>>? {
+        return moveRemote.sendReply(token, commentId, content)
     }
 
     override fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>? {
@@ -79,8 +87,12 @@ class MoveRepository private constructor(
         return moveRemote.getGuidelines()
     }
 
+    override fun postView(token: String, videoId: Int): Call<ObjectResponse<PostViewResponse>>? {
+        return moveRemote.postView(token, videoId)
+    }
+
     override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>>? {
-        return moveRemote.getTokenLogin(email,password)
+        return moveRemote.getTokenLogin(email, password)
     }
 
     override fun logOutUser(token: String): Call<ObjectResponse<DataUser>>? {
@@ -103,7 +115,7 @@ class MoveRepository private constructor(
         token: String,
         profileRequest: ProfileRequest
     ): Call<ObjectResponse<DataUser>>? {
-        return moveRemote.updateProfileUser(token,profileRequest)
+        return moveRemote.updateProfileUser(token, profileRequest)
     }
 
 

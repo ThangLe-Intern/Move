@@ -7,17 +7,22 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 
 import com.ct7ct7ct7.androidvimeoplayer.R;
 import com.ct7ct7ct7.androidvimeoplayer.listeners.VimeoPlayerReadyListener;
-import com.ct7ct7ct7.androidvimeoplayer.listeners.VimeoPlayerTimeListener;
+import com.ct7ct7ct7.androidvimeoplayer.listeners.VimeoPlayerStateListener;
 import com.ct7ct7ct7.androidvimeoplayer.model.TextTrack;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class VimeoPlayerActivity extends AppCompatActivity {
+
+
+public class VimeoPlayerActivity extends AppCompatActivity implements DataCallbackFullScreen {
+
+
+
     public static final String RESULT_STATE_VIDEO_ID = "RESULT_STATE_VIDEO_ID";
     public static final String RESULT_STATE_VIDEO_PLAY_AT = "RESULT_STATE_VIDEO_PLAY_AT";
     public static final String RESULT_STATE_PLAYER_STATE = "RESULT_STATE_PLAYER_STATE";
@@ -35,8 +40,9 @@ public class VimeoPlayerActivity extends AppCompatActivity {
     private static final String EXTRA_TOPIC_COLOR = "EXTRA_TOPIC_COLOR";
     private static final String EXTRA_LOOP = "EXTRA_LOOP";
     private static final String EXTRA_ASPECT_RATIO = "EXTRA_ASPECT_RATIO";
-
+    public static final String TIME_COUNTER = "TIME_COUNTER";
     private VimeoPlayerView vimeoPlayerView;
+
     private int videoId;
     private String hashKey;
     private String baseUrl;
@@ -47,7 +53,10 @@ public class VimeoPlayerActivity extends AppCompatActivity {
     private float aspectRatio;
     private String orientation;
 
-    public static Intent createIntent(Context context, String orientation, VimeoPlayerView vimeoPlayerView) {
+    private Integer timeCounter;
+    TimeCounterFullScreen timeCounterFullScreenFunction = new TimeCounterFullScreen();
+
+    public static Intent createIntent(Context context, String orientation, VimeoPlayerView vimeoPlayerView, Integer timeCounter) {
         Intent intent = new Intent(context, VimeoPlayerActivity.class);
         intent.putExtra(EXTRA_ORIENTATION, orientation);
         intent.putExtra(EXTRA_VIDEO_ID, vimeoPlayerView.getVideoId());
@@ -57,6 +66,7 @@ public class VimeoPlayerActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_TOPIC_COLOR, vimeoPlayerView.getTopicColor());
         intent.putExtra(EXTRA_LOOP, vimeoPlayerView.getLoop());
         intent.putExtra(EXTRA_ASPECT_RATIO, vimeoPlayerView.defaultOptions.aspectRatio);
+        intent.putExtra(TIME_COUNTER, timeCounter );
         return intent;
     }
 
@@ -86,10 +96,34 @@ public class VimeoPlayerActivity extends AppCompatActivity {
         vimeoPlayerView.setLoop(loop);
         vimeoPlayerView.setTopicColor(topicColor);
         vimeoPlayerView.initialize(true, videoId, hashKey, baseUrl);
+
+        //Get Time Counter
+        timeCounter =  getIntent().getIntExtra(TIME_COUNTER,0);
+
+        timeCounterFullScreenFunction.setTimeInSeconds(timeCounter);
+        vimeoPlayerView.addStateListener(new VimeoPlayerStateListener(){
+            @Override
+            public void onPlaying(float duration) {
+                timeCounterFullScreenFunction.startTimer();
+            }
+            @Override
+            public void onPaused(float seconds) {
+                timeCounterFullScreenFunction.pauseTimer();
+            }
+
+            @Override
+            public void onEnded(float duration) {
+                timeCounterFullScreenFunction.pauseTimer();
+            }
+        });
+
         vimeoPlayerView.addReadyListener(new VimeoPlayerReadyListener() {
             @Override
             public void onReady(String title, float duration, TextTrack[] textTrackArray) {
+                timeCounterFullScreenFunction.initialize();
+                timeCounterFullScreenFunction.setDataCallbackFullScreen(VimeoPlayerActivity.this);
                 endAt = duration;
+                vimeoPlayerView.play();
                 vimeoPlayerView.seekTo(startAt);
                 vimeoPlayerView.playTwoStage();
             }
@@ -99,11 +133,13 @@ public class VimeoPlayerActivity extends AppCompatActivity {
 
             }
         });
+
         vimeoPlayerView.addTimeListener(second -> {
             if (second >= endAt) {
                 vimeoPlayerView.pause();
             }
         });
+
         vimeoPlayerView.setFullscreenClickListener(v -> onBackPressed());
     }
 
@@ -113,6 +149,7 @@ public class VimeoPlayerActivity extends AppCompatActivity {
         intent.putExtra(RESULT_STATE_VIDEO_ID, videoId);
         intent.putExtra(RESULT_STATE_VIDEO_PLAY_AT, vimeoPlayerView.getCurrentTimeSeconds());
         intent.putExtra(RESULT_STATE_PLAYER_STATE, vimeoPlayerView.getPlayerState().name());
+        intent.putExtra(TIME_COUNTER, timeCounterFullScreenFunction.getTimeInSeconds() );
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
@@ -121,7 +158,12 @@ public class VimeoPlayerActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (REQUEST_ORIENTATION_AUTO.equals(orientation)) {
-            vimeoPlayerView.reset();
+            vimeoPlayerView.play();
         }
+    }
+
+    @Override
+    public void onDataReceivedFullScreen(Integer value) {
+
     }
 }

@@ -169,13 +169,13 @@ class ListCommentAdapter(
                 commentContent.text = dataComment.content ?: ""
 
                 //Set User Like or Dislike Comment
-                if (dataComment.isLiked == 0) {
+                if (dataComment.isLiked == true) {
                     btnLikeTick.visibility = View.VISIBLE
                     btnLike.visibility = View.GONE
                     btnDisLiketike.visibility = View.GONE
                 }
 
-                if (dataComment.isDisliked == 1) {
+                if (dataComment.isDisliked == true) {
                     btnLikeTick.visibility = View.GONE
                     btnDisLike.visibility = View.GONE
                     btnDisLiketike.visibility = View.VISIBLE

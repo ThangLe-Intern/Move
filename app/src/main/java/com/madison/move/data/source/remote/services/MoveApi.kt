@@ -94,4 +94,10 @@ interface MoveApi {
         @Body
         content: SendComment
     ): Call<ObjectResponse<CommentResponse>>
+
+    @POST("videos/{id}/views")
+    fun postViewVideo(
+        @Header("Authorization") authorization: String,
+        @Path("id") videoID: Int,
+    ): Call<ObjectResponse<PostViewResponse>>
 }
