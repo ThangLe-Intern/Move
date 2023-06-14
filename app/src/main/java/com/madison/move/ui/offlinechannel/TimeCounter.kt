@@ -14,23 +14,17 @@ object TimeCounter {
     private lateinit var runnable: Runnable
     private var isRunning: Boolean = false
     private var timeInSeconds: Int = 0
-
     private var callback: DataCallback? = null
-//    private var isPostView = false
 
     fun initialize() {
         handler = Handler(Looper.getMainLooper())
         runnable = Runnable {
             timeInSeconds++
             handler.postDelayed(runnable, 1000)
-
-            Log.d("KKE",timeInSeconds.toString())
-
-            if (timeInSeconds >= 30){
+            if (timeInSeconds >= 30) {
                 callback?.onDataReceived(timeInSeconds)
                 resetTimer()
                 handler.removeCallbacks(runnable)
-//                isPostView = true
             }
         }
     }

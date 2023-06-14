@@ -164,9 +164,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements DataCallba
 
     @Override
     public void onDataReceivedFullScreen(Integer value) {
-        Log.d("KKE","Receive Full Screen");
-/*        if (!isPostView){
-            presenter?.postView(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
-        }*/
+
     }
 }

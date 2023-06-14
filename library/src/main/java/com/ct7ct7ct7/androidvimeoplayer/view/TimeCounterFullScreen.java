@@ -26,7 +26,6 @@ public class TimeCounterFullScreen {
             public void run() {
                 timeInSeconds++;
                 handler.postDelayed(this, 1000);
-                Log.d("KKE", "Fullscreen: " + String.valueOf(timeInSeconds));
                 if (timeInSeconds == 30){
                     callback.onDataReceivedFullScreen(timeInSeconds);
                 }
