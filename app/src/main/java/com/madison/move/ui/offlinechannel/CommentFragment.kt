@@ -589,12 +589,10 @@ open class CommentFragment(
 
                 override fun onClickListReplyComment(commentId: Int) {
                     presenter?.callLikeComment("Bearer $tokenUser,", commentId)
-                    replyParentId = commentId
                 }
 
                 override fun onClickDisLikeReplyComment(commentId: Int) {
                     presenter?.callDiskLikeComment("Bearer $tokenUser", commentId)
-                    replyParentId = commentId
                 }
             }, replyParentId
         )
@@ -602,12 +600,12 @@ open class CommentFragment(
         adapterComment.onClickListComment = object : ListCommentAdapter.setListenerListComment {
             override fun onClickListComment(commentId: Int) {
                 presenter?.callLikeComment("Bearer $tokenUser", commentId)
-                replyParentId = commentId
+//                replyParentId = commentId
             }
 
             override fun onClickDisLikeComment(commentId: Int) {
                 presenter?.callDiskLikeComment("Bearer $tokenUser", commentId)
-                replyParentId = commentId
+//                replyParentId = commentId
             }
         }
 
