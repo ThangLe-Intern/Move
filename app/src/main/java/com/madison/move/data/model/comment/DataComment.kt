@@ -15,7 +15,7 @@ data class DataComment(
     @SerializedName("created_at")
     @Expose
     val createdAt: String?,
-    @SerializedName("created_time")
+    @SerializedName("times")
     @Expose
     val createdTime: String?,
     @SerializedName("dislike_count")
@@ -26,10 +26,10 @@ data class DataComment(
     val id: Int?,
     @SerializedName("is_disliked")
     @Expose
-    val isDisliked: Int?,
+    val isDisliked: Boolean?,
     @SerializedName("is_liked")
     @Expose
-    val isLiked: Int?,
+    val isLiked: Boolean?,
     @SerializedName("like_count")
     @Expose
     val likeCount: Int?,

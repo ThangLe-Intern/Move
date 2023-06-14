@@ -10,11 +10,10 @@
         android:id="@+id/vimeoPlayerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:autoPlay="false"
-        app:loop="false"
+        app:autoPlay="true"
+        app:loop="true"
         app:muted="false"
         app:showFullscreenOption="true"
-        app:showMenuOption="false"
         app:showOriginalControls="false"
         app:showTitle="true"
         />

@@ -100,9 +100,10 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                         view?.onSuccessGetProfileData(profileResponse.body()!!)
                     }
 
-                    if (profileResponse.errorBody() != null) {
-
+                    if (profileResponse.errorBody() != null){
+                        view?.onErrorGetProfile(profileResponse.message())
                     }
+
                 }
 
                 override fun onFailure(call: Call<ObjectResponse<DataUser>>, t: Throwable) {
@@ -122,6 +123,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                         view?.onSuccessGetCountryData(countryResponse.body()!!)
                     }
                     if (countryResponse.errorBody() != null) {
+                        view?.onErrorGetProfile(countryResponse.message())
                     }
                 }
 
@@ -147,7 +149,7 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                     }
 
                     if (stateResponse.errorBody() != null) {
-
+                        view?.onErrorGetProfile(stateResponse.message())
                     }
                 }
 

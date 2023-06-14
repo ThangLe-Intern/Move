@@ -529,6 +529,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     override fun onErrorGetProfile(errorType: String) {
         mListener?.onShowDisconnectDialog()
+        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
     }
 
 
@@ -634,6 +635,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             USER_NAME_CONTAINS_WHITE_SPACE -> {
 
             }
+            else -> {
+                Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
+            }
         }
         mListener?.onHideProgressBar()
     }
@@ -651,9 +655,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         binding.dropdownMonthText.inputType = EditorInfo.TYPE_NULL
         binding.dropdownYearText.inputType = EditorInfo.TYPE_NULL
 
-        onMonthSelected()
-        onYearSelected()
-
         val monthAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, months)
 
         val yearAdapter =
@@ -661,6 +662,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
         binding.dropdownMonthText.setAdapter(monthAdapter)
         binding.dropdownYearText.setAdapter(yearAdapter)
+
+        onMonthSelected()
+        onYearSelected()
 
 
     }
@@ -678,7 +682,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     }
 
     private fun onMonthSelected() {
-
 
 
         binding.dropdownMonthText.setOnItemClickListener { parent, _, position, _ ->
@@ -700,6 +703,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     private fun onHandleListOfDay(monthSelected: String, yearSelected: String) {
         binding.dropdownDayText.inputType = EditorInfo.TYPE_NULL
         val days: MutableList<String>
+
         if (isThirtyDaysMonth(monthSelected)) {
             days = (1..30).map { it.toString() }.toMutableList()
         } else if (monthSelected == "Feb") {
@@ -708,14 +712,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             } else {
                 (1..28).map { it.toString() }.toMutableList()
             }
+
         } else {
-            days = if (binding.dropdownMonthText.text.toString()
-                    .isNotEmpty() || binding.dropdownYearText.text.toString().isNotEmpty()
-            ) {
-                (1..31).map { it.toString() }.toMutableList()
-            } else {
-                mutableListOf()
-            }
+            days = (1..31).map { it.toString() }.toMutableList()
         }
 
         val dayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, days)
