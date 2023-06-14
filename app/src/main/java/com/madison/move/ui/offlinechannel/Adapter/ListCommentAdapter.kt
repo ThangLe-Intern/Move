@@ -83,8 +83,16 @@ class ListCommentAdapter(
                     txtShow.text =
                         context.getString(R.string.Show, dataComment.replies.size.toString() ?: "")
 
-                    if (replyParentId != 0 && dataComment.id == replyParentId) {
-                        listReply.visibility = View.VISIBLE
+                    if (replyParentId != 0){
+                        if (dataComment.id == replyParentId ) {
+                            listReply.visibility = View.VISIBLE
+                        }else{
+                            dataComment.replies.forEach {
+                                if (it.id == replyParentId){
+                                    listReply.visibility = View.VISIBLE
+                                }
+                            }
+                        }
                     }
 
                     layoutShow.setOnClickListener {
