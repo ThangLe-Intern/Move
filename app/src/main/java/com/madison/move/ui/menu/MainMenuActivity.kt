@@ -50,7 +50,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     private var tokenResponse: ObjectResponse<DataUser>? = null
     private var getSharedPreferences: SharedPreferences? = null
     private var fragmentLogin: DialogFragment? = null
-    var disconnectDialog: Dialog? = null
+    private var disconnectDialog: Dialog? = null
+    var progressDialog: Dialog? = null
     val gson = Gson()
 
     companion object {
@@ -359,16 +360,26 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     }
 
     override fun onShowProgressBar() {
-        mainMenuBinding.progressMainLayout.visibility = View.VISIBLE
+        progressDialog = Dialog(this)
+        progressDialog?.apply {
+            setContentView(R.layout.progress_loading)
+            setCanceledOnTouchOutside(false)
+            window?.apply {
+                setLayout(
+                    WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT
+                )
+                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            }
+            show()
+        }
     }
 
     override fun onHideProgressBar() {
-        mainMenuBinding.progressMainLayout.visibility = View.GONE
+        progressDialog?.dismiss()
     }
 
 
     private fun onShowProgressDialog() {
-
         disconnectDialog = Dialog(this)
         disconnectDialog?.apply {
             setContentView(R.layout.progress_dialog)

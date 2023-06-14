@@ -701,7 +701,10 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             }
         }
 
-        val daySelected = binding.dropDownProfileDay.editText?.text.toString()
+        var daySelected = binding.dropDownProfileDay.editText?.text.toString()
+        if(daySelected.startsWith("0")){
+          daySelected = daySelected.substring(1)
+        }
         if (daySelected != "" && daySelected !in days ) {
             binding.dropdownDayText.setText(days.last())
         }

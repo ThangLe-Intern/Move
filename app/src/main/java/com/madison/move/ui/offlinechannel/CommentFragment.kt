@@ -317,6 +317,8 @@ open class CommentFragment(
             }else{
                 presenter?.postView("", dataVideoSuggestion?.id ?: 0)
             }
+        }else{
+            TimeCounter.pauseTimer()
         }
     }
 
@@ -326,16 +328,12 @@ open class CommentFragment(
     }
 
     override fun onSuccessGetCommentVideo(objectResponse: ObjectResponse<List<DataComment>>) {
-/*        dataComment = objectResponse.data?.map {
-            it.value!!
-        }*/
-
         dataComment = objectResponse
 
         //Get List Comment
         getData()
 
-//        Handle display view when login
+        //Handle display view when login
         if (tokenUser != null) {
             userComment(
                 binding.cancelButton,
@@ -343,10 +341,7 @@ open class CommentFragment(
                 binding.edtUserComment
             )
         }
-
         onLoadComment(listComment)
-
-
     }
 
     override fun onError(errorMessage: String) {
@@ -588,7 +583,7 @@ open class CommentFragment(
                 }
 
                 override fun onClickListReplyComment(commentId: Int) {
-                    presenter?.callLikeComment("Bearer $tokenUser,", commentId)
+                    presenter?.callLikeComment("Bearer $tokenUser", commentId)
                     replyParentId = commentId
                 }
 
