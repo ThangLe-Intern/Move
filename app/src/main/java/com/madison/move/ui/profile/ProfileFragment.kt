@@ -687,36 +687,25 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         binding.dropdownDayText.inputType = EditorInfo.TYPE_NULL
         var days: MutableList<String>
 
-        if (isThirtyDaysMonth(monthSelected)) {
-            days = (1..30).map { it.toString() }.toMutableList()
-            if (binding.dropDownProfileDay.editText?.text.toString() == "31") {
-                binding.dropdownDayText.setText("30")
-            }
+        days = if (isThirtyDaysMonth(monthSelected)) {
+            (1..30).map { it.toString() }.toMutableList()
         } else if (monthSelected == "Feb") {
-            val daySelected = binding.dropDownProfileDay.editText?.text.toString()
-
-            days = (1..28).map { it.toString() }.toMutableList()
-            if (daySelected != ""){
-                if (daySelected.toInt() > 28){
-                    binding.dropdownDayText.setText("28")
-                }
-            }
-
+            (1..28).map { it.toString() }.toMutableList()
         } else {
-            days = (1..31).map { it.toString() }.toMutableList()
+            (1..31).map { it.toString() }.toMutableList()
         }
 
         if (yearSelected != ""){
-            val daySelected = binding.dropDownProfileDay.editText?.text.toString()
             if (isLeapYear(yearSelected.toInt()) && monthSelected == "Feb" ){
                 days = (1..29).map { it.toString() }.toMutableList()
-                if(daySelected != ""){
-                    if (binding.dropDownProfileDay.editText?.text.toString().toInt() > 29) {
-                        binding.dropdownDayText.setText("29")
-                    }
-                }
             }
         }
+
+        val daySelected = binding.dropDownProfileDay.editText?.text.toString()
+        if (daySelected != "" && daySelected !in days ) {
+            binding.dropdownDayText.setText(days.last())
+        }
+
         val dayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, days)
         binding.dropdownDayText.setAdapter(dayAdapter)
 
