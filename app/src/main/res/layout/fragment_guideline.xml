@@ -18,11 +18,17 @@
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold" />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerviewCAndG"
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"/>
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerviewCAndG"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp" />
+    </ScrollView>
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

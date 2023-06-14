@@ -9,7 +9,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +31,8 @@ import com.ct7ct7ct7.androidvimeoplayer.view.VimeoPlayerActivity
 import com.google.gson.Gson
 import com.madison.move.R
 import com.madison.move.data.model.DataUser
+import com.madison.move.data.model.DiskLikeResponse
+import com.madison.move.data.model.LikeResponse
 import com.madison.move.data.model.ObjectResponse
 import com.madison.move.data.model.PostViewResponse
 import com.madison.move.data.model.comment.CommentResponse
@@ -59,6 +60,7 @@ open class CommentFragment(
     private var userData: DataUser? = null
     private var isShowAllComment = false
     private var replyParentId = 0
+
     private var dataComment: ObjectResponse<List<DataComment>>? = null
     private var isPostView = false
 
@@ -89,6 +91,7 @@ open class CommentFragment(
         super.onViewCreated(view, savedInstanceState)
         binding.listComment.isNestedScrollingEnabled = false
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -343,6 +346,7 @@ open class CommentFragment(
 
         onLoadComment(listComment)
 
+
     }
 
     override fun onError(errorMessage: String) {
@@ -366,6 +370,14 @@ open class CommentFragment(
     override fun onSuccessPostView(objectResponse: ObjectResponse<PostViewResponse>) {
         Toast.makeText(activity, getString(R.string.post_view), Toast.LENGTH_SHORT).show()
         isPostView = true
+    }
+
+    override fun onSuccessCallLikeComment(objectResponse: LikeResponse) {
+        presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
+    }
+
+    override fun onSuccessCallDiskLikeComment(objectResponse: DiskLikeResponse) {
+        presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
     }
 
 
@@ -466,7 +478,6 @@ open class CommentFragment(
     }
 
     override fun onLoadComment(listComment: MutableList<DataComment>) {
-
         adapterComment = ListCommentAdapter(
             requireContext(),
             listComment,
@@ -575,8 +586,30 @@ open class CommentFragment(
                         requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
                 }
+
+                override fun onClickListReplyComment(commentId: Int) {
+                    presenter?.callLikeComment("Bearer $tokenUser,", commentId)
+                    replyParentId = commentId
+                }
+
+                override fun onClickDisLikeReplyComment(commentId: Int) {
+                    presenter?.callDiskLikeComment("Bearer $tokenUser", commentId)
+                    replyParentId = commentId
+                }
             }, replyParentId
         )
+
+        adapterComment.onClickListComment = object : ListCommentAdapter.setListenerListComment {
+            override fun onClickListComment(commentId: Int) {
+                presenter?.callLikeComment("Bearer $tokenUser", commentId)
+                replyParentId = commentId
+            }
+
+            override fun onClickDisLikeComment(commentId: Int) {
+                presenter?.callDiskLikeComment("Bearer $tokenUser", commentId)
+                replyParentId = commentId
+            }
+        }
 
         binding.listComment.apply {
             layoutManager = LinearLayoutManager(requireContext())

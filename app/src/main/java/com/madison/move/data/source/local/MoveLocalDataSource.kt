@@ -66,11 +66,32 @@ class MoveLocalDataSource private constructor(
         return null
     }
 
-    override fun sendComment(token: String, videoId: Int, content: SendComment): Call<ObjectResponse<CommentResponse>>? {
+    override fun sendComment(
+        token: String,
+        videoId: Int,
+        content: SendComment
+    ): Call<ObjectResponse<CommentResponse>>? {
         return null
     }
 
-    override fun sendReply(token: String, commentId: Int, content: SendComment): Call<ObjectResponse<CommentResponse>>? {
+    override fun sendReply(
+        token: String,
+        commentId: Int,
+        content: SendComment
+    ): Call<ObjectResponse<CommentResponse>>? {
+        return null
+    }
+
+    override fun callLikeComment(
+        token: String,
+        commentId: Int
+    ): Call<LikeResponse>? {
+        return null
+    }
+    override fun callDiskLikeComment(
+        token: String,
+        commentId: Int
+    ): Call<DiskLikeResponse>? {
         return null
     }
 

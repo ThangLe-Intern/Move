@@ -100,4 +100,16 @@ interface MoveApi {
         @Header("Authorization") authorization: String,
         @Path("id") videoID: Int,
     ): Call<ObjectResponse<PostViewResponse>>
+
+    @POST("comments/{id}/like")
+    fun callLikeComment(
+        @Header("Authorization") authorization: String,
+        @Path("id") commentId: Int,
+    ): Call<LikeResponse>
+    @POST("comments/{id}/dislike")
+    fun callDiskLikeComment(
+        @Header("Authorization") authorization: String,
+        @Path("id") commentId: Int,
+    ): Call<DiskLikeResponse>
+
 }

@@ -68,6 +68,19 @@ class MoveCacheDataSource : MoveDataSource {
         return null
     }
 
+    override fun callLikeComment(
+        token: String,
+        commentId: Int
+    ): Call<LikeResponse>? {
+        return null
+    }
+    override fun callDiskLikeComment(
+        token: String,
+        commentId: Int
+    ): Call<DiskLikeResponse>? {
+        return null
+    }
+
     override fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>? {
         return null
     }

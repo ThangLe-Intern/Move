@@ -79,6 +79,8 @@
         android:layout_height="30dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintStart_toEndOf="@+id/item_user_avatar"
         app:layout_constraintTop_toBottomOf="@+id/commentContent"
         app:srcCompat="@drawable/ic_likenottick" />
@@ -97,18 +99,6 @@
         app:layout_constraintTop_toBottomOf="@+id/commentContent" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/btn_like_tick"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="15dp"
-        android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@+id/item_user_avatar"
-        app:layout_constraintTop_toBottomOf="@+id/commentContent"
-        app:srcCompat="@drawable/ic_lickticked" />
-
-
-    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btnDisLike"
         android:layout_width="30dp"
         android:layout_height="30dp"
@@ -116,22 +106,20 @@
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toEndOf="@+id/number_like"
         app:layout_constraintTop_toBottomOf="@+id/commentContent"
-        app:srcCompat="@drawable/ic_disklikenottick"
+        app:srcCompat="@drawable/ic_disklikenottick" />
 
-        />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/btnDisLiketike"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="@dimen/_15sdp"
-        android:layout_marginTop="20dp"
+    <TextView
+        android:id="@+id/number_dislike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:text="0"
+        android:textColor="@color/move_green"
         android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@+id/number_like"
-        app:layout_constraintTop_toBottomOf="@+id/commentContent"
-        app:srcCompat="@drawable/ic_diskliketicked"
-
-        />
+        app:layout_constraintBottom_toBottomOf="@id/btnDisLike"
+        app:layout_constraintEnd_toStartOf="@id/btnReply"
+        app:layout_constraintStart_toEndOf="@+id/btnDisLike"
+        app:layout_constraintTop_toBottomOf="@+id/commentContent" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/btnReply"
@@ -151,6 +139,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginTop="12dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/commentContent"
         app:srcCompat="@drawable/ic_report" />

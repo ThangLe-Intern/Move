@@ -164,10 +164,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
             R.string.close_name
         )
 
-
-
         toggle.isDrawerIndicatorEnabled = false
-        toggle.setHomeAsUpIndicator(R.drawable.ic_menu)
+        toggle.setHomeAsUpIndicator(R.drawable.menu_icon)
 
         mainMenuBinding.groupItemChild.visibility = View.GONE
         toggle.setToolbarNavigationClickListener { view ->
@@ -176,7 +174,6 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
 
         mainMenuBinding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-
 
         mainMenuBinding.groupItemChild.visibility = View.GONE
         mainMenuBinding.menuTvMore.setOnClickListener {

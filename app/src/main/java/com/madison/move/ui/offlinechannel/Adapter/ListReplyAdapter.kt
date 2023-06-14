@@ -2,22 +2,29 @@ package com.madison.move.ui.offlinechannel.Adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
+import android.util.Log
 import android.view.*
 import android.widget.PopupWindow
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.madison.move.R
+import com.madison.move.data.model.DataUser
 import com.madison.move.data.model.comment.DataComment
 import com.madison.move.databinding.ItemUserCommentBinding
+import com.madison.move.ui.offlinechannel.CommentFragment
 
 class ListReplyAdapter(
     private var context: Context,
     var listReply: MutableList<DataComment>,
+    var onClickListReplyComment : ListCommentAdapter.ReplyListener?,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+    private var getSharedPreferences: SharedPreferences? = null
+    private var userData: DataUser? = null
 
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -26,14 +33,36 @@ class ListReplyAdapter(
         fun onBind(dataComment: DataComment) {
             binding.apply {
 
+                getSharedPreferences = context.getSharedPreferences(
+                    CommentFragment.TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
+                )
+                val jsonUser = getSharedPreferences?.getString(ListCommentAdapter.USER_DATA, null)
+
+                userData = Gson().fromJson(jsonUser, DataUser::class.java)
+
+                if (userData != null){
+                    btnReport.visibility= View.GONE
+                }else{
+                    btnReport.visibility = View.GONE
+                }
+                btnLike.setOnClickListener {
+                    dataComment.id?.let { id ->
+                        onClickListReplyComment?.onClickListReplyComment(id) }
+                }
+                btnDisLike.setOnClickListener{
+                    dataComment.id?.let { id -> onClickListReplyComment?.onClickDisLikeReplyComment(id) }
+                }
+
                 userAvatarReply.setImageResource(R.drawable.avatar)
 
                 line2.visibility = View.GONE
                 layoutShow.visibility = View.GONE
 
+
                 btnReply.visibility = View.INVISIBLE
 
                 btnReport.setOnClickListener {
+
                     val inflater = LayoutInflater.from(context)
                     val dialogView = inflater.inflate(R.layout.dialog_report, null)
 
@@ -43,11 +72,17 @@ class ListReplyAdapter(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         true
                     )
+                    fun Context.dpToPx(dp: Float): Int {
+                        val scale = resources.displayMetrics.density
+                        return (dp * scale + 0.5f).toInt()
+                    }
+                    popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.popup_shadow))
+                    popupWindow.elevation = context.dpToPx(8f).toFloat()
 
                     val location = IntArray(2)
                     btnReport.getLocationInWindow(location)
 
-                    val x = location[0] - dialogView.width - 1 // Dịch dialog sang bên trái 1 đơn vị
+                    val x = location[0] - dialogView.width - 1
                     val y = location[1] - dialogView.height
 
                     popupWindow.showAtLocation(btnReport, Gravity.NO_GRAVITY, x, y)
@@ -70,51 +105,25 @@ class ListReplyAdapter(
                     }
                 }
 
+
+
                 layoutUserReply.visibility = View.GONE
-                btnLikeTick.visibility = View.GONE
-                btnDisLiketike.visibility = View.GONE
 
-
-                var currentNumber = 0
-                btnLikeTick.visibility = View.GONE
-                btnLike.setOnClickListener {
-                    if (btnLikeTick.isGone) {
-                        btnLikeTick.visibility = View.VISIBLE
-                        currentNumber++
-                        numberLike.text = currentNumber.toString()
-                        btnDisLiketike.visibility = View.GONE
-                    } else if (btnLikeTick.isVisible) {
-                        btnLikeTick.visibility = View.GONE
-                        currentNumber--
-                        numberLike.text = currentNumber.toString()
-                    }
+                if (dataComment.isLiked == true) {
+                    btnLike.setImageResource(R.drawable.ic_lickticked)
                 }
 
-                btnDisLiketike.visibility = View.GONE
-                btnDisLike.setOnClickListener {
-                    if (btnDisLiketike.isGone) {
-                        if (btnLikeTick.isVisible) {
-                            currentNumber--
-                            numberLike.text = currentNumber.toString()
-                        }
-                        btnLikeTick.visibility = View.GONE
-                        btnDisLiketike.visibility = View.VISIBLE
-                    } else if (btnDisLiketike.isVisible) {
-                        btnDisLiketike.visibility = View.GONE
-                    }
+                if (dataComment.isDisliked == true) {
+                    btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
                 }
-            }
-
-            //Set User Reply Info
-            //Set User Comment Info
-            binding.apply {
 
                 //Set Avatar
                 if (dataComment.user?.img != null) {
-                    Glide.with(context).load(dataComment.user.img).into(binding.avatar)
+                    Glide.with(context).load(dataComment.user.img).into(avatar)
                 } else {
-                    binding.avatar.setImageResource(R.drawable.avatar)
+                    avatar.setImageResource(R.drawable.avatar)
                 }
+
 
                 //Set Username
                 username.text =
@@ -134,17 +143,6 @@ class ListReplyAdapter(
                 commentContent.text = dataComment.content ?: ""
 
                 //Set User Like or Dislike Comment
-                if (dataComment.isLiked == true) {
-                    btnLikeTick.visibility = View.VISIBLE
-                    btnLike.visibility = View.GONE
-                    btnDisLiketike.visibility = View.GONE
-                }
-
-                if (dataComment.isDisliked == true) {
-                    btnLikeTick.visibility = View.GONE
-                    btnDisLike.visibility = View.GONE
-                    btnDisLiketike.visibility = View.VISIBLE
-                }
 
                 if (dataComment.likeCount != null && dataComment.likeCount > 0) {
                     numberLike.visibility = View.VISIBLE
@@ -152,10 +150,9 @@ class ListReplyAdapter(
                 } else {
                     numberLike.visibility = View.GONE
                 }
+
+
             }
-
-
-
         }
     }
 

@@ -4,11 +4,13 @@ package com.madison.move.ui.offlinechannel.Adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import android.view.*
 import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,8 +18,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.madison.move.R
-import com.madison.move.data.model.DataUser
 import com.madison.move.data.model.comment.DataComment
+import com.madison.move.data.model.DataUser
 import com.madison.move.databinding.ItemUserCommentBinding
 import com.madison.move.ui.offlinechannel.CommentFragment
 
@@ -25,7 +27,7 @@ class ListCommentAdapter(
     private var context: Context,
     var listComment: MutableList<DataComment>,
     val replyListener: ReplyListener,
-    var replyParentId : Int
+    var replyParentId: Int
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var adapterReply: ListReplyAdapter? = null
     private var getSharedPreferences: SharedPreferences? = null
@@ -39,12 +41,21 @@ class ListCommentAdapter(
 
     }
 
+    var onClickListComment: setListenerListComment? = null
+
+
+
+    interface setListenerListComment {
+        fun onClickListComment(commentId: Int)
+        fun onClickDisLikeComment(commentId: Int)
+    }
+
+
 
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("ClickableViewAccessibility")
         fun onBind(dataComment: DataComment) {
-
             getSharedPreferences = context.getSharedPreferences(
                 CommentFragment.TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
             )
@@ -52,8 +63,9 @@ class ListCommentAdapter(
             val jsonUser = getSharedPreferences?.getString(USER_DATA, null)
             userData = Gson().fromJson(jsonUser, DataUser::class.java)
 
-            val adapterReply = ListReplyAdapter(
-                context, dataComment.replies as MutableList<DataComment>
+            var adapterReply = ListReplyAdapter(
+                context, dataComment.replies as MutableList<DataComment>,
+                replyListener
             )
 
             //Add Reply Data
@@ -71,7 +83,7 @@ class ListCommentAdapter(
                     txtShow.text =
                         context.getString(R.string.Show, dataComment.replies.size.toString() ?: "")
 
-                    if (replyParentId != 0 && replyParentId == dataComment.id){
+                    if (replyParentId != 0) {
                         listReply.visibility = View.VISIBLE
                     }
 
@@ -100,6 +112,7 @@ class ListCommentAdapter(
             binding.apply {
                 //Handle Button Report
                 btnReport.setOnClickListener {
+
                     val inflater = LayoutInflater.from(context)
                     val dialogView = inflater.inflate(R.layout.dialog_report, null)
 
@@ -109,6 +122,12 @@ class ListCommentAdapter(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         true
                     )
+                    fun Context.dpToPx(dp: Float): Int {
+                        val scale = resources.displayMetrics.density
+                        return (dp * scale + 0.5f).toInt()
+                    }
+                    popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.popup_shadow))
+                    popupWindow.elevation = context.dpToPx(8f).toFloat()
 
                     val location = IntArray(2)
                     btnReport.getLocationInWindow(location)
@@ -143,7 +162,6 @@ class ListCommentAdapter(
 
             //Set User Comment Info
             binding.apply {
-
                 //Set Avatar
                 if (dataComment.user?.img != null) {
                     Glide.with(context).load(dataComment.user.img).into(binding.avatar)
@@ -161,24 +179,20 @@ class ListCommentAdapter(
                 } else {
                     bluetick.visibility = View.VISIBLE
                 }
-
                 //Set Comment Time
                 commentTime.text = dataComment.createdTime ?: ""
 
                 //Set Content Comment
                 commentContent.text = dataComment.content ?: ""
 
+
                 //Set User Like or Dislike Comment
                 if (dataComment.isLiked == true) {
-                    btnLikeTick.visibility = View.VISIBLE
-                    btnLike.visibility = View.GONE
-                    btnDisLiketike.visibility = View.GONE
+                    btnLike.setImageResource(R.drawable.ic_lickticked)
                 }
 
                 if (dataComment.isDisliked == true) {
-                    btnLikeTick.visibility = View.GONE
-                    btnDisLike.visibility = View.GONE
-                    btnDisLiketike.visibility = View.VISIBLE
+                    btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
                 }
 
                 if (dataComment.likeCount != null && dataComment.likeCount > 0) {
@@ -187,45 +201,21 @@ class ListCommentAdapter(
                 } else {
                     numberLike.visibility = View.GONE
                 }
-            }
 
-            //Handle Like-Dislike
-            binding.apply {
-                var currentNumber: Int? = 0
-                btnLikeTick.visibility = View.GONE
+                if (dataComment.dislikeCount != null && dataComment.dislikeCount > 0) {
+                    numberDislike.text = dataComment.dislikeCount.toString()
+                }
+
                 btnLike.setOnClickListener {
-                    if (btnLikeTick.isGone) {
-                        btnLikeTick.visibility = View.VISIBLE
-                        currentNumber = currentNumber?.plus(1) ?: 1
-                        numberLike.text = currentNumber.toString()
-                        btnDisLiketike.visibility = View.GONE
-                    } else if (btnLikeTick.isVisible) {
-                        btnLikeTick.visibility = View.GONE
-                        currentNumber = currentNumber?.minus(1) ?: 0
-                        numberLike.text = currentNumber.toString()
-                    }
+                    dataComment.id?.let { id -> onClickListComment?.onClickListComment(id) }
                 }
-
-                //Handle Dislike Button
-                btnDisLiketike.visibility = View.GONE
                 btnDisLike.setOnClickListener {
-                    if (btnDisLiketike.isGone) {
-                        if (btnLikeTick.isVisible) {
-                            currentNumber = currentNumber?.minus(1) ?: 0
-                            numberLike.text = currentNumber.toString()
-                        }
-                        btnLikeTick.visibility = View.GONE
-                        btnDisLiketike.visibility = View.VISIBLE
-                    } else if (btnDisLiketike.isVisible) {
-                        btnDisLiketike.visibility = View.GONE
-                    }
+                    dataComment.id?.let { id -> onClickListComment?.onClickDisLikeComment(id) }
                 }
-            }
 
-            //Handle Show/Hide Reply Button
-            binding.apply {
+
+                //Handle Show/Hide Reply Button
                 layoutUserReply.visibility = View.GONE
-
                 if (userData != null) {
                     if (userData?.img != null) {
                         Glide.with(context).load(userData?.img).into(userAvatarReply)
@@ -248,6 +238,7 @@ class ListCommentAdapter(
                         }
                     }
                 } else {
+                    btnReport.visibility = View.GONE
                     btnReply.visibility = View.GONE
                 }
             }
@@ -272,7 +263,6 @@ class ListCommentAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as ViewHolder).onBind(listComment[position])
-
     }
 
     override fun getItemCount(): Int {
@@ -304,7 +294,13 @@ class ListCommentAdapter(
             cancelButton: AppCompatButton
         )
 
+
         fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton)
         fun hideKeyboard(view: View)
+
+        fun onClickListReplyComment(commentId: Int)
+        fun onClickDisLikeReplyComment(commentId: Int)
+
+
     }
 }

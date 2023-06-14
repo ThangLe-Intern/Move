@@ -79,6 +79,19 @@ class MoveRepository private constructor(
         return moveRemote.sendReply(token, commentId, content)
     }
 
+    override fun callLikeComment(
+        token: String,
+        commentId: Int
+    ): Call<LikeResponse>? {
+        return moveRemote.callLikeComment(token,commentId)
+    }
+    override fun callDiskLikeComment(
+        token: String,
+        commentId: Int
+    ): Call<DiskLikeResponse>? {
+        return moveRemote.callDiskLikeComment(token,commentId)
+    }
+
     override fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>? {
         return moveRemote.getFaq()
     }
