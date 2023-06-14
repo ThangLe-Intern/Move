@@ -335,14 +335,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     }
 
     override fun onError(error: String?) {
-        fragmentLogin?.view?.findViewById<RelativeLayout>(R.id.progress_main_layout)?.visibility =
-            View.GONE
+        onHideProgressBar()
         fragmentLogin?.view?.visibility = View.VISIBLE
         fragmentLogin?.view?.findViewById<RelativeLayout>(R.id.layout_error_message)?.visibility =
             View.VISIBLE
-
-        mainMenuBinding.progressMainLayout.visibility = View.GONE
-
     }
 
     override fun onShowDisconnectDialog() {
@@ -360,17 +356,20 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     }
 
     override fun onShowProgressBar() {
-        progressDialog = Dialog(this)
-        progressDialog?.apply {
-            setContentView(R.layout.progress_loading)
-            setCanceledOnTouchOutside(false)
-            window?.apply {
-                setLayout(
-                    WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT
-                )
-                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        if (disconnectDialog?.isShowing == false || disconnectDialog == null){
+            progressDialog = Dialog(this)
+            progressDialog?.apply {
+                setContentView(R.layout.progress_loading)
+                setCanceledOnTouchOutside(false)
+                setCancelable(false)
+                window?.apply {
+                    setLayout(
+                        WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT
+                    )
+                    setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+                }
+                show()
             }
-            show()
         }
     }
 
@@ -384,6 +383,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         disconnectDialog?.apply {
             setContentView(R.layout.progress_dialog)
             setCanceledOnTouchOutside(false)
+            setCancelable(false)
             window?.apply {
                 setLayout(
                     WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT

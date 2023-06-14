@@ -27,7 +27,6 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
     LoginContract.LoginView {
     private lateinit var binding: FragmentLoginDialogBinding
     private lateinit var presenter: LoginPresenter
-    var progressBar: RelativeLayout? = null
 
     companion object {
         const val EMAIL_INVALID = "EMAIL_INVALID"
@@ -202,8 +201,7 @@ class LoginDialogFragment(var mOnInputListener: OnInputListener? = null) : Dialo
         }else{
             mOnInputListener?.sendData(email, password, this)
             this.view?.visibility = View.INVISIBLE
-            progressBar = activity?.findViewById(R.id.progress_main_layout)
-            progressBar?.visibility = View.VISIBLE
+            mListener?.onShowProgressBar()
         }
 
     }

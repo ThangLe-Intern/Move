@@ -150,6 +150,7 @@
     <string name="post_view">Post View Success</string>
     <string name="cannot_send_comment">Cannot send comment!</string>
     <string name="cannot_send_reply">Cannot send reply!</string>
+    <string name="bad_request">Bad Request</string>
 
 
 </resources>

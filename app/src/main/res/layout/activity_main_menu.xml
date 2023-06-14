@@ -25,7 +25,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_tool_bar" />
 
-        <RelativeLayout
+<!--        <RelativeLayout
             android:id="@+id/progress_main_layout"
             android:background="@color/transparent_background"
             android:layout_width="match_parent"
@@ -47,7 +47,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-        </RelativeLayout>
+        </RelativeLayout>-->
 
 
 

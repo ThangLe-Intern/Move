@@ -156,33 +156,6 @@ open class CommentFragment(
 
         binding.apply {
 
-            if (dataVideoCarousel?.rating == null) {
-                tvrateNumber.text = 0.toString()
-            } else {
-                val roundOff = (dataVideoCarousel.rating.times(100.0)).roundToInt()?.div(100.0)
-                tvrateNumber.text = roundOff.toString()
-            }
-            if (dataVideoCarousel?.categoryName != null && dataVideoCarousel.categoryName == "Just Move") {
-                cardviewTimeLine.visibility = View.GONE
-                cardviewBeginner.visibility = View.GONE
-            } else {
-                cardviewTimeLine.visibility = View.VISIBLE
-                cardviewBeginner.visibility = View.VISIBLE
-
-                when (dataVideoCarousel?.level) {
-                    1 -> txtBeginner.text = activity?.getString(R.string.txt_level_beginner)
-                    2 -> txtBeginner.text = activity?.getString(R.string.txt_level_inter)
-                    3 -> txtBeginner.text = activity?.getString(R.string.txt_level_advanced)
-                }
-
-                when (dataVideoCarousel?.duration) {
-                    1 -> txtTimeLine.text = activity?.getString(R.string.timeOfCategory)
-                    2 -> txtTimeLine.text = activity?.getString(R.string.duration_second)
-                    3 -> txtTimeLine.text = activity?.getString(R.string.duration_third)
-                }
-            }
-
-
             nameUserProflie.text = dataVideoSuggestion?.username.toString()
             tvJust.text =
                 getString(R.string.video_category, dataVideoSuggestion?.categoryName.toString())
@@ -197,7 +170,7 @@ open class CommentFragment(
             if (dataVideoSuggestion?.rating == null) {
                 tvrateNumber.text = 0.toString()
             } else {
-                val roundOff = (dataVideoSuggestion.rating.times(100.0))?.roundToInt()?.div(100.0)
+                val roundOff = (dataVideoSuggestion.rating.times(10))?.roundToInt()?.div(10.0)
                 tvrateNumber.text = roundOff.toString()
             }
             if (dataVideoSuggestion?.categoryName != null && dataVideoSuggestion.categoryName == "Just Move") {
@@ -460,6 +433,10 @@ open class CommentFragment(
             clearEdittext(editText, cancelButton)
         }
     }
+    override fun onStop() {
+        super.onStop()
+        binding.vimeoPlayerView.pause()
+    }
 
     override fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton) {
         editText.text = null
@@ -597,12 +574,10 @@ open class CommentFragment(
         adapterComment.onClickListComment = object : ListCommentAdapter.setListenerListComment {
             override fun onClickListComment(commentId: Int) {
                 presenter?.callLikeComment("Bearer $tokenUser", commentId)
-
             }
 
             override fun onClickDisLikeComment(commentId: Int) {
                 presenter?.callDiskLikeComment("Bearer $tokenUser", commentId)
-//                replyParentId = commentId
             }
         }
 
@@ -620,14 +595,13 @@ open class CommentFragment(
         }
 
         dataComment?.data?.let { listALLComment.addAll(it) }
-//        listALLComment.reverse()
         addComment()
+
     }
 
     private fun addComment() {
         if (listALLComment.isNotEmpty() && listALLComment != listComment) {
             if (oldALLComment.isNotEmpty()) {
-
                 listComment = listALLComment.subtract(oldALLComment.toSet()).toMutableList()
                 adapterComment.notifyDataSetChanged()
 
@@ -643,7 +617,7 @@ open class CommentFragment(
                     listALLComment.clear()
                 }
 
-                //Handle Add Data when Loadmore
+                //Handle Add Data when Load more
                 if (listALLComment.size >= 11) {
                     (0..9).forEach { i ->
                         listComment.add(listALLComment[i])
@@ -684,8 +658,8 @@ open class CommentFragment(
 
             val scrollPosition: Int = listComment.size
             adapterComment.notifyItemRemoved(scrollPosition)
-            addComment()
 
+            addComment()
             adapterComment.notifyDataSetChanged()
 
             isLoading = false

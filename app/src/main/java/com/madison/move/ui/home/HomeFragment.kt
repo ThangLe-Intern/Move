@@ -79,9 +79,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
     }
 
     private fun onRefreshData() {
-
         mListener?.onShowProgressBar()
-
         if (this::carouselViewPagerAdapter.isInitialized) {
             // Clear the data in the adapter
             carouselViewPagerAdapter.onClearCarousel()

@@ -1,5 +1,6 @@
 package com.madison.move.ui.profile
 
+import com.madison.move.R
 import com.madison.move.data.DataManager
 import com.madison.move.data.model.*
 import retrofit2.Call
@@ -77,7 +78,11 @@ class ProfilePresenter(override var view: ProfileContract.ProfileView?) :
                     }
 
                     if (profileResponse.errorBody() != null) {
-                        view?.onShowError(FULL_NAMESAKE)
+                        if (profileResponse.message() == "Bad Request"){
+                            view?.onShowError(FULL_NAMESAKE)
+                        }else{
+                            view?.onErrorGetProfile(profileResponse.message())
+                        }
                     }
                 }
 

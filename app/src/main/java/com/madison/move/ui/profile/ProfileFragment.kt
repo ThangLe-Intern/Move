@@ -154,7 +154,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         //Make Image Name Base On Date
         val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.CHINA)
         val dateNow = Date()
-        val filename = formatter.format(dateNow)
+        val filename = formatter.format(dateNow) + UUID.randomUUID().toString()
 
         val imgRef = storageReference?.child("images/${filename}.jpg")
         mProfileUri?.let { uri ->
@@ -514,7 +514,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         avatarUrl = null
         binding.txtErrorFullName.visibility = View.GONE
         binding.txtErrorFullName.focusable = View.FOCUSABLE
-        onResume()
+        mListener?.onHideProgressBar()
+
+        onHandleLogic()
 
         Toast.makeText(
             activity?.applicationContext,
@@ -525,6 +527,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     }
 
     override fun onErrorGetProfile(errorType: String) {
+        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
         mListener?.onShowDisconnectDialog()
     }
 
