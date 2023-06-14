@@ -158,30 +158,27 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
         val imgRef = storageReference?.child("images/${filename}.jpg")
         mProfileUri?.let { uri ->
-            imgRef?.putFile(uri)
-                ?.addOnSuccessListener { taskSnapshot ->
-                    imgRef.downloadUrl.addOnSuccessListener {
-                        if (it != null) {
-                            avatarUrl = it.toString()
-                            Log.d("HEHE", avatarUrl.toString())
+            imgRef?.putFile(uri)?.addOnSuccessListener { taskSnapshot ->
+                imgRef.downloadUrl.addOnSuccessListener {
+                    if (it != null) {
+                        avatarUrl = it.toString()
+                        Log.d("HEHE", avatarUrl.toString())
 
-                            //Call Update Profile
-                            tokenUser?.let { token ->
-                                presenter?.onSaveProfileClickPresenter(
-                                    token, getNewProfile()
-                                )
-                            }
-                        } else {
-                            mListener?.onHideProgressBar()
-                            Toast.makeText(activity, "Get URL Failed", Toast.LENGTH_SHORT)
-                                .show()
+                        //Call Update Profile
+                        tokenUser?.let { token ->
+                            presenter?.onSaveProfileClickPresenter(
+                                token, getNewProfile()
+                            )
                         }
+                    } else {
+                        mListener?.onHideProgressBar()
+                        Toast.makeText(activity, "Get URL Failed", Toast.LENGTH_SHORT).show()
                     }
                 }
-                ?.addOnFailureListener { exception ->
-                    mListener?.onHideProgressBar()
-                    Toast.makeText(activity, "Upload Image Failed", Toast.LENGTH_SHORT).show()
-                }
+            }?.addOnFailureListener { exception ->
+                mListener?.onHideProgressBar()
+                Toast.makeText(activity, "Upload Image Failed", Toast.LENGTH_SHORT).show()
+            }
         }
 
     }
@@ -671,53 +668,55 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             val yearSelected: String = parent.getItemAtPosition(position).toString()
             onHandleListOfDay(monthSelected, yearSelected)
 
-            binding.dropdownDayText.text.clear()
-            binding.saveSettingBtn.isEnabled = false
-
         }
     }
 
     private fun onMonthSelected() {
 
-
-
         binding.dropdownMonthText.setOnItemClickListener { parent, _, position, _ ->
             val yearSelected = binding.dropDownProfileYear.editText?.text.toString()
             val monthSelected: String = parent.getItemAtPosition(position).toString()
-            if (yearSelected != "") {
-                onHandleListOfDay(monthSelected, yearSelected)
-            }
 
-            binding.dropdownDayText.text.clear()
-            binding.saveSettingBtn.isEnabled = false
+            onHandleListOfDay(monthSelected, yearSelected)
 
         }
-
-
     }
 
 
     private fun onHandleListOfDay(monthSelected: String, yearSelected: String) {
         binding.dropdownDayText.inputType = EditorInfo.TYPE_NULL
-        val days: MutableList<String>
+        var days: MutableList<String>
+
         if (isThirtyDaysMonth(monthSelected)) {
             days = (1..30).map { it.toString() }.toMutableList()
+            if (binding.dropDownProfileDay.editText?.text.toString() == "31") {
+                binding.dropdownDayText.setText("30")
+            }
         } else if (monthSelected == "Feb") {
-            days = if (isLeapYear(yearSelected.toInt())) {
-                (1..29).map { it.toString() }.toMutableList()
-            } else {
-                (1..28).map { it.toString() }.toMutableList()
+            val daySelected = binding.dropDownProfileDay.editText?.text.toString()
+
+            days = (1..28).map { it.toString() }.toMutableList()
+            if (daySelected != ""){
+                if (daySelected.toInt() > 28){
+                    binding.dropdownDayText.setText("28")
+                }
             }
+
         } else {
-            days = if (binding.dropdownMonthText.text.toString()
-                    .isNotEmpty() || binding.dropdownYearText.text.toString().isNotEmpty()
-            ) {
-                (1..31).map { it.toString() }.toMutableList()
-            } else {
-                mutableListOf()
-            }
+            days = (1..31).map { it.toString() }.toMutableList()
         }
 
+        if (yearSelected != ""){
+            val daySelected = binding.dropDownProfileDay.editText?.text.toString()
+            if (isLeapYear(yearSelected.toInt()) && monthSelected == "Feb" ){
+                days = (1..29).map { it.toString() }.toMutableList()
+                if(daySelected != ""){
+                    if (binding.dropDownProfileDay.editText?.text.toString().toInt() > 29) {
+                        binding.dropdownDayText.setText("29")
+                    }
+                }
+            }
+        }
         val dayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, days)
         binding.dropdownDayText.setAdapter(dayAdapter)
 
