@@ -76,6 +76,17 @@ class ListCommentAdapter(
 
             //Handle Show/Hide Reply
             binding.apply {
+
+                if(dataComment.user?.isSuspended == 1){
+                    dataComment.user.img = avatar.setImageResource(R.drawable.popup_shadow).toString()
+                    dataComment.user.username = context.getString(R.string.userband)
+                    dataComment.content = context.getString(R.string.commentband)
+                    btnLike.visibility = View.GONE
+                    btnDisLike.visibility = View.GONE
+                    numberLike.visibility = View.GONE
+                    btnReply.visibility = View.GONE
+                }
+
                 if (dataComment.replies.isEmpty()) {
                     layoutShow.visibility = View.GONE
                 } else {
@@ -172,10 +183,11 @@ class ListCommentAdapter(
             binding.apply {
                 //Set Avatar
                 if (dataComment.user?.img != null) {
-                    Glide.with(context).load(dataComment.user.img).into(binding.avatar)
+                    Glide.with(context).load(dataComment.user.img).into(avatar)
                 } else {
-                    binding.avatar.setImageResource(R.drawable.avatar)
+                    avatar.setImageResource(R.drawable.avatar)
                 }
+
 
                 //Set Username
                 username.text =

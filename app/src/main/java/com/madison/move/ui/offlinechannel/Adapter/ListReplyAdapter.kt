@@ -58,6 +58,15 @@ class ListReplyAdapter(
                 line2.visibility = View.GONE
                 layoutShow.visibility = View.GONE
 
+                if(dataComment.user?.isSuspended == 1){
+                    dataComment.user.img = avatar.setImageResource(R.drawable.popup_shadow).toString()
+                    dataComment.user.username = context.getString(R.string.userband)
+                    dataComment.content = context.getString(R.string.commentband)
+                    btnLike.visibility = View.GONE
+                    btnDisLike.visibility = View.GONE
+                    numberLike.visibility = View.GONE
+                }
+
 
                 btnReply.visibility = View.INVISIBLE
 
