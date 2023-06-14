@@ -179,7 +179,6 @@ class ListCommentAdapter(
                 } else {
                     bluetick.visibility = View.VISIBLE
                 }
-
                 //Set Comment Time
                 commentTime.text = dataComment.createdTime ?: ""
 
