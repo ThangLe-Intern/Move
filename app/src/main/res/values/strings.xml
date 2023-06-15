@@ -151,6 +151,7 @@
     <string name="cannot_send_comment">Cannot send comment!</string>
     <string name="cannot_send_reply">Cannot send reply!</string>
     <string name="bad_request">Bad Request</string>
+    <string name="video_exist">Video Not Exist</string>
 
 
 </resources>

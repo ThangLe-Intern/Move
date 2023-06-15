@@ -175,7 +175,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         carouselViewPagerAdapter.onClickVideoCarousel = object  : CarouselViewPagerAdapter.setListenerCarouselVideo{
             override fun onClickVideoCarousel(dataVideoCarousel: DataVideoSuggestion) {
                 val activity = requireActivity() as AppCompatActivity
-                val commentFragment = CommentFragment(dataVideoCarousel,null)
+                val commentFragment = CommentFragment(dataVideoCarousel)
                 activity.supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.content_frame_main, commentFragment)
@@ -251,7 +251,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         videoSuggestionAdapter.onClickVideo = object : VideoSuggestionAdapter.setListenerVideoSuggestion{
             override fun onClickVideoSuggest(dataVideoSuggestion: DataVideoSuggestion) {
                 val activity = requireActivity() as AppCompatActivity
-                val commentFragment = CommentFragment(dataVideoSuggestion,null)
+                val commentFragment = CommentFragment(dataVideoSuggestion)
                 activity.supportFragmentManager.beginTransaction().replace(R.id.content_frame_main,commentFragment).commit()
             }
 

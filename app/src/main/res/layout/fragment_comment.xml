@@ -24,6 +24,14 @@
             app:showOriginalControls="false"
             app:topicColor="#FFFF00" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/img_video_exist"
+            app:srcCompat="@drawable/video_not_exist"
+            android:visibility="gone"
+            />
+
     </RelativeLayout>
 
     <androidx.core.widget.NestedScrollView

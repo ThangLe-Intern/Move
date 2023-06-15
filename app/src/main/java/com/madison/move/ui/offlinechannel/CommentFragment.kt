@@ -9,7 +9,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,7 +47,6 @@ import kotlin.math.roundToInt
 
 open class CommentFragment(
     private val dataVideoSuggestion: DataVideoSuggestion?,
-    private val dataVideoCarousel: DataVideoSuggestion?
 ) : BaseFragment<CommentPresenter>(), CommentListener, CommentContract.CommentContract,
     DataCallback {
     private lateinit var binding: FragmentCommentBinding
@@ -205,7 +203,7 @@ open class CommentFragment(
 
         binding.vimeoPlayerView.clearCache()
         binding.vimeoPlayerView.initialize(true, 835832587)
-        //binding.vimeoPlayerView.initialize(true, videoID)
+//        binding.vimeoPlayerView.initialize(true, videoID)
         binding.vimeoPlayerView.setFullscreenVisibility(true)
         binding.vimeoPlayerView.setMenuVisibility(true)
 
@@ -216,13 +214,15 @@ open class CommentFragment(
                 duration: Float,
                 textTrackArray: Array<out TextTrack>?
             ) {
+                binding.imgVideoExist.visibility = View.GONE
                 TimeCounter.resetTimer()
                 TimeCounter.initialize()
                 TimeCounter.setCallback(this@CommentFragment)
             }
 
             override fun onInitFailed() {
-
+                Toast.makeText(activity, getString(R.string.video_exist), Toast.LENGTH_SHORT).show()
+                binding.imgVideoExist.visibility = View.VISIBLE
             }
 
         })
