@@ -58,7 +58,8 @@ open class CommentFragment(
     private var tokenUser: String? = null
     private var getSharedPreferences: SharedPreferences? = null
     private var userData: DataUser? = null
-    private var isShowAllComment = false
+    private var isReloadComment = false
+    private var isLoadingCommentSuccess = true
     private var replyParentId = 0
 
     private var dataComment: ObjectResponse<List<DataComment>>? = null
@@ -98,15 +99,15 @@ open class CommentFragment(
         //Check Internet Connection
         if (mListener?.isDeviceOnlineCheck() == false) {
             mListener?.onShowDisconnectDialog()
+        }else{
+            onRefreshData()
         }
-
-        onRefreshData()
 
     }
 
     open fun onRefreshData() {
 
-//        mListener?.onShowProgressBar()
+        mListener?.onShowProgressBar()
         getSharedPreferences = requireContext().getSharedPreferences(
             TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
         )
@@ -202,8 +203,8 @@ open class CommentFragment(
         lifecycle.addObserver(binding.vimeoPlayerView)
 
         binding.vimeoPlayerView.clearCache()
-        binding.vimeoPlayerView.initialize(true, 835832587)
-//        binding.vimeoPlayerView.initialize(true, videoID)
+//        binding.vimeoPlayerView.initialize(true, 835832587)
+        binding.vimeoPlayerView.initialize(true, videoID)
         binding.vimeoPlayerView.setFullscreenVisibility(true)
         binding.vimeoPlayerView.setMenuVisibility(true)
 
@@ -323,6 +324,9 @@ open class CommentFragment(
             )
         }
         listComment?.let { onLoadComment(it) }
+
+        mListener?.onHideProgressBar()
+
     }
 
     override fun onError(errorMessage: String) {
@@ -428,7 +432,8 @@ open class CommentFragment(
         user: DataUser
     ) {
         sendButton.setOnClickListener {
-            if (tokenUser != null && dataVideoSuggestion?.id != null) {
+            if (tokenUser != null && dataVideoSuggestion?.id != null && isLoadingCommentSuccess) {
+                isLoadingCommentSuccess = false
                 presenter?.sendCommentVideo(
                     ("Bearer $tokenUser"),
                     dataVideoSuggestion?.id ?: 0,
@@ -607,7 +612,7 @@ open class CommentFragment(
     private fun getData() {
 
         if (listALLComment.isNotEmpty()) {
-            isShowAllComment = true
+            isReloadComment = true
             listALLComment.clear()
         }
         dataComment?.data?.let { listALLComment.addAll(it) }
@@ -618,20 +623,21 @@ open class CommentFragment(
     private fun addComment() {
 
         if (listALLComment.isNotEmpty() && listALLComment.size != listComment.size) {
-            if (listComment.size != 0 && isShowAllComment) {
-                val lastIndexList = listComment.size - 1
+            if (listComment.size != 0 && isReloadComment) {
+                val lastIndexList = listComment.last()
 
                 listComment.clear()
 
-                for (i in listALLComment.indices) {
-                    listComment.add(listALLComment[i])
+                for (i in listALLComment) {
+                    listComment.add(i)
                     if (i == lastIndexList) {
-                        isShowAllComment = false
+                        isReloadComment = false
                         break
                     }
                 }
                 listALLComment = listALLComment.subtract(listComment.toSet()).toMutableList()
                 listComment
+                listALLComment
             } else {
                 //Handle Add Data when Load more
                 if (listALLComment.size >= 11) {
@@ -641,7 +647,7 @@ open class CommentFragment(
                     listALLComment.subList(0, 10).clear()
                 } else {
                     listComment.addAll(listALLComment)
-                    isShowAllComment = true
+                    isReloadComment = true
                     listALLComment.clear()
                 }
             }
@@ -651,6 +657,7 @@ open class CommentFragment(
             listComment.addAll(listALLComment)
             listALLComment.clear()
         }
+        isLoadingCommentSuccess = true
     }
 
     private fun initScrollListener() {

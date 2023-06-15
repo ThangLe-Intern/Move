@@ -9,7 +9,7 @@
     <RelativeLayout
         android:id="@+id/contrain_video"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_234"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -26,7 +26,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/dp_234"
             android:id="@+id/img_video_exist"
             app:srcCompat="@drawable/video_not_exist"
             android:visibility="gone"

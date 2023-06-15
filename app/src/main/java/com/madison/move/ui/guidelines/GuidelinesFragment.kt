@@ -30,7 +30,7 @@ class GuidelinesFragment : BaseFragment<GuidelinePresenter>(),GuidelineContract.
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentGuidelineBinding.inflate(inflater,container,false)
-
+        binding.recyclerviewCAndG.isNestedScrollingEnabled = false
         presenter?.getGuidelinesData()
         return binding.root
 

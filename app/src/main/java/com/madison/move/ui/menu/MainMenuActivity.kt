@@ -62,6 +62,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
 
     override fun createPresenter(): MenuPresenter = MenuPresenter(this)
 
+
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -71,6 +72,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         mainMenuBinding = ActivityMainMenuBinding.inflate(layoutInflater)
         setContentView(mainMenuBinding.root)
         super.onCreate(savedInstanceState)
+
+        mainMenuBinding.swipeLayout.setOnRefreshListener {
+            onReload()
+        }
 
     }
 
@@ -374,6 +379,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     }
 
     override fun onHideProgressBar() {
+        mainMenuBinding.swipeLayout.isRefreshing = false
         progressDialog?.dismiss()
     }
 
@@ -394,6 +400,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         }
 
         disconnectDialog?.findViewById<AppCompatTextView>(R.id.txt_try_again)?.setOnClickListener {
+            mainMenuBinding.swipeLayout.isRefreshing = false
             disconnectDialog?.dismiss()
             onReload()
         }
