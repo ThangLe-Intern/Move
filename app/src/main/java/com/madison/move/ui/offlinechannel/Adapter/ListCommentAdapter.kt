@@ -74,6 +74,16 @@ class ListCommentAdapter(
             //Handle Show/Hide Reply
             binding.apply {
 
+                if (dataComment.user?.isSuspended == 1) {
+                    dataComment.user.img = avatar.setImageResource(R.drawable.ic_avatar_banned).toString()
+                    dataComment.user.username = context.getString(R.string.userband)
+                    dataComment.content = context.getString(R.string.commentband)
+                    btnLike.visibility = View.GONE
+                    btnDisLike.visibility = View.GONE
+                    numberLike.visibility = View.GONE
+                    btnReply.visibility = View.GONE
+                }
+
                 if (dataComment.replies.isEmpty()) {
                     layoutShow.visibility = View.GONE
                 } else {
@@ -115,83 +125,21 @@ class ListCommentAdapter(
             }
 
             //Handle Btn Report
-            binding.apply {
-                //Handle Button Report
-                btnReport.setOnClickListener {
 
-                    val inflater = LayoutInflater.from(context)
-                    val dialogView = inflater.inflate(R.layout.dialog_report, null)
-
-                    val popupWindow = PopupWindow(
-                        dialogView,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        true
-                    )
-
-                    fun Context.dpToPx(dp: Float): Int {
-                        val scale = resources.displayMetrics.density
-                        return (dp * scale + 0.5f).toInt()
-                    }
-                    popupWindow.setBackgroundDrawable(
-                        ContextCompat.getDrawable(
-                            context,
-                            R.drawable.popup_shadow
-                        )
-                    )
-                    popupWindow.elevation = context.dpToPx(8f).toFloat()
-
-                    val location = IntArray(2)
-                    btnReport.getLocationInWindow(location)
-
-                    val x = location[0] - dialogView.width - 1
-                    val y = location[1] - dialogView.height
-
-                    popupWindow.showAtLocation(btnReport, Gravity.NO_GRAVITY, x, y)
-
-                    dialogView.viewTreeObserver.addOnGlobalLayoutListener(object :
-                        ViewTreeObserver.OnGlobalLayoutListener {
-                        override fun onGlobalLayout() {
-                            dialogView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                            val popupX = x - (dialogView.width - btnReport.width) / 2
-                            val popupY = y - dialogView.height
-
-                            popupWindow.update(popupX, popupY, -1, -1, true)
-                        }
-                    })
-
-                    dialogView.setOnTouchListener { _, _ ->
-                        popupWindow.dismiss()
-                        true
-                    }
-                }
-
-                sendButtonReply.setOnClickListener {
-                    notifyDataSetChanged()
-                }
-
-
-            }
 
             //Set User Comment Info
             binding.apply {
                 //Set Avatar
-                if (dataComment.user?.img != null) {
-                    Glide.with(context).load(dataComment.user.img).into(avatar)
-                } else {
+                dataComment.user?.img?.let {
+                    if (dataComment.user.isSuspended == 0) {
+                        Glide.with(context).load(it).into(avatar)
+                    } else {
+                        dataComment.user.img = avatar.setImageResource(R.drawable.ic_avatar_banned).toString()
+                    }
+                } ?: run {
                     avatar.setImageResource(R.drawable.avatar)
                 }
 
-                if(dataComment.user?.isSuspended == 1){
-                    dataComment.user.img = avatar.setImageResource(R.drawable.ic_avatar_banned).toString()
-                    dataComment.user.username = context.getString(R.string.userband)
-                    dataComment.content = context.getString(R.string.commentband)
-                    btnLike.visibility = View.GONE
-                    btnDisLike.visibility = View.GONE
-                    numberLike.visibility = View.GONE
-                    btnReply.visibility = View.GONE
-                }
 
                 //Set Username
                 username.text =
@@ -217,7 +165,7 @@ class ListCommentAdapter(
                 if (dataComment.isDisliked == true) {
                     btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
                 }
-                if (dataComment.likeCount != null && dataComment.likeCount > 0) {
+                if (dataComment.likeCount != null && dataComment.likeCount > 0 && dataComment.user?.isSuspended == 0) {
                     numberLike.visibility = View.VISIBLE
                     numberLike.text = dataComment.likeCount.toString()
                 } else {
@@ -272,60 +220,60 @@ class ListCommentAdapter(
                                 dataComment.id ?: 0
                             )
 
-                            } else {
-                                layoutUserReply.visibility = View.GONE
-                            }
+                        } else {
+                            layoutUserReply.visibility = View.GONE
                         }
-                    } else {
-                        btnReport.visibility = View.GONE
-                        btnReply.visibility = View.GONE
                     }
+                } else {
+                    btnReport.visibility = View.GONE
+                    btnReply.visibility = View.GONE
                 }
             }
         }
+    }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            return if (viewType == VIEW_TYPE_ITEM) {
-                ViewHolder(
-                    ItemUserCommentBinding.inflate(
-                        LayoutInflater.from(parent.context), parent, false
-                    )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == VIEW_TYPE_ITEM) {
+            ViewHolder(
+                ItemUserCommentBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false
                 )
-            } else {
-                ViewHolder(
-                    ItemUserCommentBinding.inflate(
-                        LayoutInflater.from(parent.context), parent, false
-                    )
+            )
+        } else {
+            ViewHolder(
+                ItemUserCommentBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false
                 )
-            }
+            )
         }
+    }
 
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            (holder as ViewHolder).onBind(listComment[position])
-        }
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        (holder as ViewHolder).onBind(listComment[position])
+    }
 
-        override fun getItemCount(): Int {
-            return if (listComment == null) 0 else listComment.size
-        }
+    override fun getItemCount(): Int {
+        return if (listComment == null) 0 else listComment.size
+    }
 
-        override fun getItemViewType(position: Int): Int {
+    override fun getItemViewType(position: Int): Int {
 //        return VIEW_TYPE_ITEM
-            return if (listComment.get(position) == null) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
-        }
+        return if (listComment.get(position) == null) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
+    }
 
-        interface ReplyListener {
-            fun userComment(
-                cancelButton: AppCompatButton,
-                sendButton: AppCompatButton,
-                editText: AppCompatEditText,
-                parentCommentId: Int
-            )
+    interface ReplyListener {
+        fun userComment(
+            cancelButton: AppCompatButton,
+            sendButton: AppCompatButton,
+            editText: AppCompatEditText,
+            parentCommentId: Int
+        )
 
-            fun onWriteCommentListener(
-                editText: AppCompatEditText,
-                cancelButton: AppCompatButton,
-                sendButton: AppCompatButton
-            )
+        fun onWriteCommentListener(
+            editText: AppCompatEditText,
+            cancelButton: AppCompatButton,
+            sendButton: AppCompatButton
+        )
 
         fun onCancelUserComment(cancelButton: AppCompatButton, editText: AppCompatEditText)
         fun onSendUserReply(
@@ -334,11 +282,12 @@ class ListCommentAdapter(
             editText: AppCompatEditText,
             cancelButton: AppCompatButton
         )
+
         fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton)
         fun hideKeyboard(view: View)
 
-            fun onClickListReplyComment(commentId: Int)
-            fun onClickDisLikeReplyComment(commentId: Int)
+        fun onClickListReplyComment(commentId: Int)
+        fun onClickDisLikeReplyComment(commentId: Int)
 
     }
 }
