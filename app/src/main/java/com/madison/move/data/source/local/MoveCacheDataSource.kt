@@ -60,11 +60,19 @@ class MoveCacheDataSource : MoveDataSource {
         return null
     }
 
-    override fun sendComment(token: String, videoId: Int, content: SendComment): Call<ObjectResponse<CommentResponse>>? {
+    override fun sendComment(
+        token: String,
+        videoId: Int,
+        content: SendComment
+    ): Call<ObjectResponse<CommentResponse>>? {
         return null
     }
 
-    override fun sendReply(token: String, commentId: Int, content: SendComment): Call<ObjectResponse<CommentResponse>>? {
+    override fun sendReply(
+        token: String,
+        commentId: Int,
+        content: SendComment
+    ): Call<ObjectResponse<CommentResponse>>? {
         return null
     }
 
@@ -74,6 +82,7 @@ class MoveCacheDataSource : MoveDataSource {
     ): Call<LikeResponse>? {
         return null
     }
+
     override fun callDiskLikeComment(
         token: String,
         commentId: Int
@@ -89,7 +98,10 @@ class MoveCacheDataSource : MoveDataSource {
         return null
     }
 
-    override fun postView(token: String, videoId: Int): Call<ObjectResponse<PostViewResponse>>? {
+    override fun postView(
+        token: String, videoId: Int,
+        time: PostView
+    ): Call<ObjectResponse<PostViewResponse>>? {
         return null
     }
 

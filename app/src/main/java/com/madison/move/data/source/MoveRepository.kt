@@ -83,13 +83,14 @@ class MoveRepository private constructor(
         token: String,
         commentId: Int
     ): Call<LikeResponse>? {
-        return moveRemote.callLikeComment(token,commentId)
+        return moveRemote.callLikeComment(token, commentId)
     }
+
     override fun callDiskLikeComment(
         token: String,
         commentId: Int
     ): Call<DiskLikeResponse>? {
-        return moveRemote.callDiskLikeComment(token,commentId)
+        return moveRemote.callDiskLikeComment(token, commentId)
     }
 
     override fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>? {
@@ -100,8 +101,11 @@ class MoveRepository private constructor(
         return moveRemote.getGuidelines()
     }
 
-    override fun postView(token: String, videoId: Int): Call<ObjectResponse<PostViewResponse>>? {
-        return moveRemote.postView(token, videoId)
+    override fun postView(
+        token: String, videoId: Int,
+        time: PostView
+    ): Call<ObjectResponse<PostViewResponse>>? {
+        return moveRemote.postView(token, videoId, time)
     }
 
     override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>>? {

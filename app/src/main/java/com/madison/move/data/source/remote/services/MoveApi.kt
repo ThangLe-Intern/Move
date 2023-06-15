@@ -58,6 +58,7 @@ interface MoveApi {
 
     @GET("countries/{id}/states")
     fun getStates(@Path("id") countryId: Int): Call<ObjectResponse<List<DataState>>>
+
     @GET("faqs")
     fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>
 
@@ -99,6 +100,7 @@ interface MoveApi {
     fun postViewVideo(
         @Header("Authorization") authorization: String,
         @Path("id") videoID: Int,
+        @Body time: PostView
     ): Call<ObjectResponse<PostViewResponse>>
 
     @POST("comments/{id}/like")
@@ -106,6 +108,7 @@ interface MoveApi {
         @Header("Authorization") authorization: String,
         @Path("id") commentId: Int,
     ): Call<LikeResponse>
+
     @POST("comments/{id}/dislike")
     fun callDiskLikeComment(
         @Header("Authorization") authorization: String,

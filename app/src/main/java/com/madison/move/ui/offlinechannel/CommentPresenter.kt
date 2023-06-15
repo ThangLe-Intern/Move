@@ -2,10 +2,7 @@ package com.madison.move.ui.offlinechannel
 
 import android.util.Log
 import com.madison.move.data.DataManager
-import com.madison.move.data.model.DiskLikeResponse
-import com.madison.move.data.model.LikeResponse
-import com.madison.move.data.model.ObjectResponse
-import com.madison.move.data.model.PostViewResponse
+import com.madison.move.data.model.*
 import com.madison.move.data.model.comment.CommentResponse
 import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.comment.SendComment
@@ -110,8 +107,11 @@ class CommentPresenter(
             })
     }
 
-    override fun postView(token: String, idVideo: Int) {
-        dataManager.movieRepository.postView(token, idVideo)
+    override fun postView(
+        token: String, idVideo: Int,
+        time: PostView
+    ) {
+        dataManager.movieRepository.postView(token, idVideo, time)
             ?.enqueue(object : Callback<ObjectResponse<PostViewResponse>> {
                 override fun onResponse(
                     call: Call<ObjectResponse<PostViewResponse>>,
@@ -133,43 +133,45 @@ class CommentPresenter(
     }
 
     override fun callLikeComment(token: String, idComment: Int) {
-        dataManager.movieRepository.callLikeComment(token, idComment)?.enqueue(object : Callback<LikeResponse>{
-            override fun onResponse(
-                call: Call<LikeResponse>,
-                response: Response<LikeResponse>
-            ) {
-                if (response.body() != null) {
-                    view?.onSuccessCallLikeComment(response.body()!!)
+        dataManager.movieRepository.callLikeComment(token, idComment)
+            ?.enqueue(object : Callback<LikeResponse> {
+                override fun onResponse(
+                    call: Call<LikeResponse>,
+                    response: Response<LikeResponse>
+                ) {
+                    if (response.body() != null) {
+                        view?.onSuccessCallLikeComment(response.body()!!)
+                    }
+                    if (response.errorBody() != null) {
+                    }
                 }
-                if (response.errorBody() != null) {
+
+                override fun onFailure(call: Call<LikeResponse>, t: Throwable) {
+                    view?.onError(t.message ?: "")
                 }
-            }
 
-            override fun onFailure(call: Call<LikeResponse>, t: Throwable) {
-                view?.onError(t.message ?: "")
-            }
-
-        })
+            })
     }
 
     override fun callDiskLikeComment(token: String, idComment: Int) {
-        dataManager.movieRepository.callDiskLikeComment(token, idComment)?.enqueue(object : Callback<DiskLikeResponse>{
-            override fun onResponse(
-                call: Call<DiskLikeResponse>,
-                response: Response<DiskLikeResponse>
-            ) {
-                if (response.body() != null) {
-                    view?.onSuccessCallDiskLikeComment(response.body()!!)
+        dataManager.movieRepository.callDiskLikeComment(token, idComment)
+            ?.enqueue(object : Callback<DiskLikeResponse> {
+                override fun onResponse(
+                    call: Call<DiskLikeResponse>,
+                    response: Response<DiskLikeResponse>
+                ) {
+                    if (response.body() != null) {
+                        view?.onSuccessCallDiskLikeComment(response.body()!!)
+                    }
+                    if (response.errorBody() != null) {
+                    }
                 }
-                if (response.errorBody() != null) {
+
+                override fun onFailure(call: Call<DiskLikeResponse>, t: Throwable) {
+                    view?.onError(t.message ?: "")
                 }
-            }
 
-            override fun onFailure(call: Call<DiskLikeResponse>, t: Throwable) {
-                view?.onError(t.message ?: "")
-            }
-
-        })
+            })
     }
 
 

@@ -30,11 +30,7 @@ import com.ct7ct7ct7.androidvimeoplayer.model.TextTrack
 import com.ct7ct7ct7.androidvimeoplayer.view.VimeoPlayerActivity
 import com.google.gson.Gson
 import com.madison.move.R
-import com.madison.move.data.model.DataUser
-import com.madison.move.data.model.DiskLikeResponse
-import com.madison.move.data.model.LikeResponse
-import com.madison.move.data.model.ObjectResponse
-import com.madison.move.data.model.PostViewResponse
+import com.madison.move.data.model.*
 import com.madison.move.data.model.comment.CommentResponse
 import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.comment.SendComment
@@ -303,9 +299,9 @@ open class CommentFragment(
     override fun onDataReceived(value: Int) {
         if (!isPostView) {
             if (tokenUser != null) {
-                presenter?.postView(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
+                presenter?.postView(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0, PostView("30"))
             } else {
-                presenter?.postView("", dataVideoSuggestion?.id ?: 0)
+                presenter?.postView("", dataVideoSuggestion?.id ?: 0, PostView("30"))
             }
         } else {
             TimeCounter.pauseTimer()

@@ -41,6 +41,7 @@ interface MoveDataSource {
 
     fun sendReply(token: String, commentId: Int, content: SendComment):
             Call<ObjectResponse<CommentResponse>>?
+
     fun callLikeComment(token: String, commentId: Int): Call<LikeResponse>?
 
     fun callDiskLikeComment(token: String, commentId: Int): Call<DiskLikeResponse>?
@@ -48,6 +49,10 @@ interface MoveDataSource {
     fun getFaq(): Call<ObjectResponse<List<DataFAQ>>>?
     fun getGuidelines(): Call<ObjectResponse<List<DataGuidelines>>>?
 
-    fun postView(token: String, videoId: Int): Call<ObjectResponse<PostViewResponse>>?
+    fun postView(
+        token: String,
+        videoId: Int,
+        time: PostView
+    ): Call<ObjectResponse<PostViewResponse>>?
 
 }

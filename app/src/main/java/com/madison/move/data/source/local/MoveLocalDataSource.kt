@@ -88,6 +88,7 @@ class MoveLocalDataSource private constructor(
     ): Call<LikeResponse>? {
         return null
     }
+
     override fun callDiskLikeComment(
         token: String,
         commentId: Int
@@ -103,7 +104,10 @@ class MoveLocalDataSource private constructor(
         return null
     }
 
-    override fun postView(token: String, videoId: Int): Call<ObjectResponse<PostViewResponse>>? {
+    override fun postView(
+        token: String, videoId: Int,
+        time: PostView
+    ): Call<ObjectResponse<PostViewResponse>>? {
         return null
     }
 

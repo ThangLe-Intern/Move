@@ -1,9 +1,6 @@
 package com.madison.move.ui.offlinechannel
 
-import com.madison.move.data.model.DiskLikeResponse
-import com.madison.move.data.model.LikeResponse
-import com.madison.move.data.model.ObjectResponse
-import com.madison.move.data.model.PostViewResponse
+import com.madison.move.data.model.*
 import com.madison.move.data.model.comment.CommentResponse
 import com.madison.move.data.model.comment.DataComment
 import com.madison.move.data.model.comment.SendComment
@@ -32,7 +29,11 @@ interface CommentContract {
         fun getCommentVideo(token: String, id: Int)
         fun sendCommentVideo(token: String, idVideo: Int, content: SendComment)
         fun sendReplyComment(token: String, idComment: Int, content: SendComment)
-        fun postView(token: String, idVideo: Int)
+        fun postView(
+            token: String, idVideo: Int,
+            time: PostView
+        )
+
         fun callLikeComment(token: String, idComment: Int)
         fun callDiskLikeComment(token: String, idComment: Int)
     }
