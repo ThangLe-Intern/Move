@@ -152,7 +152,8 @@
     <string name="cannot_send_reply">Cannot send reply!</string>
     <string name="bad_request">Bad Request</string>
     <string name="video_exist">Video Not Exist</string>
-    <string name="no_internet"></string>
+    <string name="userband">Suspended MOVE Account</string>
+    <string name="commentband">[This comment has been removed due to violation of community guideline]</string>
 
 
 </resources>

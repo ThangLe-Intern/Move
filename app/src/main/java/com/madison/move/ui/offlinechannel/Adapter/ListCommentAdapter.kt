@@ -4,7 +4,6 @@ package com.madison.move.ui.offlinechannel.Adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import android.view.*
 import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
@@ -74,6 +73,7 @@ class ListCommentAdapter(
 
             //Handle Show/Hide Reply
             binding.apply {
+
                 if (dataComment.replies.isEmpty()) {
                     layoutShow.visibility = View.GONE
                 } else {
@@ -170,15 +170,27 @@ class ListCommentAdapter(
                 sendButtonReply.setOnClickListener {
                     notifyDataSetChanged()
                 }
+
+
             }
 
             //Set User Comment Info
             binding.apply {
                 //Set Avatar
                 if (dataComment.user?.img != null) {
-                    Glide.with(context).load(dataComment.user.img).into(binding.avatar)
+                    Glide.with(context).load(dataComment.user.img).into(avatar)
                 } else {
-                    binding.avatar.setImageResource(R.drawable.avatar)
+                    avatar.setImageResource(R.drawable.avatar)
+                }
+
+                if(dataComment.user?.isSuspended == 1){
+                    dataComment.user.img = avatar.setImageResource(R.drawable.ic_avatar_banned).toString()
+                    dataComment.user.username = context.getString(R.string.userband)
+                    dataComment.content = context.getString(R.string.commentband)
+                    btnLike.visibility = View.GONE
+                    btnDisLike.visibility = View.GONE
+                    numberLike.visibility = View.GONE
+                    btnReply.visibility = View.GONE
                 }
 
                 //Set Username
@@ -202,11 +214,9 @@ class ListCommentAdapter(
                 if (dataComment.isLiked == true) {
                     btnLike.setImageResource(R.drawable.ic_lickticked)
                 }
-
                 if (dataComment.isDisliked == true) {
                     btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
                 }
-
                 if (dataComment.likeCount != null && dataComment.likeCount > 0) {
                     numberLike.visibility = View.VISIBLE
                     numberLike.text = dataComment.likeCount.toString()
@@ -244,25 +254,23 @@ class ListCommentAdapter(
                     }
                 }
 
-
-                    //Handle Show/Hide Reply Button
-                    layoutUserReply.visibility = View.GONE
-                    if (userData != null) {
-                        if (userData?.img != null) {
-                            Glide.with(context).load(userData?.img).into(userAvatarReply)
-                        } else {
-                            userAvatarReply.setImageResource(R.drawable.avatar)
-                        }
-                        btnReply.setOnClickListener {
-                            if (layoutUserReply.isGone) {
-                                layoutUserReply.visibility = View.VISIBLE
-
-                                replyListener.userComment(
-                                    cancelReplyButton,
-                                    sendButtonReply,
-                                    edtUserCommentReply,
-                                    dataComment.id ?: 0
-                                )
+                //Handle Show/Hide Reply Button
+                layoutUserReply.visibility = View.GONE
+                if (userData != null) {
+                    if (userData?.img != null) {
+                        Glide.with(context).load(userData?.img).into(userAvatarReply)
+                    } else {
+                        userAvatarReply.setImageResource(R.drawable.avatar)
+                    }
+                    btnReply.setOnClickListener {
+                        if (layoutUserReply.isGone) {
+                            layoutUserReply.visibility = View.VISIBLE
+                            replyListener.userComment(
+                                cancelReplyButton,
+                                sendButtonReply,
+                                edtUserCommentReply,
+                                dataComment.id ?: 0
+                            )
 
                             } else {
                                 layoutUserReply.visibility = View.GONE
@@ -319,21 +327,18 @@ class ListCommentAdapter(
                 sendButton: AppCompatButton
             )
 
-            fun onCancelUserComment(cancelButton: AppCompatButton, editText: AppCompatEditText)
-            fun onSendUserReply(
-                sendButton: AppCompatButton,
-                parentCommentId: Int,
-                editText: AppCompatEditText,
-                cancelButton: AppCompatButton
-            )
-
-
-            fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton)
-            fun hideKeyboard(view: View)
+        fun onCancelUserComment(cancelButton: AppCompatButton, editText: AppCompatEditText)
+        fun onSendUserReply(
+            sendButton: AppCompatButton,
+            parentCommentId: Int,
+            editText: AppCompatEditText,
+            cancelButton: AppCompatButton
+        )
+        fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton)
+        fun hideKeyboard(view: View)
 
             fun onClickListReplyComment(commentId: Int)
             fun onClickDisLikeReplyComment(commentId: Int)
 
-
-        }
     }
+}

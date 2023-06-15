@@ -95,7 +95,6 @@ class MoveRemoteDataSource private constructor(private val moveApi: MoveApi) : M
         return moveApi.postViewVideo(token, videoId)
     }
 
-
     override fun getTokenLogin(email: String, password: String): Call<ObjectResponse<DataUser>> {
         return moveApi.loginApi(email, password)
     }

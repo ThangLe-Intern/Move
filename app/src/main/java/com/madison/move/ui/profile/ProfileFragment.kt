@@ -798,8 +798,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         }
     }
 
-
-
     private fun getIdCountry(countryName: String): Int? {
         listDataCountry?.forEach {
             if (countryName == it.name) {

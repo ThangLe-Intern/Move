@@ -141,7 +141,6 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:visibility="gone">
-
                             <TextView
                                 android:id="@+id/menu_tv_faq"
                                 android:layout_width="match_parent"

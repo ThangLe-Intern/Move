@@ -95,13 +95,13 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardview_beginner"
-                    android:layout_width="@dimen/dp_74"
+                    android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_24"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="@dimen/dp_10"
                     android:layout_marginTop="@dimen/dp_10"
                     app:cardBackgroundColor="@color/gray"
                     app:cardCornerRadius="@dimen/dp_15"
-                    app:cardElevation="0dp"
+                    app:cardElevation="@dimen/dp_0"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/avart_profile"
                     app:layout_constraintTop_toBottomOf="@+id/tv_just">
@@ -112,6 +112,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/montserrat_semi_bold"
+                        android:paddingHorizontal="@dimen/dp_7"
                         android:text="@string/typeOfUser"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_9ssp" />
@@ -157,9 +158,9 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardview_time_line"
-                    android:layout_width="@dimen/dp_74"
+                    android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_24"
-                    android:layout_marginStart="13dp"
+                    android:layout_marginStart="@dimen/dp_13"
                     app:cardBackgroundColor="@color/gray"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="0dp"
@@ -173,6 +174,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/montserrat_semi_bold"
+                        android:paddingHorizontal="7dp"
                         android:text="@string/timeOfCategory"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_9ssp" />
@@ -239,16 +241,16 @@
                         android:layout_width="@dimen/dp_108"
                         android:layout_height="@dimen/dp_48"
                         android:layout_below="@+id/edt_userComment"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:visibility="gone"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_marginEnd="@dimen/dp_10"
                         android:layout_toLeftOf="@id/send_button"
                         android:background="@drawable/rounded_button_white"
                         android:fontFamily="@font/montserrat_regular"
                         android:stateListAnimator="@null"
                         android:text="Cancel"
                         android:textAllCaps="false"
-                        android:textColor="@color/move_green" />
+                        android:textColor="@color/move_green"
+                        android:visibility="gone" />
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/send_button"
@@ -257,12 +259,12 @@
                         android:layout_below="@+id/edt_userComment"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="@dimen/dp_10"
-                        android:visibility="gone"
                         android:background="@drawable/rounded_button_blue"
                         android:fontFamily="@font/montserrat_bold"
                         android:text="Send"
                         android:textAllCaps="false"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                        android:visibility="gone" />
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -274,16 +276,14 @@
                     app:layout_constraintTop_toBottomOf="@id/layout_userComment" />
 
                 <ProgressBar
-                    android:visibility="gone"
                     android:id="@+id/progress_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="@id/listComment"
                     app:layout_constraintStart_toStartOf="@id/listComment"
                     app:layout_constraintTop_toBottomOf="@id/listComment" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
