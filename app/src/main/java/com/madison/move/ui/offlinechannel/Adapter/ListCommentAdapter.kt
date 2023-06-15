@@ -53,6 +53,8 @@ class ListCommentAdapter(
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("ClickableViewAccessibility")
         fun onBind(dataComment: DataComment) {
+            binding.listReply.isNestedScrollingEnabled = false
+
             getSharedPreferences = context.getSharedPreferences(
                 CommentFragment.TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
             )
@@ -64,6 +66,7 @@ class ListCommentAdapter(
                 context, dataComment.replies as MutableList<DataComment>,
                 replyListener
             )
+
 
             //Add Reply Data
             binding.listReply.apply {
