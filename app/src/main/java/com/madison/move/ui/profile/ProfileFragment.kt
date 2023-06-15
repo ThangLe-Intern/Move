@@ -30,7 +30,10 @@ import com.madison.move.databinding.FragmentProfileBinding
 import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.menu.MainMenuActivity
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.Month
 import java.time.Year
+import java.time.YearMonth
 import java.util.*
 
 
@@ -91,7 +94,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
         storage = FirebaseStorage.getInstance()
         storageReference = storage?.reference
-
 
         //Get Token From Preferences
         getSharedPreferences = requireContext().getSharedPreferences(
@@ -665,12 +667,14 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     }
 
+    val currentDate = LocalDate.now()
+    var currentMonth = currentDate.monthValue
+
     private fun onYearSelected() {
         binding.dropdownYearText.setOnItemClickListener { parent, _, position, _ ->
             val monthSelected = binding.dropDownProfileMonth.editText?.text.toString()
             val yearSelected: String = parent.getItemAtPosition(position).toString()
             onHandleListOfDay(monthSelected, yearSelected)
-
         }
     }
 
@@ -775,8 +779,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         }!!
 
         binding.dropdownCountryText.setAdapter(arrayAdapter)
-//        binding.dropdownCountryText.inputType = EditorInfo.TYPE_NULL
-
 
         binding.dropdownCountryText.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
@@ -795,6 +797,8 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             getIdCountry(countrySelected)?.let { presenter?.getStateDataPresenter(it) }
         }
     }
+
+
 
     private fun getIdCountry(countryName: String): Int? {
         listDataCountry?.forEach {

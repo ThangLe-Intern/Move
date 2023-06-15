@@ -44,12 +44,10 @@ class ListCommentAdapter(
     var onClickListComment: setListenerListComment? = null
 
 
-
     interface setListenerListComment {
         fun onClickListComment(commentId: Int)
         fun onClickDisLikeComment(commentId: Int)
     }
-
 
 
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
@@ -83,12 +81,12 @@ class ListCommentAdapter(
                     txtShow.text =
                         context.getString(R.string.Show, dataComment.replies.size.toString() ?: "")
 
-                    if (replyParentId != 0){
-                        if (dataComment.id == replyParentId ) {
+                    if (replyParentId != 0) {
+                        if (dataComment.id == replyParentId) {
                             listReply.visibility = View.VISIBLE
-                        }else{
+                        } else {
                             dataComment.replies.forEach {
-                                if (it.id == replyParentId){
+                                if (it.id == replyParentId) {
                                     listReply.visibility = View.VISIBLE
                                 }
                             }
@@ -130,11 +128,17 @@ class ListCommentAdapter(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         true
                     )
+
                     fun Context.dpToPx(dp: Float): Int {
                         val scale = resources.displayMetrics.density
                         return (dp * scale + 0.5f).toInt()
                     }
-                    popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.popup_shadow))
+                    popupWindow.setBackgroundDrawable(
+                        ContextCompat.getDrawable(
+                            context,
+                            R.drawable.popup_shadow
+                        )
+                    )
                     popupWindow.elevation = context.dpToPx(8f).toFloat()
 
                     val location = IntArray(2)
@@ -215,100 +219,121 @@ class ListCommentAdapter(
                 }
 
                 btnLike.setOnClickListener {
-                    dataComment.id?.let { id -> onClickListComment?.onClickListComment(id) }
+                    if (userData != null) {
+                        if (dataComment.isLiked == true) {
+
+                            btnLike.setImageResource(R.drawable.ic_likenottick)
+                            btnDisLike.setImageResource(R.drawable.ic_disklikenottick)
+                        } else {
+                            btnLike.setImageResource(R.drawable.ic_lickticked)
+                            btnDisLike.setImageResource(R.drawable.ic_disklikenottick)
+                        }
+                        dataComment.id?.let { id -> onClickListComment?.onClickListComment(id) }
+                    }
                 }
                 btnDisLike.setOnClickListener {
-                    dataComment.id?.let { id -> onClickListComment?.onClickDisLikeComment(id) }
+                    if (userData != null) {
+                        if (dataComment.isDisliked == true) {
+                            btnLike.setImageResource(R.drawable.ic_likenottick)
+                            btnDisLike.setImageResource(R.drawable.ic_disklikenottick)
+                        } else {
+                            btnLike.setImageResource(R.drawable.ic_likenottick)
+                            btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
+                        }
+                        dataComment.id?.let { id -> onClickListComment?.onClickDisLikeComment(id) }
+                    }
                 }
 
 
-                //Handle Show/Hide Reply Button
-                layoutUserReply.visibility = View.GONE
-                if (userData != null) {
-                    if (userData?.img != null) {
-                        Glide.with(context).load(userData?.img).into(userAvatarReply)
-                    } else {
-                        userAvatarReply.setImageResource(R.drawable.avatar)
-                    }
-                    btnReply.setOnClickListener {
-                        if (layoutUserReply.isGone) {
-                            layoutUserReply.visibility = View.VISIBLE
-
-                            replyListener.userComment(
-                                cancelReplyButton,
-                                sendButtonReply,
-                                edtUserCommentReply,
-                                dataComment.id ?: 0
-                            )
-
+                    //Handle Show/Hide Reply Button
+                    layoutUserReply.visibility = View.GONE
+                    if (userData != null) {
+                        if (userData?.img != null) {
+                            Glide.with(context).load(userData?.img).into(userAvatarReply)
                         } else {
-                            layoutUserReply.visibility = View.GONE
+                            userAvatarReply.setImageResource(R.drawable.avatar)
                         }
+                        btnReply.setOnClickListener {
+                            if (layoutUserReply.isGone) {
+                                layoutUserReply.visibility = View.VISIBLE
+
+                                replyListener.userComment(
+                                    cancelReplyButton,
+                                    sendButtonReply,
+                                    edtUserCommentReply,
+                                    dataComment.id ?: 0
+                                )
+
+                            } else {
+                                layoutUserReply.visibility = View.GONE
+                            }
+                        }
+                    } else {
+                        btnReport.visibility = View.GONE
+                        btnReply.visibility = View.GONE
                     }
-                } else {
-                    btnReport.visibility = View.GONE
-                    btnReply.visibility = View.GONE
                 }
             }
         }
-    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == VIEW_TYPE_ITEM) {
-            ViewHolder(
-                ItemUserCommentBinding.inflate(
-                    LayoutInflater.from(parent.context), parent, false
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+            return if (viewType == VIEW_TYPE_ITEM) {
+                ViewHolder(
+                    ItemUserCommentBinding.inflate(
+                        LayoutInflater.from(parent.context), parent, false
+                    )
                 )
-            )
-        } else {
-            ViewHolder(
-                ItemUserCommentBinding.inflate(
-                    LayoutInflater.from(parent.context), parent, false
+            } else {
+                ViewHolder(
+                    ItemUserCommentBinding.inflate(
+                        LayoutInflater.from(parent.context), parent, false
+                    )
                 )
+            }
+        }
+
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+            (holder as ViewHolder).onBind(listComment[position])
+        }
+
+        override fun getItemCount(): Int {
+            return if (listComment == null) 0 else listComment.size
+        }
+
+        override fun getItemViewType(position: Int): Int {
+//        return VIEW_TYPE_ITEM
+            return if (listComment.get(position) == null) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
+        }
+
+        interface ReplyListener {
+            fun userComment(
+                cancelButton: AppCompatButton,
+                sendButton: AppCompatButton,
+                editText: AppCompatEditText,
+                parentCommentId: Int
             )
+
+            fun onWriteCommentListener(
+                editText: AppCompatEditText,
+                cancelButton: AppCompatButton,
+                sendButton: AppCompatButton
+            )
+
+            fun onCancelUserComment(cancelButton: AppCompatButton, editText: AppCompatEditText)
+            fun onSendUserReply(
+                sendButton: AppCompatButton,
+                parentCommentId: Int,
+                editText: AppCompatEditText,
+                cancelButton: AppCompatButton
+            )
+
+
+            fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton)
+            fun hideKeyboard(view: View)
+
+            fun onClickListReplyComment(commentId: Int)
+            fun onClickDisLikeReplyComment(commentId: Int)
+
+
         }
     }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as ViewHolder).onBind(listComment[position])
-    }
-
-    override fun getItemCount(): Int {
-        return if (listComment == null) 0 else listComment.size
-    }
-
-    override fun getItemViewType(position: Int): Int {
-//        return VIEW_TYPE_ITEM
-        return if (listComment.get(position) == null) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
-    }
-
-    interface ReplyListener {
-        fun userComment(
-            cancelButton: AppCompatButton,
-            sendButton: AppCompatButton,
-            editText: AppCompatEditText,
-            parentCommentId: Int
-        )
-
-        fun onWriteCommentListener(
-            editText: AppCompatEditText, cancelButton: AppCompatButton, sendButton: AppCompatButton
-        )
-
-        fun onCancelUserComment(cancelButton: AppCompatButton, editText: AppCompatEditText)
-        fun onSendUserReply(
-            sendButton: AppCompatButton,
-            parentCommentId: Int,
-            editText: AppCompatEditText,
-            cancelButton: AppCompatButton
-        )
-
-
-        fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton)
-        fun hideKeyboard(view: View)
-
-        fun onClickListReplyComment(commentId: Int)
-        fun onClickDisLikeReplyComment(commentId: Int)
-
-
-    }
-}

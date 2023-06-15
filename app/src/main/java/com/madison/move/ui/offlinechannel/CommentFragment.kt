@@ -238,6 +238,7 @@ open class CommentFragment(
 
         binding.vimeoPlayerView.addStateListener(object : VimeoPlayerStateListener {
             override fun onPlaying(duration: Float) {
+
                 if (!isPostView) {
                     TimeCounter.startTimer()
                 }
@@ -336,6 +337,7 @@ open class CommentFragment(
     }
 
     override fun onError(errorMessage: String) {
+        mListener?.onHideProgressBar()
         if (errorMessage == "Unable to resolve host \"api.move-intern-stg.madlab.tech\": No address associated with hostname"){
             mListener?.onShowDisconnectDialog()
         }else{
@@ -444,6 +446,7 @@ open class CommentFragment(
         sendButton.setOnClickListener {
             if (tokenUser != null && dataVideoSuggestion?.id != null && isLoadingCommentSuccess) {
                 isLoadingCommentSuccess = false
+                
                 presenter?.sendCommentVideo(
                     ("Bearer $tokenUser"),
                     dataVideoSuggestion?.id ?: 0,
