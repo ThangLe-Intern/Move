@@ -95,7 +95,6 @@
         tools:text="0"
         android:textColor="@color/move_green"
         app:layout_constraintBottom_toBottomOf="@id/btn_like"
-        app:layout_constraintEnd_toStartOf="@id/btnDisLike"
         app:layout_constraintStart_toEndOf="@+id/btn_like"
         app:layout_constraintTop_toBottomOf="@+id/commentContent" />
 
@@ -103,9 +102,11 @@
         android:id="@+id/btnDisLike"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginStart="@dimen/_15sdp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toEndOf="@+id/number_like"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginStart="@dimen/_25sdp"
+        app:layout_constraintStart_toEndOf="@+id/btn_like"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_like"
+        app:layout_constraintTop_toTopOf="@id/btn_like"
         app:layout_constraintTop_toBottomOf="@+id/commentContent"
         app:srcCompat="@drawable/ic_disklikenottick" />
 
