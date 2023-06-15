@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,7 +49,8 @@ import kotlin.math.roundToInt
 open class CommentFragment(
     private val dataVideoSuggestion: DataVideoSuggestion?,
     private val dataVideoCarousel: DataVideoSuggestion?
-) : BaseFragment<CommentPresenter>(), CommentListener, CommentContract.CommentContract, DataCallback{
+) : BaseFragment<CommentPresenter>(), CommentListener, CommentContract.CommentContract,
+    DataCallback {
     private lateinit var binding: FragmentCommentBinding
     lateinit var adapterComment: ListCommentAdapter
     private var listComment: MutableList<DataComment> = mutableListOf()
@@ -227,7 +229,7 @@ open class CommentFragment(
 
         binding.vimeoPlayerView.addStateListener(object : VimeoPlayerStateListener {
             override fun onPlaying(duration: Float) {
-                if (!isPostView){
+                if (!isPostView) {
                     TimeCounter.startTimer()
                 }
             }
@@ -266,7 +268,12 @@ open class CommentFragment(
                         it.data!!.getFloatExtra(VimeoPlayerActivity.RESULT_STATE_VIDEO_PLAY_AT, 0f)
                     binding.vimeoPlayerView.seekTo(playAt)
 
-                    TimeCounter.setTimeInSeconds(it.data!!.getIntExtra(VimeoPlayerActivity.TIME_COUNTER, 0))
+                    TimeCounter.setTimeInSeconds(
+                        it.data!!.getIntExtra(
+                            VimeoPlayerActivity.TIME_COUNTER,
+                            0
+                        )
+                    )
 
                     val playerState =
                         it.data!!.getStringExtra(VimeoPlayerActivity.RESULT_STATE_PLAYER_STATE)
@@ -283,14 +290,15 @@ open class CommentFragment(
                 }
             }
         }
+
     override fun onDataReceived(value: Int) {
-        if (!isPostView){
-            if (tokenUser != null){
+        if (!isPostView) {
+            if (tokenUser != null) {
                 presenter?.postView(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
-            }else{
+            } else {
                 presenter?.postView("", dataVideoSuggestion?.id ?: 0)
             }
-        }else{
+        } else {
             TimeCounter.pauseTimer()
         }
     }
@@ -314,7 +322,7 @@ open class CommentFragment(
                 binding.edtUserComment
             )
         }
-        onLoadComment(listComment)
+        listComment?.let { onLoadComment(it) }
     }
 
     override fun onError(errorMessage: String) {
@@ -427,12 +435,17 @@ open class CommentFragment(
                     SendComment(editText.text.toString().trim())
                 )
             } else {
-                Toast.makeText(activity, getString(R.string.cannot_send_comment), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    activity,
+                    getString(R.string.cannot_send_comment),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
             clearEdittext(editText, cancelButton)
         }
     }
+
     override fun onStop() {
         super.onStop()
         binding.vimeoPlayerView.pause()
@@ -532,7 +545,11 @@ open class CommentFragment(
                             )
                             replyParentId = parentCommentId
                         } else {
-                            Toast.makeText(activity, getString(R.string.cannot_send_reply), Toast.LENGTH_SHORT)
+                            Toast.makeText(
+                                activity,
+                                getString(R.string.cannot_send_reply),
+                                Toast.LENGTH_SHORT
+                            )
                                 .show()
                         }
 
@@ -587,36 +604,35 @@ open class CommentFragment(
         }
     }
 
-    private var oldALLComment: MutableList<DataComment> = mutableListOf()
     private fun getData() {
 
         if (listALLComment.isNotEmpty()) {
-            oldALLComment.addAll(listALLComment)
+            isShowAllComment = true
+            listALLComment.clear()
         }
-
         dataComment?.data?.let { listALLComment.addAll(it) }
         addComment()
 
     }
 
     private fun addComment() {
-        if (listALLComment.isNotEmpty() && listALLComment != listComment) {
-            if (oldALLComment.isNotEmpty()) {
-                listComment = listALLComment.subtract(oldALLComment.toSet()).toMutableList()
-                adapterComment.notifyDataSetChanged()
 
-                listALLComment.clear()
-                listALLComment.addAll(oldALLComment)
-                oldALLComment.clear()
-            } else {
+        if (listALLComment.isNotEmpty() && listALLComment.size != listComment.size) {
+            if (listComment.size != 0 && isShowAllComment) {
+                val lastIndexList = listComment.size - 1
 
-                //If load all comment - replace all new data with all old data
-                if (isShowAllComment) {
-                    listComment.clear()
-                    listComment.addAll(listALLComment)
-                    listALLComment.clear()
+                listComment.clear()
+
+                for (i in listALLComment.indices) {
+                    listComment.add(listALLComment[i])
+                    if (i == lastIndexList) {
+                        isShowAllComment = false
+                        break
+                    }
                 }
-
+                listALLComment = listALLComment.subtract(listComment.toSet()).toMutableList()
+                listComment
+            } else {
                 //Handle Add Data when Load more
                 if (listALLComment.size >= 11) {
                     (0..9).forEach { i ->
@@ -625,11 +641,14 @@ open class CommentFragment(
                     listALLComment.subList(0, 10).clear()
                 } else {
                     listComment.addAll(listALLComment)
-                    listALLComment.clear()
                     isShowAllComment = true
+                    listALLComment.clear()
                 }
             }
+
         } else {
+            listComment.clear()
+            listComment.addAll(listALLComment)
             listALLComment.clear()
         }
     }
@@ -656,8 +675,10 @@ open class CommentFragment(
         val handler = Handler()
         handler.postDelayed({
 
-            val scrollPosition: Int = listComment.size
-            adapterComment.notifyItemRemoved(scrollPosition)
+            val scrollPosition: Int? = listComment.size
+            if (scrollPosition != null) {
+                adapterComment.notifyItemRemoved(scrollPosition)
+            }
 
             addComment()
             adapterComment.notifyDataSetChanged()
@@ -665,11 +686,7 @@ open class CommentFragment(
             isLoading = false
             binding.progressBar.visibility = View.GONE
         }, 3000)
-
     }
-
-
-
 }
 
 
