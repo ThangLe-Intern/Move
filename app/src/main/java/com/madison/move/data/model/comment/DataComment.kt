@@ -11,7 +11,7 @@ data class DataComment(
     val commentId: Int?,
     @SerializedName("content")
     @Expose
-    val content: String?,
+    var content: String?,
     @SerializedName("created_at")
     @Expose
     val createdAt: String?,

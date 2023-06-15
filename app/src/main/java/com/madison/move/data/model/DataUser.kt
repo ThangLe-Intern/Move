@@ -34,7 +34,7 @@ data class DataUser(
     val id: Int?,
     @SerializedName("img")
     @Expose
-    val img: String?,
+    var img: String?,
     @SerializedName("is_suspended")
     @Expose
     val isSuspended: Int?,
@@ -61,7 +61,7 @@ data class DataUser(
     val updatedAt: String?,
     @SerializedName("username")
     @Expose
-    val username: String?,
+    var username: String?,
     @SerializedName("country_id")
     @Expose
     val countryId: Int?,
