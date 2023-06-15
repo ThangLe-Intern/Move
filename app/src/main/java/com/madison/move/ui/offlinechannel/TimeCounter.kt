@@ -24,7 +24,7 @@ object TimeCounter {
             if (timeInSeconds >= 30) {
                 callback?.onDataReceived(timeInSeconds)
                 resetTimer()
-                handler.removeCallbacks(runnable)
+//                handler.removeCallbacks(runnable)
             }
         }
     }

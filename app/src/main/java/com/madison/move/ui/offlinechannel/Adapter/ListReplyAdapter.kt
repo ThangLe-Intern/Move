@@ -45,12 +45,41 @@ class ListReplyAdapter(
                 }else{
                     btnReport.visibility = View.GONE
                 }
+
+
+                if (dataComment.isLiked == true) {
+                    btnLike.setImageResource(R.drawable.ic_lickticked)
+                }
+
+                if (dataComment.isDisliked == true) {
+                    btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
+                }
+
                 btnLike.setOnClickListener {
-                    dataComment.id?.let { id ->
-                        onClickListReplyComment?.onClickListReplyComment(id) }
+                    if (userData != null) {
+                        if (dataComment.isLiked == true) {
+                            btnLike.setImageResource(R.drawable.ic_likenottick)
+                            btnDisLike.setImageResource(R.drawable.ic_disklikenottick)
+                        } else {
+                            btnLike.setImageResource(R.drawable.ic_lickticked)
+                            btnDisLike.setImageResource(R.drawable.ic_disklikenottick)
+                        }
+                        dataComment.id?.let { id ->
+                            onClickListReplyComment?.onClickListReplyComment(id) }
+                    }
+
                 }
                 btnDisLike.setOnClickListener{
-                    dataComment.id?.let { id -> onClickListReplyComment?.onClickDisLikeReplyComment(id) }
+                    if (userData != null) {
+                        if (dataComment.isDisliked == true) {
+                            btnLike.setImageResource(R.drawable.ic_likenottick)
+                            btnDisLike.setImageResource(R.drawable.ic_disklikenottick)
+                        } else {
+                            btnLike.setImageResource(R.drawable.ic_likenottick)
+                            btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
+                        }
+                        dataComment.id?.let { id -> onClickListReplyComment?.onClickDisLikeReplyComment(id) }
+                    }
                 }
 
                 userAvatarReply.setImageResource(R.drawable.avatar)
@@ -118,13 +147,6 @@ class ListReplyAdapter(
 
                 layoutUserReply.visibility = View.GONE
 
-                if (dataComment.isLiked == true) {
-                    btnLike.setImageResource(R.drawable.ic_lickticked)
-                }
-
-                if (dataComment.isDisliked == true) {
-                    btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
-                }
 
                 //Set Avatar
                 if (dataComment.user?.img != null) {

@@ -30,8 +30,7 @@ class GuidelinesFragment : BaseFragment<GuidelinePresenter>(),GuidelineContract.
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentGuidelineBinding.inflate(inflater,container,false)
-
-        presenter?.getGuidelinesData()
+        binding.recyclerviewCAndG.isNestedScrollingEnabled = false
         return binding.root
 
     }
@@ -43,6 +42,9 @@ class GuidelinesFragment : BaseFragment<GuidelinePresenter>(),GuidelineContract.
         //Check Internet Connection
         if (mListener?.isDeviceOnlineCheck() == false) {
             mListener?.onShowDisconnectDialog()
+        }else{
+            mListener?.onShowProgressBar()
+            presenter?.getGuidelinesData()
         }
     }
 
@@ -53,6 +55,7 @@ class GuidelinesFragment : BaseFragment<GuidelinePresenter>(),GuidelineContract.
     }
 
     override fun onError(errorMessage: String) {
+        mListener?.onHideProgressBar()
         mListener?.onShowDisconnectDialog()
     }
 

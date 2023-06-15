@@ -30,7 +30,10 @@ import com.madison.move.databinding.FragmentProfileBinding
 import com.madison.move.ui.base.BaseFragment
 import com.madison.move.ui.menu.MainMenuActivity
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.Month
 import java.time.Year
+import java.time.YearMonth
 import java.util.*
 
 
@@ -91,7 +94,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
         storage = FirebaseStorage.getInstance()
         storageReference = storage?.reference
-
 
         //Get Token From Preferences
         getSharedPreferences = requireContext().getSharedPreferences(
@@ -154,7 +156,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         //Make Image Name Base On Date
         val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.CHINA)
         val dateNow = Date()
-        val filename = formatter.format(dateNow)
+        val filename = formatter.format(dateNow) + UUID.randomUUID().toString()
 
         val imgRef = storageReference?.child("images/${filename}.jpg")
         mProfileUri?.let { uri ->
@@ -514,7 +516,9 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         avatarUrl = null
         binding.txtErrorFullName.visibility = View.GONE
         binding.txtErrorFullName.focusable = View.FOCUSABLE
-        onResume()
+        mListener?.onHideProgressBar()
+
+        onHandleLogic()
 
         Toast.makeText(
             activity?.applicationContext,
@@ -525,6 +529,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
     }
 
     override fun onErrorGetProfile(errorType: String) {
+        Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
         mListener?.onShowDisconnectDialog()
     }
 
@@ -662,12 +667,14 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     }
 
+    val currentDate = LocalDate.now()
+    var currentMonth = currentDate.monthValue
+
     private fun onYearSelected() {
         binding.dropdownYearText.setOnItemClickListener { parent, _, position, _ ->
             val monthSelected = binding.dropDownProfileMonth.editText?.text.toString()
             val yearSelected: String = parent.getItemAtPosition(position).toString()
             onHandleListOfDay(monthSelected, yearSelected)
-
         }
     }
 
@@ -703,9 +710,8 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
         var daySelected = binding.dropDownProfileDay.editText?.text.toString()
         if(daySelected.startsWith("0")){
-            daySelected = daySelected.substring(1)
+          daySelected = daySelected.substring(1)
         }
-
         if (daySelected != "" && daySelected !in days ) {
             binding.dropdownDayText.setText(days.last())
         }
@@ -773,8 +779,6 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         }!!
 
         binding.dropdownCountryText.setAdapter(arrayAdapter)
-//        binding.dropdownCountryText.inputType = EditorInfo.TYPE_NULL
-
 
         binding.dropdownCountryText.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {

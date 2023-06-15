@@ -50,7 +50,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     private var tokenResponse: ObjectResponse<DataUser>? = null
     private var getSharedPreferences: SharedPreferences? = null
     private var fragmentLogin: DialogFragment? = null
-    var disconnectDialog: Dialog? = null
+    private var disconnectDialog: Dialog? = null
+    var progressDialog: Dialog? = null
     val gson = Gson()
 
     companion object {
@@ -61,6 +62,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
 
     override fun createPresenter(): MenuPresenter = MenuPresenter(this)
 
+
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -70,6 +72,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         mainMenuBinding = ActivityMainMenuBinding.inflate(layoutInflater)
         setContentView(mainMenuBinding.root)
         super.onCreate(savedInstanceState)
+
+        mainMenuBinding.swipeLayout.setOnRefreshListener {
+            onReload()
+        }
 
     }
 
@@ -334,14 +340,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     }
 
     override fun onError(error: String?) {
-        fragmentLogin?.view?.findViewById<RelativeLayout>(R.id.progress_main_layout)?.visibility =
-            View.GONE
+        onHideProgressBar()
         fragmentLogin?.view?.visibility = View.VISIBLE
         fragmentLogin?.view?.findViewById<RelativeLayout>(R.id.layout_error_message)?.visibility =
             View.VISIBLE
-
-        mainMenuBinding.progressMainLayout.visibility = View.GONE
-
     }
 
     override fun onShowDisconnectDialog() {
@@ -359,20 +361,35 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     }
 
     override fun onShowProgressBar() {
-        mainMenuBinding.progressMainLayout.visibility = View.VISIBLE
+        if (disconnectDialog?.isShowing == false || disconnectDialog == null){
+            progressDialog = Dialog(this)
+            progressDialog?.apply {
+                setContentView(R.layout.progress_loading)
+                setCanceledOnTouchOutside(false)
+                setCancelable(false)
+                window?.apply {
+                    setLayout(
+                        WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT
+                    )
+                    setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+                }
+                show()
+            }
+        }
     }
 
     override fun onHideProgressBar() {
-        mainMenuBinding.progressMainLayout.visibility = View.GONE
+        mainMenuBinding.swipeLayout.isRefreshing = false
+        progressDialog?.dismiss()
     }
 
 
     private fun onShowProgressDialog() {
-
         disconnectDialog = Dialog(this)
         disconnectDialog?.apply {
             setContentView(R.layout.progress_dialog)
             setCanceledOnTouchOutside(false)
+            setCancelable(false)
             window?.apply {
                 setLayout(
                     WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT
@@ -383,6 +400,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         }
 
         disconnectDialog?.findViewById<AppCompatTextView>(R.id.txt_try_again)?.setOnClickListener {
+            mainMenuBinding.swipeLayout.isRefreshing = false
             disconnectDialog?.dismiss()
             onReload()
         }

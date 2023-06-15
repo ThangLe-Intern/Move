@@ -16,11 +16,13 @@ class MenuPresenter(override var view: MainContract.View?) : MainContract.Presen
                     call: Call<ObjectResponse<DataUser>>, loginResponse: Response<ObjectResponse<DataUser>>
                 ) {
                     if (loginResponse.body() != null) {
+                        loginResponse.code()
                         view?.onSuccessGetToken(loginResponse.body()!!)
                     }
 
                     if (loginResponse.errorBody() != null) {
-                        view?.onError(null)
+                        loginResponse.code()
+                        view?.onError(loginResponse.code().toString() )
                     }
                 }
 
