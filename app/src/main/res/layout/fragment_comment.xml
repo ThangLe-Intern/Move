@@ -13,16 +13,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.ct7ct7ct7.androidvimeoplayer.view.VimeoPlayerView
-            android:id="@+id/vimeoPlayerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:aspectRatio="1.778"
-            app:autoPlay="true"
-            app:backgroundColor="@color/black"
-            app:loop="true"
-            app:showOriginalControls="false"
-            app:topicColor="#FFFF00" />
+<!--        <com.ct7ct7ct7.androidvimeoplayer.view.VimeoPlayerView-->
+<!--            android:id="@+id/vimeoPlayerView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:aspectRatio="1.778"-->
+<!--            app:autoPlay="true"-->
+<!--            app:backgroundColor="@color/black"-->
+<!--            app:loop="true"-->
+<!--            app:showOriginalControls="false"-->
+<!--            app:topicColor="#FFFF00" />-->
 
     </RelativeLayout>
 
@@ -166,8 +166,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/montserrat_semi_bold"
+                        android:paddingHorizontal="7dp"
                         android:text="@string/timeOfCategory"
-                        android:paddingHorizontal="5dp"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_9ssp" />
                 </androidx.cardview.widget.CardView>
