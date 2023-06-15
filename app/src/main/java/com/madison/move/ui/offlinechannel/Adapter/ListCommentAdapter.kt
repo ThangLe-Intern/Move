@@ -74,16 +74,6 @@ class ListCommentAdapter(
             //Handle Show/Hide Reply
             binding.apply {
 
-                if(dataComment.user?.isSuspended == 1){
-                    dataComment.user.img = avatar.setImageResource(R.drawable.popup_shadow).toString()
-                    dataComment.user.username = context.getString(R.string.userband)
-                    dataComment.content = context.getString(R.string.commentband)
-                    btnLike.visibility = View.GONE
-                    btnDisLike.visibility = View.GONE
-                    numberLike.visibility = View.GONE
-                    btnReply.visibility = View.GONE
-                }
-
                 if (dataComment.replies.isEmpty()) {
                     layoutShow.visibility = View.GONE
                 } else {
@@ -174,6 +164,8 @@ class ListCommentAdapter(
                 sendButtonReply.setOnClickListener {
                     notifyDataSetChanged()
                 }
+
+
             }
 
             //Set User Comment Info
@@ -183,6 +175,16 @@ class ListCommentAdapter(
                     Glide.with(context).load(dataComment.user.img).into(avatar)
                 } else {
                     avatar.setImageResource(R.drawable.avatar)
+                }
+
+                if(dataComment.user?.isSuspended == 1){
+                    dataComment.user.img = avatar.setImageResource(R.drawable.ic_avatar_banned).toString()
+                    dataComment.user.username = context.getString(R.string.userband)
+                    dataComment.content = context.getString(R.string.commentband)
+                    btnLike.visibility = View.GONE
+                    btnDisLike.visibility = View.GONE
+                    numberLike.visibility = View.GONE
+                    btnReply.visibility = View.GONE
                 }
 
                 //Set Username
@@ -206,11 +208,9 @@ class ListCommentAdapter(
                 if (dataComment.isLiked == true) {
                     btnLike.setImageResource(R.drawable.ic_lickticked)
                 }
-
                 if (dataComment.isDisliked == true) {
                     btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
                 }
-
                 if (dataComment.likeCount != null && dataComment.likeCount > 0) {
                     numberLike.visibility = View.VISIBLE
                     numberLike.text = dataComment.likeCount.toString()
@@ -240,7 +240,6 @@ class ListCommentAdapter(
                     btnReply.setOnClickListener {
                         if (layoutUserReply.isGone) {
                             layoutUserReply.visibility = View.VISIBLE
-
                             replyListener.userComment(
                                 cancelReplyButton,
                                 sendButtonReply,
