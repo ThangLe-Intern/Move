@@ -64,6 +64,7 @@ open class CommentFragment(
 
     private var dataComment: ObjectResponse<List<DataComment>>? = null
     private var isPostView = false
+    private var isDisconnect = false
 
     override fun createPresenter(): CommentPresenter? = CommentPresenter(this)
 
@@ -99,6 +100,7 @@ open class CommentFragment(
         //Check Internet Connection
         if (mListener?.isDeviceOnlineCheck() == false) {
             mListener?.onShowDisconnectDialog()
+            isDisconnect = true
         }else{
             onRefreshData()
         }
@@ -108,6 +110,13 @@ open class CommentFragment(
     open fun onRefreshData() {
 
         mListener?.onShowProgressBar()
+
+        if (isDisconnect){
+            //Get Video
+            dataVideoSuggestion?.id?.let { presenter?.getVideoDetail(it) }
+            isDisconnect = false
+        }
+
         getSharedPreferences = requireContext().getSharedPreferences(
             TOKEN_USER_PREFERENCE, AppCompatActivity.MODE_PRIVATE
         )
@@ -152,8 +161,7 @@ open class CommentFragment(
         super.initView()
 
         //Get Video
-        presenter?.getVideoDetail(1)
-
+        dataVideoSuggestion?.id?.let { presenter?.getVideoDetail(it) }
 
         binding.apply {
 
@@ -203,8 +211,8 @@ open class CommentFragment(
         lifecycle.addObserver(binding.vimeoPlayerView)
 
         binding.vimeoPlayerView.clearCache()
-//        binding.vimeoPlayerView.initialize(true, 835832587)
-        binding.vimeoPlayerView.initialize(true, videoID)
+        binding.vimeoPlayerView.initialize(true, 835832587)
+//        binding.vimeoPlayerView.initialize(true, videoID)
         binding.vimeoPlayerView.setFullscreenVisibility(true)
         binding.vimeoPlayerView.setMenuVisibility(true)
 
@@ -324,13 +332,15 @@ open class CommentFragment(
             )
         }
         listComment?.let { onLoadComment(it) }
-
         mListener?.onHideProgressBar()
-
     }
 
     override fun onError(errorMessage: String) {
-        Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show()
+        if (errorMessage == "Unable to resolve host \"api.move-intern-stg.madlab.tech\": No address associated with hostname"){
+            mListener?.onShowDisconnectDialog()
+        }else{
+            Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onSuccessSendCommentVideo(objectResponse: ObjectResponse<CommentResponse>) {

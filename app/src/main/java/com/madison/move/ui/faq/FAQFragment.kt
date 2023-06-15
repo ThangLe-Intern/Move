@@ -42,7 +42,6 @@ class FAQFragment : BaseFragment<FAQPresenter>(), FAQContract.FAQView {
             })
         )
 
-        presenter?.getFaqData()
 
         return binding.root
 
@@ -53,6 +52,9 @@ class FAQFragment : BaseFragment<FAQPresenter>(), FAQContract.FAQView {
         //Check Internet Connection
         if (mListener?.isDeviceOnlineCheck() == false) {
             mListener?.onShowDisconnectDialog()
+        }else{
+            mListener?.onShowProgressBar()
+            presenter?.getFaqData()
         }
     }
 
@@ -98,6 +100,7 @@ class FAQFragment : BaseFragment<FAQPresenter>(), FAQContract.FAQView {
     }
 
     override fun onError(errorMessage: String) {
+        mListener?.onHideProgressBar()
         mListener?.onShowDisconnectDialog()
 
     }
