@@ -110,7 +110,7 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
         }
 
         if (tokenUser != null) {
-            presenter?.getVideoSuggestionForUserData(tokenUser ?: "")
+            presenter?.getVideoSuggestionForUserData("Bearer $tokenUser")
         } else {
             presenter?.getVideoSuggestionData()
         }

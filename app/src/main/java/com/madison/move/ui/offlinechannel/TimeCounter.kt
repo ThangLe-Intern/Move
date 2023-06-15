@@ -21,10 +21,10 @@ object TimeCounter {
         runnable = Runnable {
             timeInSeconds++
             handler.postDelayed(runnable, 1000)
+
             if (timeInSeconds >= 30) {
                 callback?.onDataReceived(timeInSeconds)
                 resetTimer()
-//                handler.removeCallbacks(runnable)
             }
         }
     }

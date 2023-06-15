@@ -72,6 +72,9 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         mainMenuBinding = ActivityMainMenuBinding.inflate(layoutInflater)
         setContentView(mainMenuBinding.root)
         super.onCreate(savedInstanceState)
+        progressDialog?.dismiss()
+        disconnectDialog?.dismiss()
+
 
         mainMenuBinding.swipeLayout.setOnRefreshListener {
             onReload()
@@ -136,7 +139,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
             is FAQFragment -> {
                 currentFragment.onResume()
             }
-            is GuidelinesFragment ->{
+            is GuidelinesFragment -> {
                 currentFragment.onResume()
             }
             is ProfileFragment -> {
@@ -148,7 +151,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
                 }
 
             }
-            is CommentFragment ->{
+            is CommentFragment -> {
                 currentFragment.onResume()
 
             }
@@ -361,7 +364,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     }
 
     override fun onShowProgressBar() {
-        if (disconnectDialog?.isShowing == false || disconnectDialog == null){
+        if (disconnectDialog?.isShowing == false || disconnectDialog == null) {
             progressDialog = Dialog(this)
             progressDialog?.apply {
                 setContentView(R.layout.progress_loading)
@@ -369,7 +372,8 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
                 setCancelable(false)
                 window?.apply {
                     setLayout(
-                        WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT
+                        WindowManager.LayoutParams.MATCH_PARENT,
+                        WindowManager.LayoutParams.MATCH_PARENT
                     )
                     setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
                 }
@@ -387,6 +391,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     private fun onShowProgressDialog() {
         disconnectDialog = Dialog(this)
         disconnectDialog?.apply {
+            progressDialog?.dismiss()
             setContentView(R.layout.progress_dialog)
             setCanceledOnTouchOutside(false)
             setCancelable(false)
@@ -401,6 +406,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
 
         disconnectDialog?.findViewById<AppCompatTextView>(R.id.txt_try_again)?.setOnClickListener {
             mainMenuBinding.swipeLayout.isRefreshing = false
+            progressDialog?.dismiss()
             disconnectDialog?.dismiss()
             onReload()
         }
@@ -414,5 +420,10 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         tokenResponse = null
     }
 
+    override fun onStop() {
+        super.onStop()
+        progressDialog?.dismiss()
+        disconnectDialog?.dismiss()
+    }
 
 }

@@ -102,7 +102,7 @@ class HomePresenter(
     }
 
     override fun getVideoSuggestionForUserData(token: String) {
-        dataManager.movieRepository.getVideoSuggestionForUser("Bearer $token")
+        dataManager.movieRepository.getVideoSuggestionForUser(token)
             ?.enqueue(object : Callback<ObjectResponse<VideoSuggestion>> {
                 override fun onResponse(
                     call: Call<ObjectResponse<VideoSuggestion>>,

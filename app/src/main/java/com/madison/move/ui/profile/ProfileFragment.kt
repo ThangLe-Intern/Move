@@ -344,6 +344,7 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
         binding.txtProfileUpdatePicture.setOnClickListener {
             activity?.let { it1 ->
                 ImagePicker.with(it1).crop().cropOval().maxResultSize(1000, 1000, true)
+                    .cropSquare()
                     .provider(ImageProvider.BOTH) // Or bothCameraGallery()
                     .setDismissListener {
                         Log.d("ImagePicker", "onDismiss")

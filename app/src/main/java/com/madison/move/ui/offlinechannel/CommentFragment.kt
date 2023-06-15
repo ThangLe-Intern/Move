@@ -211,7 +211,6 @@ open class CommentFragment(
         lifecycle.addObserver(binding.vimeoPlayerView)
 
         binding.vimeoPlayerView.clearCache()
-//        binding.vimeoPlayerView.initialize(true, 835832587)
         binding.vimeoPlayerView.initialize(true, videoID)
         binding.vimeoPlayerView.setFullscreenVisibility(true)
         binding.vimeoPlayerView.setMenuVisibility(true)
