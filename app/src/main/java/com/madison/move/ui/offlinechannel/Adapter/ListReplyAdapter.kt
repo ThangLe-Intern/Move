@@ -20,7 +20,7 @@ import com.madison.move.ui.offlinechannel.CommentFragment
 class ListReplyAdapter(
     private var context: Context,
     var listReply: MutableList<DataComment>,
-    var onClickListReplyComment : ListCommentAdapter.ReplyListener?,
+    var onClickListReplyComment: ListCommentAdapter.ReplyListener?,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var getSharedPreferences: SharedPreferences? = null
@@ -40,10 +40,31 @@ class ListReplyAdapter(
 
                 userData = Gson().fromJson(jsonUser, DataUser::class.java)
 
-                if (userData != null){
-                    btnReport.visibility= View.GONE
-                }else{
+                if (userData != null) {
                     btnReport.visibility = View.GONE
+                } else {
+                    btnReport.visibility = View.GONE
+                }
+
+                if (dataComment.user?.isSuspended == 1) {
+                    dataComment.user.img =
+                        avatar.setImageResource(R.drawable.ic_avatar_banned).toString()
+                    dataComment.user.username = context.getString(R.string.userband)
+                    dataComment.content = context.getString(R.string.commentband)
+                    btnLike.visibility = View.GONE
+                    btnDisLike.visibility = View.GONE
+                    numberLike.visibility = View.GONE
+                }
+
+                dataComment.user?.img?.let {
+                    if (dataComment.user.isSuspended == 0) {
+                        Glide.with(context).load(it).into(avatar)
+                    } else {
+                        dataComment.user.img =
+                            avatar.setImageResource(R.drawable.ic_avatar_banned).toString()
+                    }
+                } ?: run {
+                    avatar.setImageResource(R.drawable.avatar)
                 }
 
 
@@ -53,6 +74,13 @@ class ListReplyAdapter(
 
                 if (dataComment.isDisliked == true) {
                     btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
+                }
+
+                if (dataComment.likeCount != null && dataComment.likeCount > 0 && dataComment.user?.isSuspended == 0) {
+                    numberLike.visibility = View.VISIBLE
+                    numberLike.text = dataComment.likeCount.toString()
+                } else {
+                    numberLike.visibility = View.GONE
                 }
 
                 btnLike.setOnClickListener {
@@ -65,11 +93,12 @@ class ListReplyAdapter(
                             btnDisLike.setImageResource(R.drawable.ic_disklikenottick)
                         }
                         dataComment.id?.let { id ->
-                            onClickListReplyComment?.onClickListReplyComment(id) }
+                            onClickListReplyComment?.onClickListReplyComment(id)
+                        }
                     }
 
                 }
-                btnDisLike.setOnClickListener{
+                btnDisLike.setOnClickListener {
                     if (userData != null) {
                         if (dataComment.isDisliked == true) {
                             btnLike.setImageResource(R.drawable.ic_likenottick)
@@ -78,7 +107,11 @@ class ListReplyAdapter(
                             btnLike.setImageResource(R.drawable.ic_likenottick)
                             btnDisLike.setImageResource(R.drawable.ic_diskliketicked)
                         }
-                        dataComment.id?.let { id -> onClickListReplyComment?.onClickDisLikeReplyComment(id) }
+                        dataComment.id?.let { id ->
+                            onClickListReplyComment?.onClickDisLikeReplyComment(
+                                id
+                            )
+                        }
                     }
                 }
 
@@ -87,74 +120,10 @@ class ListReplyAdapter(
                 line2.visibility = View.GONE
                 layoutShow.visibility = View.GONE
 
-                if(dataComment.user?.isSuspended == 1){
-                    dataComment.user.img = avatar.setImageResource(R.drawable.ic_avatar_banned).toString()
-                    dataComment.user.username = context.getString(R.string.userband)
-                    dataComment.content = context.getString(R.string.commentband)
-                    btnLike.visibility = View.GONE
-                    btnDisLike.visibility = View.GONE
-                    numberLike.visibility = View.GONE
-                }
-
-
                 btnReply.visibility = View.INVISIBLE
-
-                btnReport.setOnClickListener {
-
-                    val inflater = LayoutInflater.from(context)
-                    val dialogView = inflater.inflate(R.layout.dialog_report, null)
-
-                    val popupWindow = PopupWindow(
-                        dialogView,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        true
-                    )
-                    fun Context.dpToPx(dp: Float): Int {
-                        val scale = resources.displayMetrics.density
-                        return (dp * scale + 0.5f).toInt()
-                    }
-                    popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.popup_shadow))
-                    popupWindow.elevation = context.dpToPx(8f).toFloat()
-
-                    val location = IntArray(2)
-                    btnReport.getLocationInWindow(location)
-
-                    val x = location[0] - dialogView.width - 1
-                    val y = location[1] - dialogView.height
-
-                    popupWindow.showAtLocation(btnReport, Gravity.NO_GRAVITY, x, y)
-
-                    dialogView.viewTreeObserver.addOnGlobalLayoutListener(object :
-                        ViewTreeObserver.OnGlobalLayoutListener {
-                        override fun onGlobalLayout() {
-                            dialogView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                            val popupX = x - (dialogView.width - btnReport.width) / 2
-                            val popupY = y - dialogView.height
-
-                            popupWindow.update(popupX, popupY, -1, -1, true)
-                        }
-                    })
-
-                    dialogView.setOnTouchListener { _, _ ->
-                        popupWindow.dismiss()
-                        true
-                    }
-                }
-
 
 
                 layoutUserReply.visibility = View.GONE
-
-
-                //Set Avatar
-                if (dataComment.user?.img != null) {
-                    Glide.with(context).load(dataComment.user.img).into(avatar)
-                } else {
-                    avatar.setImageResource(R.drawable.avatar)
-                }
-
 
                 //Set Username
                 username.text =
@@ -174,13 +143,6 @@ class ListReplyAdapter(
                 commentContent.text = dataComment.content ?: ""
 
                 //Set User Like or Dislike Comment
-
-                if (dataComment.likeCount != null && dataComment.likeCount > 0) {
-                    numberLike.visibility = View.VISIBLE
-                    numberLike.text = dataComment.likeCount.toString()
-                } else {
-                    numberLike.visibility = View.GONE
-                }
 
 
             }
