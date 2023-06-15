@@ -4,7 +4,6 @@ package com.madison.move.ui.offlinechannel.Adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import android.view.*
 import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
@@ -44,12 +43,10 @@ class ListCommentAdapter(
     var onClickListComment: setListenerListComment? = null
 
 
-
     interface setListenerListComment {
         fun onClickListComment(commentId: Int)
         fun onClickDisLikeComment(commentId: Int)
     }
-
 
 
     inner class ViewHolder(val binding: ItemUserCommentBinding) :
@@ -188,7 +185,6 @@ class ListCommentAdapter(
                     avatar.setImageResource(R.drawable.avatar)
                 }
 
-
                 //Set Username
                 username.text =
                     dataComment.user?.username ?: context.getString(R.string.txt_no_us_name)
@@ -232,7 +228,6 @@ class ListCommentAdapter(
                 btnDisLike.setOnClickListener {
                     dataComment.id?.let { id -> onClickListComment?.onClickDisLikeComment(id) }
                 }
-
 
                 //Handle Show/Hide Reply Button
                 layoutUserReply.visibility = View.GONE
@@ -313,14 +308,11 @@ class ListCommentAdapter(
             editText: AppCompatEditText,
             cancelButton: AppCompatButton
         )
-
-
         fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton)
         fun hideKeyboard(view: View)
 
         fun onClickListReplyComment(commentId: Int)
         fun onClickDisLikeReplyComment(commentId: Int)
-
 
     }
 }
