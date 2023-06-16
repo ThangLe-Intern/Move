@@ -96,10 +96,17 @@ class ListCommentAdapter(
 
                     if (replyParentId != 0) {
                         if (dataComment.id == replyParentId) {
-                            listReply.visibility = View.VISIBLE
+                            txtShow.text =
+                                context.getString(R.string.Hide, dataComment.replies.size.toString() ?: "")
+                                imgArrowDownGreen.setImageResource(R.drawable.ic_ic_arrow_up_green)
+                                listReply.visibility = View.VISIBLE
+
                         } else {
                             dataComment.replies.forEach {
                                 if (it.id == replyParentId) {
+                                    imgArrowDownGreen.setImageResource(R.drawable.ic_ic_arrow_up_green)
+                                    txtShow.text =
+                                        context.getString(R.string.Hide, dataComment.replies.size.toString() ?: "")
                                     listReply.visibility = View.VISIBLE
                                 }
                             }
