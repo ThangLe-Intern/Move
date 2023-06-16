@@ -388,6 +388,13 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
         progressDialog?.dismiss()
     }
 
+    override fun onLogoutToken() {
+        onClearPreferences()
+        tokenUser?.let { token -> presenter?.logoutRequest(token) }
+        onLogout()
+        onReload()
+    }
+
 
     private fun onShowProgressDialog() {
         disconnectDialog = Dialog(this)

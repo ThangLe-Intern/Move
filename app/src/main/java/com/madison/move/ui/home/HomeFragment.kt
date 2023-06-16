@@ -155,7 +155,12 @@ class HomeFragment : BaseFragment<HomePresenter>(), HomeContract.HomeView {
 
     override fun onErrorMoveData(error: String) {
         Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
-        mListener?.onShowDisconnectDialog()
+        if (error != "Internal Server Error"){
+            mListener?.onShowDisconnectDialog()
+        }else{
+            mListener?.onHideProgressBar()
+            mListener?.onLogoutToken()
+        }
     }
 
     private val runnable = Runnable {

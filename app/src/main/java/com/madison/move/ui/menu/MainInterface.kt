@@ -6,4 +6,5 @@ interface MainInterface {
     fun onReloadUserInfoMenu()
     fun onShowProgressBar()
     fun onHideProgressBar()
+    fun onLogoutToken()
 }

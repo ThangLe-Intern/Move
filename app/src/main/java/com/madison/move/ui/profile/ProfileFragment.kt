@@ -531,7 +531,12 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
 
     override fun onErrorGetProfile(errorType: String) {
         Toast.makeText(activity, errorType, Toast.LENGTH_SHORT).show()
-        mListener?.onShowDisconnectDialog()
+        if (errorType == "Method Not Allowed" || errorType == "Internal Server Error") {
+            mListener?.onHideProgressBar()
+            mListener?.onLogoutToken()
+        }else{
+            mListener?.onShowDisconnectDialog()
+        }
     }
 
 
@@ -703,17 +708,17 @@ class ProfileFragment : BaseFragment<ProfilePresenter>(), ProfileContract.Profil
             (1..31).map { it.toString() }.toMutableList()
         }
 
-        if (yearSelected != ""){
-            if (isLeapYear(yearSelected.toInt()) && monthSelected == "Feb" ){
+        if (yearSelected != "") {
+            if (isLeapYear(yearSelected.toInt()) && monthSelected == "Feb") {
                 days = (1..29).map { it.toString() }.toMutableList()
             }
         }
 
         var daySelected = binding.dropDownProfileDay.editText?.text.toString()
-        if(daySelected.startsWith("0")){
-          daySelected = daySelected.substring(1)
+        if (daySelected.startsWith("0")) {
+            daySelected = daySelected.substring(1)
         }
-        if (daySelected != "" && daySelected !in days ) {
+        if (daySelected != "" && daySelected !in days) {
             binding.dropdownDayText.setText(days.last())
         }
 
