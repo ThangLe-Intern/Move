@@ -78,7 +78,8 @@ class ListCommentAdapter(
             binding.apply {
 
                 if (dataComment.user?.isSuspended == 1) {
-                    dataComment.user.img = avatar.setImageResource(R.drawable.ic_avatar_banned).toString()
+                    dataComment.user.img =
+                        avatar.setImageResource(R.drawable.ic_avatar_banned).toString()
                     dataComment.user.username = context.getString(R.string.userband)
                     dataComment.content = context.getString(R.string.commentband)
                     btnLike.visibility = View.GONE
@@ -96,17 +97,22 @@ class ListCommentAdapter(
 
                     if (replyParentId != 0) {
                         if (dataComment.id == replyParentId) {
-                            txtShow.text =
-                                context.getString(R.string.Hide, dataComment.replies.size.toString() ?: "")
-                                imgArrowDownGreen.setImageResource(R.drawable.ic_ic_arrow_up_green)
-                                listReply.visibility = View.VISIBLE
+                            txtShow.text = context.getString(
+                                R.string.Hide,
+                                dataComment.replies.size.toString() ?: ""
+                            )
+                            imgArrowDownGreen.setImageResource(R.drawable.ic_ic_arrow_up_green)
+                            listReply.visibility = View.VISIBLE
 
                         } else {
                             dataComment.replies.forEach {
                                 if (it.id == replyParentId) {
                                     imgArrowDownGreen.setImageResource(R.drawable.ic_ic_arrow_up_green)
                                     txtShow.text =
-                                        context.getString(R.string.Hide, dataComment.replies.size.toString() ?: "")
+                                        context.getString(
+                                            R.string.Hide,
+                                            dataComment.replies.size.toString() ?: ""
+                                        )
                                     listReply.visibility = View.VISIBLE
                                 }
                             }
@@ -144,7 +150,8 @@ class ListCommentAdapter(
                     if (dataComment.user.isSuspended == 0) {
                         Glide.with(context).load(it).into(avatar)
                     } else {
-                        dataComment.user.img = avatar.setImageResource(R.drawable.ic_avatar_banned).toString()
+                        dataComment.user.img =
+                            avatar.setImageResource(R.drawable.ic_avatar_banned).toString()
                     }
                 } ?: run {
                     avatar.setImageResource(R.drawable.avatar)

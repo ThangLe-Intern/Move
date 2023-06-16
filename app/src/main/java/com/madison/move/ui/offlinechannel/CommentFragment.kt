@@ -97,7 +97,7 @@ open class CommentFragment(
         if (mListener?.isDeviceOnlineCheck() == false) {
             mListener?.onShowDisconnectDialog()
             isDisconnect = true
-        }else{
+        } else {
             onRefreshData()
         }
 
@@ -107,7 +107,7 @@ open class CommentFragment(
 
         mListener?.onShowProgressBar()
 
-        if (isDisconnect){
+        if (isDisconnect) {
             //Get Video
             dataVideoSuggestion?.id?.let { presenter?.getVideoDetail(it) }
             isDisconnect = false
@@ -299,7 +299,11 @@ open class CommentFragment(
     override fun onDataReceived(value: Int) {
         if (!isPostView) {
             if (tokenUser != null) {
-                presenter?.postView(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0, PostView("30"))
+                presenter?.postView(
+                    ("Bearer $tokenUser"),
+                    dataVideoSuggestion?.id ?: 0,
+                    PostView("30")
+                )
             } else {
                 presenter?.postView("", dataVideoSuggestion?.id ?: 0, PostView("30"))
             }
@@ -333,376 +337,390 @@ open class CommentFragment(
 
     override fun onError(errorMessage: String) {
         mListener?.onHideProgressBar()
-        if (errorMessage == "Unable to resolve host \"api.move-intern-stg.madlab.tech\": No address associated with hostname"){
+        if (errorMessage == "Unable to resolve host \"api.move-intern-stg.madlab.tech\": No address associated with hostname") {
             mListener?.onShowDisconnectDialog()
-        }else{
-            Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun onSuccessSendCommentVideo(objectResponse: ObjectResponse<CommentResponse>) {
-        Toast.makeText(activity, getString(R.string.send_comment), Toast.LENGTH_SHORT).show()
-
-        //Get Data Again
-        presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
-
-    }
-
-    override fun onSuccessSendReplyComment(objectResponse: ObjectResponse<CommentResponse>) {
-
-        //Get Data Again
-        presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
-    }
-
-    override fun onSuccessPostView(objectResponse: ObjectResponse<PostViewResponse>) {
-        Toast.makeText(activity, getString(R.string.post_view), Toast.LENGTH_SHORT).show()
-        isPostView = true
-    }
-
-    override fun onSuccessCallLikeComment(objectResponse: LikeResponse) {
-        presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
-    }
-
-    override fun onSuccessCallDiskLikeComment(objectResponse: DiskLikeResponse) {
-        presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
-    }
-
-
-    override fun onBackPressed() {
-
-    }
-
-    override fun userComment(
-        cancelButton: AppCompatButton,
-        sendButton: AppCompatButton,
-        editText: AppCompatEditText
-    ) {
-        cancelButton.visibility = View.GONE
-        sendButton.visibility = View.GONE
-        onWriteCommentListener(editText, cancelButton, sendButton)
-        onCancelUserComment(cancelButton, editText)
-
-        if (userData != null) {
-            onSendUserComment(sendButton, editText, cancelButton, userData!!)
+        } else if (errorMessage == "Internal Server Error")
+            {
+                mListener?.onHideProgressBar()
+                mListener?.onLogoutToken()
+            }else{
+                Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show()
+            }
         }
 
-    }
+        override fun onSuccessSendCommentVideo(objectResponse: ObjectResponse<CommentResponse>) {
+            Toast.makeText(activity, getString(R.string.send_comment), Toast.LENGTH_SHORT).show()
 
-    override fun onWriteCommentListener(
-        editText: AppCompatEditText, cancelButton: AppCompatButton, sendButton: AppCompatButton
-    ) {
+            //Get Data Again
+            presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
 
-        editText.apply {
-            addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?, start: Int, count: Int, after: Int
-                ) {
+        }
+
+        override fun onSuccessSendReplyComment(objectResponse: ObjectResponse<CommentResponse>) {
+
+            //Get Data Again
+            presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
+        }
+
+        override fun onSuccessPostView(objectResponse: ObjectResponse<PostViewResponse>) {
+            Toast.makeText(activity, getString(R.string.post_view), Toast.LENGTH_SHORT).show()
+            isPostView = true
+        }
+
+        override fun onSuccessCallLikeComment(objectResponse: LikeResponse) {
+            presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
+        }
+
+        override fun onSuccessCallDiskLikeComment(objectResponse: DiskLikeResponse) {
+            presenter?.getCommentVideo(("Bearer $tokenUser"), dataVideoSuggestion?.id ?: 0)
+        }
+
+
+        override fun onBackPressed() {
+
+        }
+
+        override fun userComment(
+            cancelButton: AppCompatButton,
+            sendButton: AppCompatButton,
+            editText: AppCompatEditText
+        ) {
+            cancelButton.visibility = View.GONE
+            sendButton.visibility = View.GONE
+            onWriteCommentListener(editText, cancelButton, sendButton)
+            onCancelUserComment(cancelButton, editText)
+
+            if (userData != null) {
+                onSendUserComment(sendButton, editText, cancelButton, userData!!)
+            }
+
+        }
+
+        override fun onWriteCommentListener(
+            editText: AppCompatEditText, cancelButton: AppCompatButton, sendButton: AppCompatButton
+        ) {
+
+            editText.apply {
+                addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(
+                        s: CharSequence?, start: Int, count: Int, after: Int
+                    ) {
+                    }
+
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
+                        if (!s.isNullOrEmpty() && editText.text?.trim().toString() != "") {
+                            cancelButton.visibility = View.VISIBLE
+                            sendButton.visibility = View.VISIBLE
+                        } else {
+                            cancelButton.visibility = View.GONE
+                            sendButton.visibility = View.GONE
+                        }
+                    }
+
+                    override fun afterTextChanged(s: Editable?) {
+                    }
+                })
+                onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+                    if (!hasFocus) {
+                        v?.let { hideKeyboard(it) }
+                    }
+                }
+            }
+        }
+
+        override fun hideKeyboard(view: View) {
+            val inputMethodManager =
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+
+        override fun onCancelUserComment(
+            cancelButton: AppCompatButton,
+            editText: AppCompatEditText
+        ) {
+            cancelButton.setOnClickListener {
+                clearEdittext(editText, cancelButton)
+            }
+        }
+
+        override fun onSendUserComment(
+            sendButton: AppCompatButton,
+            editText: AppCompatEditText,
+            cancelButton: AppCompatButton,
+            user: DataUser
+        ) {
+            sendButton.setOnClickListener {
+                if (tokenUser != null && dataVideoSuggestion?.id != null && isLoadingCommentSuccess) {
+                    isLoadingCommentSuccess = false
+
+                    presenter?.sendCommentVideo(
+                        ("Bearer $tokenUser"),
+                        dataVideoSuggestion?.id ?: 0,
+                        SendComment(editText.text.toString().trim())
+                    )
+                } else {
+                    Toast.makeText(
+                        activity,
+                        getString(R.string.cannot_send_comment),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (!s.isNullOrEmpty() && editText.text?.trim().toString() != "") {
-                        cancelButton.visibility = View.VISIBLE
-                        sendButton.visibility = View.VISIBLE
-                    } else {
+                clearEdittext(editText, cancelButton)
+            }
+        }
+
+        override fun onStop() {
+            super.onStop()
+            binding.vimeoPlayerView.pause()
+        }
+
+        override fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton) {
+            editText.text = null
+            editText.clearFocus()
+
+            val imm =
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(
+                cancelButton.windowToken, InputMethodManager.RESULT_UNCHANGED_SHOWN
+            )
+        }
+
+        override fun onLoadComment(listComment: MutableList<DataComment>) {
+            adapterComment = ListCommentAdapter(
+                requireContext(),
+                listComment,
+                object : ListCommentAdapter.ReplyListener {
+                    override fun userComment(
+                        cancelButton: AppCompatButton,
+                        sendButton: AppCompatButton,
+                        editText: AppCompatEditText,
+                        parentCommentId: Int
+                    ) {
+
                         cancelButton.visibility = View.GONE
                         sendButton.visibility = View.GONE
+
+                        onWriteCommentListener(editText, cancelButton, sendButton)
+                        onCancelUserComment(cancelButton, editText)
+                        onSendUserReply(
+                            sendButton, parentCommentId, editText, cancelButton
+                        )
                     }
-                }
 
-                override fun afterTextChanged(s: Editable?) {
-                }
-            })
-            onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-                if (!hasFocus) {
-                    v?.let { hideKeyboard(it) }
-                }
-            }
-        }
-    }
+                    override fun onWriteCommentListener(
+                        editText: AppCompatEditText,
+                        cancelButton: AppCompatButton,
+                        sendButton: AppCompatButton
+                    ) {
+                        editText.apply {
+                            addTextChangedListener(object : TextWatcher {
+                                override fun beforeTextChanged(
+                                    s: CharSequence?, start: Int, count: Int, after: Int
+                                ) {
+                                }
 
-    override fun hideKeyboard(view: View) {
-        val inputMethodManager =
-            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-    }
+                                override fun onTextChanged(
+                                    s: CharSequence?, start: Int, before: Int, count: Int
+                                ) {
+                                    if (!s.isNullOrEmpty() && editText.text?.trim()
+                                            .toString() != ""
+                                    ) {
+                                        cancelButton.visibility = View.VISIBLE
+                                        sendButton.visibility = View.VISIBLE
+                                    } else {
+                                        cancelButton.visibility = View.GONE
+                                        sendButton.visibility = View.GONE
+                                    }
+                                }
 
-    override fun onCancelUserComment(cancelButton: AppCompatButton, editText: AppCompatEditText) {
-        cancelButton.setOnClickListener {
-            clearEdittext(editText, cancelButton)
-        }
-    }
+                                override fun afterTextChanged(s: Editable?) {
+                                }
 
-    override fun onSendUserComment(
-        sendButton: AppCompatButton,
-        editText: AppCompatEditText,
-        cancelButton: AppCompatButton,
-        user: DataUser
-    ) {
-        sendButton.setOnClickListener {
-            if (tokenUser != null && dataVideoSuggestion?.id != null && isLoadingCommentSuccess) {
-                isLoadingCommentSuccess = false
-                
-                presenter?.sendCommentVideo(
-                    ("Bearer $tokenUser"),
-                    dataVideoSuggestion?.id ?: 0,
-                    SendComment(editText.text.toString().trim())
-                )
-            } else {
-                Toast.makeText(
-                    activity,
-                    getString(R.string.cannot_send_comment),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            clearEdittext(editText, cancelButton)
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        binding.vimeoPlayerView.pause()
-    }
-
-    override fun clearEdittext(editText: AppCompatEditText, cancelButton: AppCompatButton) {
-        editText.text = null
-        editText.clearFocus()
-
-        val imm =
-            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(
-            cancelButton.windowToken, InputMethodManager.RESULT_UNCHANGED_SHOWN
-        )
-    }
-
-    override fun onLoadComment(listComment: MutableList<DataComment>) {
-        adapterComment = ListCommentAdapter(
-            requireContext(),
-            listComment,
-            object : ListCommentAdapter.ReplyListener {
-                override fun userComment(
-                    cancelButton: AppCompatButton,
-                    sendButton: AppCompatButton,
-                    editText: AppCompatEditText,
-                    parentCommentId: Int
-                ) {
-
-                    cancelButton.visibility = View.GONE
-                    sendButton.visibility = View.GONE
-
-                    onWriteCommentListener(editText, cancelButton, sendButton)
-                    onCancelUserComment(cancelButton, editText)
-                    onSendUserReply(
-                        sendButton, parentCommentId, editText, cancelButton
-                    )
-                }
-
-                override fun onWriteCommentListener(
-                    editText: AppCompatEditText,
-                    cancelButton: AppCompatButton,
-                    sendButton: AppCompatButton
-                ) {
-                    editText.apply {
-                        addTextChangedListener(object : TextWatcher {
-                            override fun beforeTextChanged(
-                                s: CharSequence?, start: Int, count: Int, after: Int
-                            ) {
-                            }
-
-                            override fun onTextChanged(
-                                s: CharSequence?, start: Int, before: Int, count: Int
-                            ) {
-                                if (!s.isNullOrEmpty() && editText.text?.trim().toString() != "") {
-                                    cancelButton.visibility = View.VISIBLE
-                                    sendButton.visibility = View.VISIBLE
-                                } else {
-                                    cancelButton.visibility = View.GONE
-                                    sendButton.visibility = View.GONE
+                            })
+                            onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+                                if (!hasFocus) {
+                                    v?.let { hideKeyboard(it) }
                                 }
                             }
+                        }
 
-                            override fun afterTextChanged(s: Editable?) {
-                            }
+                    }
 
-                        })
-                        onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-                            if (!hasFocus) {
-                                v?.let { hideKeyboard(it) }
-                            }
+                    override fun onCancelUserComment(
+                        cancelButton: AppCompatButton, editText: AppCompatEditText
+                    ) {
+                        cancelButton.setOnClickListener {
+                            clearEdittext(editText, cancelButton)
                         }
                     }
 
-                }
+                    override fun onSendUserReply(
+                        sendButton: AppCompatButton,
+                        parentCommentId: Int,
+                        editText: AppCompatEditText,
+                        cancelButton: AppCompatButton
+                    ) {
 
-                override fun onCancelUserComment(
-                    cancelButton: AppCompatButton, editText: AppCompatEditText
-                ) {
-                    cancelButton.setOnClickListener {
-                        clearEdittext(editText, cancelButton)
-                    }
-                }
+                        sendButton.setOnClickListener {
+                            if (tokenUser != null) {
+                                presenter?.sendReplyComment(
+                                    ("Bearer $tokenUser"),
+                                    parentCommentId,
+                                    SendComment(editText.text.toString().trim())
+                                )
+                                replyParentId = parentCommentId
+                            } else {
+                                Toast.makeText(
+                                    activity,
+                                    getString(R.string.cannot_send_reply),
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            }
 
-                override fun onSendUserReply(
-                    sendButton: AppCompatButton,
-                    parentCommentId: Int,
-                    editText: AppCompatEditText,
-                    cancelButton: AppCompatButton
-                ) {
-
-                    sendButton.setOnClickListener {
-                        if (tokenUser != null) {
-                            presenter?.sendReplyComment(
-                                ("Bearer $tokenUser"),
-                                parentCommentId,
-                                SendComment(editText.text.toString().trim())
-                            )
-                            replyParentId = parentCommentId
-                        } else {
-                            Toast.makeText(
-                                activity,
-                                getString(R.string.cannot_send_reply),
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            clearEdittext(editText, cancelButton)
                         }
-
-                        clearEdittext(editText, cancelButton)
                     }
-                }
 
-                override fun clearEdittext(
-                    editText: AppCompatEditText, cancelButton: AppCompatButton
-                ) {
-                    editText.text = null
-                    editText.clearFocus()
+                    override fun clearEdittext(
+                        editText: AppCompatEditText, cancelButton: AppCompatButton
+                    ) {
+                        editText.text = null
+                        editText.clearFocus()
 
-                    val imm =
-                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(
-                        cancelButton.windowToken, InputMethodManager.RESULT_UNCHANGED_SHOWN
-                    )
-                }
+                        val imm =
+                            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(
+                            cancelButton.windowToken, InputMethodManager.RESULT_UNCHANGED_SHOWN
+                        )
+                    }
 
-                override fun hideKeyboard(view: View) {
-                    val inputMethodManager =
-                        requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-                }
+                    override fun hideKeyboard(view: View) {
+                        val inputMethodManager =
+                            requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+                    }
 
-                override fun onClickListReplyComment(commentId: Int) {
+                    override fun onClickListReplyComment(commentId: Int) {
+                        presenter?.callLikeComment("Bearer $tokenUser", commentId)
+                        replyParentId = commentId
+                    }
+
+                    override fun onClickDisLikeReplyComment(commentId: Int) {
+                        presenter?.callDiskLikeComment("Bearer $tokenUser", commentId)
+                        replyParentId = commentId
+                    }
+                }, replyParentId
+            )
+
+            adapterComment.onClickListComment = object : ListCommentAdapter.setListenerListComment {
+                override fun onClickListComment(commentId: Int) {
                     presenter?.callLikeComment("Bearer $tokenUser", commentId)
-                    replyParentId = commentId
                 }
 
-                override fun onClickDisLikeReplyComment(commentId: Int) {
+                override fun onClickDisLikeComment(commentId: Int) {
                     presenter?.callDiskLikeComment("Bearer $tokenUser", commentId)
-                    replyParentId = commentId
-                }
-            }, replyParentId
-        )
-
-        adapterComment.onClickListComment = object : ListCommentAdapter.setListenerListComment {
-            override fun onClickListComment(commentId: Int) {
-                presenter?.callLikeComment("Bearer $tokenUser", commentId)
-            }
-
-            override fun onClickDisLikeComment(commentId: Int) {
-                presenter?.callDiskLikeComment("Bearer $tokenUser", commentId)
-            }
-        }
-
-        binding.listComment.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = adapterComment
-        }
-    }
-
-    private fun getData() {
-
-        if (listALLComment.isNotEmpty()) {
-            isReloadComment = true
-            listALLComment.clear()
-        }
-        dataComment?.data?.let { listALLComment.addAll(it) }
-        addComment()
-
-    }
-
-    private fun addComment() {
-
-        if (listALLComment.isNotEmpty() && listALLComment.size != listComment.size) {
-            if (listComment.size != 0 && isReloadComment) {
-                val lastIndexList = listComment.last()
-
-                listComment.clear()
-
-                for (i in listALLComment) {
-                    listComment.add(i)
-                    if (i == lastIndexList) {
-                        isReloadComment = false
-                        break
-                    }
-                }
-                listALLComment = listALLComment.subtract(listComment.toSet()).toMutableList()
-                listComment
-                listALLComment
-            } else {
-                //Handle Add Data when Load more
-                if (listALLComment.size >= 11) {
-                    (0..9).forEach { i ->
-                        listComment.add(listALLComment[i])
-                    }
-                    listALLComment.subList(0, 10).clear()
-                } else {
-                    listComment.addAll(listALLComment)
-                    isReloadComment = true
-                    listALLComment.clear()
                 }
             }
 
-        } else {
-            listComment.clear()
-            listComment.addAll(listALLComment)
-            listALLComment.clear()
+            binding.listComment.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = adapterComment
+            }
         }
-        isLoadingCommentSuccess = true
-    }
 
-    private fun initScrollListener() {
-        binding.listComment.isNestedScrollingEnabled = false
+        private fun getData() {
 
-        binding.nestedComment.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
             if (listALLComment.isNotEmpty()) {
-                if (v.getChildAt(v.childCount - 1) != null) {
-                    if (scrollY > oldScrollY) {
-                        if (scrollY >= v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight && !isLoading) {
-                            isLoading = true
-                            loadMore()
+                isReloadComment = true
+                listALLComment.clear()
+            }
+            dataComment?.data?.let { listALLComment.addAll(it) }
+            addComment()
+
+        }
+
+        private fun addComment() {
+
+            if (listALLComment.isNotEmpty() && listALLComment.size != listComment.size) {
+                if (listComment.size != 0 && isReloadComment) {
+                    val lastIndexList = listComment.last()
+
+                    listComment.clear()
+
+                    for (i in listALLComment) {
+                        listComment.add(i)
+                        if (i == lastIndexList) {
+                            isReloadComment = false
+                            break
+                        }
+                    }
+                    listALLComment = listALLComment.subtract(listComment.toSet()).toMutableList()
+                    listComment
+                    listALLComment
+                } else {
+                    //Handle Add Data when Load more
+                    if (listALLComment.size >= 11) {
+                        (0..9).forEach { i ->
+                            listComment.add(listALLComment[i])
+                        }
+                        listALLComment.subList(0, 10).clear()
+                    } else {
+                        listComment.addAll(listALLComment)
+                        isReloadComment = true
+                        listALLComment.clear()
+                    }
+                }
+
+            } else {
+                listComment.clear()
+                listComment.addAll(listALLComment)
+                listALLComment.clear()
+            }
+            isLoadingCommentSuccess = true
+        }
+
+        private fun initScrollListener() {
+            binding.listComment.isNestedScrollingEnabled = false
+
+            binding.nestedComment.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                if (listALLComment.isNotEmpty()) {
+                    if (v.getChildAt(v.childCount - 1) != null) {
+                        if (scrollY > oldScrollY) {
+                            if (scrollY >= v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight && !isLoading) {
+                                isLoading = true
+                                loadMore()
+                            }
                         }
                     }
                 }
-            }
-        })
+            })
+        }
+
+        private fun loadMore() {
+            binding.progressBar.visibility = View.VISIBLE
+            val handler = Handler()
+            handler.postDelayed({
+
+                val scrollPosition: Int? = listComment.size
+                if (scrollPosition != null) {
+                    adapterComment.notifyItemRemoved(scrollPosition)
+                }
+
+                addComment()
+                adapterComment.notifyDataSetChanged()
+
+                isLoading = false
+                binding.progressBar.visibility = View.GONE
+            }, 3000)
+        }
     }
-
-    private fun loadMore() {
-        binding.progressBar.visibility = View.VISIBLE
-        val handler = Handler()
-        handler.postDelayed({
-
-            val scrollPosition: Int? = listComment.size
-            if (scrollPosition != null) {
-                adapterComment.notifyItemRemoved(scrollPosition)
-            }
-
-            addComment()
-            adapterComment.notifyDataSetChanged()
-
-            isLoading = false
-            binding.progressBar.visibility = View.GONE
-        }, 3000)
-    }
-}
 
 
 
