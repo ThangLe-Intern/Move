@@ -38,9 +38,11 @@ class VideoSuggestionAdapter(
                 txtVideoSuggestionCategory.text = video.categoryName ?: ""
                 txtTitleOfVideoSuggestion.text = video.title ?: ""
 
-                val viewCount = video.countView ?: 0
+                val viewCount = video.totalView ?: 0
                 txtVideoSuggestionView.text = viewCount.toString()
             }
+
+
 
             val roundOff = (video.rating?.times(100.0))?.roundToInt()?.div(100.0) ?: 0
             binding.txtVideoSuggestionRateNumber.text = roundOff.toString()

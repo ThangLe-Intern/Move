@@ -120,6 +120,7 @@ class MainMenuActivity : BaseActivity<MenuPresenter>(), MainContract.View, MainI
     }
 
     private fun onLogout() {
+        onHideProgressBar()
         mainMenuBinding.apply {
             menulogout.text = getString(R.string.txt_log_in)
             menuTvSettting.visibility = View.GONE
